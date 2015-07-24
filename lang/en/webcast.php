@@ -25,25 +25,50 @@
  **/
 $string['modulename'] = 'MoodleFreak Webcast';
 $string['modulenameplural'] = 'MoodleFreak Webcast';
-$string['modulename_help'] = 'Allow to create a webcast activity in moodle with the follow features:
-* Chat
-* Live Broadcasting
-* Active log users
-* File sharing
-* Reminder messages
-* Completion based on viewed
+$string['modulename_help'] = 'Webcast activity:<br/>
+<ul>
+    <li>Chat</li>
+    <li>Live Broadcasting</li>
+    <li>Active log users</li>
+    <li>File sharing</li>
+    <li>Reminder messages</li>
+    <li>Completion based on viewed</li>
+</ul>
 ';
 $string['modulename_link'] = 'mod/webcast/view';
 $string['pluginadministration'] = 'MoodleFreak Webcast administration';
 $string['pluginname'] = 'MoodleFreak Webcast';
 $string['webcastfieldset'] = 'Custom example fieldset';
 $string['webcastname'] = 'MoodleFreak Webcast';
-$string['webcast_help'] = 'Allow to create a webcast activity in moodle with the follow features:
-* Chat
-* Live Broadcasting
-* Active log users
-* File sharing
-* Reminder messages
-* Completion based on viewed
-';
+$string['webcastname_help'] = 'The name of the webcast';
 $string['webcast'] = 'MoodleFreak Webcast';
+
+// ERRORS
+$string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
+
+// SETTINGS
+$string['setting:heading_server'] = 'Communication settings';
+$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be override in each webcast activity)';
+$string['setting:streaming_server'] = 'Streaming url';
+$string['setting:streaming_server_desc'] = 'The location of your streaming server';
+$string['setting:chat_server'] = 'Chat/socket url';
+$string['setting:chat_server_desc'] = 'The location of your chat server';
+$string['setting:shared_secret'] = 'Shared secret';
+$string['setting:shared_secret_desc'] = 'A unique key that is shared with the chat/streaming server';
+$string['setting:heading_instance_defaults'] = 'Reminder default values (can be override in each webcast activity)';
+$string['setting:reminder_1'] = 'Reminder 1';
+$string['setting:reminder_1_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:reminder_2'] = 'Reminder 2';
+$string['setting:reminder_2_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:reminder_3'] = 'Reminder 1';
+$string['setting:reminder_3_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:stream'] = 'Streaming enabled';
+$string['setting:stream_desc'] = 'If disabled the webcast don\'t shows a video player';
+$string['setting:chat'] = 'Chat enabled';
+$string['setting:chat_desc'] = 'If disabled the webcast don\'t shows a chat room';
+$string['setting:filesharing'] = 'Filesharing enabled';
+$string['setting:filesharing_desc'] = 'If disabled nobody can share files in the file drop zone.';
+$string['setting:filesharing_student'] = 'Student filesharing';
+$string['setting:filesharing_student_desc'] = 'Allow students to share there files';
+$string['setting:showuserpicture'] = 'Show user avatar';
+$string['setting:showuserpicture_desc'] = 'Show a avatar of user in the chat';

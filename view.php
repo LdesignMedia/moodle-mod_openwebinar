@@ -27,20 +27,20 @@
  * @author    Luuk Verhoeven
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__) . '/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
+$n = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('webcast', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $webcast  = $DB->get_record('webcast', array('id' => $cm->instance), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('webcast', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $webcast = $DB->get_record('webcast', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($n) {
-    $webcast  = $DB->get_record('webcast', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $webcast->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
+    $webcast = $DB->get_record('webcast', array('id' => $n), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $webcast->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
@@ -56,17 +56,21 @@ $event->add_record_snapshot($PAGE->cm->modname, $webcast);
 $event->trigger();
 
 // Print the page header.
-
 $PAGE->set_url('/mod/webcast/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($webcast->name));
 $PAGE->set_heading(format_string($course->fullname));
+$PAGE->add_body_class('moodlefreak-webcast');
 
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('webcast-'.$somevar);
- */
+$PAGE->set_pagelayout('base');
+
+// Permissions
+$permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
+
+// Renderer
+$renderer = $PAGE->get_renderer('mod_webcast');
+
+// Get status
+$status = \mod_webcast\helper::get_webcast_status($webcast);
 
 // Output starts here.
 echo $OUTPUT->header();
@@ -76,8 +80,36 @@ if ($webcast->intro) {
     echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
 }
 
-// Replace the following lines with you own code.
-echo $OUTPUT->heading('Yay! It works!');
+echo $OUTPUT->heading(format_string($webcast->name));
+
+echo \mod_webcast\helper::generate_key();
+
+/**
+ * $completion=new completion_info($course);
+ * $completion->set_module_viewed($cm);
+ */
+switch ($status) {
+
+    case \mod_webcast\helper::WEBCAST_LIVE:
+        echo $renderer->view_page_not_started_room($webcast);
+        break;
+
+    case \mod_webcast\helper::WEBCAST_CLOSED:
+    case \mod_webcast\helper::WEBCAST_BROADCASTED:
+
+        if($permissions->history){
+            echo $renderer->view_page_history_room($webcast);
+        }else{
+            echo $renderer->view_page_ended_message($webcast);
+        }
+        break;
+
+
+    default:
+        echo $renderer->view_page_not_started_room($webcast);
+        break;
+
+}
 
 // Finish the page.
 echo $OUTPUT->footer();

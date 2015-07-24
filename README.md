@@ -27,7 +27,6 @@ Installation
 3.  go to Site Administrator > Notification
 4.  install the plugin
 
-
 Changelog
 ---------------
 

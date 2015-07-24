@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_newmodule_activity_task class
+ * Defines backup_webcast_activity_task class
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -26,17 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/newmodule/backup/moodle2/backup_newmodule_stepslib.php');
+require_once($CFG->dirroot . '/mod/webcast/backup/moodle2/backup_webcast_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the newmodule instance
- *
- * @package   mod_newmodule
- * @category  backup
- * @copyright 2015 Your Name <your@email.adress>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Provides the steps to perform one complete backup of the webcast instance
  */
-class backup_newmodule_activity_task extends backup_activity_task {
+class backup_webcast_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity
@@ -45,10 +40,10 @@ class backup_newmodule_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the newmodule.xml file
+     * Defines a backup step to store the instance data in the webcast.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_newmodule_activity_structure_step('newmodule_structure', 'newmodule.xml'));
+        $this->add_step(new backup_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
     }
 
     /**
@@ -62,13 +57,13 @@ class backup_newmodule_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // Link to the list of newmodules.
-        $search = '/('.$base.'\/mod\/newmodule\/index.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@NEWMODULEINDEX*$2@$', $content);
+        // Link to the list of webcasts.
+        $search = '/('.$base.'\/mod\/webcast\/index.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@webcastINDEX*$2@$', $content);
 
-        // Link to newmodule view by moduleid.
-        $search = '/('.$base.'\/mod\/newmodule\/view.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@NEWMODULEVIEWBYID*$2@$', $content);
+        // Link to webcast view by moduleid.
+        $search = '/('.$base.'\/mod\/webcast\/view.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@webcastVIEWBYID*$2@$', $content);
 
         return $content;
     }

@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module newmodule
+ * Library of interface functions and constants for module webcast
  *
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
  *
- * All the newmodule specific functions, needed to implement all the module
+ * All the webcast specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
  *
@@ -61,61 +61,61 @@ function webcast_supports($feature) {
 }
 
 /**
- * Saves a new instance of the newmodule into the database
+ * Saves a new instance of the webcast into the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param stdClass $newmodule           Submitted data from the form in mod_form.php
+ * @param stdClass $webcast           Submitted data from the form in mod_form.php
  * @param mod_webcast_mod_form $mform The form instance itself (if needed)
  *
- * @return int The id of the newly inserted newmodule record
+ * @return int The id of the newly inserted webcast record
  */
-function webcast_add_instance(stdClass $newmodule, mod_webcast_mod_form $mform = null) {
+function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = null) {
     global $DB;
 
-    $newmodule->timecreated = time();
+    $webcast->timecreated = time();
 
     // You may have to add extra stuff in here.
 
-    $newmodule->id = $DB->insert_record('newmodule', $newmodule);
+    $webcast->id = $DB->insert_record('webcast', $webcast);
 
-    webcast_grade_item_update($newmodule);
+    webcast_grade_item_update($webcast);
 
-    return $newmodule->id;
+    return $webcast->id;
 }
 
 /**
- * Updates an instance of the newmodule in the database
+ * Updates an instance of the webcast in the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param stdClass $newmodule           An object from the form in mod_form.php
+ * @param stdClass $webcast           An object from the form in mod_form.php
  * @param mod_webcast_mod_form $mform The form instance itself (if needed)
  *
  * @return boolean Success/Fail
  */
-function webcast_update_instance(stdClass $newmodule, mod_webcast_mod_form $mform = null) {
+function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform = null) {
     global $DB;
 
-    $newmodule->timemodified = time();
-    $newmodule->id = $newmodule->instance;
+    $webcast->timemodified = time();
+    $webcast->id = $webcast->instance;
 
     // You may have to add extra stuff in here.
 
-    $result = $DB->update_record('newmodule', $newmodule);
+    $result = $DB->update_record('webcast', $webcast);
 
-    webcast_grade_item_update($newmodule);
+    webcast_grade_item_update($webcast);
 
     return $result;
 }
 
 /**
- * Removes an instance of the newmodule from the database
+ * Removes an instance of the webcast from the database
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
@@ -128,15 +128,15 @@ function webcast_update_instance(stdClass $newmodule, mod_webcast_mod_form $mfor
 function webcast_delete_instance($id) {
     global $DB;
 
-    if (!$newmodule = $DB->get_record('newmodule', array('id' => $id))) {
+    if (!$webcast = $DB->get_record('webcast', array('id' => $id))) {
         return false;
     }
 
     // Delete any dependent records here.
 
-    $DB->delete_records('newmodule', array('id' => $newmodule->id));
+    $DB->delete_records('webcast', array('id' => $webcast->id));
 
-    webcast_grade_item_delete($newmodule);
+    webcast_grade_item_delete($webcast);
 
     return true;
 }
@@ -152,11 +152,11 @@ function webcast_delete_instance($id) {
  * @param stdClass $course      The course record
  * @param stdClass $user        The user record
  * @param cm_info|stdClass $mod The course module info object or record
- * @param stdClass $newmodule   The newmodule instance record
+ * @param stdClass $webcast   The webcast instance record
  *
  * @return stdClass|null
  */
-function webcast_user_outline($course, $user, $mod, $newmodule) {
+function webcast_user_outline($course, $user, $mod, $webcast) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -174,14 +174,14 @@ function webcast_user_outline($course, $user, $mod, $newmodule) {
  * @param stdClass $course    the current course record
  * @param stdClass $user      the record of the user we are generating report for
  * @param cm_info $mod        course module info
- * @param stdClass $newmodule the module instance record
+ * @param stdClass $webcast the module instance record
  */
-function webcast_user_complete($course, $user, $mod, $newmodule) {
+function webcast_user_complete($course, $user, $mod, $webcast) {
 }
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in newmodule activities and print it out.
+ * that has occurred in webcast activities and print it out.
  *
  * @param stdClass $course    The course record
  * @param bool $viewfullnames Should we display full names
@@ -254,20 +254,20 @@ function webcast_get_extra_capabilities() {
 /* Gradebook API */
 
 /**
- * Is a given scale used by the instance of newmodule?
+ * Is a given scale used by the instance of webcast?
  *
- * This function returns if a scale is being used by one newmodule
+ * This function returns if a scale is being used by one webcast
  * if it has support for grading and scales.
  *
- * @param int $newmoduleid ID of an instance of this module
+ * @param int $webcastid ID of an instance of this module
  * @param int $scaleid     ID of the scale
  *
- * @return bool true if the scale is used by the given newmodule instance
+ * @return bool true if the scale is used by the given webcast instance
  */
-function webcast_scale_used($newmoduleid, $scaleid) {
+function webcast_scale_used($webcastid, $scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('newmodule', array('id' => $newmoduleid, 'grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('webcast', array('id' => $webcastid, 'grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -275,18 +275,18 @@ function webcast_scale_used($newmoduleid, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of newmodule.
+ * Checks if scale is being used by any instance of webcast.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param int $scaleid ID of the scale
  *
- * @return boolean true if the scale is used by any newmodule instance
+ * @return boolean true if the scale is used by any webcast instance
  */
 function webcast_scale_used_anywhere($scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('newmodule', array('grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('webcast', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -294,30 +294,30 @@ function webcast_scale_used_anywhere($scaleid) {
 }
 
 /**
- * Creates or updates grade item for the given newmodule instance
+ * Creates or updates grade item for the given webcast instance
  *
  * Needed by {@link grade_update_mod_grades()}.
  *
- * @param stdClass $newmodule instance object with extra cmidnumber and modname property
+ * @param stdClass $webcast instance object with extra cmidnumber and modname property
  * @param bool $reset         reset grades in the gradebook
  *
  * @return void
  */
-function webcast_grade_item_update(stdClass $newmodule, $reset = false) {
+function webcast_grade_item_update(stdClass $webcast, $reset = false) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
     $item = array();
-    $item['itemname'] = clean_param($newmodule->name, PARAM_NOTAGS);
+    $item['itemname'] = clean_param($webcast->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
 
-    if ($newmodule->grade > 0) {
+    if ($webcast->grade > 0) {
         $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax'] = $newmodule->grade;
+        $item['grademax'] = $webcast->grade;
         $item['grademin'] = 0;
-    } else if ($newmodule->grade < 0) {
+    } else if ($webcast->grade < 0) {
         $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid'] = -$newmodule->grade;
+        $item['scaleid'] = -$webcast->grade;
     } else {
         $item['gradetype'] = GRADE_TYPE_NONE;
     }
@@ -326,39 +326,39 @@ function webcast_grade_item_update(stdClass $newmodule, $reset = false) {
         $item['reset'] = true;
     }
 
-    grade_update('mod/newmodule', $newmodule->course, 'mod', 'newmodule', $newmodule->id, 0, null, $item);
+    grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, null, $item);
 }
 
 /**
- * Delete grade item for given newmodule instance
+ * Delete grade item for given webcast instance
  *
- * @param stdClass $newmodule instance object
+ * @param stdClass $webcast instance object
  *
  * @return grade_item
  */
-function webcast_grade_item_delete($newmodule) {
+function webcast_grade_item_delete($webcast) {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
-    return grade_update('mod/newmodule', $newmodule->course, 'mod', 'newmodule', $newmodule->id, 0, null, array('deleted' => 1));
+    return grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, null, array('deleted' => 1));
 }
 
 /**
- * Update newmodule grades in the gradebook
+ * Update webcast grades in the gradebook
  *
  * Needed by {@link grade_update_mod_grades()}.
  *
- * @param stdClass $newmodule instance object with extra cmidnumber and modname property
+ * @param stdClass $webcast instance object with extra cmidnumber and modname property
  * @param int $userid         update grade of specific user only, 0 means all participants
  */
-function webcast_update_grades(stdClass $newmodule, $userid = 0) {
+function webcast_update_grades(stdClass $webcast, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir . '/gradelib.php');
 
     // Populate array of grade objects indexed by userid.
     $grades = array();
 
-    grade_update('mod/newmodule', $newmodule->course, 'mod', 'newmodule', $newmodule->id, 0, $grades);
+    grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, $grades);
 }
 
 /* File API */
@@ -380,9 +380,9 @@ function webcast_get_file_areas($course, $cm, $context) {
 }
 
 /**
- * File browsing support for newmodule file areas
+ * File browsing support for webcast file areas
  *
- * @package  mod_newmodule
+ * @package  mod_webcast
  * @category files
  *
  * @param file_browser $browser
@@ -402,14 +402,14 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
 }
 
 /**
- * Serves the files from the newmodule file areas
+ * Serves the files from the webcast file areas
  *
- * @package  mod_newmodule
+ * @package  mod_webcast
  * @category files
  *
  * @param stdClass $course    the course object
  * @param stdClass $cm        the course module object
- * @param stdClass $context   the newmodule's context
+ * @param stdClass $context   the webcast's context
  * @param string $filearea    the name of the file area
  * @param array $args         extra arguments (itemid, path)
  * @param bool $forcedownload whether or not force download
@@ -430,13 +430,13 @@ function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $for
 /* Navigation API */
 
 /**
- * Extends the global navigation tree by adding newmodule nodes if there is a relevant content
+ * Extends the global navigation tree by adding webcast nodes if there is a relevant content
  *
  * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
  *
- * @param navigation_node $navref An object representing the navigation tree node of the newmodule module instance
+ * @param navigation_node $navref An object representing the navigation tree node of the webcast module instance
  * @param stdClass $course        current course record
- * @param stdClass $module        current newmodule instance record
+ * @param stdClass $module        current webcast instance record
  * @param cm_info $cm             course module information
  */
 function webcast_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
@@ -444,14 +444,14 @@ function webcast_extend_navigation(navigation_node $navref, stdClass $course, st
 }
 
 /**
- * Extends the settings navigation with the newmodule settings
+ * Extends the settings navigation with the webcast settings
  *
- * This function is called when the context for the page is a newmodule module. This is not called by AJAX
+ * This function is called when the context for the page is a webcast module. This is not called by AJAX
  * so it is safe to rely on the $PAGE.
  *
  * @param settings_navigation $settingsnav complete settings navigation tree
- * @param navigation_node $newmodulenode   newmodule administration node
+ * @param navigation_node $webcastnode   webcast administration node
  */
-function webcast_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $newmodulenode = null) {
+function webcast_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $webcastnode = null) {
     // TODO Delete this function and its docblock, or implement it.
 }

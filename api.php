@@ -15,24 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module newmodule
- *
- * All the newmodule specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
+ * API to handle post backs
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @package   mod_webcast
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
- */
-defined('MOODLE_INTERNAL') || die();
-/*
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- *function newmodule_do_something_useful(array $things) {
- *    return new stdClass();
- *}
- */
+ **/
+if (!defined('AJAX_SCRIPT')) {
+    define('AJAX_SCRIPT', true);
+}
+define('NO_DEBUG_DISPLAY', true);
+
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+
+$PAGE->set_url('/mod/webcast/api.php');
+$array = array('error' => "", 'status' => false);
+
+// Send headers.
+echo $OUTPUT->header();
+
+
+
+
+echo json_encode($array);
