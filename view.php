@@ -61,7 +61,13 @@ $PAGE->set_title(format_string($webcast->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-webcast');
 
-$PAGE->set_pagelayout('base');
+// Convert webcast data to JS
+$opts = (array) $webcast;
+unset($opts['intro'] , $opts['broadcastkey']);
+
+// Load JS base
+$PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
+$PAGE->requires->string_for_js('javascript_is_loading', 'mod_webcast');
 
 // Permissions
 $permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
@@ -76,13 +82,13 @@ $status = \mod_webcast\helper::get_webcast_status($webcast);
 echo $OUTPUT->header();
 
 // Conditions to show the intro can change to look for own settings or whatever.
-if ($webcast->intro) {
-    echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
-}
+// if ($webcast->intro) {
+   // echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
+//}
 
 echo $OUTPUT->heading(format_string($webcast->name));
 
-echo \mod_webcast\helper::generate_key();
+// echo \mod_webcast\helper::generate_key();
 
 /**
  * $completion=new completion_info($course);
@@ -91,7 +97,7 @@ echo \mod_webcast\helper::generate_key();
 switch ($status) {
 
     case \mod_webcast\helper::WEBCAST_LIVE:
-        echo $renderer->view_page_not_started_room($webcast);
+        echo $renderer->view_page_live_room($webcast);
         break;
 
     case \mod_webcast\helper::WEBCAST_CLOSED:

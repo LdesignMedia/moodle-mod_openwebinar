@@ -29,7 +29,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
  * Module instance settings form
@@ -42,6 +42,9 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  */
 class mod_webcast_mod_form extends moodleform_mod {
 
+    /** @var array options to be used with date_time_selector fields in the webcast. */
+    public static $datefieldoptions = array('optional' => false, 'step' => 1);
+
     /**
      * Defines forms elements
      */
@@ -49,6 +52,9 @@ class mod_webcast_mod_form extends moodleform_mod {
 
         global $CFG;
         $mform = $this->_form;
+
+        // Load default config
+        $config = get_config('webcast');
 
         // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -67,12 +73,60 @@ class mod_webcast_mod_form extends moodleform_mod {
         // Adding the standard "intro" and "introformat" fields.
         $this->add_intro_editor();
 
-        // Adding the rest of webcast settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'webcastsetting1', 'Your webcast fields go here. Replace me!');
+        $mform->addElement('header', 'timing', get_string('mod_setting:timing', 'webcast'));
 
-        $mform->addElement('header', 'webcastfieldset', get_string('webcastfieldset', 'webcast'));
-        $mform->addElement('static', 'label2', 'webcastsetting2', 'Your webcast fields go here. Replace me!');
+        // Open and close dates.
+        $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'webcast'), self::$datefieldoptions);
+        $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'webcast');
+
+        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'webcast'));
+        $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'webcast');
+
+        $mform->addElement('header', 'settings', get_string('mod_setting:settings', 'webcast'));
+        $mform->addElement('selectyesno', 'stream', get_string('setting:stream', 'webcast'));
+        $mform->setDefault('stream', $config->stream);
+        $mform->addElement('selectyesno', 'chat', get_string('setting:chat', 'webcast'));
+        $mform->setDefault('filesharing', $config->chat);
+        $mform->addElement('selectyesno', 'filesharing', get_string('setting:filesharing', 'webcast'));
+        $mform->setDefault('filesharing', $config->filesharing);
+        $mform->addElement('selectyesno', 'filesharing_student', get_string('setting:filesharing_student', 'webcast'));
+        $mform->setDefault('filesharing_student', $config->filesharing_student);
+        $mform->addElement('selectyesno', 'showuserpicture', get_string('setting:showuserpicture', 'webcast'));
+        $mform->setDefault('showuserpicture', $config->showuserpicture);
+        $mform->addElement('selectyesno', 'userlist', get_string('setting:userlist', 'webcast'));
+        $mform->setDefault('userlist', $config->userlist);
+
+        $mform->addElement('header', 'broadcasterheader', get_string('mod_setting:broadcaster', 'webcast'));
+        $this->add_webcast_user_selector();
+
+        // add broadcastkey
+        if (empty($this->current->instance)) {
+
+            $key = \mod_webcast\helper::generate_key();
+
+            $obj = new stdClass();
+            $obj->broadcastkey = $key;
+
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'webcast'), get_string('mod_setting:broadcastkey_desc', 'webcast', $obj));
+
+            // add value to the form
+            $mform->addElement('hidden', 'broadcastkey');
+            $mform->setType('broadcastkey', PARAM_TEXT);
+            $mform->setDefault('broadcastkey', $key);
+
+        } else {
+            $obj = new stdClass();
+            $obj->broadcastkey = $this->current->broadcastkey;
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'webcast'), get_string('mod_setting:broadcastkey_desc', 'webcast', $obj));
+        }
+
+        $mform->addElement('header', 'reminders', get_string('mod_setting:reminders', 'webcast'));
+        $mform->addElement('duration', 'reminder_1', get_string('setting:reminder_1', 'webcast'));
+        $mform->setDefault('reminder_1', $config->reminder_1);
+        $mform->addElement('duration', 'reminder_2', get_string('setting:reminder_2', 'webcast'));
+        $mform->setDefault('reminder_2', $config->reminder_2);
+        $mform->addElement('duration', 'reminder_3', get_string('setting:reminder_3', 'webcast'));
+        $mform->setDefault('reminder_3', $config->reminder_3);
 
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();
@@ -83,4 +137,33 @@ class mod_webcast_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
+
+    /**
+     * add a select element for a broadcaster
+     */
+    protected function add_webcast_user_selector() {
+        global $DB;
+        $array = array('' => get_string('mod_setting:make_a_selection', 'webcast'));
+        $rs = $DB->get_recordset_sql('SELECT {user}.id , {user}.firstname ,{user}.lastname
+                                        FROM {user}
+                                        WHERE {user}.deleted = 0
+                                        ORDER BY {user}.firstname ASC');
+        foreach ($rs as $user) {
+            $array[$user->id] = $user->firstname . " " . $user->lastname . " ({$user->id})";
+        }
+        $rs->close();
+        $this->_form->addElement('select', 'broadcaster', get_string('mod_setting:broadcaster', 'webcast'), $array);
+    }
+
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        // Make sure that time is yet to come
+        if(time() > $data['timeopen']){
+            $errors['timeopen'] = get_string('error:time_passed' , 'webcast');
+        }
+
+        return $errors;
+    }
+
 }

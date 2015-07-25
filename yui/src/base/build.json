@@ -1,0 +1,10 @@
+{
+  "name": "moodle-mod_webcast-base",
+  "builds": {
+    "moodle-mod_webcast-base": {
+      "jsfiles": [
+        "base.js"
+      ]
+    }
+  }
+}

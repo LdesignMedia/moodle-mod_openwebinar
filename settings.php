@@ -89,4 +89,8 @@ if ($ADMIN->fulltree) {
         get_string('setting:showuserpicture', 'webcast'),
         get_string('setting:showuserpicture_desc', 'webcast'), 1));
 
+    $settings->add(new admin_setting_configcheckbox('webcast/userlist',
+        get_string('setting:userlist', 'webcast'),
+        get_string('setting:userlist_desc', 'webcast'), 1));
+
 }

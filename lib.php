@@ -152,7 +152,7 @@ function webcast_delete_instance($id) {
  * @param stdClass $course      The course record
  * @param stdClass $user        The user record
  * @param cm_info|stdClass $mod The course module info object or record
- * @param stdClass $webcast   The webcast instance record
+ * @param stdClass $webcast     The webcast instance record
  *
  * @return stdClass|null
  */
@@ -171,12 +171,13 @@ function webcast_user_outline($course, $user, $mod, $webcast) {
  *
  * It is supposed to echo directly without returning a value.
  *
- * @param stdClass $course    the current course record
- * @param stdClass $user      the record of the user we are generating report for
- * @param cm_info $mod        course module info
+ * @param stdClass $course  the current course record
+ * @param stdClass $user    the record of the user we are generating report for
+ * @param cm_info $mod      course module info
  * @param stdClass $webcast the module instance record
  */
 function webcast_user_complete($course, $user, $mod, $webcast) {
+
 }
 
 /**
@@ -211,6 +212,7 @@ function webcast_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid      check for a particular group's activity only, defaults to 0 (all groups)
  */
 function webcast_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
+
 }
 
 /**
@@ -223,6 +225,7 @@ function webcast_get_recent_mod_activity(&$activities, &$index, $timestart, $cou
  * @param bool $viewfullnames display users' full names
  */
 function webcast_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+
 }
 
 /**
@@ -260,7 +263,7 @@ function webcast_get_extra_capabilities() {
  * if it has support for grading and scales.
  *
  * @param int $webcastid ID of an instance of this module
- * @param int $scaleid     ID of the scale
+ * @param int $scaleid   ID of the scale
  *
  * @return bool true if the scale is used by the given webcast instance
  */
@@ -299,7 +302,7 @@ function webcast_scale_used_anywhere($scaleid) {
  * Needed by {@link grade_update_mod_grades()}.
  *
  * @param stdClass $webcast instance object with extra cmidnumber and modname property
- * @param bool $reset         reset grades in the gradebook
+ * @param bool $reset       reset grades in the gradebook
  *
  * @return void
  */
@@ -349,7 +352,7 @@ function webcast_grade_item_delete($webcast) {
  * Needed by {@link grade_update_mod_grades()}.
  *
  * @param stdClass $webcast instance object with extra cmidnumber and modname property
- * @param int $userid         update grade of specific user only, 0 means all participants
+ * @param int $userid       update grade of specific user only, 0 means all participants
  */
 function webcast_update_grades(stdClass $webcast, $userid = 0) {
     global $CFG, $DB;
@@ -425,33 +428,4 @@ function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $for
     require_login($course, true, $cm);
 
     send_file_not_found();
-}
-
-/* Navigation API */
-
-/**
- * Extends the global navigation tree by adding webcast nodes if there is a relevant content
- *
- * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
- *
- * @param navigation_node $navref An object representing the navigation tree node of the webcast module instance
- * @param stdClass $course        current course record
- * @param stdClass $module        current webcast instance record
- * @param cm_info $cm             course module information
- */
-function webcast_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
-    // TODO Delete this function and its docblock, or implement it.
-}
-
-/**
- * Extends the settings navigation with the webcast settings
- *
- * This function is called when the context for the page is a webcast module. This is not called by AJAX
- * so it is safe to rely on the $PAGE.
- *
- * @param settings_navigation $settingsnav complete settings navigation tree
- * @param navigation_node $webcastnode   webcast administration node
- */
-function webcast_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $webcastnode = null) {
-    // TODO Delete this function and its docblock, or implement it.
 }

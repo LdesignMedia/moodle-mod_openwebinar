@@ -45,6 +45,11 @@ class mod_webcast_renderer extends plugin_renderer_base {
 
 
     }
+
+    protected function get_userlist() {
+
+
+    }
 /*
     protected function get_navbar($activename = '', $id = 0) {
 
@@ -82,23 +87,29 @@ class mod_webcast_renderer extends plugin_renderer_base {
      * Show the page with all the component
      */
     public function view_page_live_room($webcast) {
+        $html = __FUNCTION__ . '<br>';
 
+        return $html;
     }
 
     /**
      * Show a page when the broadcast will be starting
      */
     public function view_page_not_started_room($webcast) {
+        $html = __FUNCTION__ . '<br>';
 
 
+        return $html;
     }
 
     /**
      * Show the page with the history content
      */
     public function view_page_history_room($webcast) {
+        $html = __FUNCTION__ . '<br>';
 
 
+        return $html;
     }
 
 

@@ -45,6 +45,7 @@ $string['webcast'] = 'MoodleFreak Webcast';
 
 // ERRORS
 $string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
+$string['error:time_passed'] = 'Error:  Starttime has already been passed!';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';
@@ -68,7 +69,29 @@ $string['setting:chat'] = 'Chat enabled';
 $string['setting:chat_desc'] = 'If disabled the webcast don\'t shows a chat room';
 $string['setting:filesharing'] = 'Filesharing enabled';
 $string['setting:filesharing_desc'] = 'If disabled nobody can share files in the file drop zone.';
-$string['setting:filesharing_student'] = 'Student filesharing';
+$string['setting:filesharing_student'] = 'Allow student filesharing';
 $string['setting:filesharing_student_desc'] = 'Allow students to share there files';
 $string['setting:showuserpicture'] = 'Show user avatar';
 $string['setting:showuserpicture_desc'] = 'Show a avatar of user in the chat';
+$string['setting:userlist'] = 'Show userlist';
+$string['setting:userlist_desc'] = 'Show active users to the student';
+
+// Mod settings
+$string['mod_setting:settings'] = 'Webcast features';
+$string['mod_setting:timing'] = 'Webcast time';
+$string['mod_setting:timeopen'] = 'Start';
+$string['mod_setting:timeopenhelp'] = 'Start';
+$string['mod_setting:timeopenhelp_help'] = 'Start';
+
+$string['mod_setting:make_a_selection'] = 'Select a user';
+$string['mod_setting:broadcaster'] = 'Webcast broadcaster';
+$string['mod_setting:reminders'] = 'Webcast reminder messages';
+
+$string['mod_setting:duration'] = 'Duration';
+$string['mod_setting:durationhelp'] = 'Duration';
+$string['mod_setting:durationhelp_help'] = 'Duration';
+$string['mod_setting:broadcastkey'] = 'Broadcastkey';
+$string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
+
+
+

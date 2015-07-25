@@ -134,9 +134,8 @@ class helper {
 
         if (!empty($webcast->is_ended)) {
             return self::WEBCAST_BROADCASTED;
-        } else if (!empty($webcast->timeclose) && $now >= $webcast->timeclose) {
-            return self::WEBCAST_CLOSED;
-        } elseif ($now >= $webcast->timeopen && $now <= $webcast->timeclose) {
+        } elseif ($now >= $webcast->timeopen) {
+            print_r(date("d-m-Y H:i:s" , $webcast->timeopen));
             return self::WEBCAST_LIVE;
         }
 
