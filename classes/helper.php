@@ -135,7 +135,6 @@ class helper {
         if (!empty($webcast->is_ended)) {
             return self::WEBCAST_BROADCASTED;
         } elseif ($now >= $webcast->timeopen) {
-            print_r(date("d-m-Y H:i:s" , $webcast->timeopen));
             return self::WEBCAST_LIVE;
         }
 
@@ -144,12 +143,46 @@ class helper {
     }
 
     /**
-     * generate unique identifier
+     * get the user type of a user
+     *
+     * @param bool|false $user
+     * @param $permissions
      *
      * @return string
      */
+    public static function get_usertype($user = false , $permissions){
+
+        if($permissions->broadcaster){
+            return 'broadcaster';
+        }
+
+        if($permissions->teacher){
+            return 'teacher';
+        }
+
+        if($user->id > 1){
+            return 'student';
+        }
+
+        return 'guest';
+    }
+
+
+    /**
+     * generate unique identifier GUID
+     * @return string
+     */
     public static function generate_key() {
-        return md5(microtime() . rand());
+
+        if (function_exists('com_create_guid')) {
+            // windows based
+            return com_create_guid();
+        }
+
+        // Linux
+        mt_srand((double)microtime() * 10000);
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        return substr($charid, 0, 8) . '-' . substr($charid, 8, 4) . '-' . substr($charid, 12, 4) . '-' . substr($charid, 16, 4) . '-' . substr($charid, 20, 12);
     }
 
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Tasks
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -23,11 +23,14 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-
-defined('MOODLE_INTERNAL') || die();
-$plugin->release   = '1.0.0';
-$plugin->maturity = MATURITY_BETA;
-$plugin->version   = 2015072701;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014050800;        // Requires this Moodle version
-$plugin->component = 'mod_webcast';     // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
+$tasks = array(
+    array(
+        'classname' => 'mod_webcast\task\auto_close',
+        'blocking'  => 0,
+        'minute'    => '30',
+        'hour'      => '*',
+        'day'       => '*',
+        'dayofweek' => '*',
+        'month'     => '*'
+    ),
+);

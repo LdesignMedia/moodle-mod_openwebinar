@@ -62,12 +62,11 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-webcast');
 
 // Convert webcast data to JS
-$opts = (array) $webcast;
-unset($opts['intro'] , $opts['broadcastkey']);
+$opts = (array)$webcast;
+unset($opts['intro'], $opts['broadcastkey']);
 
 // Load JS base
 $PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
-$PAGE->requires->string_for_js('javascript_is_loading', 'mod_webcast');
 
 // Permissions
 $permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
@@ -83,10 +82,10 @@ echo $OUTPUT->header();
 
 // Conditions to show the intro can change to look for own settings or whatever.
 // if ($webcast->intro) {
-   // echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
+// echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
 //}
 
-echo $OUTPUT->heading(format_string($webcast->name));
+echo $OUTPUT->heading(format_string($webcast->name), 1, 'webcast-center');
 
 // echo \mod_webcast\helper::generate_key();
 
@@ -97,22 +96,30 @@ echo $OUTPUT->heading(format_string($webcast->name));
 switch ($status) {
 
     case \mod_webcast\helper::WEBCAST_LIVE:
-        echo $renderer->view_page_live_room($webcast);
+        echo $renderer->view_page_live_webcast($id, $webcast);
+
+        if ($webcast->broadcaster == $USER->id) {
+            echo $renderer->view_page_broadcaster_help($webcast);
+        }
         break;
 
     case \mod_webcast\helper::WEBCAST_CLOSED:
     case \mod_webcast\helper::WEBCAST_BROADCASTED:
 
-        if($permissions->history){
-            echo $renderer->view_page_history_room($webcast);
-        }else{
+        if ($permissions->history) {
+            echo $renderer->view_page_history_webcast($webcast);
+        } else {
             echo $renderer->view_page_ended_message($webcast);
         }
         break;
 
 
     default:
-        echo $renderer->view_page_not_started_room($webcast);
+        echo $renderer->view_page_not_started_webcast($webcast);
+
+        if ($webcast->broadcaster == $USER->id) {
+            echo $renderer->view_page_broadcaster_help($webcast);
+        }
         break;
 
 }

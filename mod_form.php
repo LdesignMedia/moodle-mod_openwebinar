@@ -79,8 +79,9 @@ class mod_webcast_mod_form extends moodleform_mod {
         $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'webcast'), self::$datefieldoptions);
         $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'webcast');
 
-        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'webcast'));
+        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'webcast') , array('defaultunit' => 3600 , 'optional' => false));
         $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'webcast');
+        $mform->setDefault('duration', 3600);
 
         $mform->addElement('header', 'settings', get_string('mod_setting:settings', 'webcast'));
         $mform->addElement('selectyesno', 'stream', get_string('setting:stream', 'webcast'));

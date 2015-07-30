@@ -1,0 +1,219 @@
+.webcast-center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.webcast-message {
+    margin: 10px 0;
+}
+
+.vjs-default-skin.vjs-paused .vjs-big-play-button {
+    display: none;
+}
+
+.vjs-default-skin.vjs-paused .vjs-control-bar {
+    display: block;
+}
+
+/* ROOM STYLING THIS STANDALONE */
+#page-mod-webcast-view_webcast {
+    background: #fff;
+    padding: 0;
+    margin: 0;
+}
+
+#page-mod-webcast-view_webcast #page {
+    padding: 0;
+    margin: 0;
+}
+
+#page-mod-webcast-view_webcast #webcast-stream-holder {
+    padding: 0 20px;
+}
+
+#page-mod-webcast-view_webcast header {
+    margin: 0 20px 10px 20px;
+    padding: 5px 20px;
+    background: #F2F2F2;
+}
+
+#page-mod-webcast-view_webcast header {
+    font-size: 16px;
+}
+
+#page-mod-webcast-view_webcast #webcast-left {
+    margin-right: 400px;
+}
+
+#page-mod-webcast-view_webcast #webcast-holder {
+    overflow: hidden;
+    min-height: 100%;
+}
+
+#page-mod-webcast-view_webcast #webcast-right {
+    width: 400px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background: #F2F2F2;
+    height: 100%;
+    min-height: 100%;
+    bottom: 0;
+    border-left: 1px solid #CCCCCC;
+}
+
+#page-mod-webcast-view_webcast .webcast-header {
+    height: 50px;
+    background: #E5E5E5;
+}
+
+#page-mod-webcast-view_webcast .webcast-header h2 {
+    margin: 0;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+#page-mod-webcast-view_webcast .webcast-header #webcast-usercounter {
+
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 380px;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li {
+    padding: 5px 10px;
+    border-bottom: 1px dashed #CCCCCC;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li img{
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li.webcast-broadcaster span{
+    font-weight: bold;
+    color:#000;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li.webcast-teacher span{
+    color:#4A4B4C;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li.webcast-student span{
+    color:#6C6E70;
+}
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li.webcast-guest span{
+    color:#B2B5B7;
+}
+
+
+#page-mod-webcast-view_webcast #webcast-userlist-holder ul li:last-child {
+    border-bottom: none;
+}
+
+/* Tiny Scrollbar */
+#page-mod-webcast-view_webcast .scroll {
+    width: 400px;
+    margin: 5px 0;
+}
+
+#page-mod-webcast-view_webcast .scroll .viewport {
+    width: 380px;
+    overflow: hidden;
+    position: relative;
+}
+
+#page-mod-webcast-view_webcast .scroll .overview {
+    list-style: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#page-mod-webcast-view_webcast .scroll .scrollbar {
+    background: transparent url([[pix:mod_webcast|bg-scrollbar-track-y]]) no-repeat 0 0;
+    position: relative;
+    background-position: 0 0;
+    float: right;
+    width: 15px;
+}
+
+#page-mod-webcast-view_webcast .scroll .track {
+    background: transparent url([[pix:mod_webcast|bg-scrollbar-trackend-y]]) no-repeat 0 100%;
+    height: 100%;
+    width: 13px;
+    position: relative;
+    padding: 0 1px;
+}
+
+#page-mod-webcast-view_webcast .scroll .thumb {
+    background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 100%;
+    height: 20px;
+    width: 25px;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: -5px;
+}
+
+#page-mod-webcast-view_webcast .scroll .thumb .end {
+    background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 0;
+    overflow: hidden;
+    height: 5px;
+    width: 25px;
+}
+
+#page-mod-webcast-view_webcast .scroll .disable {
+    display: none;
+}
+
+#page-mod-webcast-view_webcast .noSelect {
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+#page-mod-webcast-view_webcast #webcast-chatinput {
+    border-top: 1px solid #CCCCCC;
+    height: 60px;
+    background: #E5E5E5;
+    position: fixed;
+    bottom: 0;
+    padding: 5px 0;
+}
+
+#webcast-message{
+    border: none;
+    background: #fff;
+    margin: 0 5px;
+    border-radius: 0;
+    display: block;
+    box-shadow:none;
+    transition:none;
+    width:380px;
+}
+
+#webcast-send{
+    display: block;
+    cursor: pointer;
+    background:#1B5197;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    margin: 0 5px;
+    text-align: center;
+    color: #fff;
+}

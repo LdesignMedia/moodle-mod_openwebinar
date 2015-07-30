@@ -106,13 +106,4 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-
-    'mod/webcast:submit' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'student' => CAP_ALLOW
-        )
-    ),
 );

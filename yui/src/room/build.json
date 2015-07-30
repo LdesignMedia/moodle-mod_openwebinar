@@ -1,0 +1,10 @@
+{
+  "name": "moodle-mod_webcast-room",
+  "builds": {
+    "moodle-mod_webcast-room": {
+      "jsfiles": [
+        "room.js"
+      ]
+    }
+  }
+}

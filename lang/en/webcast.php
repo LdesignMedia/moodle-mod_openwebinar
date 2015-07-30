@@ -43,6 +43,13 @@ $string['webcastname'] = 'MoodleFreak Webcast';
 $string['webcastname_help'] = 'The name of the webcast';
 $string['webcast'] = 'MoodleFreak Webcast';
 
+// ACCESS
+$string['webcast:history'] = 'Allow viewing webcast history';
+$string['webcast:view'] = 'Allow viewing webcast';
+$string['webcast:addinstance'] = 'Add a webcast';
+$string['webcast:manager'] = 'Webcast manager';
+$string['webcast:teacher'] = 'Webcast teacher';
+
 // ERRORS
 $string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
 $string['error:time_passed'] = 'Error:  Starttime has already been passed!';
@@ -93,5 +100,13 @@ $string['mod_setting:durationhelp_help'] = 'Duration';
 $string['mod_setting:broadcastkey'] = 'Broadcastkey';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
+// Text
+$string['text:live_webcast'] = 'The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
+$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey: <b>{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a href="">here</a>.<br>
+Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
+// Buttons
+$string['btn:enter_live_webcast'] = 'Enter webcast';
 
+// Helper strings
+$string['dateformat'] = 'd-m-Y H:i';
 

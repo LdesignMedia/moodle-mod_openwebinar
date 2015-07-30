@@ -35,7 +35,7 @@ M.mod_webcast.base = {
     log          : function (val) {
 
         // check if we can show the log
-        if(!this.debugjs){
+        if (!this.options.debugjs) {
             return;
         }
 
@@ -56,6 +56,8 @@ M.mod_webcast.base = {
     init         : function (options) {
         "use strict";
         this.set_options(options);
+        // log the new options
+        this.log(this.options);
     },
 
     /**
@@ -85,7 +87,5 @@ M.mod_webcast.base = {
                 // skip all other types
             }
         }
-        // toggle options
-        this.log(this.options);
     }
 };

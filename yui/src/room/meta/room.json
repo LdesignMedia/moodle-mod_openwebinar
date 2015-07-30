@@ -1,0 +1,8 @@
+{
+  "moodle-mod_webcast-base": {
+    "requires": [
+      "base",
+      "node"
+    ]
+  }
+}

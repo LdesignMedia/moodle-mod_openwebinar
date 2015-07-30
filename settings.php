@@ -34,7 +34,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('webcast/streaming_server',
         get_string('setting:streaming_server', 'webcast'),
         get_string('setting:streaming_server_desc', 'webcast'),
-        '', PARAM_URL));
+        'your_domain.com/live/', PARAM_URL));
 
     // Socket.io server
     $settings->add(new admin_setting_configtext('webcast/chat_server',

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Close task for ended rooms that the operator forget to close
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -23,11 +23,26 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
+namespace mod_webcast\task;
 
-defined('MOODLE_INTERNAL') || die();
-$plugin->release   = '1.0.0';
-$plugin->maturity = MATURITY_BETA;
-$plugin->version   = 2015072701;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014050800;        // Requires this Moodle version
-$plugin->component = 'mod_webcast';     // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
+class auto_close extends \core\task\scheduled_task {
+
+    public function get_name() {
+        return get_string('task:auto_close', 'webcast');
+    }
+
+    /**
+     * Do the job.
+     * Throw exceptions on errors (the job will be retried).
+     */
+    public function execute() {
+
+        mtrace('webcast: ' . __CLASS__);
+
+        $cron = new \mod_webcast\cron();
+        $cron->auto_close();
+
+        mtrace(' ');
+        return true;
+    }
+}
