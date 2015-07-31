@@ -30,13 +30,31 @@ define('NO_DEBUG_DISPLAY', true);
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
+$action = optional_param('action' , false , PARAM_ALPHANUMEXT);
+$config = get_config('webcast');
+
 $PAGE->set_url('/mod/webcast/api.php');
-$array = array('error' => "", 'status' => false);
+
+// Response holder
+$response = array('error' => "", 'status' => false);
 
 // Send headers.
 echo $OUTPUT->header();
 
+if($action == 'chatlog'){
+    $data = (object) json_decode(file_get_contents('php://input'), true);
 
+    // validate its a valid request
+    if(!empty($data->shared_secret) && $config->shared_secret == $data->shared_secret){
+        $status = \mod_webcast\helper::save_messages($data);
+        if($status){
+            $response['status'] = true;
+        }else{
+            $response['error'] = 'failed saving';
+        }
+    }else{
+        $response['error'] = 'wrong shared_secret';
+    }
+}
 
-
-echo json_encode($array);
+echo json_encode($response);

@@ -7,8 +7,8 @@
  * @copyright 2015 MoodleFreak.com
  * @author Luuk Verhoeven
  **/
-/*jslint browser: true*/
-/*global  M, Y, videojs, console*/
+/*jslint browser: true, white: true, vars:true, regexp: true*/
+/*global  M, Y, videojs, console, io, tinyscrollbar*/
 M.mod_webcast = M.mod_webcast || {};
 M.mod_webcast.room = {
 
@@ -16,27 +16,28 @@ M.mod_webcast.room = {
      * Webcast variables
      */
     options: {
-        'debugjs'            : true,
-        'chat'               : false,
-        'duration'           : 0,
-        'timeopen'           : 0,
-        'cmid'               : 0,
-        'courseid'           : 0,
-        'webcastid'          : 0,
-        'filesharing'        : false,
-        'filesharing_student': false,
-        'is_ended'           : false,
-        'showuserpicture'    : false,
-        'stream'             : false,
-        'broadcaster'        : -999,
-        'broadcastkey'       : "broadcastkey",
-        'shared_secret'      : "",
-        'streaming_server'   : "",
-        'chat_server'        : "",
-        'fullname'           : "",
-        'usertype'           : "",
-        'userid'             : 0,
-        'userlist'           : false
+        debugjs            : true,
+        chat               : false,
+        duration           : 0,
+        timeopen           : 0,
+        cmid               : 0,
+        courseid           : 0,
+        webcastid          : 0,
+        filesharing        : false,
+        filesharing_student: false,
+        is_ended           : false,
+        showuserpicture    : false,
+        stream             : false,
+        broadcaster        : -999,
+        broadcastkey       : "broadcastkey",
+        shared_secret      : "",
+        streaming_server   : "",
+        chat_server        : "",
+        fullname           : "",
+        usertype           : "",
+        userid             : 0,
+        userlist           : false,
+        hls                : false
     },
 
     /**
@@ -57,7 +58,7 @@ M.mod_webcast.room = {
     /**
      * Bool to check if we are connected
      */
-    socket_is_connected: false,
+    socket_is_connected: null,
 
     /**
      * Videojs player
@@ -68,25 +69,28 @@ M.mod_webcast.room = {
      * Chat template
      */
     chatobject: {
-        'cmid'         : 0,
-        'courseid'     : 0,
-        'webcastid'    : 0,
-        'userid'       : 0,
-        'fullname'     : "",
-        'broadcastkey' : "",
-        'room'         : "_public",
-        'shared_secret': "",
-        'hostname'     : "",
-        'message'      : "",
-        'usertype'     : "guest"
+        cmid         : 0,
+        courseid     : 0,
+        webcastid    : 0,
+        userid       : 0,
+        fullname     : "",
+        broadcastkey : "",
+        room         : "_public",
+        shared_secret: "",
+        hostname     : "",
+        message      : "",
+        usertype     : "guest"
     },
 
     nodeholder: {
-        'chatlist'        : null,
-        'userlist'        : null,
-        'userlist_counter': null,
-        'sendbutton'      : null,
-        'message'         : null
+        chatlist         : null,
+        userlist         : null,
+        userlist_counter : null,
+        sendbutton       : null,
+        body             : null,
+        userlist_viewport: null,
+        chatlist_viewport: null,
+        message          : null
     },
     /**
      * Internal logging
@@ -96,7 +100,7 @@ M.mod_webcast.room = {
         "use strict";
 
         // check if we can show the log
-        if (!this.options.debugjs) {
+        if (!M.mod_webcast.room.options.debugjs) {
             return;
         }
         try {
@@ -116,11 +120,11 @@ M.mod_webcast.room = {
     init: function (options) {
         "use strict";
 
-        // Make sure its loaded
-        if (typeof videojs.options === 'undefined') {
-            this.log('wait..');
+        // Make sure videojs is loaded
+        if (!videojs) {
+            M.mod_webcast.room.log('wait..');
             setTimeout(function () {
-                this.init(options);
+                M.mod_webcast.room.init(options);
             }, 100);
         }
 
@@ -138,6 +142,19 @@ M.mod_webcast.room = {
      * Setup the main connection to the chat/socket server
      */
     connect_to_socket: function () {
+        "use strict";
+        var key;
+        // Set the template
+        for (key in this.chatobject) {
+            if (this.chatobject.hasOwnProperty(key)) {
+                if (this.options[key] !== undefined) {
+                    this.chatobject[key] = this.options[key];
+                }
+            }
+        }
+
+        // add hostname
+        this.chatobject.hostname = window.location.hostname;
         this.log('connect_to_socket');
 
         // Connect
@@ -148,12 +165,18 @@ M.mod_webcast.room = {
         this.nodeholder.message = Y.one('#webcast-message');
 
         this.socket.on('connect', function () {
+
+            if (M.mod_webcast.room.socket_is_connected === false) {
+                // we are reconnected
+                M.mod_webcast.room.local_message('reconnected');
+            }
+
             M.mod_webcast.room.log('isConnected');
             M.mod_webcast.room.socket_is_connected = true;
 
             // enable chatinput
             M.mod_webcast.room.nodeholder.message.removeAttribute('disabled');
-            M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('javascript:send', 'webcast'));
+            M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
         });
 
         // connection failed
@@ -170,16 +193,6 @@ M.mod_webcast.room = {
         this.socket.on('error', function () {
             M.mod_webcast.room.log('Socket.io reported a generic error');
         });
-
-        // Set the template
-        for (var k in this.chatobject) {
-            if (typeof  this.options[k] !== 'undefined') {
-                this.chatobject[k] = this.options[k];
-            }
-        }
-
-        // add hostname
-        this.chatobject.hostname = window.location.hostname;
     },
 
     /**
@@ -187,12 +200,13 @@ M.mod_webcast.room = {
      * @param message
      */
     socket_connection_failed: function (message) {
+        "use strict";
         M.mod_webcast.room.log(message);
         M.mod_webcast.room.socket_is_connected = false;
 
         // disable chat input
         M.mod_webcast.room.nodeholder.message.setAttribute('disabled', 'disabled');
-        M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('javascript:wait_on_connection', 'webcast', {}));
+        M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:wait_on_connection', 'webcast', {}));
 
         M.mod_webcast.room.local_message(message);
     },
@@ -201,8 +215,14 @@ M.mod_webcast.room = {
      * Build the room and add the components that are enabled
      */
     build_room: function () {
-
+        "use strict";
         this.log('build_room');
+
+        // Set body node
+        this.nodeholder.body = Y.one("body");
+
+        // Prevent scrollbars
+        this.nodeholder.body.setStyle('overflow', 'hidden');
 
         // Connect to socket
         this.connect_to_socket();
@@ -223,7 +243,7 @@ M.mod_webcast.room = {
         }
 
         // add file sharing
-        if ((this.options.filesharing_student && this.options.broadcaster == this.options.userid) ||
+        if ((this.options.filesharing_student && this.options.broadcaster === this.options.userid) ||
             this.options.filesharing_student) {
 
             this.add_fileshare();
@@ -244,8 +264,9 @@ M.mod_webcast.room = {
      * Add videojs component
      */
     add_video: function () {
+        "use strict";
         this.log('add_video');
-        this.log(typeof videojs);
+        var source = {};
 
         videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
 
@@ -260,25 +281,37 @@ M.mod_webcast.room = {
         var video = Y.Node.create('<video class="video-js vjs-default-skin"></video>').setAttrs(attributes);
         video.appendTo('#webcast-stream-holder');
 
-        // Set player settings
-        this.player = videojs('room_stream', {
-            techOrder: ['flash', 'html5'],
-            autoplay : true,
-            preload  : 'auto',
-            sources  : [{
+        // Note: HLS has about a 30 second delay.
+        if (this.options.hls) {
+            source = {
+                type: "application/x-mpegURL",
+                src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
+            };
+        } else {
+
+            // Default rtmp only work on flash based players :(
+            source = {
                 type: "rtmp/mp4",
                 src : "rtmp://" + this.options.streaming_server + '/' + this.options.broadcastkey
-            }]
+            };
+        }
+
+        // Set player settings
+        this.player = videojs('room_stream', {
+            techOrder: ['hls', 'html5', 'flash'],
+            autoplay : true,
+            preload  : 'auto',
+            sources  : [source]
         });
 
-        this.log("rtmp://" + this.options.streaming_server + '/' + this.options.broadcastkey);
+        this.log(source);
     },
 
     /**
      * Add chat component
      */
     add_chat: function () {
-
+        "use strict";
         this.log('add_chat');
 
         // add tinyscrollbar
@@ -315,7 +348,8 @@ M.mod_webcast.room = {
      * @returns {boolean}
      */
     chat_enter_listener: function (e) {
-        if (e.keyCode == 13) {
+        "use strict";
+        if (e.keyCode === 13) {
             M.mod_webcast.room.chat_send_message();
             return false;
         }
@@ -325,56 +359,58 @@ M.mod_webcast.room = {
      *
      */
     chat_add_chatrow: function (data) {
-        var chatline = '';
+        "use strict";
+
+        // Setting vars
+        var chatline = '', date = 0, me = false;
 
         // build the chatline and make sure nothing strange happens XSS!
         if (data.messagetype === 'default') {
 
-            var me = (data.userid == M.mod_webcast.room.options.userid);
+            me = (data.userid === M.mod_webcast.room.options.userid);
 
             // Start
             chatline += '<li class="webcast-chatline webcast-' + M.mod_webcast.room.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">';
 
             // Add avatar
+
+            // Fullname
+            chatline += '<div class="message-container">';
+
             if (M.mod_webcast.room.options.showuserpicture) {
                 chatline += '<span class="webcast-avatar"><img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(data.userid) + '/f1.jpg" /></span>';
             }
 
-            // Fullname
-            chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + (me ? M.util.get_string('javascript:me', 'webcast', {}) : M.mod_webcast.room.alpha_numeric(data.fullname)) + '</span>';
-
-            // Time
-            chatline += '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(data.timestamp) + '</span>';
-
-            // Message
-            chatline += '<span class="webcast-message">' + M.mod_webcast.room.escape_message(data.message) + '</span>';
+            chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + M.mod_webcast.room.alpha_numeric(data.fullname) + '</span>' +
+                '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                '<span class="webcast-message">' + M.mod_webcast.room.escape_message(data.message) + '</span>' +
+                '</div>' +
+                '</li>';
 
         } else if (data.messagetype === 'system') {
 
             // Messages generate by server
-            chatline += '<li class="webcast-chatline webcast-socketserver">';
+            chatline += '<li class="webcast-chatline webcast-socketserver">' +
+                '<div class="message-container">' +
+                '<span class="webcast-username">' + M.util.get_string('js:system_user', 'webcast', {}) + '</span>' +
+                '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                '<span class="webcast-message">' + M.util.get_string('js:' + data.message, 'webcast', {}) + '</span>' +
+                '</div>' +
+                '</li>';
 
-            // Time
-            chatline += '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(data.timestamp) + '</span>';
-
-            // Message
-            chatline += '<span class="webcast-message">' + M.util.get_string('javascript:' + data.message, 'webcast' , {}) + '</span>';
         } else if (data.messagetype === 'local') {
 
+            date = new Date().getTime() / 1000;
+
             // Messages generate by this script local
-            chatline += '<li class="webcast-chatline webcast-local">';
-
-            // Time
-            var date = new Date().getTime() / 1000;
-            chatline += '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(date) + '</span>';
-
-            // Message
-            chatline += '<span class="webcast-message">' + M.util.get_string('javascript:' + data.message, 'webcast', {}) + '</span>';
-
+            chatline += '<li class="webcast-chatline webcast-local">' +
+                '<div class="message-container">' +
+                '<span class="webcast-username noSelect">' + M.util.get_string('js:script_user', 'webcast', {}) + '</span>' +
+                '<span class="webcast-timestamp noSelect">' + M.mod_webcast.room.timestamp_to_humanreadable(date) + '</span>' +
+                '<span class="webcast-message noSelect">' + M.util.get_string('js:' + data.message, 'webcast', {}) + '</span>' +
+                '</div>' +
+                '</li>';
         }
-
-        // Ending
-        chatline += '</li>';
 
         // add row
         M.mod_webcast.room.nodeholder.chatlist.append(chatline);
@@ -388,7 +424,7 @@ M.mod_webcast.room = {
      * @param string
      */
     local_message : function (string) {
-
+        "use strict";
         var message = {
             'messagetype': 'local',
             'message'    : string
@@ -402,6 +438,7 @@ M.mod_webcast.room = {
      * @returns string
      */
     escape_message: function (message) {
+        "use strict";
         return Y.Node.create("<div/>").setHTML(message).get('text');
 
     },
@@ -412,24 +449,25 @@ M.mod_webcast.room = {
      * @returns {string}
      */
     timestamp_to_humanreadable: function (unix_timestamp) {
-
+        "use strict";
         var date = new Date(unix_timestamp * 1000);
         var hours = date.getHours();
         var minutes = "0" + date.getMinutes();
         var seconds = "0" + date.getSeconds();
 
-        return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+        return ((hours > 12) ? 'PM ' : 'AM ') + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
     },
 
     /**
      * Send a message to chat server
      */
     chat_send_message: function () {
-
+        "use strict";
         var message = String(M.mod_webcast.room.nodeholder.message.get('value'));
 
         // Prevent html tags [this will not prevent all more security on server side and when adding the message]
-        message = message.replace(/(<([^>]+)>)/ig, "");
+        var regex = new RegExp('/(<([^>]+)>)/ig');
+        message = message.replace(regex, "");
 
         M.mod_webcast.room.log('Send: ' + message);
         if (message.length === 0) {
@@ -449,10 +487,11 @@ M.mod_webcast.room = {
     },
 
     /**
-     * @todo make something nicer here write to a div
+     * Set a exception
      * @param errorstring
      */
     exception: function (errorstring) {
+        "use strict";
         M.mod_webcast.room.log('ERROR: ' + errorstring);
     },
 
@@ -462,6 +501,7 @@ M.mod_webcast.room = {
      * @returns string
      */
     alpha_numeric: function (string) {
+        "use strict";
         return string.replace(/^[a-z0-9]+$/i, "");
     },
 
@@ -469,7 +509,7 @@ M.mod_webcast.room = {
      * Show the userlist
      */
     add_userlist: function () {
-
+        "use strict";
         M.mod_webcast.room.log('add_userlist');
 
         // set userlist node prevent searching the dom again
@@ -485,38 +525,35 @@ M.mod_webcast.room = {
 
             M.mod_webcast.room.log(data);
 
-            // rebuild the list
-            var htmlbroadcaster = '';
-            var htmlteachers = '';
-            var htmlstudents = '';
-            var htmlguests = '';
+            // Setting vars
+            var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li;
 
-            for (var i in data.users) {
+            for (key in data.users) {
 
-                if (data.users.hasOwnProperty(i)) {
+                if (data.users.hasOwnProperty(key)) {
 
-                    var user = data.users[i];
-                    var element = '<li id="userlist-user-' + Number(user.userid) + '" class="webcast-' + M.mod_webcast.room.alpha_numeric(user.usertype) + ' noSelect">';
+                    userobject = data.users[key];
+                    li = '<li id="userlist-user-' + Number(userobject.userid) + '" class="webcast-' + M.mod_webcast.room.alpha_numeric(userobject.usertype) + ' noSelect">';
 
                     if (M.mod_webcast.room.options.showuserpicture) {
-                        element += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(user.userid) + '/f1.jpg" />';
+                        li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(userobject.userid) + '/f1.jpg" />';
                     }
 
-                    element += '<span>' + M.mod_webcast.room.alpha_numeric(user.fullname) + '</span>';
-                    element += '</li>';
+                    li += '<span>' + M.mod_webcast.room.alpha_numeric(userobject.fullname) + '</span>';
+                    li += '</li>';
 
-                    switch (user.usertype) {
+                    switch (userobject.usertype) {
                         case 'broadcaster':
-                            htmlbroadcaster += element;
+                            htmlbroadcaster += li;
                             break;
                         case 'teacher':
-                            htmlteachers += element;
+                            htmlteachers += li;
                             break;
                         case 'student':
-                            htmlstudents += element;
+                            htmlstudents += li;
                             break;
                         default:
-                            htmlguests += element;
+                            htmlguests += li;
                     }
                 }
             }
@@ -535,7 +572,7 @@ M.mod_webcast.room = {
      *
      */
     add_fileshare: function () {
-
+        "use strict";
         this.log('add_fileshare @todo');
     },
 
@@ -544,18 +581,31 @@ M.mod_webcast.room = {
      * Should be executed when the browser window resize
      */
     scale_room: function () {
-
-        var winWidth = Y.one("body").get("winWidth");
-        var winHeight = Y.one("body").get("winHeight");
+        "use strict";
+        var winWidth = this.nodeholder.body.get("winWidth");
+        var winHeight = this.nodeholder.body.get("winHeight");
         var wh;
+
+        // set elements one time
+        if (this.nodeholder.userlist_viewport === null) {
+            this.nodeholder.userlist_viewport = Y.one('#webcast-userlist .viewport');
+            this.nodeholder.chatlist_viewport = Y.one('#webcast-chatlist .viewport');
+        }
 
         M.mod_webcast.room.log('scale_room for : ' + winWidth + 'x' + winHeight);
 
         if (this.options.stream) {
 
             // scale video component
-            var videowidth = parseInt(Y.one('#webcast-left').getComputedStyle('width')) - 40;
+            var videowidth = winWidth - 401 - 40;
             var videoheight = Math.round((videowidth / 16) * 9);
+            var maxvideoheight = (winHeight - 70 - 80);
+
+            // Make sure everything fits the screen
+            if (videoheight > maxvideoheight) {
+                M.mod_webcast.room.log('Video to high we set it to: ' + maxvideoheight);
+                videoheight = maxvideoheight;
+            }
 
             Y.one('#room_stream').setStyles({
                 height: videoheight,
@@ -576,7 +626,7 @@ M.mod_webcast.room = {
             Y.one('#webcast-chatlist .viewport').setStyles({
                 height: wh * 0.7
             });
-            this.scrollbar_chatlist.update();
+            this.scrollbar_chatlist.update('bottom');
 
         } else if (this.options.stream && !this.options.chat) {
 
@@ -603,13 +653,13 @@ M.mod_webcast.room = {
      * @param options
      */
     set_options: function (options) {
-
-        for (var key in this.options) {
-
+        "use strict";
+        var key, vartype;
+        for (key in this.options) {
             if (this.options.hasOwnProperty(key) && options.hasOwnProperty(key)) {
 
                 // casting to prevent errors
-                var vartype = typeof this.options[key];
+                vartype = typeof this.options[key];
                 if (vartype === "boolean") {
                     this.options[key] = Boolean(options[key]);
                 }
@@ -631,7 +681,8 @@ M.mod_webcast.room = {
      * @param callback
      */
     add_event: function (object, type, callback) {
-        if (object === null || typeof(object) === 'undefined') {
+        "use strict";
+        if (object === null || object === undefined) {
             return;
         }
         if (object.addEventListener) {

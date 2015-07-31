@@ -109,4 +109,14 @@ $string['btn:enter_live_webcast'] = 'Enter webcast';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
+$string['users'] = 'Users';
+$string['message_placeholder'] = 'Type a message here....';
 
+// Js
+$string['js:send'] = 'Send';
+$string['js:wait_on_connection'] = 'Waiting';
+$string['js:joined'] = 'Welcome to chatroom.';
+$string['js:disconnect'] = 'You are disconnected.';
+$string['js:reconnected'] = 'You are reconnected.';
+$string['js:script_user'] = 'System message';
+$string['js:system_user'] = 'Chat server';

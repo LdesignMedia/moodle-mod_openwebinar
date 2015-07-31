@@ -79,14 +79,33 @@ $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
 unset($opts['intro']);
 
 // Load JS base
+
+// VIDEO Player
 $PAGE->requires->js('/mod/webcast/javascript/video-js/video.js', true);
-$PAGE->requires->js('/mod/webcast/javascript/tinyscrollbar.min.js', true);
-$PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
+
+// @todo Add config for this HLS mode
+//$PAGE->requires->js('/mod/webcast/javascript/video-js/videojs-media-sources.js', true);
+//$PAGE->requires->js('/mod/webcast/javascript/video-js/videojs.hls.min.js', true);
+
 $PAGE->requires->css('/mod/webcast/javascript/video-js/video-js.min.css');
+
+// Custom scrollbar
+$PAGE->requires->js('/mod/webcast/javascript/tinyscrollbar.min.js', true);
+
+// Socket.io script
+$PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
+
+//
 $PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init', array($opts));
 
-// $PAGE->requires->string_for_js('javascript_is_loading', 'mod_webcast');
-
+// Language strings
+ $PAGE->requires->string_for_js('js:send', 'webcast');
+ $PAGE->requires->string_for_js('js:wait_on_connection', 'webcast');
+ $PAGE->requires->string_for_js('js:joined', 'webcast');
+ $PAGE->requires->string_for_js('js:disconnect', 'webcast');
+ $PAGE->requires->string_for_js('js:reconnected', 'webcast');
+ $PAGE->requires->string_for_js('js:script_user', 'webcast');
+ $PAGE->requires->string_for_js('js:system_user', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -94,18 +113,21 @@ $renderer = $PAGE->get_renderer('mod_webcast');
 // Output starts here.
 echo $OUTPUT->header();
 ?>
-    <div id="webcast-holder">
+    <div id="webcast-holder" class="noSelect">
+        <section id="webcast-topbar">
+
+        </section>
         <section id="webcast-left">
             <div id="webcast-stream-holder"></div>
             <header>
-                <h1><?php echo format_string($webcast->name) ?></h1>
+                <h1><?php echo format_string($webcast->name) ?> <small><?php echo format_string($course->fullname)?></small></h1>
             </header>
             <div id="webcast-fileshare-holder"></div>
         </section>
         <section id="webcast-right">
             <div id="webcast-userlist-holder">
                 <div class="webcast-header">
-                    <h2>Users <span id="webcast-usercounter">(0)</span></h2>
+                    <h2><?php echo get_string('users' , 'webcast')?> <span id="webcast-usercounter">(0)</span></h2>
                 </div>
                 <div id="webcast-userlist" class="scroll">
                     <div class="scrollbar">
@@ -125,7 +147,10 @@ echo $OUTPUT->header();
                 </div>
             </div>
             <div id="webcast-chat-holder">
-                <div class="webcast-header"><h2>Chat</h2></div>
+                <div class="webcast-header">
+                    <span id="webcast-loadhistory" class="webcast-hidden">Load previous messages</span>
+                    <h2>Chat</h2>
+                </div>
                 <div id="webcast-chatlist" class="scroll">
                     <div class="scrollbar">
                         <div class="track">
@@ -137,24 +162,7 @@ echo $OUTPUT->header();
                     <div class="viewport">
                         <div class="overview">
                             <ul>
-                                <?php for ($i = 0; $i < 100; $i++): ?>
-                                    <li class="webcast-chatline">
-                                        <div>
-                                            <span class="webcast-avatar">
-                                                <img src="" alt="avatar"/>
-                                            </span>
-                                            <span class="webcast-username" data-userid="1">
-                                                Luuk Verhoeven
-                                            </span>
-                                            <span class="webcast-timestamp">
-                                                12:92
-                                            </span>
-                                            <span class="webcast-message">
-                                                Some funny text here so we can laugh
-                                            </span>
-                                        </div>
-                                    </li>
-                                <?php endfor ?>
+                                <!-- Holder -->
                             </ul>
                         </div>
                     </div>
@@ -162,8 +170,8 @@ echo $OUTPUT->header();
                 <div id="webcast-chatinput">
                     <div class="webcast-emoticons-dialoge"></div>
                     <div class="webcast-emoticon-icon"></div>
-                    <input type="text" disabled placeholder="Type your message here" name="message" id="webcast-message"/>
-                    <span id="webcast-send"><?php echo get_string('javascript:wait_on_connection' , 'webcast')?></span>
+                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder' , 'webcast')?>" name="message" id="webcast-message"/>
+                    <span id="webcast-send"><?php echo get_string('js:wait_on_connection' , 'webcast')?></span>
                 </div>
             </div>
         </section>

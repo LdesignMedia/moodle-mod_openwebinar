@@ -150,17 +150,17 @@ class helper {
      *
      * @return string
      */
-    public static function get_usertype($user = false , $permissions){
+    public static function get_usertype($user = false, $permissions) {
 
-        if($permissions->broadcaster){
+        if ($permissions->broadcaster) {
             return 'broadcaster';
         }
 
-        if($permissions->teacher){
+        if ($permissions->teacher) {
             return 'teacher';
         }
 
-        if($user->id > 1){
+        if ($user->id > 1) {
             return 'student';
         }
 
@@ -170,6 +170,7 @@ class helper {
 
     /**
      * generate unique identifier GUID
+     *
      * @return string
      */
     public static function generate_key() {
@@ -182,7 +183,37 @@ class helper {
         // Linux
         mt_srand((double)microtime() * 10000);
         $charid = strtoupper(md5(uniqid(rand(), true)));
+
         return substr($charid, 0, 8) . '-' . substr($charid, 8, 4) . '-' . substr($charid, 12, 4) . '-' . substr($charid, 16, 4) . '-' . substr($charid, 20, 12);
+    }
+
+    /**
+     * save messages to the database
+     */
+    public static function save_messages($data = false) {
+        global $DB;
+        $webcast = $DB->get_record('webcast' , array('broadcastkey' => str_replace('_public' , '' , $data->broadcastkey)) ,'*',  MUST_EXIST);
+
+        $now = time();
+        foreach($data->messages as $message){
+            
+            $message = (object) $message;
+
+            $obj = new \stdClass();
+            $obj->user_id = (int) $message->userid;
+            $obj->fullname =  $message->fullname;
+            $obj->messagetype=  $message->messagetype;
+            $obj->usertype =  $message->usertype;
+            $obj->webcast_id = $webcast->id;
+            $obj->course_id = $webcast->course;
+            $obj->message =  $message->message;
+            $obj->timestamp =  (int)$message->timestamp;
+            $obj->addedon =  $now;
+
+            $DB->insert_record('webcast_messages' , $obj);
+        }
+
+        return true;
     }
 
 }
