@@ -68,6 +68,14 @@ $permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
 // Convert webcast data to JS
 $opts = (array)$webcast;
 $opts['userid'] = $USER->id;
+
+// Set booleans
+$opts['userlist'] = ($webcast->userlist == 1);
+$opts['filesharing'] = ($webcast->filesharing == 1);
+$opts['stream'] = ($webcast->stream == 1);
+$opts['showuserpicture'] = ($webcast->showuserpicture == 1);
+$opts['chat'] = ($webcast->chat == 1);
+
 $opts['fullname'] = fullname($USER);
 $opts['cmid'] = $cm->id;
 $opts['courseid'] = $course->id;
@@ -99,13 +107,15 @@ $PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
 $PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init', array($opts));
 
 // Language strings
- $PAGE->requires->string_for_js('js:send', 'webcast');
- $PAGE->requires->string_for_js('js:wait_on_connection', 'webcast');
- $PAGE->requires->string_for_js('js:joined', 'webcast');
- $PAGE->requires->string_for_js('js:disconnect', 'webcast');
- $PAGE->requires->string_for_js('js:reconnected', 'webcast');
- $PAGE->requires->string_for_js('js:script_user', 'webcast');
- $PAGE->requires->string_for_js('js:system_user', 'webcast');
+$PAGE->requires->string_for_js('js:send', 'webcast');
+$PAGE->requires->string_for_js('js:wait_on_connection', 'webcast');
+$PAGE->requires->string_for_js('js:joined', 'webcast');
+$PAGE->requires->string_for_js('js:connecting', 'webcast');
+$PAGE->requires->string_for_js('js:disconnect', 'webcast');
+$PAGE->requires->string_for_js('js:reconnected', 'webcast');
+$PAGE->requires->string_for_js('js:script_user', 'webcast');
+$PAGE->requires->string_for_js('js:system_user', 'webcast');
+$PAGE->requires->string_for_js('js:warning_message_closing_window', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -115,19 +125,36 @@ echo $OUTPUT->header();
 ?>
     <div id="webcast-holder" class="noSelect">
         <section id="webcast-topbar">
+            <div id="webcast-topbar-left">
+                <div id="webcast-menu">
+                    <span class="arrow">&#x25BC;</span>
+                    <?php echo get_string('menu', 'webcast') ?>
+                </div>
+            </div>
+            <div id="webcast-topbar-right">
+                <?php if ($opts['showuserpicture']): ?>
+                    <img src="<?php echo $CFG->wwwroot ?>/user/pix.php?file=/<?php echo $USER->id ?>/f1.jpg"/>
+                <?php endif ?>
+                <span class="fullname"><?php echo fullname($USER) ?> </span>
+                <span class="usertype"><?php echo get_string($opts['usertype'], 'webcast') ?></span>
+            </div>
+        </section>
+        <section id="webcast-left-menu">
 
         </section>
         <section id="webcast-left">
             <div id="webcast-stream-holder"></div>
             <header>
-                <h1><?php echo format_string($webcast->name) ?> <small><?php echo format_string($course->fullname)?></small></h1>
+                <h1><?php echo format_string($webcast->name) ?>
+                    <small><?php echo format_string($course->fullname) ?></small>
+                </h1>
             </header>
             <div id="webcast-fileshare-holder"></div>
         </section>
         <section id="webcast-right">
             <div id="webcast-userlist-holder">
                 <div class="webcast-header">
-                    <h2><?php echo get_string('users' , 'webcast')?> <span id="webcast-usercounter">(0)</span></h2>
+                    <h2><?php echo get_string('users', 'webcast') ?> <span id="webcast-usercounter">(0)</span></h2>
                 </div>
                 <div id="webcast-userlist" class="scroll">
                     <div class="scrollbar">
@@ -149,7 +176,7 @@ echo $OUTPUT->header();
             <div id="webcast-chat-holder">
                 <div class="webcast-header">
                     <span id="webcast-loadhistory" class="webcast-hidden">Load previous messages</span>
-                    <h2>Chat</h2>
+                    <h2><?php echo get_string('chat', 'webcast') ?></h2>
                 </div>
                 <div id="webcast-chatlist" class="scroll">
                     <div class="scrollbar">
@@ -170,8 +197,8 @@ echo $OUTPUT->header();
                 <div id="webcast-chatinput">
                     <div class="webcast-emoticons-dialoge"></div>
                     <div class="webcast-emoticon-icon"></div>
-                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder' , 'webcast')?>" name="message" id="webcast-message"/>
-                    <span id="webcast-send"><?php echo get_string('js:wait_on_connection' , 'webcast')?></span>
+                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'webcast') ?>" name="message" id="webcast-message"/>
+                    <span id="webcast-send"><?php echo get_string('js:wait_on_connection', 'webcast') ?></span>
                 </div>
             </div>
         </section>

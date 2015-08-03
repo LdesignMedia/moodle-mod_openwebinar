@@ -110,6 +110,12 @@ $string['btn:enter_live_webcast'] = 'Enter webcast';
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Users';
+$string['chat'] = 'Chat';
+$string['menu'] = 'Menu';
+$string['broadcaster'] = 'Broadcaster';
+$string['student'] = 'Student';
+$string['guest'] = 'Guest';
+$string['Teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 
 // Js
@@ -120,3 +126,5 @@ $string['js:disconnect'] = 'You are disconnected.';
 $string['js:reconnected'] = 'You are reconnected.';
 $string['js:script_user'] = 'System message';
 $string['js:system_user'] = 'Chat server';
+$string['js:connecting'] = 'Connecting to the chat server, please be patient.';
+$string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the webcast?';

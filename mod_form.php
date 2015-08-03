@@ -160,9 +160,9 @@ class mod_webcast_mod_form extends moodleform_mod {
         $errors = parent::validation($data, $files);
 
         // Make sure that time is yet to come
-        if(time() > $data['timeopen']){
-            $errors['timeopen'] = get_string('error:time_passed' , 'webcast');
-        }
+//        if(time() > $data['timeopen']){
+//            $errors['timeopen'] = get_string('error:time_passed' , 'webcast');
+//        }
 
         return $errors;
     }

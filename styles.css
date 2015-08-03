@@ -43,6 +43,19 @@
     font-size: 16px;
 }
 
+#webcast-left-menu{
+    top:50px;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background: #F5F5F5;
+    z-index: 999;
+    border-right: 1px solid #CCCCCC;
+    position: fixed;
+    display: none;
+}
+
 #webcast-left {
     margin-right: 400px;
 }
@@ -57,7 +70,7 @@
     width: 400px;
     position: fixed;
     right: 0;
-    top: 0;
+    top: 50px;
     height: 100%;
     min-height: 100%;
     bottom: 0;
@@ -65,20 +78,19 @@
 }
 
 #page-mod-webcast-view_webcast .webcast-header {
-    height: 50px;
+    height: 35px;
     background: #F5F5F5;
+    line-height: 35px;
+    vertical-align: middle;
+    overflow: hidden;
+    border-bottom: 1px solid #CCCCCC;
 }
 
 #page-mod-webcast-view_webcast .webcast-header h2 {
     margin: 0;
-    padding: 5px 10px;
+    padding: 0 10px;
     font-size: 14px;
     font-weight: bold;
-    border-bottom: 1px solid #CCCCCC;
-}
-
-#page-mod-webcast-view_webcast .webcast-header #webcast-usercounter {
-
 }
 
 #webcast-userlist-holder ul {
@@ -127,7 +139,7 @@
 #webcast-loadhistory{
     position: absolute;
     right: 0;
-    margin: 25px 5px 0 0;
+    margin: 0 5px 0 0;
     cursor: pointer;
     color: #2DCB73;
 
@@ -238,6 +250,55 @@
     width: 100%;
     position: fixed;
     top:0;
+}
+#webcast-topbar-right{
+    float: right;
+    color:#fff;
+    width: 239px;
+    text-align: right;
+    cursor: pointer;
+}
+#webcast-topbar-right img{
+    width: 50px;
+    height: 50px;
+    margin-top: 0;
+    position: absolute;
+    right: 0;
+}
+
+#webcast-topbar-right .fullname{
+   position: absolute;
+    right: 65px;
+    margin-top: 6px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+#webcast-topbar-right .usertype{
+    position: absolute;
+    right: 65px;
+    margin-top: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+#webcast-topbar-left{
+    position: absolute;
+    color:#fff;
+    height: 50px;
+    line-height: 50px;
+
+
+}
+#webcast-topbar-left .arrow{
+    margin-right: 5px;
+    font-size: 14px;
+    width: 30px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    float: left;
+    background: #23355B;
+    cursor:pointer;
+
 }
 
 /* Tiny Scrollbar */
