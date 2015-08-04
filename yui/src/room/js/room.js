@@ -34,6 +34,8 @@ M.mod_webcast.room = {
         streaming_server   : "",
         chat_server        : "",
         fullname           : "",
+        sesskey            : "",
+        ajax_path          : "",
         usertype           : "",
         userid             : 0,
         userlist           : false,
@@ -85,7 +87,8 @@ M.mod_webcast.room = {
     nodeholder: {
         chatlist         : null,
         userlist         : null,
-        topmenu         : null,
+        topmenu          : null,
+        leftsidemenu     : null,
         loadhistorybtn   : null,
         userlist_counter : null,
         sendbutton       : null,
@@ -247,12 +250,62 @@ M.mod_webcast.room = {
                     usertype: 'local',
                     message : 'chat_commands'
                 });
-
         }
 
         // Reset the input
         M.mod_webcast.room.chatobject.message = "";
         M.mod_webcast.room.nodeholder.message.set('value', "");
+    },
+
+    /**
+     * Load previous chat data from DB and merge with the socket output
+     */
+    load_chat_history: function () {
+        "use strict";
+
+        Y.io(M.mod_webcast.room.options.ajax_path, {
+            method : 'GET',
+            data   : {
+                'sesskey': M.mod_webcast.room.options.sesskey,
+                'action' : "load_public_history",
+                'extra1' : M.mod_webcast.room.options.courseid,
+                'extra2' : M.mod_webcast.room.options.webcastid
+            },
+            on     : {
+                success: function (id, o) {
+                    M.mod_webcast.room.log("load_chat_history id:" + id);
+                    try {
+                        var response = Y.JSON.parse(o.responseText);
+                        M.mod_webcast.room.log(response);
+                        if (response.status) {
+                            // remove the button
+                            M.mod_webcast.room.nodeholder.loadhistorybtn.remove();
+                            var messageobj = {};
+                            for(var i in response.messages){
+                                if(response.messages.hasOwnProperty(i)){
+
+                                    // @todo merge with the socket buffer
+
+                                    messageobj = response.messages[i];
+                                    M.mod_webcast.room.chat_add_chatrow(messageobj , 'prepend');
+                                    M.mod_webcast.room.log(messageobj);
+                                }
+                            }
+                        }
+
+                    } catch (e) {
+                        // exception
+                        M.mod_webcast.room.log.log(e);
+                    }
+                },
+                failure: function () {
+                    M.mod_webcast.room.log.log("Async call failed!");
+                }
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     },
 
     /**
@@ -262,9 +315,23 @@ M.mod_webcast.room = {
         "use strict";
         this.log('build_room');
 
-        // Set body node
+        // Set some important nodes to this class reference
         this.nodeholder.body = Y.one("body");
         this.nodeholder.topmenu = Y.one("#webcast-topbar-left");
+        this.nodeholder.leftsidemenu = Y.one("#webcast-left-menu");
+
+        // Show a menu when clicking on topmenu
+        this.nodeholder.topmenu.on('click', function () {
+            M.mod_webcast.room.log('Open topmenu');
+            M.mod_webcast.room.nodeholder.leftsidemenu.toggleView();
+
+            // Menu arrow
+            if (M.mod_webcast.room.nodeholder.leftsidemenu.get('hidden')) {
+                Y.one("#webcast-topbar-left .arrow").setHTML('&#x25BA;');
+            } else {
+                Y.one("#webcast-topbar-left .arrow").setHTML('&#x25C4;');
+            }
+        });
 
         // Prevent scrollbars
         this.nodeholder.body.setStyle('overflow', 'hidden');
@@ -393,7 +460,7 @@ M.mod_webcast.room = {
         });
 
         this.nodeholder.loadhistorybtn.on('click', function () {
-            M.mod_webcast.room.loadhistory();
+            M.mod_webcast.room.load_chat_history();
         });
 
         // Workaround for enterkey YUI event not working here..
@@ -416,7 +483,7 @@ M.mod_webcast.room = {
     /**
      *
      */
-    chat_add_chatrow: function (data) {
+    chat_add_chatrow: function (data , direction) {
         "use strict";
 
         M.mod_webcast.room.log('chat_add_chatrow');
@@ -472,8 +539,13 @@ M.mod_webcast.room = {
                 '</li>';
         }
 
-        // add row
-        M.mod_webcast.room.nodeholder.chatlist.append(chatline);
+        // Inserts the content as the firstChild of the node.
+        if(direction == 'prepend'){
+            M.mod_webcast.room.nodeholder.chatlist.prepend(chatline);
+        }else{
+            M.mod_webcast.room.nodeholder.chatlist.append(chatline);
+        }
+
 
         // scroll to bottom
         M.mod_webcast.room.scrollbar_chatlist.update('bottom');
@@ -715,7 +787,6 @@ M.mod_webcast.room = {
             });
         }
 
-
         // scale userlist and chat
         if (this.options.userlist && this.options.chat) {
             // 30% 70% - 200 for the other components
@@ -743,7 +814,7 @@ M.mod_webcast.room = {
         } else {
 
             // only userlist
-            wh = winHeight  - ((36) + 50 + 100);
+            wh = winHeight - ((36) + 50 + 100);
             Y.one('#webcast-userlist .viewport').setStyles({
                 height: wh
             });

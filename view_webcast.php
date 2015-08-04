@@ -84,6 +84,8 @@ $opts['streaming_server'] = $config->streaming_server;
 $opts['chat_server'] = $config->chat_server;
 $opts['shared_secret'] = $config->shared_secret;
 $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
+$opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
+$opts['sesskey'] =  sesskey();
 unset($opts['intro']);
 
 // Load JS base
@@ -127,7 +129,7 @@ echo $OUTPUT->header();
         <section id="webcast-topbar">
             <div id="webcast-topbar-left">
                 <div id="webcast-menu">
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">&#x25BA;</span>
                     <?php echo get_string('menu', 'webcast') ?>
                 </div>
             </div>
@@ -139,8 +141,7 @@ echo $OUTPUT->header();
                 <span class="usertype"><?php echo get_string($opts['usertype'], 'webcast') ?></span>
             </div>
         </section>
-        <section id="webcast-left-menu">
-
+        <section id="webcast-left-menu" style="display: none">
         </section>
         <section id="webcast-left">
             <div id="webcast-stream-holder"></div>
@@ -196,7 +197,10 @@ echo $OUTPUT->header();
                 </div>
                 <div id="webcast-chatinput">
                     <div class="webcast-emoticons-dialoge"></div>
-                    <div class="webcast-emoticon-icon"></div>
+                    <?php if ($opts['filesharing']): ?>
+                        <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
+                    <?php endif ?>
+                    <span id="webcast-emoticon-icon"></span>
                     <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'webcast') ?>" name="message" id="webcast-message"/>
                     <span id="webcast-send"><?php echo get_string('js:wait_on_connection', 'webcast') ?></span>
                 </div>
