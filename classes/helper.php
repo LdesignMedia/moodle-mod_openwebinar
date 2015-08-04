@@ -200,7 +200,7 @@ class helper {
             $message = (object) $message;
 
             $obj = new \stdClass();
-            $obj->user_id = (int) $message->userid;
+            $obj->userid = (int) $message->userid;
             $obj->fullname =  $message->fullname;
             $obj->messagetype=  $message->messagetype;
             $obj->usertype =  $message->usertype;

@@ -112,6 +112,7 @@ $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Users';
 $string['chat'] = 'Chat';
 $string['menu'] = 'Menu';
+$string['filemanager'] = 'Files Upload / Download';
 $string['broadcaster'] = 'Broadcaster';
 $string['student'] = 'Student';
 $string['guest'] = 'Guest';

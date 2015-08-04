@@ -28,9 +28,19 @@ if (!defined('AJAX_SCRIPT')) {
 }
 define('NO_DEBUG_DISPLAY', true);
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-$action = optional_param('action' , false , PARAM_ALPHANUMEXT);
+// Action we are performing
+$action = optional_param('action', false, PARAM_ALPHANUMEXT);
+
+// Extra validation
+$sesskey = optional_param('sesskey',false, PARAM_RAW);
+
+// Parameters for the action
+$extra1 = optional_param('extra1', false, PARAM_TEXT);
+$extra2 = optional_param('extra2', false, PARAM_TEXT);
+
+// Load plugin config
 $config = get_config('webcast');
 
 $PAGE->set_url('/mod/webcast/api.php');
@@ -38,23 +48,34 @@ $PAGE->set_url('/mod/webcast/api.php');
 // Response holder
 $response = array('error' => "", 'status' => false);
 
-// Send headers.
-echo $OUTPUT->header();
-
-if($action == 'chatlog'){
-    $data = (object) json_decode(file_get_contents('php://input'), true);
+if ($action == 'chatlog') {
+    $data = (object)json_decode(file_get_contents('php://input'), true);
 
     // validate its a valid request
-    if(!empty($data->shared_secret) && $config->shared_secret == $data->shared_secret){
+    if (!empty($data->shared_secret) && $config->shared_secret == $data->shared_secret) {
         $status = \mod_webcast\helper::save_messages($data);
-        if($status){
+        if ($status) {
             $response['status'] = true;
-        }else{
+        } else {
             $response['error'] = 'failed saving';
         }
-    }else{
+    } else {
         $response['error'] = 'wrong shared_secret';
     }
+} elseif ($action == 'load_public_history' && confirm_sesskey($sesskey)) {
+
+    // Check if user can enter the course
+    $course = $DB->get_record('course', array('id' => $extra1), '*', MUST_EXIST);
+    require_course_login($course);
+
+    // get the webcast
+    $webcast = $DB->get_record('webcast' , array('id' => $extra2), '*', MUST_EXIST);
+
+    // load the messages
+    $response['messages'] = $DB->get_records('webcast_messages' , array('webcast_id' => $webcast->id) , 'timestamp DESC');
+    $response['status'] = true;
 }
 
+// Send headers.
+echo $OUTPUT->header();
 echo json_encode($response);
