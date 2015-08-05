@@ -99,6 +99,9 @@ $PAGE->requires->js('/mod/webcast/javascript/video-js/video.js', true);
 
 $PAGE->requires->css('/mod/webcast/javascript/video-js/video-js.min.css');
 
+// Emoticons
+$PAGE->requires->css('/mod/webcast/stylesheet/emoticons.css');
+
 // Custom scrollbar
 $PAGE->requires->js('/mod/webcast/javascript/tinyscrollbar.min.js', true);
 

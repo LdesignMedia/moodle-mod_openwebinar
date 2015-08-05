@@ -72,7 +72,7 @@ if ($action == 'chatlog') {
     $webcast = $DB->get_record('webcast' , array('id' => $extra2), '*', MUST_EXIST);
 
     // load the messages
-    $response['messages'] = $DB->get_records('webcast_messages' , array('webcast_id' => $webcast->id) , 'timestamp DESC');
+    $response['messages'] = $DB->get_records('webcast_messages' , array('webcast_id' => $webcast->id) , 'timestamp ASC');
     $response['status'] = true;
 }
 

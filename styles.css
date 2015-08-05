@@ -191,6 +191,8 @@
     color: #5484BC;
     float: right;
     font-size: 10px;
+    text-align: right;
+    line-height: 10px;
 }
 
 #webcast-chatlist .webcast-message {
