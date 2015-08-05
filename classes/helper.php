@@ -188,32 +188,80 @@ class helper {
     }
 
     /**
-     * save messages to the database
+     * save a  messages to the database
+     * this will be done by the API that is called through the socket server
+     *
+     * @param bool|false $data
+     *
+     * @return bool
      */
     public static function save_messages($data = false) {
         global $DB;
-        $webcast = $DB->get_record('webcast' , array('broadcastkey' => str_replace('_public' , '' , $data->broadcastkey)) ,'*',  MUST_EXIST);
+        $webcast = $DB->get_record('webcast', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*', MUST_EXIST);
 
         $now = time();
-        foreach($data->messages as $message){
-            
-            $message = (object) $message;
+        foreach ($data->messages as $message) {
+
+            $message = (object)$message;
 
             $obj = new \stdClass();
-            $obj->userid = (int) $message->userid;
-            $obj->fullname =  $message->fullname;
-            $obj->messagetype=  $message->messagetype;
-            $obj->usertype =  $message->usertype;
+            $obj->userid = (int)$message->userid;
+            $obj->fullname = $message->fullname;
+            $obj->messagetype = $message->messagetype;
+            $obj->usertype = $message->usertype;
             $obj->webcast_id = $webcast->id;
             $obj->course_id = $webcast->course;
-            $obj->message =  $message->message;
-            $obj->timestamp =  (int)$message->timestamp;
-            $obj->addedon =  $now;
+            $obj->message = $message->message;
+            $obj->timestamp = (int)$message->timestamp;
+            $obj->addedon = $now;
 
-            $DB->insert_record('webcast_messages' , $obj);
+            $DB->insert_record('webcast_messages', $obj);
         }
 
         return true;
     }
 
+    /**
+     * set_user_online_status in the room
+     *
+     * @param int $webcastid
+     *
+     * @return int the seconds active
+     */
+    public static function set_user_online_status($webcastid = 0) {
+        global $DB, $USER;
+
+        //  Guest no status will be saved for unregistered users
+        if ($USER->id <= 1) {
+            return 0;
+        }
+
+        $object = new \stdClass();
+
+        // check if record already exists
+        $row = $DB->get_record('webcast_userstatus', array('webcast_id' => $webcastid, 'userid' => $USER->id));
+
+        if (!$row) {
+            // set extra data
+            $object->webcast_id = $webcastid;
+            $object->userid = $USER->id;
+            $object->starttime = time();
+            $object->timer_seconds = 0;
+            $object->endtime = 0;
+            $object->useragent = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT', FILTER_SANITIZE_STRING);
+            $object->ip_address = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP);
+
+            $DB->insert_record('webcast_userstatus', $object);
+
+            return 0;
+        }
+
+        $newtime = $row->timer_seconds + 60;
+
+        $object->id = $row->id;
+        $object->timer_seconds = $newtime;
+        $DB->update_record('webcast_userstatus', $object);
+
+        return $newtime;
+    }
 }

@@ -74,6 +74,17 @@ if ($action == 'chatlog') {
     // load the messages
     $response['messages'] = $DB->get_records('webcast_messages' , array('webcast_id' => $webcast->id) , 'timestamp ASC');
     $response['status'] = true;
+} elseif($action == 'ping' && confirm_sesskey($sesskey)){
+
+    // Check if user can enter the course
+    $course = $DB->get_record('course', array('id' => $extra1), '*', MUST_EXIST);
+    require_course_login($course);
+
+    // get the webcast
+    $webcast = $DB->get_record('webcast' , array('id' => $extra2), '*', MUST_EXIST);
+
+    $response['online_minutes'] = \mod_webcast\helper::set_user_online_status($webcast->id);
+    $response['status'] = true;
 }
 
 // Send headers.

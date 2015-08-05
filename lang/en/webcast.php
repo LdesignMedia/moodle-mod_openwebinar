@@ -82,6 +82,15 @@ $string['setting:showuserpicture'] = 'Show user avatar';
 $string['setting:showuserpicture_desc'] = 'Show a avatar of user in the chat';
 $string['setting:userlist'] = 'Show userlist';
 $string['setting:userlist_desc'] = 'Show active users to the student';
+$string['setting:ajax_timer'] = 'Ajax based timing';
+$string['setting:ajax_timer_desc'] = 'This will send every 60 seconds a request to the server to update user his onlinetime. <br/>
+Warning with more then 25 users in the room this can give a high server load.';
+$string['setting:emoticons'] = 'Emoticons in chat';
+$string['setting:emoticons_desc'] = 'Shortcode will be converted to a emoticon. Also a dialog will be added where you can select a emoticon.';
+$string['setting:debugjs'] = 'Debug Javascript';
+$string['setting:debugjs_desc'] = 'Write js debug message to browser console. ';
+$string['setting:hls'] = 'HLS video stream';
+$string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
 
 // Mod settings
 $string['mod_setting:settings'] = 'Webcast features';
@@ -111,12 +120,14 @@ $string['btn:enter_live_webcast'] = 'Enter webcast';
 $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Users';
 $string['chat'] = 'Chat';
-$string['menu'] = 'Menu';
+$string['menu'] = 'Control panel';
+$string['live'] = 'Live';
+$string['offline'] = 'Offline (ended)';
 $string['filemanager'] = 'Files Upload / Download';
 $string['broadcaster'] = 'Broadcaster';
 $string['student'] = 'Student';
 $string['guest'] = 'Guest';
-$string['Teacher'] = 'Teacher';
+$string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 
 // Js
@@ -129,3 +140,4 @@ $string['js:script_user'] = 'System message';
 $string['js:system_user'] = 'Chat server';
 $string['js:connecting'] = 'Connecting to the chat server, please be patient.';
 $string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the webcast?';
+$string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the webcast.';

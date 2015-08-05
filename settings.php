@@ -93,4 +93,19 @@ if ($ADMIN->fulltree) {
         get_string('setting:userlist', 'webcast'),
         get_string('setting:userlist_desc', 'webcast'), 1));
 
+    $settings->add(new admin_setting_configcheckbox('webcast/ajax_timer',
+        get_string('setting:ajax_timer', 'webcast'),
+        get_string('setting:ajax_timer_desc', 'webcast'), 1));
+
+    $settings->add(new admin_setting_configcheckbox('webcast/emoticons',
+        get_string('setting:emoticons', 'webcast'),
+        get_string('setting:emoticons_desc', 'webcast'), 1));
+
+    $settings->add(new admin_setting_configcheckbox('webcast/debugjs',
+        get_string('setting:debugjs', 'webcast'),
+        get_string('setting:debugjs_desc', 'webcast'), 0));
+
+    $settings->add(new admin_setting_configcheckbox('webcast/hls',
+        get_string('setting:hls', 'webcast'),
+        get_string('setting:hls_desc', 'webcast'), 0));
 }

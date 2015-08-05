@@ -65,6 +65,9 @@ $config = get_config('webcast');
 // Permissions
 $permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
 
+// Set user online status
+\mod_webcast\helper::set_user_online_status($webcast->id);
+
 // Convert webcast data to JS
 $opts = (array)$webcast;
 $opts['userid'] = $USER->id;
@@ -75,8 +78,13 @@ $opts['filesharing'] = ($webcast->filesharing == 1);
 $opts['stream'] = ($webcast->stream == 1);
 $opts['showuserpicture'] = ($webcast->showuserpicture == 1);
 $opts['chat'] = ($webcast->chat == 1);
+$opts['is_ended'] = ($webcast->is_ended == 1);
+$opts['hls'] = ($webcast->hls == 1);
+$opts['ajax_timer'] = ($webcast->ajax_timer == 1);
+$opts['emoticons'] = ($webcast->emoticons == 1);
 
 $opts['fullname'] = fullname($USER);
+$opts['debugjs'] = $config->debugjs;
 $opts['cmid'] = $cm->id;
 $opts['courseid'] = $course->id;
 $opts['webcastid'] = $webcast->id;
@@ -85,7 +93,7 @@ $opts['chat_server'] = $config->chat_server;
 $opts['shared_secret'] = $config->shared_secret;
 $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
 $opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
-$opts['sesskey'] =  sesskey();
+$opts['sesskey'] = sesskey();
 unset($opts['intro']);
 
 // Load JS base
@@ -121,6 +129,7 @@ $PAGE->requires->string_for_js('js:reconnected', 'webcast');
 $PAGE->requires->string_for_js('js:script_user', 'webcast');
 $PAGE->requires->string_for_js('js:system_user', 'webcast');
 $PAGE->requires->string_for_js('js:warning_message_closing_window', 'webcast');
+$PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -145,10 +154,92 @@ echo $OUTPUT->header();
             </div>
         </section>
         <section id="webcast-left-menu" style="display: none">
+            <ul>
+                <li class="header">General</li>
+                <ul>
+                    <li>
+                        <div class="question">
+                            Show stream
+                        </div>
+                        <div class="switch">
+                            <input id="stream" class="webcast-toggle" type="checkbox" checked>
+                            <label for="stream"></label>
+                        </div>
+                    </li>
+                    <?php if ($opts['userlist']): ?>
+                        <li>
+                            <div class="question">
+                                Show userlist
+                            </div>
+                            <div class="switch">
+                                <input id="userlist" class="webcast-toggle" type="checkbox" checked>
+                                <label for="userlist"></label>
+                            </div>
+                        </li>
+                    <?php endif ?>
+                    <li>
+                        <div class="question">
+                            Chat sound
+                        </div>
+                        <div class="switch">
+                            <input id="sound" class="webcast-toggle" type="checkbox" checked>
+                            <label for="sound"></label>
+                        </div>
+                    </li>
+                </ul>
+                <?php if ($permissions->broadcaster): ?>
+                    <li class="header">Broadcaster</li>
+                    <ul>
+                        <li>
+                            <div class="question">
+                                Mute guests
+                            </div>
+                            <div class="switch">
+                                <input id="mute_guests" class="webcast-toggle" type="checkbox" checked>
+                                <label for="mute_guests"></label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="question">
+                                Mute students
+                            </div>
+                            <div class="switch">
+                                <input id="mute_students" class="webcast-toggle" type="checkbox">
+                                <label for="mute_students"></label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="question">
+                                Mute teachers
+                            </div>
+                            <div class="switch">
+                                <input id="mute_teachers" class="webcast-toggle" type="checkbox">
+                                <label for="mute_teachers"></label>
+                            </div>
+                        </li>
+                        <li>
+                            <p>This will end the live webcast.</p>
+                            <span class="webcast-button red" id="webcast-end">End the webcast</span>
+                        </li>
+                    </ul>
+                    <?php else: ?>
+                    <li class="header">Exit</li>
+                    <ul>
+                        <li>
+                            <span class="webcast-button red" id="webcast-leave">Leave webcast</span>
+                        </li>
+                    </ul>
+                <?php endif ?>
+            </ul>
         </section>
         <section id="webcast-left">
             <div id="webcast-stream-holder"></div>
             <header>
+                <?php if ($webcast->is_ended == 0): ?>
+                    <span id="webcast-status" class="online"><?php echo get_string('live', 'webcast') ?></span>
+                <?php else: ?>
+                    <span id="webcast-status" class="offline"><?php echo get_string('offline', 'webcast') ?></span>
+                <?php endif ?>
                 <h1><?php echo format_string($webcast->name) ?>
                     <small><?php echo format_string($course->fullname) ?></small>
                 </h1>
@@ -179,7 +270,7 @@ echo $OUTPUT->header();
             </div>
             <div id="webcast-chat-holder">
                 <div class="webcast-header">
-                    <span id="webcast-loadhistory" class="webcast-hidden">Load previous messages</span>
+                    <span id="webcast-loadhistory" class="webcast-hidden webcast-button">Load previous messages</span>
                     <h2><?php echo get_string('chat', 'webcast') ?></h2>
                 </div>
                 <div id="webcast-chatlist" class="scroll">

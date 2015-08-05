@@ -97,6 +97,15 @@ class mod_webcast_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno', 'userlist', get_string('setting:userlist', 'webcast'));
         $mform->setDefault('userlist', $config->userlist);
 
+        $mform->addElement('selectyesno', 'ajax_timer', get_string('setting:ajax_timer', 'webcast'));
+        $mform->setDefault('ajax_timer', $config->ajax_timer);
+
+        $mform->addElement('selectyesno', 'emoticons', get_string('setting:emoticons', 'webcast'));
+        $mform->setDefault('emoticons', $config->emoticons);
+
+        $mform->addElement('selectyesno', 'hls', get_string('setting:hls', 'webcast'));
+        $mform->setDefault('hls', $config->hls);
+
         $mform->addElement('header', 'broadcasterheader', get_string('mod_setting:broadcaster', 'webcast'));
         $this->add_webcast_user_selector();
 

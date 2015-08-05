@@ -3,9 +3,6 @@
     text-align: center;
 }
 
-.webcast-message {
-
-}
 
 .vjs-default-skin.vjs-paused .vjs-big-play-button {
     display: none;
@@ -49,10 +46,59 @@
     left: 0;
     width: 200px;
     height: 100%;
-    background: #F5F5F5;
+    background: #fff;
     z-index: 999;
     border-right: 1px solid #CCCCCC;
     position: fixed;
+}
+
+#webcast-left-menu ul{
+    margin: 0;
+    padding: 0;
+}
+
+#webcast-left-menu li{
+    margin: 0;
+    padding: 0;
+}
+
+#webcast-left-menu ul ul li{
+    padding: 10px;
+    border-bottom: 1px dashed #CCCCCC;
+    display: table;
+    width: 180px;
+}
+
+#webcast-left-menu ul ul li:last-child {
+    border-bottom: none;
+}
+
+.webcast-button{
+    cursor: pointer;
+    border-radius: 3px;
+    display: block;
+    background: #2DCB73;
+    font-size: 12px;
+    padding: 5px 10px;
+    line-height: normal;
+    text-align: center;
+    color: #fff;
+}
+
+.webcast-button.red{
+    background: #b94a48;
+    color: #fff;
+}
+
+#webcast-left-menu li.header{
+    border-bottom: 1px solid #CCCCCC;
+    height: 35px;
+    padding: 0 0 0 10px;
+    line-height: 35px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+    background: #F5F5F5;
 }
 
 #webcast-left {
@@ -111,21 +157,30 @@
     margin-right: 10px;
 }
 
-#webcast-userlist-holder ul li.webcast-broadcaster span {
+#webcast-userlist-holder ul li.webcast-broadcaster span.fullname {
     font-weight: bold;
     color: #000;
 }
 
-#webcast-userlist-holder ul li.webcast-teacher span {
+#webcast-userlist-holder ul li.webcast-teacher span.fullname {
     color: #4A4B4C;
 }
 
-#webcast-userlist-holder ul li.webcast-student span {
+#webcast-userlist-holder ul li.webcast-student span.fullname {
     color: #6C6E70;
 }
 
-#webcast-userlist-holder ul li.webcast-guest span {
+#webcast-userlist-holder ul li.webcast-guest span.fullname {
     color: #B2B5B7;
+}
+
+#webcast-userlist-holder span.browser {
+    float: right;
+    font-size: 10px;
+    display: block;
+    clear: both;
+    line-height: 10px;
+    text-align: right;
 }
 
 #webcast-userlist-holder ul li:last-child {
@@ -139,16 +194,7 @@
 #webcast-loadhistory {
     position: absolute;
     right: 0;
-    cursor: pointer;
-    border-radius: 3px;
-    display: block;
-    background: #2DCB73;;
-    font-size: 12px;
-    padding: 5px 10px;
-    line-height: normal;
     margin: 4px 5px 0 5px;
-    text-align: center;
-    color: #fff;
     float: right;
 }
 
@@ -297,10 +343,14 @@
     height: 50px;
     line-height: 50px;
     cursor: pointer;
+    background: #3c5582;
+    padding: 0 10px 0 0;
+    border-right: 1px solid #23355B;
 }
 
 #webcast-topbar-left .arrow {
-    margin-right: 5px;
+    border-left: 1px solid #23355B;
+    margin-right: 10px;
     font-size: 14px;
     width: 30px;
     height: 50px;
@@ -327,6 +377,19 @@
     cursor: pointer;
     background: url([[pix:mod_webcast|smiley]]) no-repeat scroll 0 0;
     margin: 5px 0 0 369px;
+}
+
+#webcast-status {
+    float: right;
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 14px;
+    border-radius: 3px;
+    margin-top: 15px;
+}
+
+#webcast-status.online {
+    background: #2DCB73;
 }
 
 /* Tiny Scrollbar */
@@ -378,7 +441,7 @@
 }
 
 #page-mod-webcast-view_webcast .scroll .thumb .end {
-   background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 0;
+    background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 0;
     overflow: hidden;
     height: 5px;
     width: 25px;
@@ -394,4 +457,96 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
+}
+
+/* SWITCHES */
+#page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast  input[type="checkbox"] + label {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.webcast-toggle {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+
+.webcast-toggle + label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+}
+
+input.webcast-toggle + label {
+    padding: 2px;
+    width: 42px;
+    height: 21px;
+    background-color: #dddddd;
+    -webkit-border-radius: 21px;
+    -moz-border-radius: 21px;
+    -ms-border-radius: 21px;
+    -o-border-radius: 21px;
+    border-radius: 21px;
+}
+
+input.webcast-toggle + label:before, input.webcast-toggle + label:after {
+    display: block;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    content: "";
+}
+
+input.webcast-toggle + label:before {
+    right: 1px;
+    background-color: #f1f1f1;
+    -webkit-border-radius: 21px;
+    -moz-border-radius: 21px;
+    -ms-border-radius: 21px;
+    -o-border-radius: 21px;
+    border-radius: 21px;
+    -webkit-transition: background 0.4s;
+    -moz-transition: background 0.4s;
+    -o-transition: background 0.4s;
+    transition: background 0.4s;
+}
+
+input.webcast-toggle + label:after {
+    width: 20px;
+    background-color: #fff;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    -o-border-radius: 100%;
+    border-radius: 100%;
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    -webkit-transition: margin 0.4s;
+    -moz-transition: margin 0.4s;
+    -o-transition: margin 0.4s;
+    transition: margin 0.4s;
+}
+
+input.webcast-toggle:checked + label:before {
+    background-color: #2DCB73;
+}
+
+input.webcast-toggle:checked + label:after {
+    margin-left: 21px;
+}
+
+#webcast-left-menu .question, #webcast-left-menu .switch {
+    display: table-cell;
+    vertical-align: middle;
+    width: 128px;
+    margin: 0;
+}
+#webcast-left-menu .switch {
+  text-align: right;
+    width: 40px;
 }
