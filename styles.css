@@ -3,7 +3,6 @@
     text-align: center;
 }
 
-
 .vjs-default-skin.vjs-paused .vjs-big-play-button {
     display: none;
 }
@@ -43,7 +42,7 @@
 #webcast-left-menu {
     top: 50px;
     bottom: 0;
-    left: 0;
+    left: -200px;
     width: 200px;
     height: 100%;
     background: #fff;
@@ -52,17 +51,17 @@
     position: fixed;
 }
 
-#webcast-left-menu ul{
+#webcast-left-menu ul {
     margin: 0;
     padding: 0;
 }
 
-#webcast-left-menu li{
+#webcast-left-menu li {
     margin: 0;
     padding: 0;
 }
 
-#webcast-left-menu ul ul li{
+#webcast-left-menu ul ul li {
     padding: 10px;
     border-bottom: 1px dashed #CCCCCC;
     display: table;
@@ -73,7 +72,7 @@
     border-bottom: none;
 }
 
-.webcast-button{
+.webcast-button {
     cursor: pointer;
     border-radius: 3px;
     display: block;
@@ -85,12 +84,12 @@
     color: #fff;
 }
 
-.webcast-button.red{
+.webcast-button.red {
     background: #b94a48;
     color: #fff;
 }
 
-#webcast-left-menu li.header{
+#webcast-left-menu li.header {
     border-bottom: 1px solid #CCCCCC;
     height: 35px;
     padding: 0 0 0 10px;
@@ -188,7 +187,7 @@
 }
 
 .webcast-hidden {
-    display: block;
+    display: none;
 }
 
 #webcast-loadhistory {
@@ -242,7 +241,10 @@
 }
 
 #webcast-chatlist .webcast-message {
+    word-wrap: break-word;
     display: block;
+    width: 100%;
+    overflow: hidden;
     float: left;
     clear: both;
     margin: 5px 0;
@@ -363,12 +365,26 @@
 }
 
 #webcast-filemanager-btn {
-    color: #4D68A1;
+    color: #fff;
     position: absolute;
     cursor: pointer;
     font-size: 14px;
-    margin: 39px 0 0 12px;
+    margin: 37px 0 0 10px;
+    background: #adadad;
+    padding: 2px 5px;
+    border-radius: 3px;
 }
+#webcast-fileoverview-btn {
+    color: #fff;
+    position: absolute;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 37px 0 0 123px;
+    border-radius: 3px;
+    background: #adadad;
+    padding: 2px 5px;
+}
+
 
 #webcast-emoticon-icon {
     position: absolute;
@@ -390,6 +406,48 @@
 
 #webcast-status.online {
     background: #2DCB73;
+}
+
+#webcast-filemanger-dialog , #webcast-fileoverview-dialog {
+    position: absolute;
+    width: 400px;
+    background: #F5F5F5;
+}
+
+#webcast-filemanger-dialog header, #webcast-fileoverview-dialog header {
+    background: #b4b9be;
+    height: 20px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: right;
+    line-height: 20px;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+
+#add-file-btn{
+    margin: 0 5px;
+}
+
+#webcast-filemanger-dialog header span, #webcast-fileoverview-dialog header span{
+    padding: 0 5px;
+}
+
+#webcast-filemanger-dialog .fitemtitle {
+    display: none;
+}
+
+#webcast-filemanger-dialog .ffilemanager {
+    margin: 0;
+    padding: 0 5px;
+}
+
+#webcast-filemanger-dialog .fp-restrictions {
+    text-align: left;
+    padding: 10px 5px;
 }
 
 /* Tiny Scrollbar */
@@ -460,7 +518,7 @@
 }
 
 /* SWITCHES */
-#page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast  input[type="checkbox"] + label {
+#page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast input[type="checkbox"] + label {
     display: block !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -546,7 +604,8 @@ input.webcast-toggle:checked + label:after {
     width: 128px;
     margin: 0;
 }
+
 #webcast-left-menu .switch {
-  text-align: right;
+    text-align: right;
     width: 40px;
 }

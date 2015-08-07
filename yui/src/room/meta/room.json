@@ -4,6 +4,7 @@
       "base",
       "node",
       "io",
+      "anim",
       "json-stringify",
       "json-parse"
     ]

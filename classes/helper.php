@@ -87,8 +87,6 @@ class helper {
             return $obj[$user->id];
         }
 
-        // echo 'query ';
-
         $access = new \stdClass();
 
         // is broadcaster
@@ -100,16 +98,11 @@ class helper {
         // is teacher
         $access->teacher = has_capability('mod/webcast:teacher', $context, $user);
 
-        // can upload
-        // @todo make this optional
-        $access->upload = true;
-
-        // can chat
-        // @todo make this optional
-        $access->chat = true;
+        // view history
+        $access->history = has_capability('mod/webcast:history', $context, $user);
 
         // reference to scope var
-        $obj[$user->id] = &$access;
+        $obj[$user->id] = $access;
 
         return $obj[$user->id];
     }
@@ -264,4 +257,53 @@ class helper {
 
         return $newtime;
     }
+
+    /**
+     * get file options
+     *
+     * @param $context
+     *
+     * @return array
+     */
+    static public function get_file_options($context){
+        global $CFG;
+        return array(
+            'subdirs' => 0,
+            'maxfiles' => 50,
+            'maxbytes' => $CFG->maxbytes,
+            'accepted_types'=>'*',
+            'context' => $context,
+            'return_types'=> 2 | 1
+        );
+    }
+
+    /**
+     * get_module_data
+     *
+     * @param int $courseid
+     * @param int $webcastid
+     *
+     * @return array array($course , $webcast , $cm , $context)
+     * @throws \coding_exception
+     */
+    static public function get_module_data($courseid = 0 , $webcastid = 0){
+        global $DB;
+
+        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+        require_course_login($course);
+
+        // get the webcast
+        $webcast = $DB->get_record('webcast' , array('id' => $webcastid), '*', MUST_EXIST);
+
+        // get course module
+        $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
+
+        // get context
+        $context = \context_module::instance($cm->id);
+
+
+        return array($course , $webcast , $cm , $context);
+    }
+
+
 }

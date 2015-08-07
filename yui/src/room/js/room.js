@@ -8,7 +8,7 @@
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert*/
+/*global  M, Y, videojs, console, io, tinyscrollbar, alert , YUI, M.filepicker*/
 M.mod_webcast = M.mod_webcast || {};
 M.mod_webcast.room = {
 
@@ -390,6 +390,7 @@ M.mod_webcast.room = {
         webcastid          : 0,
         filesharing        : false,
         filesharing_student: false,
+        viewhistory        : false,
         is_ended           : false,
         showuserpicture    : false,
         stream             : false,
@@ -399,7 +400,6 @@ M.mod_webcast.room = {
         streaming_server   : "",
         chat_server        : "",
         fullname           : "",
-        sesskey            : "",
         ajax_path          : "",
         usertype           : "",
         userid             : 0,
@@ -423,6 +423,17 @@ M.mod_webcast.room = {
      * Socket
      */
     socket: null,
+
+    /**
+     * Files
+     */
+    files_uploaded_hashes: {},
+
+    /**
+     * Shortcode regex
+     * Sample [file 19845771897512389057123589027301201]
+     */
+    shortcode_regex: /\[([\w\-_]+)([^\]]*)?\](?:(.+?)?\[\/\1\])?/g,
 
     /**
      * Bool to check if we are connected
@@ -453,17 +464,19 @@ M.mod_webcast.room = {
     },
 
     nodeholder: {
-        chatlist         : null,
-        userlist         : null,
-        topmenu          : null,
-        leftsidemenu     : null,
-        loadhistorybtn   : null,
-        userlist_counter : null,
-        sendbutton       : null,
-        body             : null,
-        userlist_viewport: null,
-        chatlist_viewport: null,
-        message          : null
+        chatlist          : null,
+        userlist          : null,
+        topmenu           : null,
+        leftsidemenu      : null,
+        loadhistorybtn    : null,
+        userlist_counter  : null,
+        sendbutton        : null,
+        body              : null,
+        userlist_viewport : null,
+        chatlist_viewport : null,
+        filemanagerdialog : null,
+        fileoverviewdialog: null,
+        message           : null
     },
     /**
      * Internal logging
@@ -526,20 +539,65 @@ M.mod_webcast.room = {
         // Show a menu when clicking on topmenu
         this.nodeholder.topmenu.on('click', function () {
             M.mod_webcast.room.log('Open topmenu');
-            M.mod_webcast.room.nodeholder.leftsidemenu.toggleView();
 
             // Menu arrow
-            if (M.mod_webcast.room.nodeholder.leftsidemenu.get('hidden')) {
-                Y.one("#webcast-topbar-left .arrow").setHTML('&#x25BA;');
+            if ((M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetWidth') === 0 &&
+                M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetHeight') === 0) ||
+                M.mod_webcast.room.nodeholder.leftsidemenu.get('display') === 'none') {
+
+                M.mod_webcast.room.log('show');
+
+                YUI().use('anim', function (Y) {
+                    var a = new Y.Anim(
+                        {
+                            node: M.mod_webcast.room.nodeholder.leftsidemenu,
+                            from: {
+                                left: -200
+                            },
+
+                            to      : {
+                                left: 0
+                            },
+                            duration: 0.3
+                        }
+                    );
+                    a.get('node').show();
+                    a.on('end', function () {
+                        Y.one("#webcast-topbar-left .arrow").setHTML('&#x25C4;');
+                    });
+                    a.run();
+                });
+
             } else {
-                Y.one("#webcast-topbar-left .arrow").setHTML('&#x25C4;');
+                M.mod_webcast.room.log('hide');
+
+                YUI().use('anim', function (Y) {
+                    var a = new Y.Anim(
+                        {
+                            node    : M.mod_webcast.room.nodeholder.leftsidemenu,
+                            from    : {
+                                left: 0
+                            },
+                            to      : {
+                                left: -200
+                            },
+                            duration: 0.3
+                        }
+                    );
+
+                    a.on('end', function () {
+                        a.get('node').hide();
+                        Y.one("#webcast-topbar-left .arrow").setHTML('&#x25BA;');
+                    });
+                    a.run();
+                });
             }
         });
 
         // setting helpers
         Y.all('.webcast-toggle').on('click', function (e) {
-            M.mod_webcast.room.set_user_setting(e.currentTarget.get('id'), e.currentTarget.get('checked'));
-        });
+            this.set_user_setting(e.currentTarget.get('id'), e.currentTarget.get('checked'));
+        }, this);
 
         // Prevent scrollbars
         this.nodeholder.body.setStyle('overflow', 'hidden');
@@ -646,7 +704,7 @@ M.mod_webcast.room = {
         Y.io(M.mod_webcast.room.options.ajax_path, {
             method : 'GET',
             data   : {
-                'sesskey': M.mod_webcast.room.options.sesskey,
+                'sesskey': M.cfg.sesskey,
                 'action' : "ping",
                 'extra1' : M.mod_webcast.room.options.courseid,
                 'extra2' : M.mod_webcast.room.options.webcastid
@@ -798,20 +856,20 @@ M.mod_webcast.room = {
     load_chat_history: function () {
         "use strict";
 
-        Y.io(M.mod_webcast.room.options.ajax_path, {
+        Y.io(this.options.ajax_path, {
             method : 'GET',
             data   : {
-                'sesskey': M.mod_webcast.room.options.sesskey,
+                'sesskey': M.cfg.sesskey,
                 'action' : "load_public_history",
-                'extra1' : M.mod_webcast.room.options.courseid,
-                'extra2' : M.mod_webcast.room.options.webcastid
+                'extra1' : this.options.courseid,
+                'extra2' : this.options.webcastid
             },
             on     : {
                 success: function (id, o) {
-                    M.mod_webcast.room.log("load_chat_history id:" + id);
+                    this.log("load_chat_history id:" + id);
                     try {
                         var response = Y.JSON.parse(o.responseText);
-                        M.mod_webcast.room.log(response);
+                        this.log(response);
                         if (response.status) {
                             // remove the button
                             M.mod_webcast.room.nodeholder.loadhistorybtn.remove();
@@ -820,17 +878,32 @@ M.mod_webcast.room = {
 
                     } catch (e) {
                         // exception
-                        M.mod_webcast.room.log(e);
+                        this.log(e);
                     }
                 }
             },
             headers: {
                 'Content-Type': 'application/json'
             }
-        });
+        }, this);
     },
 
-    load_emoticons: function () {
+    /**
+     * Notice other users about the new file
+     */
+    chat_share_file: function (args) {
+
+        M.mod_webcast.room.chatobject.message = '[file ' + Y.JSON.stringify(args) + ']';
+        M.mod_webcast.room.socket.emit("send", M.mod_webcast.room.chatobject, function (response) {
+            if (!response.status) {
+                M.mod_webcast.room.exception(response.error);
+            } else {
+                M.mod_webcast.room.files_uploaded_hashes[hash] = true;
+            }
+        });
+
+    },
+    load_emoticons : function () {
         "use strict";
         var name, i, codes, code, patterns = [];
         for (name in this.emoticons) {
@@ -963,12 +1036,16 @@ M.mod_webcast.room = {
 
         // Click on send button
         this.nodeholder.sendbutton.on('click', function () {
-            M.mod_webcast.room.chat_send_message();
-        });
+            this.chat_send_message();
+        }, this);
 
-        this.nodeholder.loadhistorybtn.on('click', function () {
-            M.mod_webcast.room.load_chat_history();
-        });
+        // Check if user can view history
+        if (this.options.viewhistory) {
+            this.nodeholder.loadhistorybtn.show();
+            this.nodeholder.loadhistorybtn.on('click', function () {
+                this.load_chat_history();
+            }, this);
+        }
 
         // Workaround for enterkey YUI event not working here..
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_webcast.room.chat_enter_listener(event);');
@@ -1020,7 +1097,7 @@ M.mod_webcast.room = {
 
                 chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + M.mod_webcast.room.alpha_numeric(data.fullname) + '</span>' +
                     '<span class="webcast-timestamp">' + M.mod_webcast.room.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="webcast-message">' + M.mod_webcast.room.escape_message(data.message) + '</span>' +
+                    '<span class="webcast-message">' + M.mod_webcast.room.chat_parse_message(data.message) + '</span>' +
                     '</div>' +
                     '</li>';
 
@@ -1078,7 +1155,7 @@ M.mod_webcast.room = {
      * Add a local message to chat
      * @param string
      */
-    local_message : function (string) {
+    local_message     : function (string) {
         "use strict";
         var message = {
             'messagetype': 'local',
@@ -1092,10 +1169,55 @@ M.mod_webcast.room = {
      * @param message
      * @returns string
      */
-    escape_message: function (message) {
+    chat_parse_message: function (message) {
         "use strict";
-        return this.add_emoticons(Y.Node.create("<div/>").setHTML(message).get('text'));
 
+        // check if we must replace text by a shortcode
+        if (message.charAt(0) === '[' && message.slice(-1) === ']') {
+            var newmessage = this.chat_parse_shortcodes(message);
+            if (newmessage) {
+                return newmessage;
+            }
+        }
+
+        return this.add_emoticons(Y.Node.create("<div/>").setHTML(message).get('text'));
+    },
+
+    /**
+     * Replace shortcode by special features if they exists
+     * @param message
+     */
+    chat_parse_shortcodes: function (message) {
+        "use strict";
+
+        if (M.mod_webcast.room.shortcode_regex.test(message)) {
+            M.mod_webcast.room.log('Has a shortcode');
+            message.replace(M.mod_webcast.room.shortcode_regex, function (a, command, args) {
+                switch (command) {
+                    case 'file':
+                        return M.mod_webcast.room.chat_add_shortcode_file(args);
+                        break;
+                }
+            });
+        }
+
+        // trigger the normal functionality
+        return false;
+    },
+
+    /**
+     * get the file details from the server by hash
+     */
+    chat_add_shortcode_file: function (args) {
+        M.mod_webcast.room.log('Add file detail to the chat');
+
+        try{
+            var obj = Y.JSON.parse(args.slice(1));
+            M.mod_webcast.room.log(obj);
+
+        }catch(e){
+
+        }
     },
 
     /**
@@ -1271,6 +1393,92 @@ M.mod_webcast.room = {
      */
     add_fileshare: function () {
         "use strict";
+
+        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanger-dialog");
+        this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
+
+        Y.one('#add-file-btn').on('click', function () {
+            this.log('Add files to the room');
+            var form = Y.one('#mform1');
+
+            // Start the transaction.
+            Y.io(this.options.ajax_path, {
+                method: 'POST',
+                data  : {
+                    'sesskey': M.cfg.sesskey,
+                    'action' : "add_file",
+                    'extra1' : this.options.courseid,
+                    'extra2' : this.options.webcastid
+                },
+                form  : {
+                    id: form
+                },
+                on    : {
+                    success: function (id, o) {
+                        try {
+                            var response = Y.JSON.parse(o.responseText);
+                            M.mod_webcast.room.log(response);
+                            if (response.status) {
+                                // clear own file overview
+                                // Y.all('.fm-content-wrapper .fp-content').setHTML('');
+
+                                // hide the dialog
+                                M.mod_webcast.room.nodeholder.filemanagerdialog.hide();
+                                var hash;
+                                for (var i in response.files) {
+                                    if (response.files.hasOwnProperty(i)) {
+
+                                        hash = response.files[i].hash;
+                                        if (M.mod_webcast.room.files_uploaded_hashes[hash] !== undefined) {
+                                            M.mod_webcast.room.log('already shared skip!');
+                                            continue;
+                                        }
+
+                                        M.mod_webcast.room.chat_share_file(response.files[i]);
+                                    }
+                                }
+                            }
+
+                        } catch (e) {
+                            // exception
+                            M.mod_webcast.room.log(e);
+                        }
+                    }
+                }
+            });
+
+        }, this);
+
+        Y.one('#webcast-filemanager-btn').on('click', function () {
+            this.log('Filemanager');
+            if ((this.nodeholder.filemanagerdialog.get('offsetWidth') === 0 &&
+                this.nodeholder.filemanagerdialog.get('offsetHeight') === 0) ||
+                this.nodeholder.filemanagerdialog.get('display') === 'none') {
+                this.log('Show');
+                this.nodeholder.filemanagerdialog.show();
+            } else {
+                this.log('Hide');
+                this.nodeholder.filemanagerdialog.hide();
+            }
+
+            this.scale_room();
+        }, this);
+
+        Y.one('#webcast-fileoverview-btn').on('click', function () {
+            this.log('Filemanager');
+            if ((this.nodeholder.filemanagerdialog.get('offsetWidth') === 0 &&
+                this.nodeholder.filemanagerdialog.get('offsetHeight') === 0) ||
+                this.nodeholder.filemanagerdialog.get('display') === 'none') {
+                this.log('Show');
+                this.nodeholder.filemanagerdialog.show();
+            } else {
+                this.log('Hide');
+                this.nodeholder.filemanagerdialog.hide();
+            }
+
+            this.scale_room();
+        }, this);
+
         this.log('add_fileshare @todo');
     },
 
@@ -1331,8 +1539,9 @@ M.mod_webcast.room = {
             });
             this.scrollbar_userlist.update();
 
+            wh *= 0.7;
             Y.one('#webcast-chatlist .viewport').setStyles({
-                height: wh * 0.7
+                height: wh
             });
             this.scrollbar_chatlist.update('bottom');
 
@@ -1354,6 +1563,16 @@ M.mod_webcast.room = {
             });
             this.scrollbar_userlist.update();
         }
+
+        // filesharing
+        if (this.options.filesharing) {
+
+            this.nodeholder.filemanagerdialog.setStyles({
+                height      : (wh + 25),
+                'margin-top': -(wh + 25)
+            });
+        }
+
     },
 
     /**
@@ -1404,3 +1623,4 @@ M.mod_webcast.room = {
         }
     }
 };
+

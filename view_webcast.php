@@ -44,6 +44,9 @@ if ($id) {
 
 require_login($course, true, $cm);
 
+// get context
+$context = context_module::instance($cm->id);
+
 $event = \mod_webcast\event\course_module_viewed::create(array(
     'objectid' => $PAGE->cm->instance,
     'context' => $PAGE->context,
@@ -51,6 +54,9 @@ $event = \mod_webcast\event\course_module_viewed::create(array(
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $webcast);
 $event->trigger();
+
+// @todo add log entry
+
 
 // Print the page header.
 $PAGE->set_url('/mod/webcast/view_webcast.php', array('id' => $cm->id));
@@ -75,6 +81,7 @@ $opts['userid'] = $USER->id;
 // Set booleans
 $opts['userlist'] = ($webcast->userlist == 1);
 $opts['filesharing'] = ($webcast->filesharing == 1);
+$opts['filesharing_student'] = ($webcast->filesharing_student == 1);
 $opts['stream'] = ($webcast->stream == 1);
 $opts['showuserpicture'] = ($webcast->showuserpicture == 1);
 $opts['chat'] = ($webcast->chat == 1);
@@ -82,6 +89,7 @@ $opts['is_ended'] = ($webcast->is_ended == 1);
 $opts['hls'] = ($webcast->hls == 1);
 $opts['ajax_timer'] = ($webcast->ajax_timer == 1);
 $opts['emoticons'] = ($webcast->emoticons == 1);
+$opts['viewhistory'] = $permissions->history;
 
 $opts['fullname'] = fullname($USER);
 $opts['debugjs'] = $config->debugjs;
@@ -93,7 +101,6 @@ $opts['chat_server'] = $config->chat_server;
 $opts['shared_secret'] = $config->shared_secret;
 $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
 $opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
-$opts['sesskey'] = sesskey();
 unset($opts['intro']);
 
 // Load JS base
@@ -133,6 +140,12 @@ $PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
+
+if(($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) &&  $USER->id > 1){
+    $form = new \mod_webcast\formfilemanager("" , array('context' => $context));
+    $data = new stdClass();
+    file_prepare_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($context), $context, 'mod_webcast', 'attachments');
+}
 
 // Output starts here.
 echo $OUTPUT->header();
@@ -244,7 +257,6 @@ echo $OUTPUT->header();
                     <small><?php echo format_string($course->fullname) ?></small>
                 </h1>
             </header>
-            <div id="webcast-fileshare-holder"></div>
         </section>
         <section id="webcast-right">
             <div id="webcast-userlist-holder">
@@ -270,7 +282,7 @@ echo $OUTPUT->header();
             </div>
             <div id="webcast-chat-holder">
                 <div class="webcast-header">
-                    <span id="webcast-loadhistory" class="webcast-hidden webcast-button">Load previous messages</span>
+                    <span id="webcast-loadhistory" class="webcast-button" style="display: none">Load previous messages</span>
                     <h2><?php echo get_string('chat', 'webcast') ?></h2>
                 </div>
                 <div id="webcast-chatlist" class="scroll">
@@ -290,9 +302,42 @@ echo $OUTPUT->header();
                     </div>
                 </div>
                 <div id="webcast-chatinput">
+                    <div id="webcast-fileoverview-dialog" style="display: none">
+                        <header>
+                            <span>Close</span>
+                            <span class="webcast-close-sign">X</span>
+                        </header>
+                        <div id="webcast-fileoverview" class="scroll">
+                            <div class="scrollbar">
+                                <div class="track">
+                                    <div class="thumb">
+                                        <div class="end"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="viewport">
+                                <div class="overview">
+                                    <ul>
+                                        <!-- Holder -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="webcast-filemanger-dialog" style="display: none">
+                        <header>
+                            <span>Close</span>
+                            <span class="webcast-close-sign">X</span>
+                        </header>
+                        <?php if(!empty($form)):?>
+                            <?php echo $form->render()?>
+                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile' , 'webcast')?></span>
+                        <?php endif?>
+                    </div>
                     <div class="webcast-emoticons-dialoge"></div>
                     <?php if ($opts['filesharing']): ?>
                         <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
+                        <span id="webcast-fileoverview-btn"><?php echo get_string('fileoverview', 'webcast') ?></span>
                     <?php endif ?>
                     <span id="webcast-emoticon-icon"></span>
                     <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'webcast') ?>" name="message" id="webcast-message"/>

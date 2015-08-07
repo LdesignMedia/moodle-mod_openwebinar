@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Filemanager for uploading user/broadcaster files
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -23,11 +23,22 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
+namespace mod_webcast;
 
 defined('MOODLE_INTERNAL') || die();
-$plugin->release   = '1.0.0';
-$plugin->maturity = MATURITY_BETA;
-$plugin->version   = 2015080600;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014050800;        // Requires this Moodle version
-$plugin->component = 'mod_webcast';     // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
+require_once($CFG->libdir.'/formslib.php');
+
+class formfilemanager extends \moodleform {
+
+    /**
+     * Form definition.
+     * @global moodle_database $DB
+     */
+    protected function definition() {
+        global $DB, $CFG;
+        $mform = &$this->_form;
+        $context =  $this->_customdata['context'];
+        $mform->addElement('filemanager', 'files_filemanager', get_string('attachment', 'webcast'), null, \mod_webcast\helper::get_file_options($context));
+    }
+
+}

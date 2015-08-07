@@ -74,12 +74,11 @@ $capabilities = array(
         )
     ),
 
-    // View the history if webcast is ended
+    // View the history
     'mod/webcast:history' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'guest' => CAP_ALLOW,
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
