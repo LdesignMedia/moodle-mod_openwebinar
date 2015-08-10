@@ -328,7 +328,7 @@ class helper {
 
         $item->author = $file->get_author();
         $item->hash = $file->get_contenthash();
-        $item->itemid =  $file->get_itemid();
+        $item->id =  $file->get_id();
 
         $item->mimetype = get_mimetype_description($file);
         $item->thumbnail = $OUTPUT->pix_url(file_file_icon($file, 90))->out(false);

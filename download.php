@@ -32,14 +32,27 @@ $sesskey = required_param('sesskey', PARAM_ALPHANUMEXT);
 // Parameters for the action
 $extra1 = required_param('extra1', PARAM_TEXT);
 $extra2 = required_param('extra2', PARAM_TEXT);
-$extra3 = required_param('extra3', PARAM_TEXT);
+$extra3 = required_param('extra3', PARAM_INT);
 
 $PAGE->set_url('/mod/webcast/download.php');
-
 
 // Get module data and validate access
 list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
 
 // still here check if we can find the file
+$fs = get_file_storage();
+$file = $fs->get_file_by_id($extra3);
 
+if ($file) {
+    // Make sure it belongs to a webcast
+    if ($file->get_component() != 'mod_webcast' || $file->get_filearea() != 'attachments' || $file->get_contextid() != $context->id) {
 
+        throw new Exception(get_string('error:file_no_access', 'mod_webcast'));
+    }
+
+    // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
+    send_stored_file($file, 86400, 0, true);
+
+} else {
+    throw new Exception(get_string('error:file_not_exits', 'mod_webcast'));
+}

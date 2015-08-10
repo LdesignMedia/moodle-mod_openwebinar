@@ -53,6 +53,8 @@ $string['webcast:teacher'] = 'Webcast teacher';
 // ERRORS
 $string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
 $string['error:time_passed'] = 'Error:  Starttime has already been passed!';
+$string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
+$string['error:file_no_access'] = 'Error: No access to this file!';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';

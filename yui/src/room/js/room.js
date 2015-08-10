@@ -1278,9 +1278,9 @@ M.mod_webcast.room = {
                 '<span class="webcast-filesize">' + M.mod_webcast.room.alpha_numeric(obj.filesize) + '</span>' +
                 '<span class="webcast-fileauthor">' + M.mod_webcast.room.alpha_numeric(obj.author) + '</span>' +
                 '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
-                'extra3=' + Number(obj.itemid) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
+                'extra3=' + Number(obj.id) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
                 'sesskey=' + M.cfg.sesskey +
-                '" class="webcast-fileauthor">Download</span>' +
+                '" class="webcast-download webcast-button">Download</a>' +
                 '</div>';
 
         } catch (e) {
@@ -1360,7 +1360,7 @@ M.mod_webcast.room = {
      */
     alpha_numeric: function (string) {
         "use strict";
-        return string.replace(/[^\w\s]/gi, "");
+        return string.replace(/[^\w\s\.\-\_]/gi, "");
     },
 
     /**
