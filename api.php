@@ -33,7 +33,7 @@ if (!defined('FILE_REFERENCE')) {
     define('FILE_REFERENCE', 4);
 }
 
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once("../../config.php");
 
 // Action we are performing
 $action = optional_param('action', false, PARAM_ALPHANUMEXT);
@@ -87,6 +87,13 @@ if ($action == 'chatlog') {
     $response['online_minutes'] = \mod_webcast\helper::set_user_online_status($webcast->id);
     $response['status'] = true;
 
+} elseif ($action == 'downloadfile' && confirm_sesskey($sesskey)) {
+
+    list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
+
+    // serving the file instead
+
+
 } elseif ($action == 'add_file' && confirm_sesskey($sesskey)) {
 
     // Get module data and validate access
@@ -108,19 +115,8 @@ if ($action == 'chatlog') {
 
         $file = $fs->get_file_by_id($file->id);
 
-        if($file && $file->get_filename() !== '.'){
-
-            $fileobj = new stdClass();
-            $fileobj->filename = $file->get_filename();
-            $fileobj->author = $file->get_author();
-            $fileobj->userid = $file->get_userid();
-            $fileobj->fileid = $file->get_id();
-            $fileobj->hash = $file->get_contenthash();
-            $fileobj->filesize = $file->get_filesize();
-            $fileobj->timecreated = $file->get_timecreated();
-            $fileobj->mimetype = $file->get_mimetype();
-
-            $response['files'][] = $fileobj;
+        if($file && $file->get_filename() !== '.' && !$file->is_directory()){
+            $response['files'][] = \mod_webcast\helper::get_file_info($file , $fs);
         }
     }
 

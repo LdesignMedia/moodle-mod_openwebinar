@@ -265,15 +265,16 @@ class helper {
      *
      * @return array
      */
-    static public function get_file_options($context){
+    static public function get_file_options($context) {
         global $CFG;
+
         return array(
             'subdirs' => 0,
             'maxfiles' => 50,
             'maxbytes' => $CFG->maxbytes,
-            'accepted_types'=>'*',
+            'accepted_types' => '*',
             'context' => $context,
-            'return_types'=> 2 | 1
+            'return_types' => 2 | 1
         );
     }
 
@@ -286,14 +287,14 @@ class helper {
      * @return array array($course , $webcast , $cm , $context)
      * @throws \coding_exception
      */
-    static public function get_module_data($courseid = 0 , $webcastid = 0){
+    static public function get_module_data($courseid = 0, $webcastid = 0) {
         global $DB;
 
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
         require_course_login($course);
 
         // get the webcast
-        $webcast = $DB->get_record('webcast' , array('id' => $webcastid), '*', MUST_EXIST);
+        $webcast = $DB->get_record('webcast', array('id' => $webcastid), '*', MUST_EXIST);
 
         // get course module
         $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
@@ -302,7 +303,37 @@ class helper {
         $context = \context_module::instance($cm->id);
 
 
-        return array($course , $webcast , $cm , $context);
+        return array($course, $webcast, $cm, $context);
+    }
+
+    /**
+     * get information about the file for sharing
+     *
+     * @param \stored_file $file
+     * @param \file_storage $fs
+     *
+     * @return \stdClass
+     * @throws \coding_exception
+     * @throws \file_exception
+     */
+    static public function get_file_info(\stored_file $file, \file_storage $fs) {
+
+        global $OUTPUT;
+
+        $item = new \stdClass();
+        $item->filename = $file->get_filename();
+        // $item->fullname = trim($item->filename, '/');
+        $filesize = $file->get_filesize();
+        $item->filesize = $filesize ? display_size($filesize) : '';
+
+        $item->author = $file->get_author();
+        $item->hash = $file->get_contenthash();
+        $item->itemid =  $file->get_itemid();
+
+        $item->mimetype = get_mimetype_description($file);
+        $item->thumbnail = $OUTPUT->pix_url(file_file_icon($file, 90))->out(false);
+
+        return $item;
     }
 
 

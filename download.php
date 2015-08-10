@@ -15,9 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the definition for the class webcast
- *
- * This class provides all the functionality for the new webcast module.
+ * Download file
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -26,6 +24,22 @@
  * @author    Luuk Verhoeven
  **/
 
-class webcast{
+require_once("../../config.php");
 
-}
+// Extra validation
+$sesskey = required_param('sesskey', PARAM_ALPHANUMEXT);
+
+// Parameters for the action
+$extra1 = required_param('extra1', PARAM_TEXT);
+$extra2 = required_param('extra2', PARAM_TEXT);
+$extra3 = required_param('extra3', PARAM_TEXT);
+
+$PAGE->set_url('/mod/webcast/download.php');
+
+
+// Get module data and validate access
+list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
+
+// still here check if we can find the file
+
+

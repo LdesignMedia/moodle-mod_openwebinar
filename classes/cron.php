@@ -24,6 +24,7 @@
  * @author    Luuk Verhoeven
  **/
 namespace mod_webcast;
+defined('MOODLE_INTERNAL') || die();
 
 class cron{
 

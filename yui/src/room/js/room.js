@@ -8,7 +8,7 @@
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert , YUI, M.filepicker*/
+/*global  M, Y, videojs, console, io, tinyscrollbar, alert , YUI*/
 M.mod_webcast = M.mod_webcast || {};
 M.mod_webcast.room = {
 
@@ -711,6 +711,7 @@ M.mod_webcast.room = {
             },
             on     : {
                 success: function (id, o) {
+                    M.mod_webcast.room.log(id);
                     try {
                         var response = Y.JSON.parse(o.responseText);
                         M.mod_webcast.room.log(response);
@@ -892,18 +893,21 @@ M.mod_webcast.room = {
      * Notice other users about the new file
      */
     chat_share_file: function (args) {
-
+        "use strict";
         M.mod_webcast.room.chatobject.message = '[file ' + Y.JSON.stringify(args) + ']';
         M.mod_webcast.room.socket.emit("send", M.mod_webcast.room.chatobject, function (response) {
             if (!response.status) {
                 M.mod_webcast.room.exception(response.error);
             } else {
-                M.mod_webcast.room.files_uploaded_hashes[hash] = true;
+                M.mod_webcast.room.files_uploaded_hashes[args.hash] = true;
             }
         });
-
     },
-    load_emoticons : function () {
+
+    /**
+     * load the emoticons in a mapper
+     */
+    load_emoticons: function () {
         "use strict";
         var name, i, codes, code, patterns = [];
         for (name in this.emoticons) {
@@ -930,6 +934,13 @@ M.mod_webcast.room = {
         this.emoticons_regex = new RegExp(patterns.join('|'), 'g');
     },
 
+    /**
+     * filter text for icon usage
+     * can be disabled in the options
+     *
+     * @param text
+     * @return string
+     */
     add_emoticons: function (text) {
         "use strict";
         if (!this.options.enable_emoticons) {
@@ -999,6 +1010,47 @@ M.mod_webcast.room = {
             autoplay : true,
             preload  : 'auto',
             sources  : [source]
+        });
+
+        // events
+        // https://github.com/videojs/video.js/blob/master/docs/api/vjs.Player.md#waiting-event
+        // Fired whenever the media begins waiting
+        this.player.on('waiting', function (e) {
+            M.mod_webcast.room.log('player_event(waiting)');
+        });
+
+        // Fired whenever the media has been paused
+        this.player.on('pause', function (e) {
+            M.mod_webcast.room.log('player_event(pause)');
+        });
+
+        // Fired whenever the media begins or resumes playback
+        this.player.on('play', function (e) {
+            M.mod_webcast.room.log('player_event(play)');
+        });
+
+        // Fired when the end of the media resource is reached (currentTime == duration)
+        this.player.on('ended', function (e) {
+            M.mod_webcast.room.log('player_event(ended)');
+        });
+
+        // Fired while the user agent is downloading media data
+        this.player.on('progress', function (e) {
+            M.mod_webcast.room.log('player_event(progress)');
+        });
+
+        // Fired while the user agent is downloading media data
+        this.player.on('loadedmetadata', function (e) {
+            M.mod_webcast.room.log('player_event(loadedmetadata)');
+        });
+
+        // Fired when an error occurs
+        this.player.on('error', function () {
+            M.mod_webcast.room.log('player_event(error)');
+        });
+
+        this.player.on('loadstart', function () {
+            M.mod_webcast.room.log('player_event(loadstart)');
         });
 
         this.log(source);
@@ -1177,6 +1229,8 @@ M.mod_webcast.room = {
             var newmessage = this.chat_parse_shortcodes(message);
             if (newmessage) {
                 return newmessage;
+            } else {
+                M.mod_webcast.room.log('Error: shortcode not replaced');
             }
         }
 
@@ -1189,35 +1243,51 @@ M.mod_webcast.room = {
      */
     chat_parse_shortcodes: function (message) {
         "use strict";
+        var newmessage = false;
 
         if (M.mod_webcast.room.shortcode_regex.test(message)) {
-            M.mod_webcast.room.log('Has a shortcode');
+            M.mod_webcast.room.log('Has some shortcode:');
             message.replace(M.mod_webcast.room.shortcode_regex, function (a, command, args) {
+                M.mod_webcast.room.log(a);
                 switch (command) {
                     case 'file':
-                        return M.mod_webcast.room.chat_add_shortcode_file(args);
+                        newmessage = M.mod_webcast.room.chat_add_shortcode_file(args);
                         break;
                 }
             });
         }
 
         // trigger the normal functionality
-        return false;
+        return newmessage;
     },
 
     /**
      * get the file details from the server by hash
      */
     chat_add_shortcode_file: function (args) {
+        "use strict";
+        var message = '';
         M.mod_webcast.room.log('Add file detail to the chat');
 
-        try{
+        try {
             var obj = Y.JSON.parse(args.slice(1));
             M.mod_webcast.room.log(obj);
+            message += '<div class="webcast-file">' +
+                '<img src="' + obj.thumbnail + '" alt="" />' +
+                '<span class="webcast-filename">' + M.mod_webcast.room.alpha_numeric(obj.filename) + '</span>' +
+                '<span class="webcast-filesize">' + M.mod_webcast.room.alpha_numeric(obj.filesize) + '</span>' +
+                '<span class="webcast-fileauthor">' + M.mod_webcast.room.alpha_numeric(obj.author) + '</span>' +
+                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
+                'extra3=' + Number(obj.itemid) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
+                'sesskey=' + M.cfg.sesskey +
+                '" class="webcast-fileauthor">Download</span>' +
+                '</div>';
 
-        }catch(e){
-
+        } catch (e) {
+            M.mod_webcast.room.log(e);
         }
+        M.mod_webcast.room.log(message);
+        return message;
     },
 
     /**
@@ -1623,4 +1693,3 @@ M.mod_webcast.room = {
         }
     }
 };
-
