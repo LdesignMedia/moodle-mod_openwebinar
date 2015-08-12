@@ -145,6 +145,20 @@
     width: 380px;
 }
 
+#webcast-fileoverview ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 380px;
+}
+#webcast-fileoverview ul li {
+    width: 100%;
+    margin: 10px 0 0 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #B4B9BE;
+    display: block;
+}
+
 #webcast-userlist-holder ul li {
     padding: 5px 10px;
     border-bottom: 1px dashed #CCCCCC;
@@ -250,27 +264,27 @@
     margin: 5px 0;
 }
 
-.webcast-message .webcast-file img{
+.webcast-file img{
     width: 80px;
     margin-left: 5px;
 }
 
-.webcast-message .webcast-file .webcast-filename{
+.webcast-file .webcast-filename{
     position: absolute;
     font-weight: bold;
 }
 
-.webcast-message .webcast-file .webcast-filesize{
+.webcast-file .webcast-filesize{
     position: absolute;
     margin-top: 30px;
 }
 
-.webcast-message .webcast-file .webcast-fileauthor{
+.webcast-file .webcast-fileauthor{
     position: absolute;
     margin-top: 15px;
 }
 
-.webcast-message .webcast-file .webcast-download{
+.webcast-file .webcast-download{
     position: absolute;
     margin-top: -30px;
     position: absolute;
@@ -441,25 +455,26 @@
     background: #F5F5F5;
 }
 
-#webcast-filemanger-dialog header, #webcast-fileoverview-dialog header {
-    background: #b4b9be;
+.webcast-dialog header{
+    background: #b4b9be !important;
     height: 20px;
     text-transform: uppercase;
     color: #fff;
-    font-size: 14px;
+    font-size: 14px  !important;
     font-weight: bold;
     text-align: right;
     line-height: 20px;
     vertical-align: middle;
-    margin: 0;
-    padding: 0;
+    margin: 0  !important;
+    padding: 0  !important;
+    cursor:pointer;
 }
 
 #add-file-btn{
     margin: 0 5px;
 }
 
-#webcast-filemanger-dialog header span, #webcast-fileoverview-dialog header span{
+.webcast-dialog header span{
     padding: 0 5px;
 }
 

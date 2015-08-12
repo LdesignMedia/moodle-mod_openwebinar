@@ -420,6 +420,16 @@ M.mod_webcast.room = {
     scrollview_chatlist: null,
 
     /**
+     * A reference to the scrollbar for file overview
+     */
+    scrollbar_fileoverview: null,
+
+    /**
+     * A reference to the scrollbar for chatlist
+     */
+    scrollbar_chatlist: null,
+
+    /**
      * Socket
      */
     socket: null,
@@ -476,6 +486,7 @@ M.mod_webcast.room = {
         chatlist_viewport : null,
         filemanagerdialog : null,
         fileoverviewdialog: null,
+        fileoverview      : null,
         message           : null
     },
     /**
@@ -1463,9 +1474,14 @@ M.mod_webcast.room = {
      */
     add_fileshare: function () {
         "use strict";
+        var filelist = '', i, obj;
 
         this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanger-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
+
+        var el = document.getElementById("webcast-fileoverview");
+        this.scrollbar_fileoverview = tinyscrollbar(el);
+        this.nodeholder.fileoverview = Y.one('#webcast-fileoverview ul');
 
         Y.one('#add-file-btn').on('click', function () {
             this.log('Add files to the room');
@@ -1526,6 +1542,7 @@ M.mod_webcast.room = {
                 this.nodeholder.filemanagerdialog.get('display') === 'none') {
                 this.log('Show');
                 this.nodeholder.filemanagerdialog.show();
+                this.nodeholder.fileoverviewdialog.hide();
             } else {
                 this.log('Hide');
                 this.nodeholder.filemanagerdialog.hide();
@@ -1536,18 +1553,73 @@ M.mod_webcast.room = {
 
         Y.one('#webcast-fileoverview-btn').on('click', function () {
             this.log('Filemanager');
-            if ((this.nodeholder.filemanagerdialog.get('offsetWidth') === 0 &&
-                this.nodeholder.filemanagerdialog.get('offsetHeight') === 0) ||
-                this.nodeholder.filemanagerdialog.get('display') === 'none') {
+            if ((this.nodeholder.fileoverviewdialog.get('offsetWidth') === 0 &&
+                this.nodeholder.fileoverviewdialog.get('offsetHeight') === 0) ||
+                this.nodeholder.fileoverviewdialog.get('display') === 'none') {
                 this.log('Show');
-                this.nodeholder.filemanagerdialog.show();
+                this.nodeholder.fileoverviewdialog.show();
+                this.nodeholder.filemanagerdialog.hide();
+
+                // set the content with a ajax request
+                Y.io(this.options.ajax_path, {
+                    method: 'POST',
+                    data  : {
+                        'sesskey': M.cfg.sesskey,
+                        'action' : "list_all_files",
+                        'extra1' : this.options.courseid,
+                        'extra2' : this.options.webcastid
+                    },
+                    on    : {
+                        success: function (id, o) {
+                            try {
+                                var response = Y.JSON.parse(o.responseText);
+                                M.mod_webcast.room.log(response);
+                                if (response.status) {
+
+                                    filelist = '';
+                                    // clear own file overview
+                                    for (i in response.files) {
+                                        if (response.files.hasOwnProperty(i)) {
+                                            obj =  response.files[i];
+                                            filelist += '<li class="webcast-file">' +
+                                                '<img src="' + obj.thumbnail + '" alt="" />' +
+                                                '<span class="webcast-filename">' + M.mod_webcast.room.alpha_numeric(obj.filename) + '</span>' +
+                                                '<span class="webcast-filesize">' + M.mod_webcast.room.alpha_numeric(obj.filesize) + '</span>' +
+                                                '<span class="webcast-fileauthor">' + M.mod_webcast.room.alpha_numeric(obj.author) + '</span>' +
+                                                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
+                                                'extra3=' + Number(obj.id) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
+                                                'sesskey=' + M.cfg.sesskey +
+                                                '" class="webcast-download webcast-button">Download</a>' +
+                                                '</li>';
+                                        }
+                                    }
+                                    M.mod_webcast.room.log(filelist);
+                                    // set ul
+                                    M.mod_webcast.room.nodeholder.fileoverview.setHTML(filelist);
+                                    M.mod_webcast.room.scale_room();
+                                    M.mod_webcast.room.scrollbar_fileoverview.update();
+                                }
+
+                            } catch (e) {
+                                // exception
+                                M.mod_webcast.room.log(e);
+                            }
+                        }
+                    }
+                });
+
             } else {
                 this.log('Hide');
-                this.nodeholder.filemanagerdialog.hide();
+                this.nodeholder.fileoverviewdialog.hide();
             }
 
             this.scale_room();
         }, this);
+
+        // Close by clicking the header of dialog
+        Y.one('body').delegate('click', function () {
+            this.get('parentNode').hide();
+        }, '.webcast-dialog header');
 
         this.log('add_fileshare @todo');
     },
@@ -1631,7 +1703,7 @@ M.mod_webcast.room = {
             Y.one('#webcast-userlist .viewport').setStyles({
                 height: wh
             });
-            this.scrollbar_userlist.update();
+            this.scrollbar_userlist.update('bottom');
         }
 
         // filesharing
@@ -1640,6 +1712,15 @@ M.mod_webcast.room = {
             this.nodeholder.filemanagerdialog.setStyles({
                 height      : (wh + 25),
                 'margin-top': -(wh + 25)
+            });
+
+            this.nodeholder.fileoverviewdialog.setStyles({
+                height      : (wh + 25),
+                'margin-top': -(wh + 25)
+            });
+
+            Y.one('#webcast-fileoverview .viewport').setStyles({
+                height: wh
             });
         }
 

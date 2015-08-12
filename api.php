@@ -129,15 +129,11 @@ if ($action == 'chatlog') {
     $files = $fs->get_area_files($context->id, 'mod_webcast', 'attachments');
 
     foreach ($files as $f) {
-
-        $file = new stdClass();
-        $file->filename = $f->get_filename();
-        $file->author = $f->get_author();
-        $file->userid = $f->get_userid();
-        $file->fileid = $f->get_id();
-
-        $response['files'][] = $file;
+        if($f && $f->get_filename() !== '.' && !$f->is_directory()) {
+            $response['files'][] = \mod_webcast\helper::get_file_info($f, $fs);
+        }
     }
+    $response['status'] = true;
 }
 
 // Send headers.

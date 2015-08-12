@@ -326,8 +326,8 @@ class helper {
         $filesize = $file->get_filesize();
         $item->filesize = $filesize ? display_size($filesize) : '';
 
-        $item->author = $file->get_author();
-        $item->hash = $file->get_contenthash();
+        $item->author = (string) $file->get_author();
+        $item->hash = (string) $file->get_contenthash();
         $item->id =  $file->get_id();
 
         $item->mimetype = get_mimetype_description($file);

@@ -302,7 +302,7 @@ echo $OUTPUT->header();
                     </div>
                 </div>
                 <div id="webcast-chatinput">
-                    <div id="webcast-fileoverview-dialog" style="display: none">
+                    <div id="webcast-fileoverview-dialog" class="webcast-dialog" style="display: none">
                         <header>
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
@@ -323,6 +323,16 @@ echo $OUTPUT->header();
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div id="webcast-filemanger-dialog" class="webcast-dialog" style="display: none">
+                        <header>
+                            <span>Close</span>
+                            <span class="webcast-close-sign">X</span>
+                        </header>
+                        <?php if(!empty($form)):?>
+                            <?php echo $form->render()?>
+                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile' , 'webcast')?></span>
+                        <?php endif?>
                     </div>
                     <div id="webcast-filemanger-dialog" style="display: none">
                         <header>
