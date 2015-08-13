@@ -77,6 +77,7 @@ $permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
 // Convert webcast data to JS
 $opts = (array)$webcast;
 $opts['userid'] = $USER->id;
+$opts['is_broadcaster'] = $permissions->broadcaster;
 
 // Set booleans
 $opts['userlist'] = ($webcast->userlist == 1);
@@ -129,6 +130,7 @@ $PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init'
 // Language strings
 $PAGE->requires->string_for_js('js:send', 'webcast');
 $PAGE->requires->string_for_js('js:wait_on_connection', 'webcast');
+$PAGE->requires->string_for_js('js:muted', 'webcast');
 $PAGE->requires->string_for_js('js:joined', 'webcast');
 $PAGE->requires->string_for_js('js:connecting', 'webcast');
 $PAGE->requires->string_for_js('js:disconnect', 'webcast');
@@ -208,8 +210,8 @@ echo $OUTPUT->header();
                                 Mute guests
                             </div>
                             <div class="switch">
-                                <input id="mute_guests" class="webcast-toggle" type="checkbox" checked>
-                                <label for="mute_guests"></label>
+                                <input id="mute_guest" class="webcast-toggle" type="checkbox" checked>
+                                <label for="mute_guest"></label>
                             </div>
                         </li>
                         <li>
@@ -217,8 +219,8 @@ echo $OUTPUT->header();
                                 Mute students
                             </div>
                             <div class="switch">
-                                <input id="mute_students" class="webcast-toggle" type="checkbox">
-                                <label for="mute_students"></label>
+                                <input id="mute_student" class="webcast-toggle" type="checkbox">
+                                <label for="mute_student"></label>
                             </div>
                         </li>
                         <li>
@@ -226,8 +228,8 @@ echo $OUTPUT->header();
                                 Mute teachers
                             </div>
                             <div class="switch">
-                                <input id="mute_teachers" class="webcast-toggle" type="checkbox">
-                                <label for="mute_teachers"></label>
+                                <input id="mute_teacher" class="webcast-toggle" type="checkbox">
+                                <label for="mute_teacher"></label>
                             </div>
                         </li>
                         <li>

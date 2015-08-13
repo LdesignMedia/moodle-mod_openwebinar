@@ -9,6 +9,11 @@
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
 /*global  M, Y, videojs, console, io, tinyscrollbar, alert , YUI*/
+
+/**
+ * This object is public accessible
+ * @type {{}|*}
+ */
 M.mod_webcast = M.mod_webcast || {};
 M.mod_webcast.room = {
 
@@ -395,6 +400,7 @@ M.mod_webcast.room = {
         showuserpicture    : false,
         stream             : false,
         broadcaster        : -999,
+        is_broadcaster     : false,
         broadcastkey       : "broadcastkey",
         shared_secret      : "",
         streaming_server   : "",
@@ -700,10 +706,42 @@ M.mod_webcast.room = {
                 M.mod_webcast.room.options.userlist = value;
                 M.mod_webcast.room.scale_room();
                 break;
-
+            case 'mute_guest':
+               this.chat_mute_usertype('guest' , value);
+                break;
+            case 'mute_student':
+                this.chat_mute_usertype('student' , value);
+                break;
+            case 'mute_teacher':
+                this.chat_mute_usertype('teacher' , value);
+                break;
         }
 
     },
+
+    /**
+     * Mute a usertype as broadcaster
+     * @param usertype
+     * @param value
+     */
+    chat_mute_usertype : function(usertype , value){
+        "use strict";
+        if (this.options.is_broadcaster) {
+            M.mod_webcast.room.log('mute(' + usertype + ',' + value + ')');
+
+            this.socket.emit("mute", this.chatobject, usertype, value, function (response) {
+                M.mod_webcast.room.log(response);
+
+                if (!response.status) {
+                    M.mod_webcast.room.exception(response.error);
+                } else {
+                    M.mod_webcast.room.log(response.mute);
+                    // @todo make sure the switch not changed by someone else load the status of switch by loading the room
+                }
+            });
+        }
+    },
+
 
     /**
      * Ping ajax.php for keeping track of the exact user online time
@@ -779,14 +817,14 @@ M.mod_webcast.room = {
             if (M.mod_webcast.room.socket_is_connected === false) {
 
                 // we are reconnected
-                M.mod_webcast.room.local_message('reconnected');
+                M.mod_webcast.room.chat_local_message('reconnected');
 
                 // Join the public room again
                 this.emit("join", M.mod_webcast.room.chatobject, function (response) {
                     if (!response.status) {
                         M.mod_webcast.room.exception(response.error);
                     } else {
-                        M.mod_webcast.room.local_message('joined');
+                        M.mod_webcast.room.chat_local_message('joined');
                     }
                 });
             }
@@ -828,7 +866,7 @@ M.mod_webcast.room = {
         M.mod_webcast.room.nodeholder.message.setAttribute('disabled', 'disabled');
         M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:wait_on_connection', 'webcast', {}));
 
-        M.mod_webcast.room.local_message(message);
+        M.mod_webcast.room.chat_local_message(message);
 
         // Clear the userlist
         M.mod_webcast.room.reset_userlist();
@@ -1081,14 +1119,14 @@ M.mod_webcast.room = {
         this.nodeholder.loadhistorybtn = Y.one('#webcast-loadhistory');
 
         // Add first message to the chat
-        M.mod_webcast.room.local_message('connecting');
+        M.mod_webcast.room.chat_local_message('connecting');
 
         // Join the public room
         this.socket.emit("join", this.chatobject, function (response) {
             if (!response.status) {
                 M.mod_webcast.room.exception(response.error);
             } else {
-                M.mod_webcast.room.local_message('joined');
+                M.mod_webcast.room.chat_local_message('joined');
             }
         });
 
@@ -1218,7 +1256,7 @@ M.mod_webcast.room = {
      * Add a local message to chat
      * @param string
      */
-    local_message     : function (string) {
+    chat_local_message     : function (string) {
         "use strict";
         var message = {
             'messagetype': 'local',
@@ -1346,7 +1384,7 @@ M.mod_webcast.room = {
         M.mod_webcast.room.chatobject.message = message;
         M.mod_webcast.room.socket.emit("send", M.mod_webcast.room.chatobject, function (response) {
             if (!response.status) {
-                M.mod_webcast.room.exception(response.error);
+                M.mod_webcast.room.chat_local_message(response.error);
             }
         });
 
@@ -1580,7 +1618,7 @@ M.mod_webcast.room = {
                                     // clear own file overview
                                     for (i in response.files) {
                                         if (response.files.hasOwnProperty(i)) {
-                                            obj =  response.files[i];
+                                            obj = response.files[i];
                                             filelist += '<li class="webcast-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
                                                 '<span class="webcast-filename">' + M.mod_webcast.room.alpha_numeric(obj.filename) + '</span>' +

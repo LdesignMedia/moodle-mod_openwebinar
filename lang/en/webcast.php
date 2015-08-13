@@ -137,6 +137,7 @@ $string['message_placeholder'] = 'Type a message here....';
 
 // Js
 $string['js:send'] = 'Send';
+$string['js:muted'] = 'The messages are muted by the broadcaster!';
 $string['js:wait_on_connection'] = 'Waiting';
 $string['js:joined'] = 'Welcome to chatroom.';
 $string['js:disconnect'] = 'You are disconnected.';
