@@ -107,12 +107,11 @@ switch ($status) {
     case \mod_webcast\helper::WEBCAST_BROADCASTED:
 
         if ($permissions->history) {
-            echo $renderer->view_page_history_webcast($webcast);
+            echo $renderer->view_page_history_webcast($id, $webcast);
         } else {
             echo $renderer->view_page_ended_message($webcast);
         }
         break;
-
 
     default:
         echo $renderer->view_page_not_started_webcast($webcast);

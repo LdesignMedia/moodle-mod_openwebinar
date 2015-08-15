@@ -163,6 +163,7 @@ class mod_webcast_mod_form extends moodleform_mod {
         }
         $rs->close();
         $this->_form->addElement('select', 'broadcaster', get_string('mod_setting:broadcaster', 'webcast'), $array);
+        $this->_form->addRule('broadcaster', null, 'required', null, 'client');
     }
 
     public function validation($data, $files) {

@@ -27,12 +27,14 @@ $string['modulename'] = 'MoodleFreak Webcast';
 $string['modulenameplural'] = 'MoodleFreak Webcast';
 $string['modulename_help'] = 'Webcast activity:<br/>
 <ul>
-    <li>Chat</li>
-    <li>Live Broadcasting</li>
-    <li>Active log users</li>
+    <li>Live chat</li>
+    <li>Live broadcasting</li>
+    <li>Online status log</li>
+    <li>Users in room list</li>
+    <li>Messages log</li>
     <li>File sharing</li>
+    <li>HLS support</li>
     <li>Reminder messages</li>
-    <li>Completion based on viewed</li>
 </ul>
 ';
 $string['modulename_link'] = 'mod/webcast/view';
@@ -42,6 +44,8 @@ $string['webcastfieldset'] = 'Custom example fieldset';
 $string['webcastname'] = 'MoodleFreak Webcast';
 $string['webcastname_help'] = 'The name of the webcast';
 $string['webcast'] = 'MoodleFreak Webcast';
+$string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
+
 
 // ACCESS
 $string['webcast:history'] = 'Allow viewing webcast history';
@@ -112,11 +116,14 @@ $string['mod_setting:broadcastkey'] = 'Broadcastkey';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
 // Text
-$string['text:live_webcast'] = 'The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
+$string['text:live_webcast'] = '<br/>The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
 $string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey: <b>{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a href="">here</a>.<br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
+$string['text:history'] = '<h3>Webcast is offline</h3>This webcast was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this webcast by clicking on the button below.';
+
 // Buttons
-$string['btn:enter_live_webcast'] = 'Enter webcast';
+$string['btn:enter_live_webcast'] = 'Enter live webcast';
+$string['btn:enter_offline_webcast'] = 'Enter offline webcast';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';

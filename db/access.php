@@ -86,7 +86,7 @@ $capabilities = array(
         )
     ),
 
-    // Can view history
+    // View user online status
     'mod/webcast:manager' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -95,7 +95,7 @@ $capabilities = array(
         )
     ),
 
-    // Can control more in the chat
+    // Has teacher status in the chat
     'mod/webcast:teacher' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,

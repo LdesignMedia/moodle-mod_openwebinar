@@ -37,6 +37,8 @@ require_once("../../config.php");
 
 // Action we are performing
 $action = optional_param('action', false, PARAM_ALPHANUMEXT);
+$action = 'api_call_'  . $action;
+
 
 // Extra validation
 $sesskey = optional_param('sesskey', false, PARAM_RAW);
@@ -50,92 +52,14 @@ $config = get_config('webcast');
 
 $PAGE->set_url('/mod/webcast/api.php');
 
-// Response holder
-$response = array('error' => "", 'status' => false);
+// Load the class
+$api = new \mod_webcast\api();
+$api->setSesskey($sesskey);
+$api->setExtra1($extra1);
+$api->setExtra2($extra2);
 
-if ($action == 'chatlog') {
-    $data = (object)json_decode(file_get_contents('php://input'), true);
-
-    // validate its a valid request
-    if (!empty($data->shared_secret) && $config->shared_secret == $data->shared_secret) {
-        $status = \mod_webcast\helper::save_messages($data);
-        if ($status) {
-            $response['status'] = true;
-        } else {
-            $response['error'] = 'failed saving';
-        }
-    } else {
-        $response['error'] = 'wrong shared_secret';
-    }
-} elseif ($action == 'load_public_history' && confirm_sesskey($sesskey)) {
-
-    // Get module data and validate access
-    list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
-
-    // load the messages
-    $response['messages'] = $DB->get_records('webcast_messages', array('webcast_id' => $webcast->id), 'timestamp ASC');
-    $response['status'] = true;
-} elseif ($action == 'ping' && confirm_sesskey($sesskey)) {
-
-    // Check if user can enter the course
-    $course = $DB->get_record('course', array('id' => $extra1), '*', MUST_EXIST);
-    require_course_login($course);
-
-    // get the webcast
-    $webcast = $DB->get_record('webcast', array('id' => $extra2), '*', MUST_EXIST);
-
-    $response['online_minutes'] = \mod_webcast\helper::set_user_online_status($webcast->id);
-    $response['status'] = true;
-
-} elseif ($action == 'downloadfile' && confirm_sesskey($sesskey)) {
-
-    list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
-
-    // serving the file instead
-
-
-} elseif ($action == 'add_file' && confirm_sesskey($sesskey)) {
-
-    // Get module data and validate access
-    list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
-
-    // we need to finalize this submit
-    $data = new stdClass();
-    $data->files_filemanager = required_param('files_filemanager', PARAM_INT);
-    $data = file_postupdate_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($context), $context, 'mod_webcast', 'attachments', $data->files_filemanager);
-
-    $response['status'] = true;
-    $response['itemid'] = $data->files_filemanager;
-
-    // get files we submit
-    $fs = get_file_storage();
-
-    $files = $DB->get_records('files' , array('contextid' => $context->id, 'userid' => $USER->id, 'itemid' => $data->files_filemanager , 'component' => 'mod_webcast' , 'filearea' => 'attachments'));
-    foreach ($files as $file) {
-
-        $file = $fs->get_file_by_id($file->id);
-
-        if($file && $file->get_filename() !== '.' && !$file->is_directory()){
-            $response['files'][] = \mod_webcast\helper::get_file_info($file , $fs);
-        }
-    }
-
-} else if ($action == 'list_all_files' && confirm_sesskey($sesskey)) {
-
-    // Get module data and validate access
-    list($course, $webcast, $cm, $context) = \mod_webcast\helper::get_module_data($extra1, $extra2);
-
-    $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_webcast', 'attachments');
-
-    foreach ($files as $f) {
-        if($f && $f->get_filename() !== '.' && !$f->is_directory()) {
-            $response['files'][] = \mod_webcast\helper::get_file_info($f, $fs);
-        }
-    }
-    $response['status'] = true;
+if(is_callable(array($api , $action))){
+    $api->$action();
+}else {
+    throw new Exception("not_callable api_call_"  . $action);
 }
-
-// Send headers.
-echo $OUTPUT->header();
-echo json_encode($response);

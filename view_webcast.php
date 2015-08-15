@@ -143,8 +143,8 @@ $PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
 
-if(($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) &&  $USER->id > 1){
-    $form = new \mod_webcast\formfilemanager("" , array('context' => $context));
+if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) && $USER->id > 1) {
+    $form = new \mod_webcast\formfilemanager("", array('context' => $context));
     $data = new stdClass();
     file_prepare_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($context), $context, 'mod_webcast', 'attachments');
 }
@@ -181,7 +181,7 @@ echo $OUTPUT->header();
                             <label for="stream"></label>
                         </div>
                     </li>
-                    <?php if ($opts['userlist']): ?>
+                    <?php if ($opts['userlist'] && !$opts['is_ended']): ?>
                         <li>
                             <div class="question">
                                 Show userlist
@@ -192,17 +192,19 @@ echo $OUTPUT->header();
                             </div>
                         </li>
                     <?php endif ?>
-                    <li>
-                        <div class="question">
-                            Chat sound
-                        </div>
-                        <div class="switch">
-                            <input id="sound" class="webcast-toggle" type="checkbox" checked>
-                            <label for="sound"></label>
-                        </div>
-                    </li>
+                    <?php if (!$opts['is_ended']): ?>
+                        <li>
+                            <div class="question">
+                                Chat sound
+                            </div>
+                            <div class="switch">
+                                <input id="sound" class="webcast-toggle" type="checkbox" checked>
+                                <label for="sound"></label>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
-                <?php if ($permissions->broadcaster): ?>
+                <?php if ($permissions->broadcaster && !$opts['is_ended']): ?>
                     <li class="header">Broadcaster</li>
                     <ul>
                         <li>
@@ -234,10 +236,10 @@ echo $OUTPUT->header();
                         </li>
                         <li>
                             <p>This will end the live webcast.</p>
-                            <span class="webcast-button red" id="webcast-end">End the webcast</span>
+                            <span class="webcast-button red" id="webcast-leave">End the webcast</span>
                         </li>
                     </ul>
-                    <?php else: ?>
+                <?php else: ?>
                     <li class="header">Exit</li>
                     <ul>
                         <li>
@@ -331,20 +333,20 @@ echo $OUTPUT->header();
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
                         </header>
-                        <?php if(!empty($form)):?>
-                            <?php echo $form->render()?>
-                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile' , 'webcast')?></span>
-                        <?php endif?>
+                        <?php if (!empty($form)): ?>
+                            <?php echo $form->render() ?>
+                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
+                        <?php endif ?>
                     </div>
                     <div id="webcast-filemanger-dialog" style="display: none">
                         <header>
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
                         </header>
-                        <?php if(!empty($form)):?>
-                            <?php echo $form->render()?>
-                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile' , 'webcast')?></span>
-                        <?php endif?>
+                        <?php if (!empty($form)): ?>
+                            <?php echo $form->render() ?>
+                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
+                        <?php endif ?>
                     </div>
                     <div class="webcast-emoticons-dialoge"></div>
                     <?php if ($opts['filesharing']): ?>

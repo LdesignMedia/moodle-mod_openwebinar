@@ -124,7 +124,6 @@ class helper {
         }
 
         $now = time();
-
         if (!empty($webcast->is_ended)) {
             return self::WEBCAST_BROADCASTED;
         } elseif ($now >= $webcast->timeopen) {
