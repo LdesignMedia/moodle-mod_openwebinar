@@ -386,7 +386,7 @@ M.mod_webcast.room = {
      * Webcast variables
      */
     options: {
-        debugjs            : true,
+        debugjs            : false,
         preventclosewaring : false,
         chat               : false,
         chatnoticesound    : true,

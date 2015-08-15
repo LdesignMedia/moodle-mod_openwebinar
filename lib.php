@@ -82,6 +82,20 @@ function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = n
 
     $webcast->id = $DB->insert_record('webcast', $webcast);
 
+    $event = new stdClass();
+    $event->name        = $webcast->name;
+    $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
+    $event->courseid    = $webcast->course;
+    $event->groupid     = 0;
+    $event->userid      = 0;
+    $event->modulename  = 'webcast';
+    $event->instance    = $webcast->id;
+    $event->eventtype   = 'webcasttime';
+    $event->timestart   = $webcast->timeopen;
+    $event->timeduration = $webcast->duration;
+
+    calendar_event::create($event);
+
     webcast_grade_item_update($webcast);
 
     return $webcast->id;
@@ -111,6 +125,19 @@ function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform 
 
     webcast_grade_item_update($webcast);
 
+    $event = new stdClass();
+
+    if ($event->id = $DB->get_field('event', 'id', array('modulename'=>'webcast', 'instance'=>$webcast->id))) {
+
+        $event->name        = $webcast->name;
+        $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
+        $event->timestart   = $webcast->timeopen;
+        $event->timeduration = $webcast->duration;
+
+        $calendarevent = calendar_event::load($event->id);
+        $calendarevent->update($event);
+    }
+
     return $result;
 }
 
@@ -133,11 +160,16 @@ function webcast_delete_instance($id) {
     }
 
     // Delete any dependent records here.
-
     $DB->delete_records('webcast', array('id' => $webcast->id));
 
     webcast_grade_item_delete($webcast);
 
+    // remove the event
+    $DB->delete_records('event', array('modulename'=>'webcast', 'instance'=>$webcast->id));
+
+    // @todo remove chatlogs
+    // @todo remove useronline status
+    // @todo remove attachments
     return true;
 }
 
@@ -379,7 +411,7 @@ function webcast_update_grades(stdClass $webcast, $userid = 0) {
  * @return array of [(string)filearea] => (string)description
  */
 function webcast_get_file_areas($course, $cm, $context) {
-    return array();
+    return array('');
 }
 
 /**
@@ -407,6 +439,8 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
 /**
  * Serves the files from the webcast file areas
  *
+ * @note we use own version in api class
+ *
  * @package  mod_webcast
  * @category files
  *
@@ -419,13 +453,5 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
  * @param array $options      additional options affecting the file serving
  */
 function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
-    global $DB, $CFG;
-
-    if ($context->contextlevel != CONTEXT_MODULE) {
-        send_file_not_found();
-    }
-
-    require_login($course, true, $cm);
-
     send_file_not_found();
 }

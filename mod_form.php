@@ -87,7 +87,7 @@ class mod_webcast_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno', 'stream', get_string('setting:stream', 'webcast'));
         $mform->setDefault('stream', $config->stream);
         $mform->addElement('selectyesno', 'chat', get_string('setting:chat', 'webcast'));
-        $mform->setDefault('filesharing', $config->chat);
+        $mform->setDefault('chat', $config->chat);
         $mform->addElement('selectyesno', 'filesharing', get_string('setting:filesharing', 'webcast'));
         $mform->setDefault('filesharing', $config->filesharing);
         $mform->addElement('selectyesno', 'filesharing_student', get_string('setting:filesharing_student', 'webcast'));
