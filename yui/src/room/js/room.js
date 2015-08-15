@@ -15,6 +15,7 @@
  * @type {{}|*}
  */
 M.mod_webcast = M.mod_webcast || {};
+// @todo Don't allow this to be public accessible
 M.mod_webcast.room = {
 
     /**
