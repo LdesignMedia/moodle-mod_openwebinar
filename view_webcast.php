@@ -93,7 +93,7 @@ $opts['emoticons'] = ($webcast->emoticons == 1);
 $opts['viewhistory'] = $permissions->history;
 
 $opts['fullname'] = fullname($USER);
-$opts['debugjs'] = $config->debugjs;
+$opts['debugjs'] = ($config->debugjs == 1);
 $opts['cmid'] = $cm->id;
 $opts['courseid'] = $course->id;
 $opts['webcastid'] = $webcast->id;
