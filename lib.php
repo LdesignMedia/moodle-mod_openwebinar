@@ -77,9 +77,7 @@ function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = n
     global $DB;
 
     $webcast->timecreated = time();
-
-    // You may have to add extra stuff in here.
-
+    $webcast->broadcaster_identifier = md5(\mod_webcast\helper::generate_key());
     $webcast->id = $DB->insert_record('webcast', $webcast);
 
     $event = new stdClass();

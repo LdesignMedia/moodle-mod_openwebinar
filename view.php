@@ -47,14 +47,6 @@ if ($id) {
 
 require_login($course, true, $cm);
 
-$event = \mod_webcast\event\course_module_viewed::create(array(
-    'objectid' => $PAGE->cm->instance,
-    'context' => $PAGE->context,
-));
-$event->add_record_snapshot('course', $PAGE->course);
-$event->add_record_snapshot($PAGE->cm->modname, $webcast);
-$event->trigger();
-
 // Print the page header.
 $PAGE->set_url('/mod/webcast/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($webcast->name));
@@ -86,8 +78,6 @@ echo $OUTPUT->header();
 //}
 
 echo $OUTPUT->heading(format_string($webcast->name), 1, 'webcast-center');
-
-// echo \mod_webcast\helper::generate_key();
 
 /**
  * $completion=new completion_info($course);

@@ -138,6 +138,18 @@
     line-height: 35px;
 }
 
+#webcast-left-menu h3{
+    line-height:14px;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    font-weight:bold;
+}
+
+#webcast-left-menu .text{
+    line-height: 18px;
+}
+
 #webcast-userlist-holder ul {
     margin: 0;
     padding: 0;
@@ -560,6 +572,15 @@
     -khtml-user-select: none;
     -webkit-user-select: none;
 }
+
+#page-mod-webcast-view_webcast .selectable{
+    user-select: all;
+    -o-user-select: auto;
+    -moz-user-select: all;
+    -khtml-user-select: auto;
+    -webkit-user-select: auto;
+}
+
 
 /* SWITCHES */
 #page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast input[type="checkbox"] + label {

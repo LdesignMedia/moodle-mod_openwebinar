@@ -61,5 +61,5 @@ $api->setExtra2($extra2);
 if(is_callable(array($api , $action))){
     $api->$action();
 }else {
-    throw new Exception("not_callable api_call_"  . $action);
+    throw new Exception("not_callable:"  . $action);
 }

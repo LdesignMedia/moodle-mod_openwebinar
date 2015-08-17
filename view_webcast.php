@@ -55,9 +55,6 @@ $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $webcast);
 $event->trigger();
 
-// @todo add log entry
-
-
 // Print the page header.
 $PAGE->set_url('/mod/webcast/view_webcast.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($webcast->name));
@@ -104,15 +101,19 @@ $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
 $opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
 unset($opts['intro']);
 
-// Load JS base
+if(!$opts['is_broadcaster']){
+    unset($opts['broadcaster_identifier']);
+}
 
 // VIDEO Player
 $PAGE->requires->js('/mod/webcast/javascript/video-js/video.js', true);
 
-// @todo Add config for this HLS mode
-//$PAGE->requires->js('/mod/webcast/javascript/video-js/videojs-media-sources.js', true);
-//$PAGE->requires->js('/mod/webcast/javascript/video-js/videojs.hls.min.js', true);
-
+if ($opts['hls']) {
+    // Only needed for fully support HLS
+    $PAGE->requires->js('/mod/webcast/javascript/video-js/videojs-media-sources.js', true);
+    $PAGE->requires->js('/mod/webcast/javascript/video-js/videojs.hls.min.js', true);
+}
+// Base videoJS to accept the rtmp stream
 $PAGE->requires->css('/mod/webcast/javascript/video-js/video-js.min.css');
 
 // Emoticons
@@ -124,7 +125,7 @@ $PAGE->requires->js('/mod/webcast/javascript/tinyscrollbar.min.js', true);
 // Socket.io script
 $PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
 
-//
+// Room js, most of logic is here
 $PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init', array($opts));
 
 // Language strings
@@ -139,6 +140,7 @@ $PAGE->requires->string_for_js('js:script_user', 'webcast');
 $PAGE->requires->string_for_js('js:system_user', 'webcast');
 $PAGE->requires->string_for_js('js:warning_message_closing_window', 'webcast');
 $PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
+$PAGE->requires->string_for_js('js:ending_webcast', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -170,11 +172,11 @@ echo $OUTPUT->header();
         </section>
         <section id="webcast-left-menu" style="display: none">
             <ul>
-                <li class="header">General</li>
+                <li class="header"><?php echo get_string('opt:header_general', 'webcast') ?></li>
                 <ul>
                     <li>
                         <div class="question">
-                            Show stream
+                            <?php echo get_string('opt:stream', 'webcast') ?>
                         </div>
                         <div class="switch">
                             <input id="stream" class="webcast-toggle" type="checkbox" checked>
@@ -184,7 +186,7 @@ echo $OUTPUT->header();
                     <?php if ($opts['userlist'] && !$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                Show userlist
+                                <?php echo get_string('opt:userlist', 'webcast') ?>
                             </div>
                             <div class="switch">
                                 <input id="userlist" class="webcast-toggle" type="checkbox" checked>
@@ -195,7 +197,7 @@ echo $OUTPUT->header();
                     <?php if (!$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                Chat sound
+                                <?php echo get_string('opt:chat_sound', 'webcast') ?>
                             </div>
                             <div class="switch">
                                 <input id="sound" class="webcast-toggle" type="checkbox" checked>
@@ -205,11 +207,14 @@ echo $OUTPUT->header();
                     <?php endif; ?>
                 </ul>
                 <?php if ($permissions->broadcaster && !$opts['is_ended']): ?>
-                    <li class="header">Broadcaster</li>
+                    <li class="header"><?php echo get_string('opt:header_broadcaster', 'webcast') ?></li>
                     <ul>
+                        <li class="text">
+                            <?php echo get_string('text:broadcaster_help', 'webcast', $webcast) ?>
+                        </li>
                         <li>
                             <div class="question">
-                                Mute guests
+                                <?php echo get_string('opt:mute_guests', 'webcast') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_guest" class="webcast-toggle" type="checkbox" checked>
@@ -218,7 +223,7 @@ echo $OUTPUT->header();
                         </li>
                         <li>
                             <div class="question">
-                                Mute students
+                                <?php echo get_string('opt:mute_students', 'webcast') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_student" class="webcast-toggle" type="checkbox">
@@ -227,7 +232,7 @@ echo $OUTPUT->header();
                         </li>
                         <li>
                             <div class="question">
-                                Mute teachers
+                                <?php echo get_string('opt:mute_teachers', 'webcast') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_teacher" class="webcast-toggle" type="checkbox">
@@ -235,15 +240,15 @@ echo $OUTPUT->header();
                             </div>
                         </li>
                         <li>
-                            <p>This will end the live webcast.</p>
-                            <span class="webcast-button red" id="webcast-leave">End the webcast</span>
+                            <p><?php echo get_string('opt:endwebcast_desc', 'webcast') ?></p>
+                            <span class="webcast-button red" id="webcast-leave"><?php echo get_string('opt:endwebcast', 'webcast') ?></span>
                         </li>
                     </ul>
                 <?php else: ?>
-                    <li class="header">Exit</li>
+                    <li class="header"><?php echo get_string('opt:header_exit', 'webcast') ?></li>
                     <ul>
                         <li>
-                            <span class="webcast-button red" id="webcast-leave">Leave webcast</span>
+                            <span class="webcast-button red" id="webcast-leave"><?php echo get_string('opt:leave', 'webcast') ?></span>
                         </li>
                     </ul>
                 <?php endif ?>

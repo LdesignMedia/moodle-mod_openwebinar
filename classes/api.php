@@ -212,6 +212,33 @@ class api {
     }
 
     /**
+     * End webcast
+     *
+     * @throws Exception
+     */
+    public function api_call_endwebcast() {
+
+        global $DB;
+        // Valid sesskey
+        $this->has_valid_sesskey();
+
+        // Set information
+        $this->get_module_information();
+
+        if (!empty($this->webcast->is_ended)) {
+            throw new Exception("webcast_already_ended");
+        }
+        $obj = new \stdClass();
+        $obj->id = $this->webcast->id;
+        $obj->is_ended = 1;
+
+        $DB->update_record('webcast' , $obj);
+        $this->response['status'] = true;
+
+        $this->output_json();
+    }
+
+    /**
      * Load history from a webcast room
      *
      * @throws Exception
@@ -228,6 +255,27 @@ class api {
 
         $this->response['messages'] = $DB->get_records('webcast_messages', array('webcast_id' => $this->webcast->id), 'timestamp ASC');
         $this->response['status'] = true;
+
+        $this->output_json();
+    }
+
+    /**
+     * Return webcast information to the chatserver
+     *
+     * @throws Exception
+     */
+    public function api_call_broadcastinfo() {
+
+        // Input listener for json data
+        $this->input_to_json();
+
+        // Load plugin config
+        $this->get_config();
+
+        if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
+            $this->response['status'] = true;
+            $this->response['webcast'] =  \mod_webcast\helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
+        }
 
         $this->output_json();
     }

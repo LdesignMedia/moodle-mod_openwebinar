@@ -335,5 +335,15 @@ class helper {
         return $item;
     }
 
-
+    /**
+     * get_webcast_by_broadcastkey
+     *
+     * @param string $broadcastkey
+     *
+     * @return mixed
+     */
+    static public function get_webcast_by_broadcastkey($broadcastkey = ''){
+        global $DB;
+        return $DB->get_record('webcast' , array('broadcastkey' => str_replace('_public', '',$broadcastkey)) ,'*' , MUST_EXIST);
+    }
 }

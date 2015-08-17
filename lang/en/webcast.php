@@ -46,7 +46,6 @@ $string['webcastname_help'] = 'The name of the webcast';
 $string['webcast'] = 'MoodleFreak Webcast';
 $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
 
-
 // ACCESS
 $string['webcast:history'] = 'Allow viewing webcast history';
 $string['webcast:view'] = 'Allow viewing webcast';
@@ -117,7 +116,7 @@ $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
 // Text
 $string['text:live_webcast'] = '<br/>The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
-$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey: <b>{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a href="">here</a>.<br>
+$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/webcast_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
 $string['text:history'] = '<h3>Webcast is offline</h3>This webcast was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this webcast by clicking on the button below.';
 
@@ -142,8 +141,23 @@ $string['guest'] = 'Guest';
 $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 
+// useroptions
+$string['opt:header_broadcaster'] = 'Broadcaster';
+$string['opt:header_exit'] = 'Exit';
+$string['opt:mute_guests'] = 'Mute guests';
+$string['opt:chat_sound'] = 'Chat sound';
+$string['opt:stream'] = 'Show stream';
+$string['opt:userlist'] = 'Show userlist';
+$string['opt:mute_students'] = 'Mute students';
+$string['opt:mute_teachers'] = 'Mute teachers';
+$string['opt:endwebcast'] = 'Close & end the webcast';
+$string['opt:endwebcast_desc'] = 'This will end the live webcast.';
+$string['opt:leave'] = 'Leave webcast';
+$string['opt:header_general'] = 'General';
+
 // Js
 $string['js:send'] = 'Send';
+$string['js:ending_webcast'] = 'Are you sure you wan\'t to end and close the webcast?';
 $string['js:muted'] = 'The messages are muted by the broadcaster!';
 $string['js:wait_on_connection'] = 'Waiting';
 $string['js:joined'] = 'Welcome to chatroom.';

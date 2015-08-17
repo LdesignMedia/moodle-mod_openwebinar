@@ -387,35 +387,36 @@ M.mod_webcast.room = {
      * Webcast variables
      */
     options: {
-        debugjs            : false,
-        preventclosewaring : false,
-        chat               : false,
-        chatnoticesound    : true,
-        duration           : 0,
-        timeopen           : 0,
-        cmid               : 0,
-        courseid           : 0,
-        webcastid          : 0,
-        filesharing        : false,
-        filesharing_student: false,
-        viewhistory        : false,
-        is_ended           : false,
-        showuserpicture    : false,
-        stream             : false,
-        broadcaster        : -999,
-        is_broadcaster     : false,
-        broadcastkey       : "broadcastkey",
-        shared_secret      : "",
-        streaming_server   : "",
-        chat_server        : "",
-        fullname           : "",
-        ajax_path          : "",
-        usertype           : "",
-        userid             : 0,
-        userlist           : false,
-        ajax_timer         : false,
-        enable_emoticons   : true,
-        hls                : false
+        debugjs               : false,
+        preventclosewaring    : false,
+        chat                  : false,
+        chatnoticesound       : true,
+        duration              : 0,
+        timeopen              : 0,
+        cmid                  : 0,
+        courseid              : 0,
+        webcastid             : 0,
+        filesharing           : false,
+        filesharing_student   : false,
+        viewhistory           : false,
+        is_ended              : false,
+        showuserpicture       : false,
+        stream                : false,
+        broadcaster           : -999,
+        is_broadcaster        : false,
+        broadcastkey          : "broadcastkey",
+        broadcaster_identifier: "",
+        shared_secret         : "",
+        streaming_server      : "",
+        chat_server           : "",
+        fullname              : "",
+        ajax_path             : "",
+        usertype              : "",
+        userid                : 0,
+        userlist              : false,
+        ajax_timer            : false,
+        enable_emoticons      : true,
+        hls                   : false
     },
 
     /**
@@ -654,7 +655,7 @@ M.mod_webcast.room = {
         // add the chat
         if (this.options.chat) {
             this.add_chat();
-        }else {
+        } else {
             // remove chat components
             Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon ').hide();
         }
@@ -667,22 +668,53 @@ M.mod_webcast.room = {
         }
 
         // add action on the leave button
-        Y.one('#webcast-leave').on('click' , function(){
+        Y.one('#webcast-leave').on('click', function () {
 
-            if(this.options.is_ended){
+            if (this.options.is_ended) {
                 this.options.preventclosewaring = true;
                 window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + this.options.cmid;
-            } else if(this.options.is_broadcaster) {
+            } else if (this.options.is_broadcaster) {
                 // confirm closing
-                var a = confirm(M.util.get_string('js:error_logout_or_lostconnection', 'webcast', {}));
-                if(a){
-                    this.options.preventclosewaring = true;
-                    window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + this.options.cmid;
+                var a = confirm(M.util.get_string('js:ending_webcast', 'webcast', {}));
+                if (a) {
+                    // close chat with a API call
+                    Y.io(this.options.ajax_path, {
+                        method : 'GET',
+                        data   : {
+                            'sesskey': M.cfg.sesskey,
+                            'action' : "endwebcast",
+                            'extra1' : M.mod_webcast.room.options.courseid,
+                            'extra2' : M.mod_webcast.room.options.webcastid
+                        },
+                        on     : {
+                            success: function (id, o) {
+                                M.mod_webcast.room.log(id);
+                                try {
+                                    var response = Y.JSON.parse(o.responseText);
+                                    M.mod_webcast.room.log(response);
+                                    if (response.status) {
+
+                                        // Close the room on chat server // chat server will notice all clients
+                                        M.mod_webcast.room.chatobject.broadcaster_identifier = M.mod_webcast.room.options.broadcaster_identifier;
+                                        M.mod_webcast.room.socket.emit("ending", M.mod_webcast.room.chatobject, function (response) {
+                                            M.mod_webcast.room.log(response);
+                                        });
+                                    }
+                                } catch (e) {
+                                    // exception
+                                    M.mod_webcast.room.log(e);
+                                }
+                            }
+                        },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
                 }
-            } else{
+            } else {
                 window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + this.options.cmid;
             }
-        } , this);
+        }, this);
 
         // scaling listener
         this.add_event(window, "resize", function () {
@@ -762,6 +794,8 @@ M.mod_webcast.room = {
         "use strict";
         if (this.options.is_broadcaster) {
             this.log('mute(' + usertype + ',' + value + ')');
+
+            this.chatobject.broadcaster_identifier = this.options.broadcaster_identifier;
 
             this.socket.emit("mute", this.chatobject, usertype, value, function (response) {
                 M.mod_webcast.room.log(response);
@@ -843,7 +877,7 @@ M.mod_webcast.room = {
         this.nodeholder.message = Y.one('#webcast-message');
 
         // skip if its ended
-        if(this.options.is_ended){
+        if (this.options.is_ended) {
             return;
         }
 
@@ -877,6 +911,10 @@ M.mod_webcast.room = {
         // connection failed
         this.socket.on('reconnect_failed', function () {
             M.mod_webcast.room.socket_connection_failed('reconnect_failed');
+        });
+
+        this.socket.on('webcast-ended', function () {
+            Y.one('body').setHTML('ended');
         });
 
         // disconnect
@@ -1715,7 +1753,7 @@ M.mod_webcast.room = {
     warning_message_closing_window: function () {
         "use strict";
         window.onbeforeunload = function () {
-            if(!this.options.preventclosewaring){
+            if (!this.options.preventclosewaring) {
                 return M.util.get_string('js:warning_message_closing_window', 'webcast', {});
             }
         };
@@ -1783,7 +1821,7 @@ M.mod_webcast.room = {
             });
             this.scrollbar_chatlist.update('bottom');
 
-        } else if(this.options.userlist){
+        } else if (this.options.userlist) {
 
             // only userlist
             wh = winHeight - ((36) + 50 + 100);
