@@ -23,7 +23,6 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
-
 require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
 
@@ -101,7 +100,7 @@ $opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
 $opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
 unset($opts['intro']);
 
-if(!$opts['is_broadcaster']){
+if (!$opts['is_broadcaster']) {
     unset($opts['broadcaster_identifier']);
 }
 
@@ -141,6 +140,9 @@ $PAGE->requires->string_for_js('js:system_user', 'webcast');
 $PAGE->requires->string_for_js('js:warning_message_closing_window', 'webcast');
 $PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
 $PAGE->requires->string_for_js('js:ending_webcast', 'webcast');
+$PAGE->requires->string_for_js('js:dialog_ending_text', 'webcast');
+$PAGE->requires->string_for_js('js:dialog_ending_btn', 'webcast');
+$PAGE->requires->string_for_js('js:ended', 'webcast');
 
 // Renderer
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -333,15 +335,14 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="webcast-filemanger-dialog" class="webcast-dialog" style="display: none">
+                    <div id="webcast-emoticons-dialog" class="webcast-dialog" style="display: none">
                         <header>
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
                         </header>
-                        <?php if (!empty($form)): ?>
-                            <?php echo $form->render() ?>
-                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
-                        <?php endif ?>
+                        <div id="emoticons-overview">
+                            <!-- Holder -->
+                        </div>
                     </div>
                     <div id="webcast-filemanger-dialog" style="display: none">
                         <header>
@@ -353,7 +354,6 @@ echo $OUTPUT->header();
                             <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
                         <?php endif ?>
                     </div>
-                    <div class="webcast-emoticons-dialoge"></div>
                     <?php if ($opts['filesharing']): ?>
                         <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
                         <span id="webcast-fileoverview-btn"><?php echo get_string('fileoverview', 'webcast') ?></span>

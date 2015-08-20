@@ -168,3 +168,6 @@ $string['js:system_user'] = 'Chat server';
 $string['js:connecting'] = 'Connecting to the chat server, please be patient.';
 $string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the webcast?';
 $string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the webcast.';
+$string['js:dialog_ending_text'] = 'Broadcaster has closed the webcast. You will be redirect to Moodle.';
+$string['js:dialog_ending_btn'] = 'Close webcast';
+$string['js:ended'] = 'Broadcaster has closed the webcast.';

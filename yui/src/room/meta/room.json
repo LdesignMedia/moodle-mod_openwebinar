@@ -5,6 +5,7 @@
       "node",
       "io",
       "anim",
+      "panel",
       "json-stringify",
       "json-parse"
     ]

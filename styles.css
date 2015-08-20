@@ -463,7 +463,7 @@
     background: #b94a48;
 }
 
-#webcast-filemanger-dialog , #webcast-fileoverview-dialog {
+.webcast-dialog{
     position: absolute;
     width: 400px;
     background: #F5F5F5;
@@ -482,6 +482,14 @@
     margin: 0  !important;
     padding: 0  !important;
     cursor:pointer;
+}
+
+.webcast-dialog #emoticons-overview{
+    padding: 10px;
+}
+
+.webcast-dialog #emoticons-overview span{
+    cursor: pointer;
 }
 
 #add-file-btn{

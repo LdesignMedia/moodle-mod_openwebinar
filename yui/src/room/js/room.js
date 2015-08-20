@@ -502,6 +502,7 @@ M.mod_webcast.room = {
         filemanagerdialog : null,
         fileoverviewdialog: null,
         fileoverview      : null,
+        emoticonsdialog      : null,
         message           : null
     },
     /**
@@ -657,7 +658,7 @@ M.mod_webcast.room = {
             this.add_chat();
         } else {
             // remove chat components
-            Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon ').hide();
+            Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon').hide();
         }
 
         // add file sharing
@@ -913,8 +914,9 @@ M.mod_webcast.room = {
             M.mod_webcast.room.socket_connection_failed('reconnect_failed');
         });
 
+        // broadcaster ending webcast called
         this.socket.on('webcast-ended', function () {
-            Y.one('body').setHTML('ended');
+            this.chat_ended();
         });
 
         // disconnect
@@ -928,6 +930,38 @@ M.mod_webcast.room = {
         });
     },
 
+    /**
+     * Called when the broadcaster end the webcast
+     */
+    chat_ended              : function () {
+        "use strict";
+        this.chat_local_message('ended');
+        var that = this, dialog = new Y.Panel({
+            contentBox : Y.Node.create('<div id="dialog" />'),
+            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' + M.util.get_string('js:dialog_ending_text', 'webcast', {}) + '</div>',
+            width      : 410,
+            zIndex     : 6,
+            modal      : true, // modal behavior
+            render     : true,
+            centered   : true,
+            visible    : false, // make visible explicitly with .show()
+            buttons    : {
+                footer: [
+                    {
+                        name  : 'proceed',
+                        label : M.util.get_string('js:dialog_ending_btn', 'webcast', {}),
+                        action: 'onOK'
+                    }
+                ]
+            }
+        });
+        dialog.onOK = function (e) {
+            e.preventDefault();
+            // redirect to previous page
+            window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + that.options.cmid;
+        };
+        dialog.show();
+    },
     /**
      * socket_connection_failed
      * @param message
@@ -1192,7 +1226,7 @@ M.mod_webcast.room = {
         this.log('add_chat');
 
         // add tinyscrollbar
-        var el = document.getElementById("webcast-chatlist");
+        var that = this,el = document.getElementById("webcast-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
         this.nodeholder.chatlist = Y.one('#webcast-chatlist ul');
         this.nodeholder.loadhistorybtn = Y.one('#webcast-loadhistory');
@@ -1228,10 +1262,61 @@ M.mod_webcast.room = {
             }, this);
         }
 
-        // Workaround for enterkey YUI event not working here..
+        // show emoticon dialog
+        if(this.options.enable_emoticons && !this.options.is_ended){
+
+            this.log('Emoticons are enabled');
+            this.nodeholder.emoticonsdialog = Y.one("#webcast-emoticons-dialog");
+
+            this.nodeholder.emoticonsdialog.delegate('click', function () {
+                that.log('click emo');
+                that.nodeholder.message.set('value' , that.nodeholder.message.get('value') + this.get('text'));
+                that.nodeholder.emoticonsdialog.hide();
+
+                that.nodeholder.message.focus();
+            }, 'span.emoticon');
+
+            Y.one('#webcast-emoticon-icon').on('click' , function () {
+                this.log('click on emoticon icon');
+
+                // validate the emoticons are already build else build them first in a dialog
+                if (!Y.one('#webcast-emoticon-content')) {
+                    this.chat_build_emoticon_selector();
+                }
+
+                if ((this.nodeholder.emoticonsdialog.get('offsetWidth') === 0 &&
+                    this.nodeholder.emoticonsdialog.get('offsetHeight') === 0) ||
+                    this.nodeholder.emoticonsdialog.get('display') === 'none') {
+                    this.log('Show');
+                    this.nodeholder.emoticonsdialog.show();
+                } else {
+                    this.log('Hide');
+                    this.nodeholder.emoticonsdialog.hide();
+                }
+            }, this);
+        }
+
+        // Workaround for enter key YUI event not working here..
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_webcast.room.chat_enter_listener(event);');
     },
 
+    /**
+     *
+     */
+    chat_build_emoticon_selector : function(){
+        "use strict";
+        var name,items =  '';
+
+        // build preview for all emoticons
+        for(name in this.emoticons){
+            if(this.emoticons.hasOwnProperty(name)){
+                this.log(this.emoticons[name]);
+                items += '<span class="emoticon emoticon-' + name + '" title="' + this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] + '</span>';
+            }
+        }
+        var content = Y.Node.create('<div id="webcast-emoticon-content">'+items+'</div>');
+        content.appendTo('#webcast-emoticons-dialog div');
+    },
     /**
      * Check if enter is pressed send the message
      * @param e
@@ -1246,9 +1331,14 @@ M.mod_webcast.room = {
     },
 
     /**
+     * add chat row to the chat
      *
+     * @param data object|array
+     * @param direction string
+     * @param multiplelines bool
+     * @returns {string}
      */
-    chat_add_chatrow: function (data, direction, multiline) {
+    chat_add_chatrow: function (data, direction, multiplelines) {
         "use strict";
 
         this.log('chat_add_chatrow');
@@ -1307,13 +1397,13 @@ M.mod_webcast.room = {
                     '</li>';
             }
 
-            if (multiline) {
+            if (multiplelines) {
                 return chatline;
             }
         }
 
-        // Check if we using data as a multiline object
-        if (multiline) {
+        // Check if we using data as a multiplelines object
+        if (multiplelines) {
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
                     chatline += this.chat_add_chatrow(data[i], '', true);
@@ -1345,6 +1435,7 @@ M.mod_webcast.room = {
 
         this.chat_add_chatrow(message);
     },
+
     /**
      * Make sure a message is a valid text
      * @param message
@@ -1588,7 +1679,7 @@ M.mod_webcast.room = {
     },
 
     /**
-     *
+     * add_fileshare
      */
     add_fileshare: function () {
         "use strict";
@@ -1831,7 +1922,7 @@ M.mod_webcast.room = {
             this.scrollbar_userlist.update('bottom');
         }
 
-        // filesharing
+        // file sharing
         if (this.options.filesharing) {
 
             if (!this.options.is_ended) {
@@ -1855,6 +1946,15 @@ M.mod_webcast.room = {
             });
         }
 
+        // emoticons dialog
+        if (this.options.enable_emoticons) {
+            if (!this.options.is_ended) {
+                this.nodeholder.emoticonsdialog.setStyles({
+                    height      : (wh + 25),
+                    'margin-top': -(wh + 25)
+                });
+            }
+        }
     },
 
     /**
