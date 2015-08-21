@@ -335,16 +335,7 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="webcast-emoticons-dialog" class="webcast-dialog" style="display: none">
-                        <header>
-                            <span>Close</span>
-                            <span class="webcast-close-sign">X</span>
-                        </header>
-                        <div id="emoticons-overview">
-                            <!-- Holder -->
-                        </div>
-                    </div>
-                    <div id="webcast-filemanger-dialog" style="display: none">
+                    <div id="webcast-filemanger-dialog" class="webcast-dialog" style="display: none">
                         <header>
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
@@ -353,6 +344,15 @@ echo $OUTPUT->header();
                             <?php echo $form->render() ?>
                             <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
                         <?php endif ?>
+                    </div>
+                    <div id="webcast-emoticons-dialog" class="webcast-dialog" style="display: none">
+                        <header>
+                            <span>Close</span>
+                            <span class="webcast-close-sign">X</span>
+                        </header>
+                        <div id="emoticons-overview">
+                            <!-- Holder -->
+                        </div>
                     </div>
                     <?php if ($opts['filesharing']): ?>
                         <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>

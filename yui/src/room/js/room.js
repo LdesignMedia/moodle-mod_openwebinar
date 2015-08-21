@@ -8,7 +8,7 @@
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm */
+/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio */
 
 /**
  * This object is public accessible
@@ -401,6 +401,7 @@ M.mod_webcast.room = {
         viewhistory           : false,
         is_ended              : false,
         showuserpicture       : false,
+        enable_chat_sound     : true,
         stream                : false,
         broadcaster           : -999,
         is_broadcaster        : false,
@@ -502,7 +503,7 @@ M.mod_webcast.room = {
         filemanagerdialog : null,
         fileoverviewdialog: null,
         fileoverview      : null,
-        emoticonsdialog      : null,
+        emoticonsdialog   : null,
         message           : null
     },
     /**
@@ -546,6 +547,9 @@ M.mod_webcast.room = {
 
         // log the new options
         this.log(this.options);
+
+        // load message sound
+        this.audio_newmessage = new Audio(M.cfg.wwwroot + '/mod/webcast/sound/newmessage.mp3');
 
         // build room components
         this.build_room();
@@ -748,6 +752,10 @@ M.mod_webcast.room = {
         this.log('set_user_setting(' + name + ',' + value + ')');
 
         switch (name) {
+
+            case 'sound':
+                this.options.enable_chat_sound = Boolean(value);
+                break;
 
             case 'stream':
 
@@ -1226,7 +1234,7 @@ M.mod_webcast.room = {
         this.log('add_chat');
 
         // add tinyscrollbar
-        var that = this,el = document.getElementById("webcast-chatlist");
+        var that = this, el = document.getElementById("webcast-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
         this.nodeholder.chatlist = Y.one('#webcast-chatlist ul');
         this.nodeholder.loadhistorybtn = Y.one('#webcast-loadhistory');
@@ -1263,20 +1271,20 @@ M.mod_webcast.room = {
         }
 
         // show emoticon dialog
-        if(this.options.enable_emoticons && !this.options.is_ended){
+        if (this.options.enable_emoticons && !this.options.is_ended) {
 
             this.log('Emoticons are enabled');
             this.nodeholder.emoticonsdialog = Y.one("#webcast-emoticons-dialog");
 
             this.nodeholder.emoticonsdialog.delegate('click', function () {
                 that.log('click emo');
-                that.nodeholder.message.set('value' , that.nodeholder.message.get('value') + this.get('text'));
+                that.nodeholder.message.set('value', that.nodeholder.message.get('value') + this.get('text') + ' ');
                 that.nodeholder.emoticonsdialog.hide();
 
                 that.nodeholder.message.focus();
             }, 'span.emoticon');
 
-            Y.one('#webcast-emoticon-icon').on('click' , function () {
+            Y.one('#webcast-emoticon-icon').on('click', function () {
                 this.log('click on emoticon icon');
 
                 // validate the emoticons are already build else build them first in a dialog
@@ -1301,20 +1309,20 @@ M.mod_webcast.room = {
     },
 
     /**
-     *
+     * Build emoticons overview
      */
-    chat_build_emoticon_selector : function(){
+    chat_build_emoticon_selector: function () {
         "use strict";
-        var name,items =  '';
+        var name, items = '';
 
         // build preview for all emoticons
-        for(name in this.emoticons){
-            if(this.emoticons.hasOwnProperty(name)){
+        for (name in this.emoticons) {
+            if (this.emoticons.hasOwnProperty(name)) {
                 this.log(this.emoticons[name]);
                 items += '<span class="emoticon emoticon-' + name + '" title="' + this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] + '</span>';
             }
         }
-        var content = Y.Node.create('<div id="webcast-emoticon-content">'+items+'</div>');
+        var content = Y.Node.create('<div id="webcast-emoticon-content">' + items + '</div>');
         content.appendTo('#webcast-emoticons-dialog div');
     },
     /**
@@ -1322,7 +1330,7 @@ M.mod_webcast.room = {
      * @param e
      * @returns {boolean}
      */
-    chat_enter_listener: function (e) {
+    chat_enter_listener         : function (e) {
         "use strict";
         if (e.keyCode === 13) {
             M.mod_webcast.room.chat_send_message();
@@ -1349,6 +1357,12 @@ M.mod_webcast.room = {
         if (Y.Object.hasKey(data, 'message')) {
 
             this.log(data);
+
+            // play sound on new message
+            if (this.options.enable_chat_sound && this.options.userid !== data.userid && this.audio_newmessage) {
+                this.log('Bleep sound..');
+                this.audio_newmessage.play();
+            }
 
             // build the chatline and make sure nothing strange happens XSS!
             if (data.messagetype === 'default') {
