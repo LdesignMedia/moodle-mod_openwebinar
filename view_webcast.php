@@ -144,7 +144,10 @@ $PAGE->requires->string_for_js('js:dialog_ending_text', 'webcast');
 $PAGE->requires->string_for_js('js:dialog_ending_btn', 'webcast');
 $PAGE->requires->string_for_js('js:ended', 'webcast');
 
-// Renderer
+/**
+ * Renderer
+ * @var mod_webcast_renderer $renderer
+ */
 $renderer = $PAGE->get_renderer('mod_webcast');
 
 if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) && $USER->id > 1) {

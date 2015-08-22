@@ -17,7 +17,7 @@
 /**
  * Library of interface functions and constants for module webcast
  *
- * All the core Moodle functions, neeeded to allow the module to work
+ * All the core Moodle functions, needed to allow the module to work
  * integrated in Moodle should be placed here.
  *
  * All the webcast specific functions, needed to implement all the module
@@ -52,7 +52,7 @@ function webcast_supports($feature) {
         case FEATURE_SHOW_DESCRIPTION:
             return true;
         case FEATURE_GRADE_HAS_GRADE:
-            return true;
+            return false;
         case FEATURE_BACKUP_MOODLE2:
             return true;
         default:
@@ -81,15 +81,15 @@ function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = n
     $webcast->id = $DB->insert_record('webcast', $webcast);
 
     $event = new stdClass();
-    $event->name        = $webcast->name;
+    $event->name = $webcast->name;
     $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
-    $event->courseid    = $webcast->course;
-    $event->groupid     = 0;
-    $event->userid      = 0;
-    $event->modulename  = 'webcast';
-    $event->instance    = $webcast->id;
-    $event->eventtype   = 'webcasttime';
-    $event->timestart   = $webcast->timeopen;
+    $event->courseid = $webcast->course;
+    $event->groupid = 0;
+    $event->userid = 0;
+    $event->modulename = 'webcast';
+    $event->instance = $webcast->id;
+    $event->eventtype = 'webcasttime';
+    $event->timestart = $webcast->timeopen;
     $event->timeduration = $webcast->duration;
 
     calendar_event::create($event);
@@ -125,11 +125,11 @@ function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform 
 
     $event = new stdClass();
 
-    if ($event->id = $DB->get_field('event', 'id', array('modulename'=>'webcast', 'instance'=>$webcast->id))) {
+    if ($event->id = $DB->get_field('event', 'id', array('modulename' => 'webcast', 'instance' => $webcast->id))) {
 
-        $event->name        = $webcast->name;
+        $event->name = $webcast->name;
         $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
-        $event->timestart   = $webcast->timeopen;
+        $event->timestart = $webcast->timeopen;
         $event->timeduration = $webcast->duration;
 
         $calendarevent = calendar_event::load($event->id);
@@ -163,7 +163,7 @@ function webcast_delete_instance($id) {
     webcast_grade_item_delete($webcast);
 
     // remove the event
-    $DB->delete_records('event', array('modulename'=>'webcast', 'instance'=>$webcast->id));
+    $DB->delete_records('event', array('modulename' => 'webcast', 'instance' => $webcast->id));
 
     // @todo remove chatlogs
     // @todo remove useronline status
@@ -437,7 +437,7 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
 /**
  * Serves the files from the webcast file areas
  *
- * @note we use own version in api class
+ * @note     we use own version in api class
  *
  * @package  mod_webcast
  * @category files
@@ -452,4 +452,41 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
  */
 function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
     send_file_not_found();
+}
+
+
+/**
+ * This function extends the settings navigation block for the site.
+ *
+ * It is safe to rely on PAGE here as we will only ever be within the module
+ * context when this is called
+ *
+ * @param settings_navigation $settings
+ * @param navigation_node $webcastnode
+ *
+ * @return void
+ */
+function webcast_extend_settings_navigation($settings, $webcastnode) {
+    global $PAGE, $CFG;
+
+    // We want to add these new nodes after the Edit settings node, and before the
+    // Locally assigned roles node. Of course, both of those are controlled by capabilities.
+    $keys = $webcastnode->get_children_key_list();
+    $beforekey = null;
+    $i = array_search('modedit', $keys);
+    if ($i === false and array_key_exists(0, $keys)) {
+        $beforekey = $keys[0];
+    } else if (array_key_exists($i + 1, $keys)) {
+        $beforekey = $keys[$i + 1];
+    }
+
+    if (has_capability('mod/webcast:manager', $PAGE->cm->context)) {
+        $url = new moodle_url('/mod/webcast/user_activity.php', array('id' => $PAGE->cm->id));
+        $node = navigation_node::create(get_string('user_activity', 'webcast'), $url, navigation_node::TYPE_SETTING, null, 'mod_webcast_user_activity', new pix_icon('i/preview', ''));
+        $webcastnode->add_node($node, $beforekey);
+    }
+
+    // Included here as we only ever want to include this file if we really need to.
+    require_once($CFG->libdir . '/questionlib.php');
+    question_extend_settings_navigation($webcastnode, $PAGE->cm->context)->trim_if_empty();
 }

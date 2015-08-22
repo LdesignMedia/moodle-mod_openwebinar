@@ -30,6 +30,12 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mod_webcast_renderer extends plugin_renderer_base {
 
+    /**
+     * Number of rows will be shown foreach page
+     *
+     * @const int DEFAULT_TABLE_ROW_COUNT
+     */
+    const DEFAULT_TABLE_ROW_COUNT = 20;
 
     /**
      * Show the page with all the component
@@ -123,8 +129,56 @@ class mod_webcast_renderer extends plugin_renderer_base {
      * Webcast has ended and user doesn't have access to history
      *
      * @param $webcast
+     *
+     * @return string
      */
     public function view_page_ended_message($webcast) {
+        $html = '';
+        return $html;
+    }
 
+    /**
+     * get overview of all user activities in given webcast
+     *
+     * @param $webcast
+     *
+     * @return string
+     */
+    public function view_user_activity_all($webcast){
+        global $OUTPUT, $PAGE , $CFG , $DB;
+
+        require_once($CFG->libdir . '/tablelib.php');
+
+        $table = new \mod_webcast\table\useractivity('outstation-list-table' , $webcast);
+        echo $OUTPUT->heading(get_string('text:useractivity', 'webcast'));
+
+        echo '<hr/>';
+
+        $table->set_attribute('cellspacing', '0');
+        $table->set_attribute('class', 'admintable generaltable');
+        $table->initialbars(true); // always initial bars
+        $table->define_columns(array(
+            'picture',
+            'firstname',
+            'lastname',
+            'email',
+            'present',
+            'action'
+        ));
+
+        $table->define_headers(array(
+            get_string('heading:picture', 'webcast'),
+            get_string('heading:firstname', 'webcast'),
+            get_string('heading:lastname', 'webcast'),
+            get_string('heading:email', 'webcast'),
+            get_string('heading:present', 'webcast'),
+            get_string('heading:action', 'webcast'),
+        ));
+
+        $table->no_sorting('action');
+        $table->sortable(true, 'name', SORT_DESC);
+        $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
+        $table->collapsible(false);
+        $table->out(self::DEFAULT_TABLE_ROW_COUNT, true);
     }
 }

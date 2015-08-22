@@ -15,23 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of webcast
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
+ * Overview of user activity in the webcast
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @package   mod_webcast
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
- */
-
+ **/
 require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
+
+$userid = optional_param('userid', false, PARAM_INT);
+$action = optional_param('action', false, PARAM_TEXT);
 
 if ($id) {
     $cm = get_coursemodule_from_id('webcast', $id, 0, false, MUST_EXIST);
@@ -47,73 +46,41 @@ if ($id) {
 
 require_login($course, true, $cm);
 
-// Print the page header.
-$PAGE->set_url('/mod/webcast/view.php', array('id' => $cm->id));
+// get context
+$context = context_module::instance($cm->id);
+
+// validate access to this part
+if (!has_capability('mod/webcast:manager', $PAGE->cm->context)) {
+    error(get_string('error:no_access', 'webcast'));
+}
+
+$PAGE->set_url('/mod/webcast/user_activity.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($webcast->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-webcast');
 
-// Convert webcast data to JS
-$opts = (array)$webcast;
-unset($opts['intro'], $opts['broadcastkey']);
-
-// Load JS base
-$PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
-
-// Permissions
-$permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
-
 /**
  * Renderer
+ *
  * @var mod_webcast_renderer $renderer
  */
 $renderer = $PAGE->get_renderer('mod_webcast');
 
-// Get status
-$status = \mod_webcast\helper::get_webcast_status($webcast);
-
 // Output starts here.
 echo $OUTPUT->header();
 
-// Conditions to show the intro can change to look for own settings or whatever.
-// if ($webcast->intro) {
-// echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
-//}
+switch ($action) {
 
-echo $OUTPUT->heading(format_string($webcast->name), 1, 'webcast-center');
-
-/**
- * $completion=new completion_info($course);
- * $completion->set_module_viewed($cm);
- */
-switch ($status) {
-
-    case \mod_webcast\helper::WEBCAST_LIVE:
-        echo $renderer->view_page_live_webcast($id, $webcast);
-
-        if ($webcast->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($webcast);
-        }
+    case 'user_chattime':
+        $renderer->view_user_chattime($webcast, $userid);
         break;
 
-    case \mod_webcast\helper::WEBCAST_CLOSED:
-    case \mod_webcast\helper::WEBCAST_BROADCASTED:
-
-        if ($permissions->history) {
-            echo $renderer->view_page_history_webcast($id, $webcast);
-        } else {
-            echo $renderer->view_page_ended_message($webcast);
-        }
+    case 'user_chatlog':
+        $renderer->view_user_chatlog($webcast, $userid);
         break;
 
     default:
-        echo $renderer->view_page_not_started_webcast($webcast);
-
-        if ($webcast->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($webcast);
-        }
-        break;
-
+        $renderer->view_user_activity_all($webcast);
 }
 
 // Finish the page.

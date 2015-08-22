@@ -58,6 +58,7 @@ $string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
 $string['error:time_passed'] = 'Error:  Starttime has already been passed!';
 $string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
+$string['error:no_access'] = 'Error: missing capability to do this.';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';
@@ -103,11 +104,9 @@ $string['mod_setting:timing'] = 'Webcast time';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
-
 $string['mod_setting:make_a_selection'] = 'Select a user';
 $string['mod_setting:broadcaster'] = 'Webcast broadcaster';
 $string['mod_setting:reminders'] = 'Webcast reminder messages';
-
 $string['mod_setting:duration'] = 'Duration';
 $string['mod_setting:durationhelp'] = 'Duration';
 $string['mod_setting:durationhelp_help'] = 'Duration';
@@ -119,15 +118,20 @@ $string['text:live_webcast'] = '<br/>The webcast is open from: <b>{$a->timeopen}
 $string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/webcast_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
 $string['text:history'] = '<h3>Webcast is offline</h3>This webcast was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this webcast by clicking on the button below.';
+$string['text:useractivity'] = 'User activity';
 
 // Buttons
 $string['btn:enter_live_webcast'] = 'Enter live webcast';
 $string['btn:enter_offline_webcast'] = 'Enter offline webcast';
+$string['btn:chattime'] = 'Time in room';
+$string['btn:chatlog'] = 'Log';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Users';
 $string['chat'] = 'Chat';
+$string['no'] = 'No';
+$string['yes'] = 'Yes';
 $string['menu'] = 'Control panel';
 $string['live'] = 'Live';
 $string['addfile'] = 'Add file';
@@ -140,6 +144,7 @@ $string['student'] = 'Student';
 $string['guest'] = 'Guest';
 $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
+$string['user_activity'] = 'Webcast user activity';
 
 // useroptions
 $string['opt:header_broadcaster'] = 'Broadcaster';
@@ -171,3 +176,11 @@ $string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session
 $string['js:dialog_ending_text'] = 'Broadcaster has closed the webcast. You will be redirect to Moodle.';
 $string['js:dialog_ending_btn'] = 'Close webcast';
 $string['js:ended'] = 'Broadcaster has closed the webcast.';
+
+// HEADING Tables
+$string['heading:picture'] = 'Avatar';
+$string['heading:firstname'] = 'Firstname';
+$string['heading:lastname'] = 'Lastname';
+$string['heading:email'] = 'Email';
+$string['heading:present'] = 'Present';
+$string['heading:action'] = 'Action';
