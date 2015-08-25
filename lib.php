@@ -94,8 +94,6 @@ function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = n
 
     calendar_event::create($event);
 
-    webcast_grade_item_update($webcast);
-
     return $webcast->id;
 }
 
@@ -159,8 +157,6 @@ function webcast_delete_instance($id) {
 
     // Delete any dependent records here.
     $DB->delete_records('webcast', array('id' => $webcast->id));
-
-    webcast_grade_item_delete($webcast);
 
     // remove the event
     $DB->delete_records('event', array('modulename' => 'webcast', 'instance' => $webcast->id));
@@ -284,116 +280,6 @@ function webcast_get_extra_capabilities() {
     return array();
 }
 
-/* Gradebook API */
-
-/**
- * Is a given scale used by the instance of webcast?
- *
- * This function returns if a scale is being used by one webcast
- * if it has support for grading and scales.
- *
- * @param int $webcastid ID of an instance of this module
- * @param int $scaleid   ID of the scale
- *
- * @return bool true if the scale is used by the given webcast instance
- */
-function webcast_scale_used($webcastid, $scaleid) {
-    global $DB;
-
-    if ($scaleid and $DB->record_exists('webcast', array('id' => $webcastid, 'grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
- * Checks if scale is being used by any instance of webcast.
- *
- * This is used to find out if scale used anywhere.
- *
- * @param int $scaleid ID of the scale
- *
- * @return boolean true if the scale is used by any webcast instance
- */
-function webcast_scale_used_anywhere($scaleid) {
-    global $DB;
-
-    if ($scaleid and $DB->record_exists('webcast', array('grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
- * Creates or updates grade item for the given webcast instance
- *
- * Needed by {@link grade_update_mod_grades()}.
- *
- * @param stdClass $webcast instance object with extra cmidnumber and modname property
- * @param bool $reset       reset grades in the gradebook
- *
- * @return void
- */
-function webcast_grade_item_update(stdClass $webcast, $reset = false) {
-    global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
-
-    $item = array();
-    $item['itemname'] = clean_param($webcast->name, PARAM_NOTAGS);
-    $item['gradetype'] = GRADE_TYPE_VALUE;
-
-    if ($webcast->grade > 0) {
-        $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax'] = $webcast->grade;
-        $item['grademin'] = 0;
-    } else if ($webcast->grade < 0) {
-        $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid'] = -$webcast->grade;
-    } else {
-        $item['gradetype'] = GRADE_TYPE_NONE;
-    }
-
-    if ($reset) {
-        $item['reset'] = true;
-    }
-
-    grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, null, $item);
-}
-
-/**
- * Delete grade item for given webcast instance
- *
- * @param stdClass $webcast instance object
- *
- * @return grade_item
- */
-function webcast_grade_item_delete($webcast) {
-    global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
-
-    return grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, null, array('deleted' => 1));
-}
-
-/**
- * Update webcast grades in the gradebook
- *
- * Needed by {@link grade_update_mod_grades()}.
- *
- * @param stdClass $webcast instance object with extra cmidnumber and modname property
- * @param int $userid       update grade of specific user only, 0 means all participants
- */
-function webcast_update_grades(stdClass $webcast, $userid = 0) {
-    global $CFG, $DB;
-    require_once($CFG->libdir . '/gradelib.php');
-
-    // Populate array of grade objects indexed by userid.
-    $grades = array();
-
-    grade_update('mod/webcast', $webcast->course, 'mod', 'webcast', $webcast->id, 0, $grades);
-}
-
 /* File API */
 
 /**
@@ -453,7 +339,6 @@ function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filear
 function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
     send_file_not_found();
 }
-
 
 /**
  * This function extends the settings navigation block for the site.

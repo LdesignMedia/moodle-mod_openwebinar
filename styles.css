@@ -12,6 +12,16 @@
 }
 
 /* ROOM STYLING THIS STANDALONE */
+#webcast-loading {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #fff url([[pix:mod_webcast|loader]]) no-repeat scroll center center;
+    left: 0;
+    top: 0;
+    z-index: 99999;
+}
+
 #page-mod-webcast-view_webcast {
     background: #fff;
     padding: 0;
@@ -89,6 +99,11 @@
     color: #fff;
 }
 
+.webcast-button.gray {
+    background: rgba(57, 57, 57, 1);
+    color: #fff;
+}
+
 #webcast-left-menu li.header {
     border-bottom: 1px solid #CCCCCC;
     height: 35px;
@@ -138,15 +153,15 @@
     line-height: 35px;
 }
 
-#webcast-left-menu h3{
-    line-height:14px;
+#webcast-left-menu h3 {
+    line-height: 14px;
     font-size: 14px;
     padding: 0;
     margin: 0;
-    font-weight:bold;
+    font-weight: bold;
 }
 
-#webcast-left-menu .text{
+#webcast-left-menu .text {
     line-height: 18px;
 }
 
@@ -163,6 +178,7 @@
     list-style: none;
     width: 380px;
 }
+
 #webcast-fileoverview ul li {
     width: 100%;
     margin: 10px 0 0 0;
@@ -275,27 +291,27 @@
     margin: 5px 0;
 }
 
-.webcast-file img{
+.webcast-file img {
     width: 80px;
     margin-left: 5px;
 }
 
-.webcast-file .webcast-filename{
+.webcast-file .webcast-filename {
     position: absolute;
     font-weight: bold;
 }
 
-.webcast-file .webcast-filesize{
+.webcast-file .webcast-filesize {
     position: absolute;
     margin-top: 30px;
 }
 
-.webcast-file .webcast-fileauthor{
+.webcast-file .webcast-fileauthor {
     position: absolute;
     margin-top: 15px;
 }
 
-.webcast-file .webcast-download{
+.webcast-file .webcast-download {
     position: absolute;
     margin-top: -30px;
     position: absolute;
@@ -348,7 +364,6 @@
     margin: 4px 5px 0 5px;
     text-align: center;
     color: #fff;
-    width: 130px;
     float: right;
 }
 
@@ -416,25 +431,20 @@
     cursor: pointer;
 }
 
-#webcast-filemanager-btn {
-    color: #fff;
+#webcast-toolbar {
     position: absolute;
-    cursor: pointer;
-    font-size: 14px;
     margin: 37px 0 0 10px;
-    background: #adadad;
-    padding: 2px 5px;
-    border-radius: 3px;
 }
-#webcast-fileoverview-btn {
+
+#webcast-addquestion-btn, #webcast-viewquestion-btn, #webcast-filemanager-btn, #webcast-fileoverview-btn {
+    float: left;
     color: #fff;
-    position: absolute;
     cursor: pointer;
     font-size: 14px;
-    margin: 37px 0 0 123px;
-    border-radius: 3px;
     background: #adadad;
     padding: 2px 5px;
+    border-radius: 3px;
+    margin-right: 5px;
 }
 
 #webcast-emoticon-icon {
@@ -463,53 +473,53 @@
     background: #b94a48;
 }
 
-.webcast-dialog{
+.webcast-dialog {
     position: absolute;
     width: 400px;
     background: #F5F5F5;
 }
 
-.webcast-dialog header{
+.webcast-dialog header {
     background: #b4b9be !important;
     height: 20px;
     text-transform: uppercase;
     color: #fff;
-    font-size: 14px  !important;
+    font-size: 14px !important;
     font-weight: bold;
     text-align: right;
     line-height: 20px;
     vertical-align: middle;
-    margin: 0  !important;
-    padding: 0  !important;
-    cursor:pointer;
-}
-
-.webcast-dialog #emoticons-overview{
-    padding: 10px;
-}
-
-.webcast-dialog #emoticons-overview span{
+    margin: 0 !important;
+    padding: 0 !important;
     cursor: pointer;
 }
 
-#add-file-btn{
+.webcast-dialog #emoticons-overview {
+    padding: 10px;
+}
+
+.webcast-dialog #emoticons-overview span {
+    cursor: pointer;
+}
+
+#add-file-btn {
     margin: 0 5px;
 }
 
-.webcast-dialog header span{
+.webcast-dialog header span {
     padding: 0 5px;
 }
 
-#webcast-filemanger-dialog .fitemtitle {
+#webcast-filemanager-dialog .fitemtitle {
     display: none;
 }
 
-#webcast-filemanger-dialog .ffilemanager {
+#webcast-filemanager-dialog .ffilemanager {
     margin: 0;
     padding: 0 5px;
 }
 
-#webcast-filemanger-dialog .fp-restrictions {
+#webcast-filemanager-dialog .fp-restrictions {
     text-align: left;
     padding: 10px 5px;
 }
@@ -524,6 +534,15 @@
     width: 380px;
     overflow: hidden;
     position: relative;
+}
+
+#webcast-question-manager input[type="text"]{
+    width: 550px;
+}
+
+#webcast-question-manager textarea{
+    max-width: 550px;
+    width: 550px;
 }
 
 #page-mod-webcast-view_webcast .scroll .overview {
@@ -581,7 +600,7 @@
     -webkit-user-select: none;
 }
 
-#page-mod-webcast-view_webcast .selectable{
+#page-mod-webcast-view_webcast .selectable {
     user-select: all;
     -o-user-select: auto;
     -moz-user-select: all;
@@ -589,6 +608,71 @@
     -webkit-user-select: auto;
 }
 
+#webcast-question-manager .webcast-button {
+    width: 140px;
+}
+
+#webcast-question-manager .yui3-widget-bd {
+    padding: 10px;
+}
+
+#webcast-question-manager .viewport ul {
+    margin: 0;
+    padding: 0;
+}
+
+#webcast-question-manager .viewport li {
+    list-style: none;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    width: 560px;
+    border-bottom: 1px dashed #CCCCCC;
+    text-align: left;
+}
+
+#webcast-question-manager .viewport {
+    width: 560px !important;
+}
+
+#webcast-question-manager .scroll {
+    width: 580px;
+}
+
+#webcast-question-manager #all-questions li .number {
+    position: absolute;
+}
+
+#webcast-question-manager #all-questions li .name {
+    font-weight: bold;
+    position: absolute;
+    margin: 16px 0 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 326px
+}
+
+#webcast-question-manager #all-questions li .webcast-button{
+    position: absolute;
+    width: 100px;
+    margin: 11px 0 0 436px;
+}
+
+#webcast-question-manager .webcast-button.previous{
+    position: absolute;
+    margin: 315px 0 0 0;
+    background: #585858;
+}
+#webcast-question-manager .webcast-button.next{
+    position: absolute;
+    margin: 315px 0 0 420px;
+    background: #444444;
+}
+
+#webcast-question-manager .webcast-button.disabled{
+    background: #a4a4a4;
+    cursor:not-allowed;
+}
 
 /* SWITCHES */
 #page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast input[type="checkbox"] + label {

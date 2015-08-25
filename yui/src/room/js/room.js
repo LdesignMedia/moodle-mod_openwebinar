@@ -20,6 +20,8 @@ M.mod_webcast.room = {
 
     /**
      * Emoticons mapping
+     * @type Object
+     * @protected
      */
     emoticons: {
         "smile"         : {
@@ -381,10 +383,18 @@ M.mod_webcast.room = {
     },
 
     emoticons_regex: null,
+
+    /**
+     * Emoticons container
+     * @type Object
+     * @protected
+     */
     emoticons_map  : {},
 
     /**
      * Webcast variables
+     * @type Object
+     * @protected
      */
     options: {
         debugjs               : false,
@@ -417,26 +427,35 @@ M.mod_webcast.room = {
         userlist              : false,
         ajax_timer            : false,
         enable_emoticons      : true,
+        questions             : true,
         hls                   : false
     },
 
     /**
      * A reference to the scrollview used in this module
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_userlist: null,
 
     /**
      * A reference to the scrollview used in this module
+     * @type tinyscrollbar
+     * @protected
      */
     scrollview_chatlist: null,
 
     /**
      * A reference to the scrollbar for file overview
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_fileoverview: null,
 
     /**
      * A reference to the scrollbar for chatlist
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_chatlist: null,
 
@@ -447,32 +466,44 @@ M.mod_webcast.room = {
 
     /**
      * Files
+     * @type Object
+     * @protected
      */
     files_uploaded_hashes: {},
 
     /**
      * Shortcode regex
      * Sample [file 19845771897512389057123589027301201]
+     * @type RegExp
+     * @protected
      */
     shortcode_regex: /\[([\w\-_]+)([^\]]*)?\](?:(.+?)?\[\/\1\])?/g,
 
     /**
      * Bool to check if we are connected
+     * @type Boolean
+     * @protected
      */
     socket_is_connected: null,
 
     /**
      * Videojs player
+     * @type videojs
+     * @protected
      */
     player: null,
 
     /**
      * New message
+     * @type videojs
+     * @protected
      */
     audio_newmessage: null,
 
     /**
      * Chat template
+     * @type Object
+     * @protected
      */
     chatobject: {
         cmid         : 0,
@@ -488,7 +519,11 @@ M.mod_webcast.room = {
         message      : "",
         usertype     : "guest"
     },
-
+    /**
+     * Node containers
+     * @type Object
+     * @protected
+     */
     nodeholder: {
         chatlist          : null,
         userlist          : null,
@@ -504,11 +539,12 @@ M.mod_webcast.room = {
         fileoverviewdialog: null,
         fileoverview      : null,
         emoticonsdialog   : null,
+        questionmanager   : null,
         message           : null
     },
     /**
      * Internal logging
-     * @param val
+     * @param {*} val
      */
     log       : function (val) {
         "use strict";
@@ -529,7 +565,8 @@ M.mod_webcast.room = {
     },
 
     /**
-     * Init
+     * Init the room.
+     * @param {Object} options
      */
     init: function (options) {
         "use strict";
@@ -551,8 +588,14 @@ M.mod_webcast.room = {
         // load message sound
         this.audio_newmessage = new Audio(M.cfg.wwwroot + '/mod/webcast/sound/newmessage.mp3');
 
-        // build room components
-        this.build_room();
+        // build room components when the dom is completely loaded
+        Y.on('domready', function () {
+            this.log('domready');
+
+            this.build_room();
+
+            Y.one('#webcast-loading').hide();
+        }, this);
     },
 
     /**
@@ -672,6 +715,11 @@ M.mod_webcast.room = {
             this.add_fileshare();
         }
 
+        // add the question manager
+        if (this.options.questions) {
+            this.add_question_manager();
+        }
+
         // add action on the leave button
         Y.one('#webcast-leave').on('click', function () {
 
@@ -744,8 +792,8 @@ M.mod_webcast.room = {
 
     /**
      * Set value with the switches in control panel
-     * @param name
-     * @param value
+     * @param {string} name
+     * @param {string} value
      */
     set_user_setting: function (name, value) {
         "use strict";
@@ -796,8 +844,8 @@ M.mod_webcast.room = {
 
     /**
      * Mute a usertype as broadcaster
-     * @param usertype
-     * @param value
+     * @param {string} usertype
+     * @param {string} value
      */
     chat_mute_usertype: function (usertype, value) {
         "use strict";
@@ -877,7 +925,7 @@ M.mod_webcast.room = {
 
         // add hostname
         this.chatobject.hostname = window.location.hostname;
-        // add useragent
+        // add user agent
         this.chatobject.useragent = navigator.userAgent;
         this.log('connect_to_socket');
 
@@ -912,7 +960,7 @@ M.mod_webcast.room = {
             M.mod_webcast.room.log('isConnected');
             M.mod_webcast.room.socket_is_connected = true;
 
-            // enable chatinput
+            // enable chat input
             M.mod_webcast.room.nodeholder.message.removeAttribute('disabled');
             M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
         });
@@ -970,9 +1018,10 @@ M.mod_webcast.room = {
         };
         dialog.show();
     },
+
     /**
      * socket_connection_failed
-     * @param message
+     * @param {string} message
      */
     socket_connection_failed: function (message) {
         "use strict";
@@ -992,6 +1041,7 @@ M.mod_webcast.room = {
     /**
      * Commands that can be executed in the chat
      * /command extra1 extra2
+     * @param {string} string
      */
     chat_commands: function (string) {
         "use strict";
@@ -1005,11 +1055,12 @@ M.mod_webcast.room = {
                 // scroll to bottom
                 this.scrollbar_chatlist.update('bottom');
                 break;
+            case '/send_question_to_all':
+                // send question to the clients
+
+                break;
             default :
-                this.chat_add_chatrow({
-                    usertype: 'local',
-                    message : 'chat_commands'
-                });
+                this.chat_local_message('chat_commands');
         }
 
         // Reset the input
@@ -1057,6 +1108,7 @@ M.mod_webcast.room = {
 
     /**
      * Notice other users about the new file
+     * @param {object} args
      */
     chat_share_file: function (args) {
         "use strict";
@@ -1083,8 +1135,6 @@ M.mod_webcast.room = {
                     if (codes.hasOwnProperty(i)) {
                         code = codes[i];
                         this.emoticons_map[code] = name;
-                        // Set emoticon mapping
-                        this.emoticons_map[this.escape_emoticon(code)] = name;
                     }
                 }
             }
@@ -1104,8 +1154,8 @@ M.mod_webcast.room = {
      * filter text for icon usage
      * can be disabled in the options
      *
-     * @param text
-     * @return string
+     * @param {string} text
+     * @return {string}
      */
     add_emoticons: function (text) {
         "use strict";
@@ -1119,20 +1169,6 @@ M.mod_webcast.room = {
         });
     },
 
-    escape_emoticon: function (string) {
-        "use strict";
-        var entityMap = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;',
-            '/': '&#x2F;'
-        };
-        return String(string).replace(/[&<>"'\/]/g, function (s) {
-            return entityMap[s];
-        });
-    },
 
     /**
      * Add videojs component
@@ -1341,9 +1377,9 @@ M.mod_webcast.room = {
     /**
      * add chat row to the chat
      *
-     * @param data object|array
-     * @param direction string
-     * @param multiplelines bool
+     * @param {object|false} data
+     * @param {string} direction
+     * @param {boolean} multiplelines
      * @returns {string}
      */
     chat_add_chatrow: function (data, direction, multiplelines) {
@@ -1359,7 +1395,10 @@ M.mod_webcast.room = {
             this.log(data);
 
             // play sound on new message
-            if (this.options.enable_chat_sound && this.options.userid !== data.userid && this.audio_newmessage) {
+            if (this.options.enable_chat_sound &&
+                this.options.userid !== data.userid &&
+                this.audio_newmessage && !multiplelines
+            ) {
                 this.log('Bleep sound..');
                 this.audio_newmessage.play();
             }
@@ -1416,7 +1455,7 @@ M.mod_webcast.room = {
             }
         }
 
-        // Check if we using data as a multiplelines object
+        // Check if we using data as a multiple lines object
         if (multiplelines) {
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
@@ -1438,7 +1477,7 @@ M.mod_webcast.room = {
 
     /**
      * Add a local message to chat
-     * @param string
+     * @param {string} string
      */
     chat_local_message: function (string) {
         "use strict";
@@ -1452,7 +1491,7 @@ M.mod_webcast.room = {
 
     /**
      * Make sure a message is a valid text
-     * @param message
+     * @param {string} message
      * @returns string
      */
     chat_parse_message: function (message) {
@@ -1473,7 +1512,7 @@ M.mod_webcast.room = {
 
     /**
      * Replace shortcode by special features if they exists
-     * @param message
+     * @param {string} message
      */
     chat_parse_shortcodes: function (message) {
         "use strict";
@@ -1497,6 +1536,7 @@ M.mod_webcast.room = {
 
     /**
      * get the file details from the server by hash
+     * @param {object} args
      */
     chat_add_shortcode_file: function (args) {
         "use strict";
@@ -1526,7 +1566,7 @@ M.mod_webcast.room = {
 
     /**
      * Convert timestamp
-     * @param unix_timestamp
+     * @param {integer} unix_timestamp
      * @returns {string}
      */
     timestamp_to_humanreadable: function (unix_timestamp) {
@@ -1580,7 +1620,7 @@ M.mod_webcast.room = {
 
     /**
      * Set a exception
-     * @param errorstring
+     * @param {string} errorstring
      */
     exception: function (errorstring) {
         "use strict";
@@ -1589,8 +1629,8 @@ M.mod_webcast.room = {
 
     /**
      * Returns a alpha numeric string to prevent xss
-     * @param string
-     * @returns string
+     * @param {string} string
+     * @returns {string}
      */
     alpha_numeric: function (string) {
         "use strict";
@@ -1620,7 +1660,7 @@ M.mod_webcast.room = {
 
     /**
      * Update userlist
-     * @param data
+     * @param {object} data
      */
     update_userlist: function (data) {
         "use strict";
@@ -1699,7 +1739,7 @@ M.mod_webcast.room = {
         "use strict";
         var filelist = '', i, obj;
 
-        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanger-dialog");
+        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanager-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
         var el = document.getElementById("webcast-fileoverview");
         this.scrollbar_fileoverview = tinyscrollbar(el);
@@ -1736,7 +1776,6 @@ M.mod_webcast.room = {
                                 var hash;
                                 for (var i in response.files) {
                                     if (response.files.hasOwnProperty(i)) {
-
                                         hash = response.files[i].hash;
                                         if (M.mod_webcast.room.files_uploaded_hashes[hash] !== undefined) {
                                             M.mod_webcast.room.log('already shared skip!');
@@ -1865,10 +1904,176 @@ M.mod_webcast.room = {
     },
 
     /**
+     * Add a question manager that allows the broadcaster to:
+     * - Send questions to there clients
+     * - Crud question
+     * - See answers to the questions
+     * - Keep track of all question even on F5 or reentering the room
+     */
+    add_question_manager    : function () {
+        "use strict";
+
+        // init manager popup
+        this.nodeholder.questionmanager = new Y.Panel({
+            width   : 600,
+            height  : 400,
+            zIndex  : 10,
+            centered: true,
+            modal   : true,
+            visible : false,
+            render  : true,
+            srcNode : '#webcast-question-manager'
+        });
+
+        var el = document.getElementById("webcast-questionoverview");
+        var scroll = tinyscrollbar(el);
+
+        // add click listener
+        Y.one('#webcast-viewquestion-btn').on('click', function () {
+            this.nodeholder.questionmanager.show();
+        }, this);
+
+        // add new question
+        Y.one('#addquestion').on('click', function () {
+            Y.one('#all-questions').hide();
+            Y.one('#question-type-selector').show();
+        });
+
+        // step 2 back to question type selector
+        Y.all('.webcast-button-previous-step2').on('click', function () {
+            Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
+            Y.one('#question-type-selector').show();
+        }, this);
+
+        // show the correct question type create form
+        Y.one('#webcast-button-next-step1').on('click', function () {
+            Y.one('#question-type-selector').hide();
+            var value = Y.one('#question-type').get('value');
+            this.log(value);
+            Y.one('#question-type-' + value).show();
+
+            //  make sure all input is cleared
+            this.question_clear_all_input();
+        }, this);
+
+        // back to question overview
+        Y.one('#webcast-button-previous-step1').on('click', function () {
+            Y.one('#all-questions').show();
+            Y.one('#question-type-selector').hide();
+        }, this);
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        var inputtruefalse = Y.one('#question-truefalse');
+        var truefalseaddbtn = Y.one('#truefalse-add-btn');
+        truefalseaddbtn.on('click', function () {
+            if (!truefalseaddbtn.hasClass('disabled')) {
+                inputtruefalse.setStyles({'border': '1px solid green'});
+                truefalseaddbtn.removeClass('disabled');
+                this.question_save('truefalse');
+            } else {
+                inputtruefalse.setStyles({'border': '1px solid red'});
+            }
+        }, this);
+
+        inputtruefalse.on('keyup', function () {
+            if (Y.Lang.trim(inputtruefalse.get('value')) !== "") {
+                inputtruefalse.setStyles({'border': '1px solid green'});
+                truefalseaddbtn.removeClass('disabled');
+            } else {
+                inputtruefalse.setStyles({'border': '1px solid red'});
+                truefalseaddbtn.addClass('disabled');
+            }
+        }, this);
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        var openaddbtn = Y.one('#open-add-btn');
+        var inputopen = Y.one('#question-open');
+        openaddbtn.on('click', function () {
+            if (!openaddbtn.hasClass('disabled')) {
+                inputopen.setStyles({'border': '1px solid green'});
+                openaddbtn.removeClass('disabled');
+                this.question_save('open');
+            } else {
+                inputopen.setStyles({'border': '1px solid red'});
+            }
+        }, this);
+
+        inputopen.on('keyup', function () {
+            if (Y.Lang.trim(inputopen.get('value')) !== "") {
+                inputopen.setStyles({'border': '1px solid green'});
+                openaddbtn.removeClass('disabled');
+            } else {
+                inputopen.setStyles({'border': '1px solid red'});
+                openaddbtn.addClass('disabled');
+            }
+        }, this);
+
+        // prevent submits on enter
+        Y.all('#question-type-open form, #question-type-truefalse form').on('submit', function (e) {
+            e.preventDefault();
+            return false;
+        });
+    },
+    /**
+     * clear input to prevent strange thinks from happening
+     */
+    question_clear_all_input: function () {
+        "use strict";
+        // empty all input
+        Y.all('#webcast-question-manager input[type="text"], #webcast-question-manager textarea').set('value', '');
+        // reset the borders
+        Y.all('#webcast-question-manager input[type="text"]').setStyles({'border': '1px solid red'});
+        // disable the next buttons
+        Y.all('#open-add-btn , #truefalse-add-bt').addClass('disabled');
+    },
+
+    /**
+     * Save question and notice the clients
+     * @param {string} questiontype
+     */
+    question_save: function (questiontype) {
+        "use strict";
+        var formnode = Y.one('#question-type-' + questiontype + ' form'), that = this;
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+            form  : {
+                id         : formnode,
+                useDisabled: true
+            },
+            data  : {
+                'sesskey'     : M.cfg.sesskey,
+                'action'      : "add_question",
+                'extra1'      : that.options.courseid,
+                'extra2'      : that.options.webcastid,
+                'questiontype': questiontype
+            },
+            on    : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            // close the dialog and hide steps
+                            Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
+                            Y.one('#all-questions').show();
+                            that.nodeholder.questionmanager.hide();
+                            that.chat_local_message('added_question');
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+
+    },
+    /**
      * Scale room
      * Should be executed when the browser window resize
      */
-    scale_room: function () {
+    scale_room   : function () {
         "use strict";
         var winWidth = this.nodeholder.body.get("winWidth");
         var winHeight = this.nodeholder.body.get("winHeight");
@@ -1946,7 +2151,7 @@ M.mod_webcast.room = {
                 });
 
                 Y.one('.filemanager .fp-content').setStyles({
-                    'max-height': (wh - 200),
+                    'max-height': (wh - 200)
                 });
             }
 
@@ -1973,7 +2178,7 @@ M.mod_webcast.room = {
 
     /**
      * Set options base on listed options
-     * @param options
+     * @param {object} options
      */
     set_options: function (options) {
         "use strict";
@@ -1999,9 +2204,9 @@ M.mod_webcast.room = {
 
     /**
      * internal event listener
-     * @param object
-     * @param type
-     * @param callback
+     * @param {object} object
+     * @param {string} type
+     * @param {function} callback
      */
     add_event: function (object, type, callback) {
         "use strict";

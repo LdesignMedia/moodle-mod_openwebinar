@@ -125,6 +125,8 @@ $string['btn:enter_live_webcast'] = 'Enter live webcast';
 $string['btn:enter_offline_webcast'] = 'Enter offline webcast';
 $string['btn:chattime'] = 'Time in room';
 $string['btn:chatlog'] = 'Log';
+$string['btn:view'] = 'View';
+$string['btn:addquestion'] = 'Add new question';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
@@ -137,8 +139,9 @@ $string['live'] = 'Live';
 $string['addfile'] = 'Add file';
 $string['attachment'] = 'Attachment';
 $string['offline'] = 'Offline (ended)';
-$string['filemanager'] = 'Files Upload';
-$string['fileoverview'] = 'Files overview';
+$string['filemanager'] = 'Uploader';
+$string['fileoverview'] = 'Files';
+$string['question_overview'] = 'Question';
 $string['broadcaster'] = 'Broadcaster';
 $string['student'] = 'Student';
 $string['guest'] = 'Guest';
@@ -146,7 +149,7 @@ $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 $string['user_activity'] = 'Webcast user activity';
 
-// useroptions
+// user options
 $string['opt:header_broadcaster'] = 'Broadcaster';
 $string['opt:header_exit'] = 'Exit';
 $string['opt:mute_guests'] = 'Mute guests';
@@ -176,6 +179,19 @@ $string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session
 $string['js:dialog_ending_text'] = 'Broadcaster has closed the webcast. You will be redirect to Moodle.';
 $string['js:dialog_ending_btn'] = 'Close webcast';
 $string['js:ended'] = 'Broadcaster has closed the webcast.';
+$string['js:chat_commands'] = '<h4>Error: unknown command</h4>
+<p>What are the available chat commands</p>
+<b>Users:</b>
+<ul class="command">
+<li>/clear <span class="note">Empty all messages in your overview</span></li>
+</ul>
+<br/>
+<b>Broadcaster:</b>
+<ul class="command">
+<li>/send_question_to_all <span class="note">Send a question to the all users. There answers only available for you.</span></li>
+</ul>';
+$string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
+
 
 // HEADING Tables
 $string['heading:picture'] = 'Avatar';

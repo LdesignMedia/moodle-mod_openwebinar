@@ -1596,7 +1596,7 @@ M.mod_webcast.room = {
         "use strict";
         var filelist = '', i, obj;
 
-        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanger-dialog");
+        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanager-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
         var el = document.getElementById("webcast-fileoverview");
         this.scrollbar_fileoverview = tinyscrollbar(el);

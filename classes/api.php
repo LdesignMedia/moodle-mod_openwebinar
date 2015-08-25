@@ -24,6 +24,9 @@
  * @author    Luuk Verhoeven
  **/
 namespace mod_webcast;
+use mod_webcast\helper;
+use mod_webcast\question;
+
 defined('MOODLE_INTERNAL') || die();
 
 class api {
@@ -165,7 +168,7 @@ class api {
         if ($this->course) {
             return;
         }
-        list($this->course, $this->webcast, $this->cm, $this->context) = \mod_webcast\helper::get_module_data($this->extra1, $this->extra2);
+        list($this->course, $this->webcast, $this->cm, $this->context) = helper::get_module_data($this->extra1, $this->extra2);
     }
 
     /**
@@ -205,7 +208,7 @@ class api {
         $event->add_record_snapshot('course', $this->course);
         $event->trigger();
 
-        $this->response['online_minutes'] = \mod_webcast\helper::set_user_online_status($this->webcast->id);
+        $this->response['online_minutes'] = helper::set_user_online_status($this->webcast->id);
         $this->response['status'] = true;
 
         $this->output_json();
@@ -214,7 +217,7 @@ class api {
     /**
      * End webcast
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function api_call_endwebcast() {
 
@@ -226,7 +229,7 @@ class api {
         $this->get_module_information();
 
         if (!empty($this->webcast->is_ended)) {
-            throw new Exception("webcast_already_ended");
+            throw new \Exception("webcast_already_ended");
         }
         $obj = new \stdClass();
         $obj->id = $this->webcast->id;
@@ -241,7 +244,7 @@ class api {
     /**
      * Load history from a webcast room
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function api_call_load_public_history() {
 
@@ -262,7 +265,7 @@ class api {
     /**
      * Return webcast information to the chatserver
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function api_call_broadcastinfo() {
 
@@ -274,7 +277,7 @@ class api {
 
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
             $this->response['status'] = true;
-            $this->response['webcast'] =  \mod_webcast\helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
+            $this->response['webcast'] =  helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
         }
 
         $this->output_json();
@@ -295,7 +298,7 @@ class api {
 
         $data = new \stdClass();
         $data->files_filemanager = required_param('files_filemanager', PARAM_INT);
-        $data = file_postupdate_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($this->context), $this->context, 'mod_webcast', 'attachments', $data->files_filemanager);
+        $data = file_postupdate_standard_filemanager($data, 'files', helper::get_file_options($this->context), $this->context, 'mod_webcast', 'attachments', $data->files_filemanager);
 
         $this->response['status'] = true;
         $this->response['itemid'] = $data->files_filemanager;
@@ -309,7 +312,7 @@ class api {
             $file = $fs->get_file_by_id($file->id);
 
             if($file && $file->get_filename() !== '.' && !$file->is_directory()){
-                $this->response['files'][] = \mod_webcast\helper::get_file_info($file , $fs);
+                $this->response['files'][] = helper::get_file_info($file , $fs);
             }
         }
 
@@ -332,7 +335,7 @@ class api {
 
         foreach ($files as $f) {
             if($f && $f->get_filename() !== '.' && !$f->is_directory()) {
-                $this->response['files'][] = \mod_webcast\helper::get_file_info($f, $fs);
+                $this->response['files'][] = helper::get_file_info($f, $fs);
             }
         }
         $this->response['status'] = true;
@@ -353,7 +356,7 @@ class api {
 
         // validate its a valid request
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
-            $status = \mod_webcast\helper::save_messages($this->jsondata);
+            $status = helper::save_messages($this->jsondata);
             if ($status) {
                 $this->response['status'] = true;
             } else {
@@ -365,6 +368,42 @@ class api {
 
         $this->output_json();
     }
+
+    /**
+     * Add new question to the webcast
+     */
+    public function api_call_add_question(){
+
+        // Valid sesskey
+        $this->has_valid_sesskey();
+
+        // Set information
+        $this->get_module_information();
+
+        // class
+        $question = new question($this->webcast);
+
+        // get post data
+        $data = new \stdClass();
+        $data->question = filter_input(INPUT_POST , 'question' , FILTER_FLAG_NO_ENCODE_QUOTES);
+        $data->summary = filter_input(INPUT_POST , 'summary' , FILTER_FLAG_NO_ENCODE_QUOTES);
+        $data->questiontype = $question->question_type_string_to_int(filter_input(INPUT_POST , 'questiontype' , FILTER_DEFAULT));
+
+        //@todo selectable for which users this question is
+        $users  = new \stdClass();
+        $users->all_enrolled_users = true;
+        $users->user_ids = array();
+
+        $returnid = $question->create($data->questiontype , $data , $users);
+
+        if(is_numeric($returnid)){
+            $this->response['status'] = true;
+            $this->response['question_id'] = $returnid;
+        }
+
+        $this->output_json();
+    }
+
 
     /**
      * Set the webcast plugin config to this class
@@ -384,11 +423,11 @@ class api {
     /**
      * Check if user has a valid sesskey
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function has_valid_sesskey() {
         if (!confirm_sesskey($this->sesskey)) {
-            throw new Exception('invalid_sesskey');
+            throw new \Exception('invalid_sesskey');
         }
     }
 

@@ -75,7 +75,7 @@ $opts = (array)$webcast;
 $opts['userid'] = $USER->id;
 $opts['is_broadcaster'] = $permissions->broadcaster;
 
-// Set booleans
+// Set booleans  / convert int to bool
 $opts['userlist'] = ($webcast->userlist == 1);
 $opts['filesharing'] = ($webcast->filesharing == 1);
 $opts['filesharing_student'] = ($webcast->filesharing_student == 1);
@@ -87,6 +87,7 @@ $opts['hls'] = ($webcast->hls == 1);
 $opts['ajax_timer'] = ($webcast->ajax_timer == 1);
 $opts['emoticons'] = ($webcast->emoticons == 1);
 $opts['viewhistory'] = $permissions->history;
+$opts['questions'] = true; // @todo make this optional to use the question manager
 
 $opts['fullname'] = fullname($USER);
 $opts['debugjs'] = ($config->debugjs == 1);
@@ -143,9 +144,12 @@ $PAGE->requires->string_for_js('js:ending_webcast', 'webcast');
 $PAGE->requires->string_for_js('js:dialog_ending_text', 'webcast');
 $PAGE->requires->string_for_js('js:dialog_ending_btn', 'webcast');
 $PAGE->requires->string_for_js('js:ended', 'webcast');
+$PAGE->requires->string_for_js('js:chat_commands', 'webcast');
+$PAGE->requires->string_for_js('js:added_question', 'webcast');
 
 /**
  * Renderer
+ *
  * @var mod_webcast_renderer $renderer
  */
 $renderer = $PAGE->get_renderer('mod_webcast');
@@ -159,6 +163,7 @@ if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_stu
 // Output starts here.
 echo $OUTPUT->header();
 ?>
+    <div id="webcast-loading"></div>
     <div id="webcast-holder" class="noSelect">
         <section id="webcast-topbar">
             <div id="webcast-topbar-left">
@@ -338,7 +343,7 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="webcast-filemanger-dialog" class="webcast-dialog" style="display: none">
+                    <div id="webcast-filemanager-dialog" class="webcast-dialog" style="display: none">
                         <header>
                             <span>Close</span>
                             <span class="webcast-close-sign">X</span>
@@ -357,16 +362,108 @@ echo $OUTPUT->header();
                             <!-- Holder -->
                         </div>
                     </div>
-                    <?php if ($opts['filesharing']): ?>
-                        <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
-                        <span id="webcast-fileoverview-btn"><?php echo get_string('fileoverview', 'webcast') ?></span>
-                    <?php endif ?>
+                    <div id="webcast-toolbar">
+                        <?php if ($opts['filesharing']): ?>
+                            <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
+                            <span id="webcast-fileoverview-btn"><?php echo get_string('fileoverview', 'webcast') ?></span>
+                        <?php endif ?>
+                        <?php if ($opts['questions']): ?>
+                            <span id="webcast-viewquestion-btn"><?php echo get_string('question_overview', 'webcast') ?></span>
+                        <?php endif ?>
+                    </div>
                     <span id="webcast-emoticon-icon"></span>
                     <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'webcast') ?>" name="message" id="webcast-message"/>
                     <span id="webcast-send"><?php echo get_string('js:wait_on_connection', 'webcast') ?></span>
                 </div>
             </div>
         </section>
+    </div>
+    <div id="webcast-question-manager">
+        <div class="yui3-widget-bd">
+            <div id="all-questions">
+                <?php if ($permissions->broadcaster || $permissions->teacher): ?>
+                    <span class="webcast-button" id="addquestion"><?php echo get_string('btn:addquestion', 'webcast') ?></span>
+                <?php endif ?>
+                <div id="webcast-questionoverview" class="scroll">
+                    <div class="scrollbar">
+                        <div class="track">
+                            <div class="thumb">
+                                <div class="end"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="viewport" style="height: 320px">
+                        <div class="overview">
+                            <ul>
+                                <!-- Holder -->
+                                <li>
+                                    <span class="number">#824</span>
+                                    <span class="name">Wat zijn je leerdoelen sdff asdf sdf adfasklfjasdklfjasdklfjsklfjsdklfadlkfj?</span>
+                                    <span class="webcast-button gray"><?php echo get_string('btn:view', 'webcast') ?></span>
+                                </li>
+                                <li>
+                                    <span class="number">#824</span>
+                                    <span class="name">Wat zijn je leerdoelen sdff asdf sdf adfasklfjasdklfjasdklfjsklfjsdklfadlkfj?</span>
+                                    <span class="webcast-button gray"><?php echo get_string('btn:view', 'webcast') ?></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php if ($permissions->broadcaster || $permissions->teacher): ?>
+                <div id="question-type-selector" style="display: none">
+                    <span id="webcast-button-previous-step1" class="webcast-button previous">Previous</span>
+                    <span id="webcast-button-next-step1" class="webcast-button next">Next</span>
+                    <h3>Select a question type</h3>
+                    <label for="question-type">
+                        Question type
+                    </label>
+                    <select name="question-type" id="question-type">
+                        <option value="open">Open</option>
+                        <option value="truefalse">True / False</option>
+                        <!-- @todo building this option
+                        <option value="choice">Choice</option>
+                        -->
+                    </select>
+                </div>
+                <div id="question-type-open" style="display: none">
+                    <span class="webcast-button previous  webcast-button-previous-step2">Previous</span>
+                    <span class="webcast-button next disabled" id="open-add-btn">Create</span>
+                    <h3>Create your open question</h3>
+                    <form>
+                        <label for="question-open">
+                            Question:
+                        </label>
+                        <input name="question" type="text" id="question-open" placeholder="Enter some question for your clients..."/>
+                        <label for="question-open-summary">
+                            Summary (optional):
+                        </label>
+                        <textarea name="summary" id="question-open-summary"></textarea>
+                    </form>
+                </div>
+                <div id="question-type-truefalse" style="display: none">
+                    <span class="webcast-button previous webcast-button-previous-step2">Previous</span>
+                    <span class="webcast-button next disabled" id="truefalse-add-btn">Create</span>
+                    <h3>Create your true or false question</h3>
+                    <form>
+                        <label for="question-truefalse">
+                            Question:
+                        </label>
+                        <input name="question" type="text" id="question-truefalse" placeholder="Enter some question for your clients..."/>
+                        <label for="question-truefalse-summary">
+                            Summary (optional):
+                        </label>
+                        <textarea name="summary" id="question-truefalse-summary"></textarea>
+                    </form>
+                </div>
+                <div id="question-type-choice" style="display: none">
+                    <span class="webcast-button previous webcast-button-previous-step2">Previous</span>
+                    <span class="webcast-button next disabled">Create</span>
+                    @TODO
+                </div>
+            <?php endif ?>
+        </div>
     </div>
 <?php
 // Finish the page.
