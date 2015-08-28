@@ -169,6 +169,7 @@ $string['opt:leave'] = 'Leave webcast';
 $string['opt:header_general'] = 'General';
 
 // Js
+$string['js:my_answer_saved'] = 'Your answer is saved.';
 $string['js:send'] = 'Send';
 $string['js:answer'] = 'Answer';
 $string['js:added_answer'] = '{$a->fullname} added a answer.';

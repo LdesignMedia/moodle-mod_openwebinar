@@ -196,8 +196,12 @@ class api {
         // Set information
         $this->get_module_information();
 
+        // Protect updating time when webcast is already ended
         if (!empty($this->webcast->is_ended)) {
-            throw new \Exception("webcast_already_ended");
+            $this->response['status'] = false;
+            $this->response['is_ended'] = true;
+            $this->output_json();
+            return;
         }
 
         $params = array(
@@ -212,8 +216,9 @@ class api {
 
         $this->response['online_minutes'] = helper::set_user_online_status($this->webcast->id);
         $this->response['status'] = true;
-
+        $this->response['is_ended'] = false;
         $this->output_json();
+
     }
 
     /**
@@ -424,6 +429,8 @@ class api {
      * Get all questions from the DB
      */
     public function api_call_get_questions() {
+        global $PAGE;
+
         // Valid sesskey
         $this->has_valid_sesskey();
 
@@ -448,6 +455,9 @@ class api {
             $this->response['questions'][$id] = $obj;
         }
         $this->response['status'] = true;
+
+        $permissions =helper::get_permissions($PAGE->context, $this->webcast);
+        $this->response['manager'] = ($permissions->broadcaster || $permissions->teacher) ? true : false;
         $this->output_json();
     }
 

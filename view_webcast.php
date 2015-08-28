@@ -150,6 +150,7 @@ $PAGE->requires->strings_for_js(array(
     'js:muted',
     'js:answer',
     'js:added_answer',
+    'js:my_answer_saved',
 ), 'webcast');
 
 /**
@@ -392,21 +393,10 @@ echo $OUTPUT->header();
                 <?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>
                     <span class="webcast-button" id="addquestion"><?php echo get_string('btn:addquestion', 'webcast') ?></span>
                 <?php endif ?>
-                <div id="webcast-questionoverview" class="scroll">
-                    <div class="scrollbar">
-                        <div class="track">
-                            <div class="thumb">
-                                <div class="end"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="viewport" style="<?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>height: 320px<?php else: ?>height: 340px<?php endif ?>">
-                        <div class="overview">
-                            <ul>
-                                <!-- Holder -->
-                            </ul>
-                        </div>
-                    </div>
+                <div class="overview">
+                    <ul>
+                        <!-- Holder -->
+                    </ul>
                 </div>
             </div>
             <div id="question-answer" style="display: none">

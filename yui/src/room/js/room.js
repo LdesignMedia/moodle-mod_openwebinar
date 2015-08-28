@@ -460,13 +460,6 @@ M.mod_webcast.room = {
     scrollbar_chatlist: null,
 
     /**
-     * A reference to the scrollbar for questionoverview
-     * @type tinyscrollbar
-     * @protected
-     */
-    scrollbar_questionoverview: null,
-
-    /**
      * Socket
      */
     socket: null,
@@ -792,7 +785,7 @@ M.mod_webcast.room = {
             M.mod_webcast.room.scale_room();
         }, 300);
 
-        if (this.options.ajax_timer) {
+        if (this.options.ajax_timer && !this.options.is_ended) {
             setInterval(function () {
                 M.mod_webcast.room.ajax_timer_ping();
             }, 60000);
@@ -1185,7 +1178,7 @@ M.mod_webcast.room = {
     add_video: function () {
         "use strict";
         this.log('add_video');
-        var source = {};
+        var source = {},  techOrder = ['html5', 'flash'];
 
         videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
 
@@ -1203,12 +1196,12 @@ M.mod_webcast.room = {
         // Note: HLS has about a 30 second delay.
         if (!this.options.is_ended) {
             if (this.options.hls) {
+                techOrder = ['hls', 'html5', 'flash'];
                 source = {
                     type: "application/x-mpegURL",
                     src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
                 };
             } else {
-
                 // Default rtmp only work on flash based players :(
                 source = {
                     type: "rtmp/mp4",
@@ -1221,7 +1214,7 @@ M.mod_webcast.room = {
 
         // Set player settings
         this.player = videojs('room_stream', {
-            techOrder: ['hls', 'html5', 'flash'],
+            'techOrder' : techOrder,
             autoplay : true,
             preload  : 'auto',
             sources  : [source]
@@ -1388,7 +1381,7 @@ M.mod_webcast.room = {
     /**
      * add chat row to the chat
      *
-     * @param {object|false} data
+     * @param {object|boolean} data
      * @param {string} direction
      * @param {boolean} multiplelines
      * @returns {string}
@@ -1414,7 +1407,7 @@ M.mod_webcast.room = {
 
                 // we skip the message
                 if (!messagetext) {
-                    return;
+                    return '';
                 }
 
                 // play sound on new message
@@ -1510,7 +1503,7 @@ M.mod_webcast.room = {
     /**
      * Make sure a message is a valid text
      * @param {object} data
-     * @returns {string|false}
+     * @returns {string|boolean}
      */
     chat_parse_message: function (data) {
         "use strict";
@@ -1987,7 +1980,7 @@ M.mod_webcast.room = {
         "use strict";
         var that = this;
 
-        this.nodeholder.questionoverview = Y.one('#webcast-questionoverview ul');
+        this.nodeholder.questionoverview = Y.one('#all-questions ul');
         this.nodeholder.addquestionbtn = Y.one('#addquestion');
 
         // init manager popup
@@ -2002,9 +1995,6 @@ M.mod_webcast.room = {
             srcNode : '#webcast-question-manager'
         });
 
-        var el = document.getElementById("webcast-questionoverview");
-        this.scrollbar_questionoverview = tinyscrollbar(el);
-
         // add click listener
         Y.one('#webcast-viewquestion-btn').on('click', function () {
             this.nodeholder.questionmanager.show();
@@ -2012,9 +2002,23 @@ M.mod_webcast.room = {
             this.question_load_overview();
         }, this);
 
+
+        // back button on question detail
+        Y.one('body').delegate('click', function () {
+            Y.one('#question-answer').hide();
+            Y.one('#all-questions').show();
+            that.question_load_overview();
+        }, '.webcast-back-to-questionoverview');
+
+        // view a question or answer if we aren't a teacher or broadcaster
+        this.nodeholder.questionoverview.delegate('click', function () {
+            that.question_load_single(this.getData('id'));
+        }, '.viewquestionbtn');
+
         // check if we can still add questions
         if (!this.options.is_ended) {
 
+            // Press on add answer in chat
             Y.one('body').delegate('click', function () {
                 that.nodeholder.questionmanager.show();
                 that.question_load_single(this.getData('id'));
@@ -2098,7 +2102,6 @@ M.mod_webcast.room = {
 
             } else {
                 // normal student
-                // start question listener
             }
 
             // prevent submits on enter
@@ -2106,19 +2109,6 @@ M.mod_webcast.room = {
                 e.preventDefault();
                 return false;
             });
-
-            // back button on question detail
-            Y.one('body').delegate('click', function () {
-                Y.one('#question-answer').hide();
-                Y.one('#all-questions').show();
-                that.question_load_overview();
-            }, '.webcast-back-to-questionoverview');
-
-            // view a question or answer if we aren't a teacher or broadcaster
-            this.nodeholder.questionoverview.delegate('click', function () {
-                that.question_load_single(this.getData('id'));
-            }, '.viewquestionbtn');
-
         }
     },
     /**
@@ -2160,7 +2150,7 @@ M.mod_webcast.room = {
                                 if (response.questions.hasOwnProperty(i)) {
 
                                     question = response.questions[i];
-                                    html += '<li class="' + ((!that.nodeholder.addquestionbtn && !question.my_answer) ? 'unanswered' : '') + '">';
+                                    html += '<li class="' + ((!question.manager && !question.my_answer) ? 'unanswered' : '') + '">';
                                     html += '<span class="number">#' + i + '</span>';
                                     html += '<span class="name">' + question.name + '</span>';
                                     html += '<span class="webcast-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'webcast', {}) + '</span>';
@@ -2169,7 +2159,6 @@ M.mod_webcast.room = {
                             }
 
                             that.nodeholder.questionoverview.setHTML(html);
-                            that.scrollbar_questionoverview.update();
                         }
                     } catch (exc) {
                         that.log(exc);
@@ -2261,6 +2250,7 @@ M.mod_webcast.room = {
                             var response = Y.JSON.parse(o.response);
                             if (response.status) {
 
+                                that.nodeholder.questionmanager.hide();
                                 // back to question overview
                                 // notice the broadcaster / teacher about the answer
                                 that.chatobject.message = '[answer ' + Y.JSON.stringify(response) + ']';
@@ -2268,11 +2258,17 @@ M.mod_webcast.room = {
                                     if (!response.status) {
                                         that.exception(response.error);
                                     }
+
+                                    that.chat_local_message('my_answer_saved');
+
                                 });
                             } else {
                                 // we have a error display this to the user
+                                that.log('question_answer Error');
+                                Y.one('#question-error').setHTML(response.error).show();
                             }
                         } catch (exc) {
+                            that.log('question_answer Exception');
                             that.log(exc);
                         }
                     },
@@ -2338,6 +2334,7 @@ M.mod_webcast.room = {
                     try {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
+                            that.log('question_save Success');
                             // close the dialog and hide steps
                             Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
                             Y.one('#all-questions').show();
@@ -2352,6 +2349,7 @@ M.mod_webcast.room = {
                             });
                         }
                     } catch (exc) {
+                        that.log('question_save Exception');
                         that.log(exc);
                     }
                 },

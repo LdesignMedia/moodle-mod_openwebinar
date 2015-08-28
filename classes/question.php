@@ -216,7 +216,12 @@ class question {
     public function get_answers($questionid = 0) {
         global $DB;
 
-        $qr = $DB->get_recordset('webcast_question_answer', array('question_id' => (int)$questionid), 'id DESC');
+        $sql = 'SELECT a.*,u.firstname, u.lastname FROM {webcast_question_answer} a
+                JOIN {user} u ON u.id = a.user_id
+                WHERE a.question_id = :question_id
+                ORDER BY id DESC';
+
+        $qr = $DB->get_recordset_sql($sql, array('question_id' => (int)$questionid));
 
         $results = array();
         foreach ($qr as $record) {

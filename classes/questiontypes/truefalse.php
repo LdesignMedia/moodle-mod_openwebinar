@@ -54,16 +54,52 @@ class truefalse extends questiontypes {
      * @return mixed
      */
     function render() {
-
+        $answer =  $this->get_my_answer_string();
+        return $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
+                <p>' . $this->get_question_summary() . '</p>
+                <span id="question-error" style="display:none"></span>
+                <form id="question-submit-answer" action="" method="post">
+                    <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
+                    <select name="answer">
+                        <option value="yes" '.($answer == 'yes' ? 'selected' : '').'>'.get_string('yes' , 'webcast').'</option>
+                        <option value="no" '.($answer == 'no' ? 'selected' : '').'>'.get_string('no' , 'webcast').'</option>
+                    </select>
+                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'webcast') . '" class="btn-primary"/>
+                </form>';
     }
+
+    /**
+     * Get my personal answer value
+     * prevent against xss and code injection
+     *
+     * @return string
+     */
+    protected function get_my_answer_string() {
+        $answer = $this->get_my_answer();
+
+        return !empty($answer->answer_data->answer) ? $answer->answer_data->answer : '';
+    }
+
 
     /**
      * Add a validation function to your question type
      *
-     * @return mixed
+     * @return array
      */
-    function validation() {
-        // TODO: Implement validation() method.
+    public function validation() {
+        $return = array('status' => true, 'error' => '');
+        // make sure we have the data
+        $this->get_post_data();
+
+        // make sure a value is given
+        if (empty($this->postdata->answer) && ($this->postdata->answer !== 'yes' && $this->postdata->answer !== 'no')) {
+            $return = array(
+                'status' => false,
+                'error' => get_string('error:empty_not_allowed', 'webcast')
+            );
+        }
+
+        return $return;
     }
 
     /**
@@ -80,15 +116,17 @@ class truefalse extends questiontypes {
      *
      * @param array $answers
      *
-     * @return string
-     * @throws \coding_exception
+     * @return mixed
      */
     public function render_answers($answers) {
         $return = $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
                 <p>' . $this->get_question_summary() . '</p><hr/>';
         if (!empty($answers)) {
             foreach ($answers as $answer) {
-
+                    $return .= '<div class="question-answer open">
+                    <span class="fullname">' . $answer->firstname . ' ' . $answer->lastname . '</span>
+                    <p class="answer">' . get_string($answer->answer_data->answer, 'webcast') . '</p>
+                </div>';
             }
         } else {
             $return .= '<span class="webcast-no-result">' . get_string('error:no_result', 'webcast') . '</span>';
@@ -98,9 +136,10 @@ class truefalse extends questiontypes {
     }
 
     /**
-     * Get the posted answer data
+     * Get the post data from the user
+     * @throws \coding_exception
      */
     protected function get_post_data() {
-        // TODO: Implement get_post_data() method.
+        $this->postdata->answer = optional_param('answer', '', PARAM_ALPHA);
     }
 }

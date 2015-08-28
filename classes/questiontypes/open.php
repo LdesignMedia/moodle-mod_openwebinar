@@ -56,7 +56,7 @@ class open extends questiontypes {
     public function render() {
         return $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
                 <p>' . $this->get_question_summary() . '</p>
-                <span id="question-error"></span>
+                <span id="question-error" style="display:none"></span>
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <textarea name="answer">' . $this->get_my_answer_string() . '</textarea>
@@ -72,6 +72,7 @@ class open extends questiontypes {
      */
     protected function get_my_answer_string() {
         $answer = $this->get_my_answer();
+
         return !empty($answer->answer_data->answer) ? $answer->answer_data->answer : '';
     }
 
@@ -92,10 +93,12 @@ class open extends questiontypes {
                 'error' => get_string('error:empty_not_allowed', 'webcast')
             );
         }
+
         return $return;
     }
 
     /**
+     * Get the post data from the user
      *
      * @throws \coding_exception
      */
@@ -125,7 +128,10 @@ class open extends questiontypes {
                 <p>' . $this->get_question_summary() . '</p><hr/>';
         if (!empty($answers)) {
             foreach ($answers as $answer) {
-
+                $return .= '<div class="question-answer open">
+                    <span class="fullname">' . $answer->firstname . ' ' . $answer->lastname . '</span>
+                    <p class="answer">' . $answer->answer_data->answer . '</p>
+                </div>';
             }
         } else {
             $return .= '<span class="webcast-no-result">' . get_string('error:no_result', 'webcast') . '</span>';

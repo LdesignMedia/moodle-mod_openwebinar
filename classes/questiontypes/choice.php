@@ -80,7 +80,14 @@ class choice extends questiontypes {
      *
      * @return mixed
      */
-    public function render_answers() {
+    public function render_answers($answers) {
         // TODO: Implement render_answers() method.
+    }
+
+    /**
+     * Get the posted answer data
+     */
+    protected function get_post_data() {
+        // TODO: Implement get_post_data() method.
     }
 }

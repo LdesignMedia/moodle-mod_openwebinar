@@ -318,10 +318,10 @@
     right: 10px;
 }
 
-.webcast-question .text{
+.webcast-question .text {
     font-weight: bold;
     display: block;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
 
 #webcast-chatlist ul li .webcast-avatar {
@@ -542,11 +542,11 @@
     position: relative;
 }
 
-#webcast-question-manager input[type="text"]{
+#webcast-question-manager input[type="text"] {
     width: 550px;
 }
 
-#webcast-question-manager textarea{
+#webcast-question-manager textarea {
     max-width: 550px;
     width: 550px;
 }
@@ -620,48 +620,66 @@
 
 #webcast-question-manager .yui3-widget-bd {
     padding: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
-#webcast-question-manager .viewport ul {
-    margin: 0;
+#all-questions ul {
+    margin: 10px 0 0 0;
     padding: 0;
+    overflow: hidden;
 }
 
-#webcast-question-manager .viewport li {
+#all-questions li {
+    display: block;
     list-style: none;
     height: 50px;
     margin: 0;
-    padding: 0;
     width: 540px;
     border-bottom: 1px dashed #CCCCCC;
     text-align: left;
     padding: 0 10px;
 }
 
-#webcast-question-manager .viewport {
+#all-questions {
     width: 560px !important;
 }
 
-#webcast-question-manager .scroll {
-    width: 585px;
-}
-#webcast-question-manager #all-questions li.unanswered{
+#webcast-question-manager #all-questions li.unanswered {
     background: #ffb3a6;
 }
+
 #webcast-question-manager #all-questions li .number {
-    position: absolute;
+    float: left;
 }
 
 #webcast-question-manager #all-questions li .name {
     font-weight: bold;
-    position: absolute;
-    margin: 16px 0 0 0;
+    float: left;
+    clear: both;
     overflow: hidden;
     white-space: nowrap;
     width: 326px
 }
+#question-error{
+    background: red;
+    padding: 5px;
+    color:#fff;
+    position: absolute;
+    left: 0;
+    top:0;
+    margin: 1px 0 0 0;
+    width: 550px;
+}
+#question-answer .question-answer {
+    border-bottom: 1px solid #eee;
+}
 
-#webcast-noticebar{
+#question-answer .question-answer .fullname {
+    font-weight: bold;
+}
+
+#webcast-noticebar {
     position: absolute;
     width: 390px;
     height: 18px;
@@ -674,26 +692,27 @@
     font-size: 10px;
 }
 
-#webcast-question-manager #all-questions li .webcast-button{
-    position: absolute;
+#webcast-question-manager #all-questions li .webcast-button {
+    float: right;
     width: 100px;
-    margin: 11px 0 0 420px;
+    margin: -9px 0 0 0;
 }
 
-#webcast-question-manager .webcast-button.previous{
+#webcast-question-manager .webcast-button.previous {
     position: absolute;
     margin: 315px 0 0 0;
     background: #585858;
 }
-#webcast-question-manager .webcast-button.next{
+
+#webcast-question-manager .webcast-button.next {
     position: absolute;
     margin: 315px 0 0 420px;
     background: #444444;
 }
 
-#webcast-question-manager .webcast-button.disabled{
+#webcast-question-manager .webcast-button.disabled {
     background: #a4a4a4;
-    cursor:not-allowed;
+    cursor: not-allowed;
 }
 
 /* SWITCHES */
