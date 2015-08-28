@@ -36,24 +36,23 @@ class backup_webcast_activity_structure_step extends backup_activity_structure_s
     protected function define_structure() {
 
         // Get know if we are including userinfo.
-        $userinfo = $this->get_setting_value('userinfo');
+        //$userinfo = $this->get_setting_value('userinfo');
 
         // Define the root element describing the webcast instance.
-        $webcast = new backup_nested_element('webcast', array('id'), array(
-            'name', 'intro', 'introformat', 'grade'));
+        //$webcast = new backup_nested_element('webcast', array('id'), array( 'name', 'intro', 'introformat', 'grade'));
 
         // If we had more elements, we would build the tree here.
 
         // Define data sources.
-        $webcast->set_source_table('webcast', array('id' => backup::VAR_ACTIVITYID));
+        //$webcast->set_source_table('webcast', array('id' => backup::VAR_ACTIVITYID));
 
         // If we were referring to other tables, we would annotate the relation
         // with the element's annotate_ids() method.
 
         // Define file annotations (we do not use itemid in this example).
-        $webcast->annotate_files('mod_webcast', 'intro', null);
+        //$webcast->annotate_files('mod_webcast', 'intro', null);
 
         // Return the root element (webcast), wrapped into standard activity structure.
-        return $this->prepare_activity_structure($webcast);
+        //return $this->prepare_activity_structure($webcast);
     }
 }

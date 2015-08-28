@@ -43,7 +43,7 @@ class backup_webcast_activity_task extends backup_activity_task {
      * Defines a backup step to store the instance data in the webcast.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
+//        $this->add_step(new backup_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
     }
 
     /**
@@ -55,15 +55,15 @@ class backup_webcast_activity_task extends backup_activity_task {
     static public function encode_content_links($content) {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot, '/');
-
-        // Link to the list of webcasts.
-        $search = '/('.$base.'\/mod\/webcast\/index.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@webcastINDEX*$2@$', $content);
-
-        // Link to webcast view by moduleid.
-        $search = '/('.$base.'\/mod\/webcast\/view.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@webcastVIEWBYID*$2@$', $content);
+//        $base = preg_quote($CFG->wwwroot, '/');
+//
+//        // Link to the list of webcasts.
+//        $search = '/('.$base.'\/mod\/webcast\/index.php\?id\=)([0-9]+)/';
+//        $content = preg_replace($search, '$@webcastINDEX*$2@$', $content);
+//
+//        // Link to webcast view by moduleid.
+//        $search = '/('.$base.'\/mod\/webcast\/view.php\?id\=)([0-9]+)/';
+//        $content = preg_replace($search, '$@webcastVIEWBYID*$2@$', $content);
 
         return $content;
     }

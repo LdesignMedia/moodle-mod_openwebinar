@@ -35,8 +35,8 @@ $string['modulename_help'] = 'Webcast activity:<br/>
     <li>File sharing</li>
     <li>HLS support</li>
     <li>Reminder messages</li>
-</ul>
-';
+</ul>';
+
 $string['modulename_link'] = 'mod/webcast/view';
 $string['pluginadministration'] = 'MoodleFreak Webcast administration';
 $string['pluginname'] = 'MoodleFreak Webcast';
@@ -59,6 +59,9 @@ $string['error:time_passed'] = 'Error:  Starttime has already been passed!';
 $string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
 $string['error:no_access'] = 'Error: missing capability to do this.';
+$string['error:no_result'] = 'No result(s) found';
+$string['error:answer_already_saved'] = 'Your answer is already saved!';
+$string['error:not_for_guests'] = 'Error: not available for Guests';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';
@@ -126,7 +129,9 @@ $string['btn:enter_offline_webcast'] = 'Enter offline webcast';
 $string['btn:chattime'] = 'Time in room';
 $string['btn:chatlog'] = 'Log';
 $string['btn:view'] = 'View';
+$string['btn:back'] = 'Back';
 $string['btn:addquestion'] = 'Add new question';
+$string['btn:open'] = 'Save';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
@@ -165,6 +170,8 @@ $string['opt:header_general'] = 'General';
 
 // Js
 $string['js:send'] = 'Send';
+$string['js:answer'] = 'Answer';
+$string['js:added_answer'] = '{$a->fullname} added a answer.';
 $string['js:ending_webcast'] = 'Are you sure you wan\'t to end and close the webcast?';
 $string['js:muted'] = 'The messages are muted by the broadcaster!';
 $string['js:wait_on_connection'] = 'Waiting';
@@ -191,7 +198,6 @@ $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <li>/send_question_to_all <span class="note">Send a question to the all users. There answers only available for you.</span></li>
 </ul>';
 $string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
-
 
 // HEADING Tables
 $string['heading:picture'] = 'Avatar';

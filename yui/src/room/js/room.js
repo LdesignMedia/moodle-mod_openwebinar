@@ -389,7 +389,7 @@ M.mod_webcast.room = {
      * @type Object
      * @protected
      */
-    emoticons_map  : {},
+    emoticons_map: {},
 
     /**
      * Webcast variables
@@ -458,6 +458,13 @@ M.mod_webcast.room = {
      * @protected
      */
     scrollbar_chatlist: null,
+
+    /**
+     * A reference to the scrollbar for questionoverview
+     * @type tinyscrollbar
+     * @protected
+     */
+    scrollbar_questionoverview: null,
 
     /**
      * Socket
@@ -540,6 +547,9 @@ M.mod_webcast.room = {
         fileoverview      : null,
         emoticonsdialog   : null,
         questionmanager   : null,
+        addquestionbtn    : null,
+        questionoverview  : null,
+        noticebar         : null,
         message           : null
     },
     /**
@@ -989,7 +999,7 @@ M.mod_webcast.room = {
     /**
      * Called when the broadcaster end the webcast
      */
-    chat_ended              : function () {
+    chat_ended: function () {
         "use strict";
         this.chat_local_message('ended');
         var that = this, dialog = new Y.Panel({
@@ -1169,7 +1179,6 @@ M.mod_webcast.room = {
         });
     },
 
-
     /**
      * Add videojs component
      */
@@ -1246,6 +1255,8 @@ M.mod_webcast.room = {
         });
 
         // Fired while the user agent is downloading media data
+        // Looks like this is called when a stream is really started
+        // Also when time no longer gets higher we are stopped
         this.player.on('loadedmetadata', function () {
             M.mod_webcast.room.log('player_event(loadedmetadata)');
         });
@@ -1388,25 +1399,32 @@ M.mod_webcast.room = {
         this.log('chat_add_chatrow');
 
         // Setting vars
-        var chatline = '', date = 0, me = false, i;
+        var chatline = '', date = 0, me = false, i, messagetext;
 
         if (Y.Object.hasKey(data, 'message')) {
 
             this.log(data);
 
-            // play sound on new message
-            if (this.options.enable_chat_sound &&
-                this.options.userid !== data.userid &&
-                this.audio_newmessage && !multiplelines
-            ) {
-                this.log('Bleep sound..');
-                this.audio_newmessage.play();
-            }
 
             // build the chatline and make sure nothing strange happens XSS!
             if (data.messagetype === 'default') {
 
                 me = (data.userid === this.options.userid);
+                messagetext = this.chat_parse_message(data);
+
+                // we skip the message
+                if (!messagetext) {
+                    return;
+                }
+
+                // play sound on new message
+                if (this.options.enable_chat_sound &&
+                    this.options.userid !== data.userid &&
+                    this.audio_newmessage && !multiplelines
+                ) {
+                    this.log('Bleep sound..');
+                    this.audio_newmessage.play();
+                }
 
                 // Start
                 chatline += '<li class="webcast-chatline webcast-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
@@ -1421,7 +1439,7 @@ M.mod_webcast.room = {
 
                 chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + this.alpha_numeric(data.fullname) + '</span>' +
                     '<span class="webcast-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="webcast-message">' + this.chat_parse_message(data.message) + '</span>' +
+                    '<span class="webcast-message">' + messagetext + '</span>' +
                     '</div>' +
                     '</li>';
 
@@ -1491,40 +1509,52 @@ M.mod_webcast.room = {
 
     /**
      * Make sure a message is a valid text
-     * @param {string} message
-     * @returns string
+     * @param {object} data
+     * @returns {string|false}
      */
-    chat_parse_message: function (message) {
+    chat_parse_message: function (data) {
         "use strict";
 
         // check if we must replace text by a shortcode
-        if (message.charAt(0) === '[' && message.slice(-1) === ']') {
-            var newmessage = this.chat_parse_shortcodes(message);
+        if (data.message.charAt(0) === '[' && data.message.slice(-1) === ']') {
+            var newmessage = this.chat_parse_shortcodes(data);
             if (newmessage) {
                 return newmessage;
+            }
+
+            if (!newmessage) {
+                // we can skip the message
+                this.log('Skip message');
+                return false;
             }
 
             this.log('Error: shortcode not replaced');
         }
 
-        return this.add_emoticons(Y.Node.create("<div/>").setHTML(message).get('text'));
+        return this.add_emoticons(Y.Node.create("<div/>").setHTML(data.message).get('text'));
     },
 
     /**
      * Replace shortcode by special features if they exists
-     * @param {string} message
+     * @param {object} data
      */
-    chat_parse_shortcodes: function (message) {
+    chat_parse_shortcodes: function (data) {
         "use strict";
         var newmessage = false;
 
-        if (this.shortcode_regex.test(message)) {
+        if (this.shortcode_regex.test(data.message)) {
             this.log('Has some shortcode:');
-            message.replace(this.shortcode_regex, function (a, command, args) {
+            data.message.replace(this.shortcode_regex, function (a, command, args) {
                 M.mod_webcast.room.log(a);
                 switch (command) {
                     case 'file':
                         newmessage = M.mod_webcast.room.chat_add_shortcode_file(args);
+                        break;
+                    case 'question':
+                        newmessage = M.mod_webcast.room.chat_add_shortcode_question(args);
+                        break;
+                    case 'answer':
+                        M.mod_webcast.room.chat_add_shortcode_answer(args , data);
                         break;
                 }
             });
@@ -1562,6 +1592,49 @@ M.mod_webcast.room = {
         }
         this.log(message);
         return message;
+    },
+
+    /**
+     * Add a question to the chat
+     * @param {object} args
+     */
+    chat_add_shortcode_question: function (args) {
+        "use strict";
+        var message = '';
+        this.log('Add file detail to the chat');
+
+        try {
+            var obj = Y.JSON.parse(args.slice(1));
+            this.log(obj);
+            message += '<div class="webcast-question">' +
+                '<span class="text">' + obj.text + '</span>' +
+                '<span class="webcast-button answerquestion" data-id="' + obj.question_id + '">' + M.util.get_string('js:answer', 'webcast', {}) + '</span>' +
+                '</div>';
+
+        } catch (e) {
+            this.log(e);
+        }
+        this.log(message);
+        return message;
+    },
+
+    /**
+     * Notice the broadcaster or teacher about a new answer
+     *
+     * @param {object} args
+     * @param {object} data
+     */
+    chat_add_shortcode_answer: function (args , data) {
+        "use strict";
+        this.log(data);
+        try {
+            var obj = Y.JSON.parse(args.slice(1));
+            if (this.options.userid === Number(obj.created_by)) {
+                this.notice_bar_message('added_answer', data);
+            }
+        } catch (e) {
+            this.log(e);
+        }
     },
 
     /**
@@ -1912,6 +1985,10 @@ M.mod_webcast.room = {
      */
     add_question_manager    : function () {
         "use strict";
+        var that = this;
+
+        this.nodeholder.questionoverview = Y.one('#webcast-questionoverview ul');
+        this.nodeholder.addquestionbtn = Y.one('#addquestion');
 
         // init manager popup
         this.nodeholder.questionmanager = new Y.Panel({
@@ -1926,91 +2003,123 @@ M.mod_webcast.room = {
         });
 
         var el = document.getElementById("webcast-questionoverview");
-        var scroll = tinyscrollbar(el);
+        this.scrollbar_questionoverview = tinyscrollbar(el);
 
         // add click listener
         Y.one('#webcast-viewquestion-btn').on('click', function () {
             this.nodeholder.questionmanager.show();
+            // load the question from the DB
+            this.question_load_overview();
         }, this);
 
-        // add new question
-        Y.one('#addquestion').on('click', function () {
-            Y.one('#all-questions').hide();
-            Y.one('#question-type-selector').show();
-        });
+        // check if we can still add questions
+        if (!this.options.is_ended) {
 
-        // step 2 back to question type selector
-        Y.all('.webcast-button-previous-step2').on('click', function () {
-            Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
-            Y.one('#question-type-selector').show();
-        }, this);
+            Y.one('body').delegate('click', function () {
+                that.nodeholder.questionmanager.show();
+                that.question_load_single(this.getData('id'));
+            }, '.answerquestion');
 
-        // show the correct question type create form
-        Y.one('#webcast-button-next-step1').on('click', function () {
-            Y.one('#question-type-selector').hide();
-            var value = Y.one('#question-type').get('value');
-            this.log(value);
-            Y.one('#question-type-' + value).show();
+            // add new question
+            if (this.nodeholder.addquestionbtn) {
+                // broadcaster or teacher can add questions
 
-            //  make sure all input is cleared
-            this.question_clear_all_input();
-        }, this);
+                this.nodeholder.addquestionbtn.on('click', function () {
+                    Y.one('#all-questions').hide();
+                    Y.one('#question-type-selector').show();
+                });
 
-        // back to question overview
-        Y.one('#webcast-button-previous-step1').on('click', function () {
-            Y.one('#all-questions').show();
-            Y.one('#question-type-selector').hide();
-        }, this);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        var inputtruefalse = Y.one('#question-truefalse');
-        var truefalseaddbtn = Y.one('#truefalse-add-btn');
-        truefalseaddbtn.on('click', function () {
-            if (!truefalseaddbtn.hasClass('disabled')) {
-                inputtruefalse.setStyles({'border': '1px solid green'});
-                truefalseaddbtn.removeClass('disabled');
-                this.question_save('truefalse');
+                // step 2 back to question type selector
+                Y.all('.webcast-button-previous-step2').on('click', function () {
+                    Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
+                    Y.one('#question-type-selector').show();
+                }, this);
+
+                // show the correct question type create form
+                Y.one('#webcast-button-next-step1').on('click', function () {
+                    Y.one('#question-type-selector').hide();
+                    var value = Y.one('#question-type').get('value');
+                    this.log(value);
+                    Y.one('#question-type-' + value).show();
+
+                    //  make sure all input is cleared
+                    this.question_clear_all_input();
+                }, this);
+
+                // back to question overview
+                Y.one('#webcast-button-previous-step1').on('click', function () {
+                    Y.one('#all-questions').show();
+                    Y.one('#question-type-selector').hide();
+                }, this);
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                var inputtruefalse = Y.one('#question-truefalse');
+                var truefalseaddbtn = Y.one('#truefalse-add-btn');
+                truefalseaddbtn.on('click', function () {
+                    if (!truefalseaddbtn.hasClass('disabled')) {
+                        inputtruefalse.setStyles({'border': '1px solid green'});
+                        truefalseaddbtn.removeClass('disabled');
+                        this.question_save('truefalse');
+                    } else {
+                        inputtruefalse.setStyles({'border': '1px solid red'});
+                    }
+                }, this);
+
+                inputtruefalse.on('keyup', function () {
+                    if (Y.Lang.trim(inputtruefalse.get('value')) !== "") {
+                        inputtruefalse.setStyles({'border': '1px solid green'});
+                        truefalseaddbtn.removeClass('disabled');
+                    } else {
+                        inputtruefalse.setStyles({'border': '1px solid red'});
+                        truefalseaddbtn.addClass('disabled');
+                    }
+                }, this);
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                var openaddbtn = Y.one('#open-add-btn');
+                var inputopen = Y.one('#question-open');
+                openaddbtn.on('click', function () {
+                    if (!openaddbtn.hasClass('disabled')) {
+                        inputopen.setStyles({'border': '1px solid green'});
+                        openaddbtn.removeClass('disabled');
+                        this.question_save('open');
+                    } else {
+                        inputopen.setStyles({'border': '1px solid red'});
+                    }
+                }, this);
+
+                inputopen.on('keyup', function () {
+                    if (Y.Lang.trim(inputopen.get('value')) !== "") {
+                        inputopen.setStyles({'border': '1px solid green'});
+                        openaddbtn.removeClass('disabled');
+                    } else {
+                        inputopen.setStyles({'border': '1px solid red'});
+                        openaddbtn.addClass('disabled');
+                    }
+                }, this);
+
             } else {
-                inputtruefalse.setStyles({'border': '1px solid red'});
+                // normal student
+                // start question listener
             }
-        }, this);
 
-        inputtruefalse.on('keyup', function () {
-            if (Y.Lang.trim(inputtruefalse.get('value')) !== "") {
-                inputtruefalse.setStyles({'border': '1px solid green'});
-                truefalseaddbtn.removeClass('disabled');
-            } else {
-                inputtruefalse.setStyles({'border': '1px solid red'});
-                truefalseaddbtn.addClass('disabled');
-            }
-        }, this);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        var openaddbtn = Y.one('#open-add-btn');
-        var inputopen = Y.one('#question-open');
-        openaddbtn.on('click', function () {
-            if (!openaddbtn.hasClass('disabled')) {
-                inputopen.setStyles({'border': '1px solid green'});
-                openaddbtn.removeClass('disabled');
-                this.question_save('open');
-            } else {
-                inputopen.setStyles({'border': '1px solid red'});
-            }
-        }, this);
+            // prevent submits on enter
+            Y.all('#webcast-question-manager form').on('submit', function (e) {
+                e.preventDefault();
+                return false;
+            });
 
-        inputopen.on('keyup', function () {
-            if (Y.Lang.trim(inputopen.get('value')) !== "") {
-                inputopen.setStyles({'border': '1px solid green'});
-                openaddbtn.removeClass('disabled');
-            } else {
-                inputopen.setStyles({'border': '1px solid red'});
-                openaddbtn.addClass('disabled');
-            }
-        }, this);
+            // back button on question detail
+            Y.one('body').delegate('click', function () {
+                Y.one('#question-answer').hide();
+                Y.one('#all-questions').show();
+                that.question_load_overview();
+            }, '.webcast-back-to-questionoverview');
 
-        // prevent submits on enter
-        Y.all('#question-type-open form, #question-type-truefalse form').on('submit', function (e) {
-            e.preventDefault();
-            return false;
-        });
+            // view a question or answer if we aren't a teacher or broadcaster
+            this.nodeholder.questionoverview.delegate('click', function () {
+                that.question_load_single(this.getData('id'));
+            }, '.viewquestionbtn');
+
+        }
     },
     /**
      * clear input to prevent strange thinks from happening
@@ -2026,10 +2135,188 @@ M.mod_webcast.room = {
     },
 
     /**
+     * Get all the questions that belong to this webcast and check if its filled
+     */
+    question_load_overview: function () {
+        "use strict";
+        var that = this, html = '', i, question;
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+
+            data: {
+                'sesskey': M.cfg.sesskey,
+                'action' : "get_questions",
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.webcastid
+            },
+            on  : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            html = '';
+                            for (i in response.questions) {
+                                if (response.questions.hasOwnProperty(i)) {
+
+                                    question = response.questions[i];
+                                    html += '<li class="' + ((!that.nodeholder.addquestionbtn && !question.my_answer) ? 'unanswered' : '') + '">';
+                                    html += '<span class="number">#' + i + '</span>';
+                                    html += '<span class="name">' + question.name + '</span>';
+                                    html += '<span class="webcast-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'webcast', {}) + '</span>';
+                                    html += '</li>';
+                                }
+                            }
+
+                            that.nodeholder.questionoverview.setHTML(html);
+                            that.scrollbar_questionoverview.update();
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+
+    },
+
+    /**
+     * Load a single question by id
+     * @param {integer} questionid
+     */
+    question_load_single: function (questionid) {
+        "use strict";
+        var that = this;
+        //@todo check user type for which api we need to call
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+
+            data: {
+                'sesskey'   : M.cfg.sesskey,
+                'action'    : "get_question",
+                'extra1'    : that.options.courseid,
+                'extra2'    : that.options.webcastid,
+                'questionid': questionid
+            },
+            on  : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            // hide question overview
+                            Y.one('#all-questions').hide();
+
+                            // answering a question
+                            if (response.item.form) {
+                                Y.one('#question-answer').setHTML(response.item.form).show();
+                                // listener for a answer on the question
+                                that.question_answer();
+                            } else {
+                                // We need to build total answer overview
+                                Y.one('#question-answer').setHTML(response.item.answers).show();
+                            }
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+    },
+
+    /**
+     * Answer a question
+     */
+    question_answer: function () {
+        "use strict";
+        var answerform = Y.one('#question-submit-answer'), that = this;
+        answerform.on('submit', function (e) {
+            e.preventDefault();
+
+            Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+                method: 'POST',
+                form  : {
+                    id         : answerform,
+                    useDisabled: true
+                },
+                data  : {
+                    'sesskey': M.cfg.sesskey,
+                    'action' : "add_answer",
+                    'extra1' : that.options.courseid,
+                    'extra2' : that.options.webcastid
+                },
+                on    : {
+                    success: function (id, o) {
+                        that.log(o.response);
+                        try {
+                            var response = Y.JSON.parse(o.response);
+                            if (response.status) {
+
+                                // back to question overview
+                                // notice the broadcaster / teacher about the answer
+                                that.chatobject.message = '[answer ' + Y.JSON.stringify(response) + ']';
+                                that.socket.emit("send", that.chatobject, function (response) {
+                                    if (!response.status) {
+                                        that.exception(response.error);
+                                    }
+                                });
+                            } else {
+                                // we have a error display this to the user
+                            }
+                        } catch (exc) {
+                            that.log(exc);
+                        }
+                    },
+                    failure: function (x, o) {
+                        that.log('failure');
+                        that.log(o);
+                    }
+                }
+            });
+        });
+    },
+
+    /**
+     * Show a notice bar with a text can be triggered remotely
+     * @param {string} message
+     * @param {object} obj
+     */
+    notice_bar_message: function (message, obj) {
+        "use strict";
+        var that = this;
+        if (this.nodeholder.noticebar === null) {
+            this.nodeholder.noticebar = Y.one('#webcast-noticebar');
+        }
+
+        if ((this.nodeholder.noticebar.get('offsetWidth') === 0 && this.nodeholder.noticebar.get('offsetHeight') === 0) ||
+            this.nodeholder.noticebar.get('display') === 'none') {
+            // not visible we can show it directly
+            this.nodeholder.noticebar.setHTML(M.util.get_string('js:' + message, 'webcast', obj)).show();
+            setTimeout(function () {
+                that.nodeholder.noticebar.hide();
+            }, 2000);
+        } else {
+            // need some kind of queue
+            setTimeout(function () {
+                that.notice_bar_message(message, obj);
+            }, 4000);
+        }
+
+    },
+    /**
      * Save question and notice the clients
      * @param {string} questiontype
      */
-    question_save: function (questiontype) {
+    question_save     : function (questiontype) {
         "use strict";
         var formnode = Y.one('#question-type-' + questiontype + ' form'), that = this;
         Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
@@ -2056,6 +2343,13 @@ M.mod_webcast.room = {
                             Y.one('#all-questions').show();
                             that.nodeholder.questionmanager.hide();
                             that.chat_local_message('added_question');
+
+                            that.chatobject.message = '[question ' + Y.JSON.stringify(response) + ']';
+                            that.socket.emit("send", that.chatobject, function (response) {
+                                if (!response.status) {
+                                    that.exception(response.error);
+                                }
+                            });
                         }
                     } catch (exc) {
                         that.log(exc);
@@ -2073,7 +2367,7 @@ M.mod_webcast.room = {
      * Scale room
      * Should be executed when the browser window resize
      */
-    scale_room   : function () {
+    scale_room        : function () {
         "use strict";
         var winWidth = this.nodeholder.body.get("winWidth");
         var winHeight = this.nodeholder.body.get("winHeight");

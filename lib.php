@@ -54,7 +54,7 @@ function webcast_supports($feature) {
         case FEATURE_GRADE_HAS_GRADE:
             return false;
         case FEATURE_BACKUP_MOODLE2:
-            return true;
+            return false;//@todo implement later...
         default:
             return null;
     }

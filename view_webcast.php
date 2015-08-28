@@ -129,23 +129,28 @@ $PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
 $PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init', array($opts));
 
 // Language strings
-$PAGE->requires->string_for_js('js:send', 'webcast');
-$PAGE->requires->string_for_js('js:wait_on_connection', 'webcast');
-$PAGE->requires->string_for_js('js:muted', 'webcast');
-$PAGE->requires->string_for_js('js:joined', 'webcast');
-$PAGE->requires->string_for_js('js:connecting', 'webcast');
-$PAGE->requires->string_for_js('js:disconnect', 'webcast');
-$PAGE->requires->string_for_js('js:reconnected', 'webcast');
-$PAGE->requires->string_for_js('js:script_user', 'webcast');
-$PAGE->requires->string_for_js('js:system_user', 'webcast');
-$PAGE->requires->string_for_js('js:warning_message_closing_window', 'webcast');
-$PAGE->requires->string_for_js('js:error_logout_or_lostconnection', 'webcast');
-$PAGE->requires->string_for_js('js:ending_webcast', 'webcast');
-$PAGE->requires->string_for_js('js:dialog_ending_text', 'webcast');
-$PAGE->requires->string_for_js('js:dialog_ending_btn', 'webcast');
-$PAGE->requires->string_for_js('js:ended', 'webcast');
-$PAGE->requires->string_for_js('js:chat_commands', 'webcast');
-$PAGE->requires->string_for_js('js:added_question', 'webcast');
+$PAGE->requires->strings_for_js(array(
+    'js:send',
+    'js:wait_on_connection',
+    'js:joined',
+    'js:connecting',
+    'js:disconnect',
+    'js:reconnected',
+    'js:script_user',
+    'js:system_user',
+    'js:warning_message_closing_window',
+    'js:error_logout_or_lostconnection',
+    'js:ending_webcast',
+    'js:dialog_ending_text',
+    'js:dialog_ending_btn',
+    'js:ended',
+    'js:chat_commands',
+    'js:added_question',
+    'btn:view',
+    'js:muted',
+    'js:answer',
+    'js:added_answer',
+), 'webcast');
 
 /**
  * Renderer
@@ -321,6 +326,9 @@ echo $OUTPUT->header();
                     </div>
                 </div>
                 <div id="webcast-chatinput">
+                    <div id="webcast-noticebar" style="display: none">
+                        alert message here
+                    </div>
                     <div id="webcast-fileoverview-dialog" class="webcast-dialog" style="display: none">
                         <header>
                             <span>Close</span>
@@ -381,7 +389,7 @@ echo $OUTPUT->header();
     <div id="webcast-question-manager">
         <div class="yui3-widget-bd">
             <div id="all-questions">
-                <?php if ($permissions->broadcaster || $permissions->teacher): ?>
+                <?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>
                     <span class="webcast-button" id="addquestion"><?php echo get_string('btn:addquestion', 'webcast') ?></span>
                 <?php endif ?>
                 <div id="webcast-questionoverview" class="scroll">
@@ -392,26 +400,19 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div class="viewport" style="height: 320px">
+                    <div class="viewport" style="<?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>height: 320px<?php else: ?>height: 340px<?php endif ?>">
                         <div class="overview">
                             <ul>
                                 <!-- Holder -->
-                                <li>
-                                    <span class="number">#824</span>
-                                    <span class="name">Wat zijn je leerdoelen sdff asdf sdf adfasklfjasdklfjasdklfjsklfjsdklfadlkfj?</span>
-                                    <span class="webcast-button gray"><?php echo get_string('btn:view', 'webcast') ?></span>
-                                </li>
-                                <li>
-                                    <span class="number">#824</span>
-                                    <span class="name">Wat zijn je leerdoelen sdff asdf sdf adfasklfjasdklfjasdklfjsklfjsdklfadlkfj?</span>
-                                    <span class="webcast-button gray"><?php echo get_string('btn:view', 'webcast') ?></span>
-                                </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <?php if ($permissions->broadcaster || $permissions->teacher): ?>
+            <div id="question-answer" style="display: none">
+                <!-- Holder -->
+            </div>
+            <?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>
                 <div id="question-type-selector" style="display: none">
                     <span id="webcast-button-previous-step1" class="webcast-button previous">Previous</span>
                     <span id="webcast-button-next-step1" class="webcast-button next">Next</span>
@@ -431,6 +432,7 @@ echo $OUTPUT->header();
                     <span class="webcast-button previous  webcast-button-previous-step2">Previous</span>
                     <span class="webcast-button next disabled" id="open-add-btn">Create</span>
                     <h3>Create your open question</h3>
+
                     <form>
                         <label for="question-open">
                             Question:
@@ -446,6 +448,7 @@ echo $OUTPUT->header();
                     <span class="webcast-button previous webcast-button-previous-step2">Previous</span>
                     <span class="webcast-button next disabled" id="truefalse-add-btn">Create</span>
                     <h3>Create your true or false question</h3>
+
                     <form>
                         <label for="question-truefalse">
                             Question:

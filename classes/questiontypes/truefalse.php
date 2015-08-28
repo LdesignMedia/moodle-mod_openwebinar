@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question open
+ * Question True|false
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -30,87 +30,49 @@ use mod_webcast\questiontypes;
 
 defined('MOODLE_INTERNAL') || die();
 
-class open extends questiontypes {
+class truefalse extends questiontypes {
 
     /**
      * Question type
      *
      * @var string
      */
-    private $type = 'open';
+    private $type = 'truefalse';
 
     /**
      * Return the question type
      *
      * @return mixed
      */
-    public function get_question_type_string() {
+    function get_question_type_string() {
         return $this->type;
     }
 
     /**
      * Display the question to the user
      *
-     * @return string
+     * @return mixed
      */
-    public function render() {
-        return $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
-                <p>' . $this->get_question_summary() . '</p>
-                <span id="question-error"></span>
-                <form id="question-submit-answer" action="" method="post">
-                    <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
-                    <textarea name="answer">' . $this->get_my_answer_string() . '</textarea>
-                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'webcast') . '" class="btn-primary"/>
-                </form>';
-    }
+    function render() {
 
-    /**
-     * Get my personal answer value
-     * prevent against xss and code injection
-     *
-     * @return string
-     */
-    protected function get_my_answer_string() {
-        $answer = $this->get_my_answer();
-        return !empty($answer->answer_data->answer) ? $answer->answer_data->answer : '';
     }
 
     /**
      * Add a validation function to your question type
      *
-     * @return array
+     * @return mixed
      */
-    public function validation() {
-        $return = array('status' => true, 'error' => '');
-        // make sure we have the data
-        $this->get_post_data();
-
-        // make sure a value is given
-        if (empty($this->postdata->answer)) {
-            $return = array(
-                'status' => false,
-                'error' => get_string('error:empty_not_allowed', 'webcast')
-            );
-        }
-        return $return;
+    function validation() {
+        // TODO: Implement validation() method.
     }
-
-    /**
-     *
-     * @throws \coding_exception
-     */
-    protected function get_post_data() {
-        $this->postdata->answer = optional_param('answer', '', PARAM_TEXT);
-    }
-
 
     /**
      * Return the question type int
      *
      * @return int
      */
-    public function get_question_type_int() {
-        return question::QUESTION_TYPE_OPEN;
+    function get_question_type_int() {
+        return question::QUESTION_TYPE_TRUE_FALSE;
     }
 
     /**
@@ -118,7 +80,8 @@ class open extends questiontypes {
      *
      * @param array $answers
      *
-     * @return mixed
+     * @return string
+     * @throws \coding_exception
      */
     public function render_answers($answers) {
         $return = $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
@@ -132,5 +95,12 @@ class open extends questiontypes {
         }
 
         return $return;
+    }
+
+    /**
+     * Get the posted answer data
+     */
+    protected function get_post_data() {
+        // TODO: Implement get_post_data() method.
     }
 }

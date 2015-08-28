@@ -27,59 +27,254 @@ namespace mod_webcast;
 
 defined('MOODLE_INTERNAL') || die();
 
-abstract class questiontypes{
+abstract class questiontypes {
+
+    /**
+     * Postdata container
+     *
+     * @var \stdClass
+     */
+    protected $postdata;
 
     /**
      * Question object
+     *
      * @var object
      */
     protected $questionrecord = false;
 
     /**
-     * Answer object or false
+     * Own Answer object or false
+     *
      * @var bool|object
      */
     protected $answer = false;
 
     /**
-     * __construct
-     * @param mixed $questionrecord
-     * @param mixed $answer
+     * All Answer array or false
+     *
+     * @var bool|array
      */
-    public function __construct($questionrecord = false , $answer = false){
+    protected $allanswerrecords = false;
 
-        $this->questionrecord = (object) $questionrecord;
-        $this->$answer = $answer;
+    /**
+     * If you can override your previous answer
+     *
+     * @var bool
+     */
+    protected $allowoverideanswer = false;
+
+    /**
+     * __construct
+     *
+     * @param mixed $questionrecord The question
+     * @param mixed $answer         your own answer object used for editing your response
+     * @param bool $loadallanswers  if we should load all the answers
+     */
+    public function __construct($questionrecord = false, $answer = false, $loadallanswers = false) {
+
+        // init postdata store
+        $this->postdata = new \stdClass();
+
+        if ($questionrecord) {
+            $questionrecord->question_data = unserialize($questionrecord->question_data);
+            $questionrecord->question_users = unserialize($questionrecord->question_users);
+            if ($loadallanswers) {
+                $this->get_all_answers($questionrecord->id);
+            }
+        }
+        $this->questionrecord = $questionrecord;
+
+        // check if answer is given
+        if ($answer) {
+            $answer->answer_data = unserialize($answer->answer_data);
+            $this->answer = $answer;
+        }
+
     }
 
     /**
-     * Return the question type
-     * @return mixed
+     * Get the question text
+     *
+     * @return string
      */
-    abstract function get_question_type();
+    public function get_question_text() {
+        return !empty($this->questionrecord->question_data->question) ? $this->questionrecord->question_data->question : '';
+    }
+
+    /**
+     * Get the user_id from the creator of the question
+     *
+     * @return int
+     */
+    public function get_created_by() {
+        return !empty($this->questionrecord->created_by) ? $this->questionrecord->created_by : -1;
+    }
+
+    /**
+     * The question his summary
+     *
+     * @return string
+     */
+    public function get_question_summary() {
+        return !empty($this->questionrecord->question_data->summary) ? $this->questionrecord->question_data->summary : '';
+    }
+
+    /**
+     * The question webcast_id
+     *
+     * @return int
+     */
+    public function get_webcast_id() {
+        return !empty($this->questionrecord->webcast_id) ? $this->questionrecord->webcast_id : 0;
+    }
+
+    /**
+     * render the back button
+     *
+     * @return string
+     * @throws \coding_exception
+     */
+    protected function render_back_link() {
+        return \html_writer::span(get_string('btn:back', 'webcast'), 'btn webcast-back-to-questionoverview');
+    }
+
+    /**
+     * Get question ID
+     *
+     * @return int
+     */
+    public function get_id() {
+        return !empty($this->questionrecord->id) ? $this->questionrecord->id : 0;
+    }
+
+    /**
+     * Count the answers that are given
+     */
+    public function get_answers_count() {
+        return !empty($this->allanswerrecords) ? count($this->allanswerrecords) : 0;
+    }
+
+    /**
+     * Convert all answers to usable data
+     *
+     * @param int $questionid
+     */
+    protected function get_all_answers($questionid = 0) {
+        global $DB;
+        $answers = $DB->get_records('webcast_question_answer', array('question_id' => $questionid), 'id DESC');
+
+        //@todo recordset is possible a faster method
+        foreach ($answers as &$answer) {
+            $answer->answer_data = unserialize($answer->answer_data);
+        }
+        $this->allanswerrecords = $answers;
+    }
+
+    /**
+     * Get my personal answer on the question
+     *
+     * @return false|object
+     */
+    public function get_my_answer() {
+        global $DB, $USER;
+        if ($this->answer) {
+            return $this->answer;
+        }
+
+        // no answers for guests
+        if (empty($USER) || $USER->id <= 1) {
+            return false;
+        }
+
+        // check if we have the answer in the DB
+        $answer = $DB->get_record('webcast_question_answer', array(
+            'user_id' => $USER->id,
+            'question_id' => $this->get_id()
+        ));
+        if ($answer) {
+            $answer->answer_data = unserialize($answer->answer_data);
+        }
+
+        return $answer;
+    }
+
+
+    /**
+     * Return the question type
+     *
+     * @return string
+     */
+    abstract public function get_question_type_string();
+
+    /**
+     * Return the question type int
+     *
+     * @return int
+     */
+    abstract public function get_question_type_int();
 
     /**
      * Display the question to the user
-     * @return mixed
+     *
+     * @return string
      */
-    abstract function render();
+    abstract public function render();
+
+    /**
+     * Display the answers to a user
+     *
+     * @param $answers
+     *
+     * @return string
+     */
+    abstract public function render_answers($answers);
 
     /**
      * Add a validation function to your question type
-     * @return mixed
+     *
+     * @return array
      */
-    abstract function validation();
+    abstract public function validation();
 
     /**
-     * Need to be implemented when creating the question
-     * @return mixed
+     * Get the posted answer data
      */
-    abstract function create();
+    abstract protected function get_post_data();
 
     /**
      * Save user data
      */
-    public function save_user_input(){
+    public function save_user_input() {
+        global $DB, $USER;
 
+        $result = $DB->get_record('webcast_question_answer', array(
+            'question_id' => $this->get_id(),
+            'user_id' => $USER->id
+        ), 'id', IGNORE_MULTIPLE);
+        if ($result && !$this->allowoverideanswer) {
+            throw new \Exception(get_string('error:answer_already_saved', 'webcast'));
+        }
+
+        // build answer record
+        $obj = new \stdClass();
+        $obj->user_id = $USER->id;
+        $obj->webcast_id = $this->get_webcast_id();
+        $obj->question_id = $this->get_id();
+
+        // serialize form input
+        $obj->answer_data = serialize($this->postdata);
+
+        // if its allowed to override previous answer
+        if ($result) {
+            $obj->id = $result->id;
+            $DB->update_record('webcast_question_answer', $obj);
+
+            return $result->id;
+        }
+
+        $obj->added_on = time();
+
+        return $DB->insert_record('webcast_question_answer', $obj);
     }
 }

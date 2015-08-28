@@ -44,7 +44,7 @@ class restore_webcast_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // We have just one structure step here.
-        $this->add_step(new restore_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
+//        $this->add_step(new restore_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
     }
 
     /**
@@ -52,11 +52,11 @@ class restore_webcast_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     static public function define_decode_contents() {
-        $contents = array();
+        // $contents = array();
 
-        $contents[] = new restore_decode_content('webcast', array('intro'), 'webcast');
+        // $contents[] = new restore_decode_content('webcast', array('intro'), 'webcast');
 
-        return $contents;
+        // return $contents;
     }
 
     /**
@@ -64,12 +64,12 @@ class restore_webcast_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     static public function define_decode_rules() {
-        $rules = array();
+        //$rules = array();
 
-        $rules[] = new restore_decode_rule('webcastVIEWBYID', '/mod/webcast/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('webcastINDEX', '/mod/webcast/index.php?id=$1', 'course');
+        //  $rules[] = new restore_decode_rule('webcastVIEWBYID', '/mod/webcast/view.php?id=$1', 'course_module');
+        // $rules[] = new restore_decode_rule('webcastINDEX', '/mod/webcast/index.php?id=$1', 'course');
 
-        return $rules;
+//        return $rules;
 
     }
 
@@ -80,13 +80,13 @@ class restore_webcast_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
-        $rules = array();
+//        $rules = array();
+//
+//        $rules[] = new restore_log_rule('webcast', 'add', 'view.php?id={course_module}', '{webcast}');
+//        $rules[] = new restore_log_rule('webcast', 'update', 'view.php?id={course_module}', '{webcast}');
+//        $rules[] = new restore_log_rule('webcast', 'view', 'view.php?id={course_module}', '{webcast}');
 
-        $rules[] = new restore_log_rule('webcast', 'add', 'view.php?id={course_module}', '{webcast}');
-        $rules[] = new restore_log_rule('webcast', 'update', 'view.php?id={course_module}', '{webcast}');
-        $rules[] = new restore_log_rule('webcast', 'view', 'view.php?id={course_module}', '{webcast}');
-
-        return $rules;
+//        return $rules;
     }
 
     /**
@@ -100,10 +100,10 @@ class restore_webcast_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     static public function define_restore_log_rules_for_course() {
-        $rules = array();
-
-        $rules[] = new restore_log_rule('webcast', 'view all', 'index.php?id={course}', null);
-
-        return $rules;
+//        $rules = array();
+//
+//        $rules[] = new restore_log_rule('webcast', 'view all', 'index.php?id={course}', null);
+//
+//        return $rules;
     }
 }

@@ -32,11 +32,11 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
      */
     protected function define_structure() {
 
-        $paths = array();
-        $paths[] = new restore_path_element('webcast', '/activity/webcast');
-
-        // Return the paths wrapped into standard activity structure.
-        return $this->prepare_activity_structure($paths);
+//        $paths = array();
+//        $paths[] = new restore_path_element('webcast', '/activity/webcast');
+//
+//        // Return the paths wrapped into standard activity structure.
+//        return $this->prepare_activity_structure($paths);
     }
 
     /**
@@ -45,28 +45,28 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
      * @param array $data parsed element data
      */
     protected function process_webcast($data) {
-        global $DB;
-
-        $data = (object)$data;
-        $oldid = $data->id;
-        $data->course = $this->get_courseid();
-
-        if (empty($data->timecreated)) {
-            $data->timecreated = time();
-        }
-
-        if (empty($data->timemodified)) {
-            $data->timemodified = time();
-        }
-
-        if ($data->grade < 0) {
-            // Scale found, get mapping.
-            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
-        }
-
-        // Create the webcast instance.
-        $newitemid = $DB->insert_record('webcast', $data);
-        $this->apply_activity_instance($newitemid);
+//        global $DB;
+//
+//        $data = (object)$data;
+//        $oldid = $data->id;
+//        $data->course = $this->get_courseid();
+//
+//        if (empty($data->timecreated)) {
+//            $data->timecreated = time();
+//        }
+//
+//        if (empty($data->timemodified)) {
+//            $data->timemodified = time();
+//        }
+//
+//        if ($data->grade < 0) {
+//            // Scale found, get mapping.
+//            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
+//        }
+//
+//        // Create the webcast instance.
+//        $newitemid = $DB->insert_record('webcast', $data);
+//        $this->apply_activity_instance($newitemid);
     }
 
     /**
@@ -74,6 +74,6 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
      */
     protected function after_execute() {
         // Add webcast related files, no need to match by itemname (just internally handled context).
-        $this->add_related_files('mod_webcast', 'intro', null);
+//        $this->add_related_files('mod_webcast', 'intro', null);
     }
 }

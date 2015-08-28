@@ -24,6 +24,8 @@
  * @author    Luuk Verhoeven
  **/
 namespace mod_webcast;
+
+use mod_webcast\event\webcast_ping;
 use mod_webcast\helper;
 use mod_webcast\question;
 
@@ -181,7 +183,7 @@ class api {
     /**
      * Online timer for chat users
      *
-     * @throws Exception
+     * @throws \Exception
      * @throws \coding_exception
      */
     public function api_call_ping() {
@@ -195,7 +197,7 @@ class api {
         $this->get_module_information();
 
         if (!empty($this->webcast->is_ended)) {
-            throw new Exception("webcast_already_ended");
+            throw new \Exception("webcast_already_ended");
         }
 
         $params = array(
@@ -203,8 +205,8 @@ class api {
             'objectid' => $this->cm->id,
         );
         // add new log entry
-        $event = \mod_webcast\event\webcast_ping::create($params);
-        
+        $event = webcast_ping::create($params);
+
         $event->add_record_snapshot('course', $this->course);
         $event->trigger();
 
@@ -235,7 +237,7 @@ class api {
         $obj->id = $this->webcast->id;
         $obj->is_ended = 1;
 
-        $DB->update_record('webcast' , $obj);
+        $DB->update_record('webcast', $obj);
         $this->response['status'] = true;
 
         $this->output_json();
@@ -277,7 +279,7 @@ class api {
 
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
             $this->response['status'] = true;
-            $this->response['webcast'] =  helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
+            $this->response['webcast'] = helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
         }
 
         $this->output_json();
@@ -285,10 +287,11 @@ class api {
 
     /**
      * Add files to a webcast
+     *
      * @throws \coding_exception
      */
-    public function api_call_add_file(){
-        global $DB , $USER;
+    public function api_call_add_file() {
+        global $DB, $USER;
 
         // Valid sesskey
         $this->has_valid_sesskey();
@@ -306,13 +309,19 @@ class api {
         // get files we submit
         $fs = get_file_storage();
 
-        $files = $DB->get_records('files' , array('contextid' => $this->context->id, 'userid' => $USER->id, 'itemid' => $data->files_filemanager , 'component' => 'mod_webcast' , 'filearea' => 'attachments'));
+        $files = $DB->get_records('files', array(
+            'contextid' => $this->context->id,
+            'userid' => $USER->id,
+            'itemid' => $data->files_filemanager,
+            'component' => 'mod_webcast',
+            'filearea' => 'attachments'
+        ));
         foreach ($files as $file) {
 
             $file = $fs->get_file_by_id($file->id);
 
-            if($file && $file->get_filename() !== '.' && !$file->is_directory()){
-                $this->response['files'][] = helper::get_file_info($file , $fs);
+            if ($file && $file->get_filename() !== '.' && !$file->is_directory()) {
+                $this->response['files'][] = helper::get_file_info($file, $fs);
             }
         }
 
@@ -322,7 +331,7 @@ class api {
     /**
      * List of all files in a webcast
      */
-    public function api_call_list_all_files(){
+    public function api_call_list_all_files() {
 
         // Valid sesskey
         $this->has_valid_sesskey();
@@ -334,7 +343,7 @@ class api {
         $files = $fs->get_area_files($this->context->id, 'mod_webcast', 'attachments');
 
         foreach ($files as $f) {
-            if($f && $f->get_filename() !== '.' && !$f->is_directory()) {
+            if ($f && $f->get_filename() !== '.' && !$f->is_directory()) {
                 $this->response['files'][] = helper::get_file_info($f, $fs);
             }
         }
@@ -372,7 +381,9 @@ class api {
     /**
      * Add new question to the webcast
      */
-    public function api_call_add_question(){
+    public function api_call_add_question() {
+
+        global $USER;
 
         // Valid sesskey
         $this->has_valid_sesskey();
@@ -384,23 +395,123 @@ class api {
         $question = new question($this->webcast);
 
         // get post data
+        $questiontype = required_param('questiontype', PARAM_ALPHA);
+
         $data = new \stdClass();
-        $data->question = filter_input(INPUT_POST , 'question' , FILTER_FLAG_NO_ENCODE_QUOTES);
-        $data->summary = filter_input(INPUT_POST , 'summary' , FILTER_FLAG_NO_ENCODE_QUOTES);
-        $data->questiontype = $question->question_type_string_to_int(filter_input(INPUT_POST , 'questiontype' , FILTER_DEFAULT));
+        $data->question = required_param('question', PARAM_TEXT);
+        $data->summary = optional_param('summary', '', PARAM_TEXT);
+        $data->questiontype = $question->question_type_string_to_int($questiontype);
 
         //@todo selectable for which users this question is
-        $users  = new \stdClass();
+        $users = new \stdClass();
         $users->all_enrolled_users = true;
         $users->user_ids = array();
 
-        $returnid = $question->create($data->questiontype , $data , $users);
+        $returnid = $question->create($data->questiontype, $data, $users);
 
-        if(is_numeric($returnid)){
+        if (is_numeric($returnid)) {
             $this->response['status'] = true;
             $this->response['question_id'] = $returnid;
+            $this->response['text'] =  $data->question;
+            $this->response['type'] =  $questiontype;
+            $this->response['user_id'] =  $USER->id;
         }
 
+        $this->output_json();
+    }
+
+    /**
+     * Get all questions from the DB
+     */
+    public function api_call_get_questions() {
+        // Valid sesskey
+        $this->has_valid_sesskey();
+
+        // Set information
+        $this->get_module_information();
+
+        // class
+        $question = new question($this->webcast);
+        // get all questions in this webcast
+        $questions = $question->get_all_question();
+
+        /**
+         * @var int $id
+         * @var \mod_webcast\questiontypes $quest
+         */
+        foreach ($questions as $id => $quest) {
+            $obj = new \stdClass();
+            $obj->name = $quest->get_question_text();
+            $obj->id = $quest->get_id();
+            $obj->answers = $quest->get_answers_count();
+            $obj->my_answer = $quest->get_my_answer();
+            $this->response['questions'][$id] = $obj;
+        }
+        $this->response['status'] = true;
+        $this->output_json();
+    }
+
+    /**
+     * Get a single question
+     *
+     * @throws \Exception
+     */
+    public function api_call_get_question() {
+
+        global $PAGE;
+
+        // Valid sesskey
+        $this->has_valid_sesskey();
+
+        // Set information
+        $this->get_module_information();
+
+        // get question id to query
+        $questionid = required_param('questionid', PARAM_INT);
+
+        // class
+        $question = new question($this->webcast);
+
+        /**
+         * @var \mod_webcast\questiontypes $questiontype
+         */
+        $questiontype = $question->get_question_by_id($questionid);
+
+        $obj = new \stdClass();
+
+        // include answers from the other for the teacher and the broadcaster
+        $permissions =helper::get_permissions($PAGE->context, $this->webcast);
+        if($permissions->broadcaster || $permissions->teacher){
+            $obj->answers = $questiontype->render_answers($question->get_answers($questionid));
+        }else{
+            // get question form
+            $obj->my_answer = $questiontype->get_my_answer();
+            $obj->form = $questiontype->render();
+        }
+
+        $this->response['item'] = $obj;
+        $this->response['status'] = true;
+        $this->output_json();
+    }
+
+    public function api_call_add_answer(){
+        global $USER;
+
+        // Valid sesskey
+        $this->has_valid_sesskey();
+
+        if($USER->id <= 1){
+            throw new \Exception(get_string('error:not_for_guests' , 'webcast'));
+        }
+
+        // Set information
+        $this->get_module_information();
+
+        // get question id to query
+        $questionid = required_param('question_id', PARAM_INT);
+
+        $question = new question($this->webcast);
+        $this->response = $question->save_answer($questionid);
         $this->output_json();
     }
 
@@ -431,7 +542,6 @@ class api {
         }
     }
 
-
     /**
      * Send output to client
      */
@@ -445,5 +555,4 @@ class api {
         echo json_encode($response);
         die();
     }
-
 }
