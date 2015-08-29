@@ -29,7 +29,7 @@ require_once(dirname(__FILE__) . '/lib.php');
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
 
-$userid = optional_param('userid', false, PARAM_INT);
+$userid = optional_param('user_id', false, PARAM_INT);
 $action = optional_param('action', false, PARAM_TEXT);
 
 if ($id) {

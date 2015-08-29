@@ -24,6 +24,8 @@
  * @author    Luuk Verhoeven
  */
 defined('MOODLE_INTERNAL') || die();
+require_once $CFG->dirroot . '/mod/webcast/lib/uaparser/vendor/autoload.php';
+use UAParser\Parser;
 
 /**
  * The renderer for the webcast module.
@@ -134,6 +136,7 @@ class mod_webcast_renderer extends plugin_renderer_base {
      */
     public function view_page_ended_message($webcast) {
         $html = '';
+
         return $html;
     }
 
@@ -144,12 +147,12 @@ class mod_webcast_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    public function view_user_activity_all($webcast){
-        global $OUTPUT, $PAGE , $CFG , $DB;
+    public function view_user_activity_all($webcast) {
+        global $OUTPUT, $PAGE, $CFG, $DB;
 
         require_once($CFG->libdir . '/tablelib.php');
 
-        $table = new \mod_webcast\table\useractivity('outstation-list-table' , $webcast);
+        $table = new \mod_webcast\table\useractivity('outstation-list-table', $webcast);
         echo $OUTPUT->heading(get_string('text:useractivity', 'webcast'));
 
         echo '<hr/>';
@@ -180,5 +183,116 @@ class mod_webcast_renderer extends plugin_renderer_base {
         $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
         $table->collapsible(false);
         $table->out(self::DEFAULT_TABLE_ROW_COUNT, true);
+    }
+
+    /**
+     * Load online time of the user
+     *
+     * @param object|false $webcast
+     * @param int $userid
+     */
+    public function view_user_chattime($webcast = false, $userid = 0) {
+        global $OUTPUT, $DB, $PAGE, $CFG;
+        $backurl = new \moodle_url('/mod/webcast/user_activity.php', $PAGE->url->params());
+        $btn = new single_button($backurl, get_string('btn:back', 'webcast'));
+        $btn->class = 'webcast_back';
+        echo $this->render($btn);
+        echo '<hr>';
+        $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
+        $user->fullname = fullname($user);
+        echo $OUTPUT->heading(get_string('heading:chattime', 'webcast', $user));
+
+        echo $OUTPUT->box_start('generalbox');
+
+        $status = $DB->get_record('webcast_userstatus', array('webcast_id' => $webcast->id, 'userid' => $user->id));
+
+        if ($status) {
+            // user info
+
+            // Parse user agent for more readable format
+            $parser = Parser::create();
+            $browser = $parser->parse($status->useragent);
+
+            $table = new html_table();
+            $table->size = array('120px', '');
+            $table->head = array(get_string('heading:name', 'webcast'), get_string('heading:value', 'webcast'));
+            $table->data = array();
+            $table->data[] = array(
+                get_string('browser', 'webcast'),
+                $browser->toString(),
+            );
+            $table->data[] = array(
+                get_string('ip_address', 'webcast'),
+                $status->ip_address,
+            );
+            $table->data[] = array('<b>' . get_string('time', 'webcast') . '</b>' , '');
+
+            $table->data[] = array(get_string('starttime', 'webcast'), date('d-m-Y H:i:s' , $status->starttime));
+            $table->data[] = array(get_string('online_time', 'webcast'),  ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds));
+            $table->data[] = array(get_string('endtime', 'webcast'), ($status->endtime == 0) ? '-' : date('d-m-Y H:i:s' , $status->endtime));
+
+            echo html_writer::table($table);
+
+            // add time table
+
+        }
+
+        echo $OUTPUT->box_end();
+    }
+
+    /**
+     * Load chat log of a user
+     *
+     * @param object|false $webcast
+     * @param int $userid
+     */
+    public function view_user_chatlog($webcast = false, $userid = 0) {
+        global $OUTPUT, $DB, $PAGE;
+        $backurl = new \moodle_url('/mod/webcast/user_activity.php', $PAGE->url->params());
+        $btn = new single_button($backurl, get_string('btn:back', 'webcast'));
+        $btn->class = 'webcast_back';
+        echo $this->render($btn);
+        echo '<hr>';
+        $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
+        $user->fullname = fullname($user);
+        echo $OUTPUT->heading(get_string('heading:chatlog', 'webcast', $user));
+
+        echo $OUTPUT->box_start('generalbox');
+
+        $table = new html_table();
+        $table->size = array('120px', '');
+        $table->head = array(get_string('heading:time', 'webcast'), get_string('heading:message', 'webcast'));
+        $table->data = array();
+
+        $qr = $DB->get_recordset('webcast_messages', array(
+            'userid' => $userid,
+            'webcast_id' => $webcast->id
+        ), 'id ASC');
+
+        foreach ($qr as $record) {
+            $table->data[] = array(
+                date('d-m-Y H:i:s', $record->timestamp),
+                $this->convertMessageToReadable($record->message)
+            );
+        }
+
+        $qr->close();
+        echo html_writer::table($table);
+        echo $OUTPUT->box_end();
+    }
+
+    /**
+     * Internal parsing message text for log overview
+     *
+     * @param string $message
+     *
+     * @return string
+     */
+    protected function convertMessageToReadable($message = '') {
+        if (strpos($message, '[') === 0) {
+            $message = '[shortcode]';
+        }
+        //@todo convert emoticons in chatlog
+        return $message;
     }
 }
