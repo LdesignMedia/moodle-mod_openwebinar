@@ -201,6 +201,7 @@ class api {
             $this->response['status'] = false;
             $this->response['is_ended'] = true;
             $this->output_json();
+
             return;
         }
 
@@ -417,9 +418,9 @@ class api {
         if (is_numeric($returnid)) {
             $this->response['status'] = true;
             $this->response['question_id'] = $returnid;
-            $this->response['text'] =  $data->question;
-            $this->response['type'] =  $questiontype;
-            $this->response['user_id'] =  $USER->id;
+            $this->response['text'] = $data->question;
+            $this->response['type'] = $questiontype;
+            $this->response['user_id'] = $USER->id;
         }
 
         $this->output_json();
@@ -456,7 +457,7 @@ class api {
         }
         $this->response['status'] = true;
 
-        $permissions =helper::get_permissions($PAGE->context, $this->webcast);
+        $permissions = helper::get_permissions($PAGE->context, $this->webcast);
         $this->response['manager'] = ($permissions->broadcaster || $permissions->teacher) ? true : false;
         $this->output_json();
     }
@@ -490,10 +491,10 @@ class api {
         $obj = new \stdClass();
 
         // include answers from the other for the teacher and the broadcaster
-        $permissions =helper::get_permissions($PAGE->context, $this->webcast);
-        if($permissions->broadcaster || $permissions->teacher){
+        $permissions = helper::get_permissions($PAGE->context, $this->webcast);
+        if ($permissions->broadcaster || $permissions->teacher) {
             $obj->answers = $questiontype->render_answers($question->get_answers($questionid));
-        }else{
+        } else {
             // get question form
             $obj->my_answer = $questiontype->get_my_answer();
             $obj->form = $questiontype->render();
@@ -504,14 +505,14 @@ class api {
         $this->output_json();
     }
 
-    public function api_call_add_answer(){
+    public function api_call_add_answer() {
         global $USER;
 
         // Valid sesskey
         $this->has_valid_sesskey();
 
-        if($USER->id <= 1){
-            throw new \Exception(get_string('error:not_for_guests' , 'webcast'));
+        if ($USER->id <= 1) {
+            throw new \Exception(get_string('error:not_for_guests', 'webcast'));
         }
 
         // Set information
@@ -525,6 +526,25 @@ class api {
         $this->output_json();
     }
 
+    /**
+     * Manual run a task/cron function
+     *
+     * Sample:
+     * /mod/webcast/api.php?action=task_test&taskname=reminder
+     *
+     * @throws \coding_exception
+     */
+    public function api_call_task_test() {
+        $task = required_param('taskname', PARAM_TEXT);
+
+        $cron = new \mod_webcast\cron();
+        if (is_callable(array($cron, $task))) {
+            $cron->$task();
+        } else{
+            echo 'NOT_EXISTS';
+        }
+        die();
+    }
 
     /**
      * Set the webcast plugin config to this class

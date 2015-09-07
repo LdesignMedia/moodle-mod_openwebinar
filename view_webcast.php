@@ -166,6 +166,13 @@ if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_stu
     file_prepare_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($context), $context, 'mod_webcast', 'attachments');
 }
 
+// still here? we should mark it for course completion if possible
+$completion = new completion_info($COURSE);
+if ($completion->is_enabled($cm)) {
+    $completion->set_module_viewed($cm);
+    $completion->update_state($cm, COMPLETION_COMPLETE);
+}
+
 // Output starts here.
 echo $OUTPUT->header();
 ?>

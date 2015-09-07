@@ -119,8 +119,6 @@ function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform 
 
     $result = $DB->update_record('webcast', $webcast);
 
-    webcast_grade_item_update($webcast);
-
     $event = new stdClass();
 
     if ($event->id = $DB->get_field('event', 'id', array('modulename' => 'webcast', 'instance' => $webcast->id))) {

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tasks
+ * Defines message providers (types of messages being sent)
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -23,23 +23,9 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-$tasks = array(
-    array(
-        'classname' => 'mod_webcast\task\auto_close',
-        'blocking'  => 0,
-        'minute'    => '30',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
-    array(
-        'classname' => 'mod_webcast\task\reminder',
-        'blocking'  => 0,
-        'minute'    => '*',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
+
+$messageproviders = array(
+
+'reminder' => array()
+
 );

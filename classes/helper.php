@@ -346,4 +346,46 @@ class helper {
         global $DB;
         return $DB->get_record('webcast' , array('broadcastkey' => str_replace('_public', '',$broadcastkey)) ,'*' , MUST_EXIST);
     }
+
+    /**
+     * Get enrolled user in course
+     *
+     * @param int $courseid
+     *
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    static public function get_active_course_users($courseid = 0){
+
+        global $DB;
+
+        list($instancessql, $params) = $DB->get_in_or_equal(array_keys(enrol_get_instances($courseid, false)), SQL_PARAMS_NAMED);
+
+        // Get extra fields
+        $extrafields = get_extra_user_fields(\context_course::instance($courseid));
+        $extrafields[] = 'lastaccess';
+        $dbfields = \user_picture::fields('u', $extrafields);
+
+        // Params
+        $now = round(time(), -2); // rounding helps caching in DB
+        $params += array(
+            'enabled' => ENROL_INSTANCE_ENABLED,
+            'active' => ENROL_USER_ACTIVE,
+            'now1' => $now,
+            'now2' => $now,
+        );
+
+        $sql = 'SELECT DISTINCT ' . $dbfields . '
+                FROM {user} u
+                      JOIN {user_enrolments} ue ON (ue.userid = u.id  AND ue.enrolid ' . $instancessql . ')
+                      JOIN {enrol} e ON (e.id = ue.enrolid)
+                 LEFT JOIN {groups_members} gm ON u.id = gm.userid
+                 WHERE
+                 ue.status = :active AND e.status = :enabled AND ue.timestart < :now1
+                    AND (ue.timeend = 0 OR ue.timeend > :now2)';
+
+        return $DB->get_records_sql($sql , $params);
+    }
+
 }

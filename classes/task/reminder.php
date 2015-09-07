@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tasks
+ * Close task for ended rooms that the operator forget to close
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -23,23 +23,26 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-$tasks = array(
-    array(
-        'classname' => 'mod_webcast\task\auto_close',
-        'blocking'  => 0,
-        'minute'    => '30',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
-    array(
-        'classname' => 'mod_webcast\task\reminder',
-        'blocking'  => 0,
-        'minute'    => '*',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
-);
+namespace mod_webcast\task;
+
+class reminder extends \core\task\scheduled_task {
+
+    public function get_name() {
+        return get_string('task:reminder', 'webcast');
+    }
+
+    /**
+     * Do the job.
+     * Throw exceptions on errors (the job will be retried).
+     */
+    public function execute() {
+
+        mtrace('webcast: ' . __CLASS__);
+
+        $cron = new \mod_webcast\cron();
+        $cron->reminder();
+
+        mtrace(' ');
+        return true;
+    }
+}

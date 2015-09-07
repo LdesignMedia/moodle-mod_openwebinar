@@ -45,6 +45,8 @@ $string['webcastname'] = 'MoodleFreak Webcast';
 $string['webcastname_help'] = 'The name of the webcast';
 $string['webcast'] = 'MoodleFreak Webcast';
 $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
+$string['task:reminder'] = 'Send reminders';
+$string['messageprovider:reminder'] = 'Webcast reminder notifications';
 
 // ACCESS
 $string['webcast:history'] = 'Allow viewing webcast history';
@@ -219,3 +221,33 @@ $string['heading:time'] = 'Time';
 $string['heading:message'] = 'Message';
 $string['heading:name'] = 'Name';
 $string['heading:value'] = 'Value';
+
+
+// Email
+$string['mail:reminder_subject'] = 'Webcast reminder: {$a->name}';
+$string['mail:reminder_message'] = 'Dear ##fullname##, <br/><br/>
+
+Webcast Reminder for:<br/><br/>
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="width: 200px"><b>Activity:</b></td>
+        <td>##name##</td>
+    </tr>
+    <tr>
+        <td><b>Start date:</b></td>
+        <td>##starttime##</td>
+    </tr>
+    <tr>
+        <td><b>Estimate duration:</b></td>
+        <td>##duration## Minutes</td>
+    </tr>
+    <tr>
+        <td><b>Link</b></td>
+        <td><a href="##link##">Enter webcast</a> </td>
+    </tr>
+</table>
+<br/>
+Kind regards,<br/>
+
+##broadcaster_fullname##';

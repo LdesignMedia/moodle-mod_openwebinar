@@ -108,4 +108,5 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('webcast/hls',
         get_string('setting:hls', 'webcast'),
         get_string('setting:hls_desc', 'webcast'), 0));
+
 }
