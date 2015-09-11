@@ -10,7 +10,7 @@ YUI.add('moodle-mod_webcast-room', function (Y, NAME) {
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm */
+/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio */
 
 /**
  * This object is public accessible
@@ -22,6 +22,8 @@ M.mod_webcast.room = {
 
     /**
      * Emoticons mapping
+     * @type Object
+     * @protected
      */
     emoticons: {
         "smile"         : {
@@ -383,10 +385,18 @@ M.mod_webcast.room = {
     },
 
     emoticons_regex: null,
-    emoticons_map  : {},
+
+    /**
+     * Emoticons container
+     * @type Object
+     * @protected
+     */
+    emoticons_map: {},
 
     /**
      * Webcast variables
+     * @type Object
+     * @protected
      */
     options: {
         debugjs               : false,
@@ -403,6 +413,7 @@ M.mod_webcast.room = {
         viewhistory           : false,
         is_ended              : false,
         showuserpicture       : false,
+        enable_chat_sound     : true,
         stream                : false,
         broadcaster           : -999,
         is_broadcaster        : false,
@@ -418,26 +429,35 @@ M.mod_webcast.room = {
         userlist              : false,
         ajax_timer            : false,
         enable_emoticons      : true,
+        questions             : true,
         hls                   : false
     },
 
     /**
      * A reference to the scrollview used in this module
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_userlist: null,
 
     /**
      * A reference to the scrollview used in this module
+     * @type tinyscrollbar
+     * @protected
      */
     scrollview_chatlist: null,
 
     /**
      * A reference to the scrollbar for file overview
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_fileoverview: null,
 
     /**
      * A reference to the scrollbar for chatlist
+     * @type tinyscrollbar
+     * @protected
      */
     scrollbar_chatlist: null,
 
@@ -448,32 +468,44 @@ M.mod_webcast.room = {
 
     /**
      * Files
+     * @type Object
+     * @protected
      */
     files_uploaded_hashes: {},
 
     /**
      * Shortcode regex
      * Sample [file 19845771897512389057123589027301201]
+     * @type RegExp
+     * @protected
      */
     shortcode_regex: /\[([\w\-_]+)([^\]]*)?\](?:(.+?)?\[\/\1\])?/g,
 
     /**
      * Bool to check if we are connected
+     * @type Boolean
+     * @protected
      */
     socket_is_connected: null,
 
     /**
      * Videojs player
+     * @type videojs
+     * @protected
      */
     player: null,
 
     /**
      * New message
+     * @type videojs
+     * @protected
      */
     audio_newmessage: null,
 
     /**
      * Chat template
+     * @type Object
+     * @protected
      */
     chatobject: {
         cmid         : 0,
@@ -489,7 +521,11 @@ M.mod_webcast.room = {
         message      : "",
         usertype     : "guest"
     },
-
+    /**
+     * Node containers
+     * @type Object
+     * @protected
+     */
     nodeholder: {
         chatlist          : null,
         userlist          : null,
@@ -504,17 +540,22 @@ M.mod_webcast.room = {
         filemanagerdialog : null,
         fileoverviewdialog: null,
         fileoverview      : null,
+        emoticonsdialog   : null,
+        questionmanager   : null,
+        addquestionbtn    : null,
+        questionoverview  : null,
+        noticebar         : null,
         message           : null
     },
     /**
      * Internal logging
-     * @param val
+     * @param {*} val
      */
     log       : function (val) {
         "use strict";
 
         // check if we can show the log
-        if (!M.mod_webcast.room.options.debugjs) {
+        if (!this.options.debugjs) {
             return;
         }
         try {
@@ -529,16 +570,17 @@ M.mod_webcast.room = {
     },
 
     /**
-     * Init
+     * Init the room.
+     * @param {Object} options
      */
     init: function (options) {
         "use strict";
-
+var that = this;
         // Make sure videojs is loaded
         if (!videojs) {
-            M.mod_webcast.room.log('wait..');
+            that.log('wait..');
             setTimeout(function () {
-                M.mod_webcast.room.init(options);
+                that.init(options);
             }, 100);
         }
 
@@ -548,8 +590,17 @@ M.mod_webcast.room = {
         // log the new options
         this.log(this.options);
 
-        // build room components
-        this.build_room();
+        // load message sound
+        this.audio_newmessage = new Audio(M.cfg.wwwroot + '/mod/webcast/sound/newmessage.mp3');
+
+        // build room components when the dom is completely loaded
+        Y.on('domready', function () {
+            this.log('domready');
+
+            this.build_room();
+
+            Y.one('#webcast-loading').hide();
+        }, this);
     },
 
     /**
@@ -557,6 +608,7 @@ M.mod_webcast.room = {
      */
     build_room: function () {
         "use strict";
+        var that = this;
         this.log('build_room');
 
         // if room is ended prevent some things from happening
@@ -571,19 +623,19 @@ M.mod_webcast.room = {
 
         // Show a menu when clicking on topmenu
         this.nodeholder.topmenu.on('click', function () {
-            M.mod_webcast.room.log('Open topmenu');
+            that.log('Open topmenu');
 
             // Menu arrow
             if ((M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetWidth') === 0 &&
                 M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetHeight') === 0) ||
-                M.mod_webcast.room.nodeholder.leftsidemenu.get('display') === 'none') {
+                that.nodeholder.leftsidemenu.get('display') === 'none') {
 
-                M.mod_webcast.room.log('show');
+                that.log('show');
 
                 YUI().use('anim', function (Y) {
                     var a = new Y.Anim(
                         {
-                            node: M.mod_webcast.room.nodeholder.leftsidemenu,
+                            node: that.nodeholder.leftsidemenu,
                             from: {
                                 left: -200
                             },
@@ -602,12 +654,12 @@ M.mod_webcast.room = {
                 });
 
             } else {
-                M.mod_webcast.room.log('hide');
+                that.log('hide');
 
                 YUI().use('anim', function (Y) {
                     var a = new Y.Anim(
                         {
-                            node    : M.mod_webcast.room.nodeholder.leftsidemenu,
+                            node    : that.nodeholder.leftsidemenu,
                             from    : {
                                 left: 0
                             },
@@ -659,7 +711,7 @@ M.mod_webcast.room = {
             this.add_chat();
         } else {
             // remove chat components
-            Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon ').hide();
+            Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon').hide();
         }
 
         // add file sharing
@@ -667,6 +719,11 @@ M.mod_webcast.room = {
             this.options.filesharing_student) {
 
             this.add_fileshare();
+        }
+
+        // add the question manager
+        if (this.options.questions) {
+            this.add_question_manager();
         }
 
         // add action on the leave button
@@ -685,26 +742,26 @@ M.mod_webcast.room = {
                         data   : {
                             'sesskey': M.cfg.sesskey,
                             'action' : "endwebcast",
-                            'extra1' : M.mod_webcast.room.options.courseid,
-                            'extra2' : M.mod_webcast.room.options.webcastid
+                            'extra1' : that.options.courseid,
+                            'extra2' : that.options.webcastid
                         },
                         on     : {
                             success: function (id, o) {
-                                M.mod_webcast.room.log(id);
+                                that.log(id);
                                 try {
                                     var response = Y.JSON.parse(o.responseText);
-                                    M.mod_webcast.room.log(response);
+                                    that.log(response);
                                     if (response.status) {
 
                                         // Close the room on chat server // chat server will notice all clients
-                                        M.mod_webcast.room.chatobject.broadcaster_identifier = M.mod_webcast.room.options.broadcaster_identifier;
-                                        M.mod_webcast.room.socket.emit("ending", M.mod_webcast.room.chatobject, function (response) {
-                                            M.mod_webcast.room.log(response);
+                                        that.chatobject.broadcaster_identifier = that.options.broadcaster_identifier;
+                                        that.socket.emit("ending", that.chatobject, function (response) {
+                                            that.log(response);
                                         });
                                     }
                                 } catch (e) {
                                     // exception
-                                    M.mod_webcast.room.log(e);
+                                    that.log(e);
                                 }
                             }
                         },
@@ -720,7 +777,7 @@ M.mod_webcast.room = {
 
         // scaling listener
         this.add_event(window, "resize", function () {
-            M.mod_webcast.room.scale_room();
+            that.scale_room();
         });
 
         // Message before closing
@@ -728,12 +785,12 @@ M.mod_webcast.room = {
 
         // first time scale the room
         setTimeout(function () {
-            M.mod_webcast.room.scale_room();
+            that.scale_room();
         }, 300);
 
-        if (this.options.ajax_timer) {
+        if (this.options.ajax_timer && !this.options.is_ended) {
             setInterval(function () {
-                M.mod_webcast.room.ajax_timer_ping();
+                that.ajax_timer_ping();
             }, 60000);
         }
 
@@ -741,14 +798,18 @@ M.mod_webcast.room = {
 
     /**
      * Set value with the switches in control panel
-     * @param name
-     * @param value
+     * @param {string} name
+     * @param {string} value
      */
     set_user_setting: function (name, value) {
         "use strict";
         this.log('set_user_setting(' + name + ',' + value + ')');
 
         switch (name) {
+
+            case 'sound':
+                this.options.enable_chat_sound = Boolean(value);
+                break;
 
             case 'stream':
 
@@ -789,23 +850,24 @@ M.mod_webcast.room = {
 
     /**
      * Mute a usertype as broadcaster
-     * @param usertype
-     * @param value
+     * @param {string} usertype
+     * @param {string} value
      */
     chat_mute_usertype: function (usertype, value) {
         "use strict";
+        var that = this;
         if (this.options.is_broadcaster) {
             this.log('mute(' + usertype + ',' + value + ')');
 
             this.chatobject.broadcaster_identifier = this.options.broadcaster_identifier;
 
             this.socket.emit("mute", this.chatobject, usertype, value, function (response) {
-                M.mod_webcast.room.log(response);
+                that.log(response);
 
                 if (!response.status) {
-                    M.mod_webcast.room.exception(response.error);
+                    that.exception(response.error);
                 } else {
-                    M.mod_webcast.room.log(response.mute);
+                    that.log(response.mute);
                     // @todo make sure the switch not changed by someone else load the status of switch by loading the room
                 }
             });
@@ -817,6 +879,7 @@ M.mod_webcast.room = {
      */
     ajax_timer_ping: function () {
         "use strict";
+        var that = this;
         this.log('ajax_timer_ping');
 
         Y.io(this.options.ajax_path, {
@@ -824,18 +887,18 @@ M.mod_webcast.room = {
             data   : {
                 'sesskey': M.cfg.sesskey,
                 'action' : "ping",
-                'extra1' : M.mod_webcast.room.options.courseid,
-                'extra2' : M.mod_webcast.room.options.webcastid
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.webcastid
             },
             on     : {
                 success: function (id, o) {
-                    M.mod_webcast.room.log(id);
+                    that.log(id);
                     try {
                         var response = Y.JSON.parse(o.responseText);
-                        M.mod_webcast.room.log(response);
+                        that.log(response);
                         if (response.status) {
                             // set online somewhere??
-                            M.mod_webcast.room.log('You are here for ' + (response.online_minutes / 60) + ' minutes.');
+                            that.log('You are here for ' + (response.online_minutes / 60) + ' minutes.');
                         } else {
                             // session expired logout etc this bad
                             alert(M.util.get_string('js:error_logout_or_lostconnection', 'webcast', {}));
@@ -843,7 +906,7 @@ M.mod_webcast.room = {
 
                     } catch (e) {
                         // exception
-                        M.mod_webcast.room.log(e);
+                        that.log(e);
                     }
                 }
             },
@@ -858,7 +921,7 @@ M.mod_webcast.room = {
      */
     connect_to_socket: function () {
         "use strict";
-        var key;
+        var key, that = this;
         // Set the template
         for (key in this.chatobject) {
             if (this.chatobject.hasOwnProperty(key)) {
@@ -870,7 +933,7 @@ M.mod_webcast.room = {
 
         // add hostname
         this.chatobject.hostname = window.location.hostname;
-        // add useragent
+        // add user agent
         this.chatobject.useragent = navigator.userAgent;
         this.log('connect_to_socket');
 
@@ -887,52 +950,86 @@ M.mod_webcast.room = {
         this.socket = io.connect(this.options.chat_server);
         this.socket.on('connect', function () {
 
-            if (M.mod_webcast.room.socket_is_connected === false) {
+            if (that.socket_is_connected === false) {
 
                 // we are reconnected
-                M.mod_webcast.room.chat_local_message('reconnected');
+                that.chat_local_message('reconnected');
 
                 // Join the public room again
-                this.emit("join", M.mod_webcast.room.chatobject, function (response) {
+                this.emit("join", that.chatobject, function (response) {
                     if (!response.status) {
-                        M.mod_webcast.room.exception(response.error);
+                        that.exception(response.error);
                     } else {
-                        M.mod_webcast.room.chat_local_message('joined');
+                        that.chat_local_message('joined');
                     }
                 });
             }
 
-            M.mod_webcast.room.log('isConnected');
-            M.mod_webcast.room.socket_is_connected = true;
+            that.log('isConnected');
+            that.socket_is_connected = true;
 
-            // enable chatinput
-            M.mod_webcast.room.nodeholder.message.removeAttribute('disabled');
-            M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
+            // enable chat input
+            that.nodeholder.message.removeAttribute('disabled');
+            that.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
         });
 
         // connection failed
         this.socket.on('reconnect_failed', function () {
-            M.mod_webcast.room.socket_connection_failed('reconnect_failed');
+            that.socket_connection_failed('reconnect_failed');
         });
 
+        // broadcaster ending webcast called
         this.socket.on('webcast-ended', function () {
-            Y.one('body').setHTML('ended');
+            that.chat_ended();
         });
 
         // disconnect
         this.socket.on('disconnect', function () {
-            M.mod_webcast.room.socket_connection_failed('disconnect');
+            that.socket_connection_failed('disconnect');
         });
 
         // generic error
         this.socket.on('error', function () {
-            M.mod_webcast.room.log('Socket.io reported a generic error');
+            that.log('Socket.io reported a generic error');
         });
     },
 
     /**
+     * Called when the broadcaster end the webcast
+     */
+    chat_ended: function () {
+        "use strict";
+        this.chat_local_message('ended');
+        var that = this, dialog = new Y.Panel({
+            contentBox : Y.Node.create('<div id="dialog" />'),
+            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' + M.util.get_string('js:dialog_ending_text', 'webcast', {}) + '</div>',
+            width      : 410,
+            zIndex     : 6,
+            modal      : true, // modal behavior
+            render     : true,
+            centered   : true,
+            visible    : false, // make visible explicitly with .show()
+            buttons    : {
+                footer: [
+                    {
+                        name  : 'proceed',
+                        label : M.util.get_string('js:dialog_ending_btn', 'webcast', {}),
+                        action: 'onOK'
+                    }
+                ]
+            }
+        });
+        dialog.onOK = function (e) {
+            e.preventDefault();
+            // redirect to previous page
+            window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + that.options.cmid;
+        };
+        dialog.show();
+    },
+
+    /**
      * socket_connection_failed
-     * @param message
+     * @param {string} message
      */
     socket_connection_failed: function (message) {
         "use strict";
@@ -952,6 +1049,7 @@ M.mod_webcast.room = {
     /**
      * Commands that can be executed in the chat
      * /command extra1 extra2
+     * @param {string} string
      */
     chat_commands: function (string) {
         "use strict";
@@ -965,11 +1063,12 @@ M.mod_webcast.room = {
                 // scroll to bottom
                 this.scrollbar_chatlist.update('bottom');
                 break;
+            case '/send_question_to_all':
+                // send question to the clients
+
+                break;
             default :
-                this.chat_add_chatrow({
-                    usertype: 'local',
-                    message : 'chat_commands'
-                });
+                this.chat_local_message('chat_commands');
         }
 
         // Reset the input
@@ -999,8 +1098,8 @@ M.mod_webcast.room = {
                         this.log(response);
                         if (response.status) {
                             // remove the button
-                            M.mod_webcast.room.nodeholder.loadhistorybtn.remove();
-                            M.mod_webcast.room.chat_add_chatrow(response.messages, 'prepend', true);
+                            that.nodeholder.loadhistorybtn.remove();
+                            that.chat_add_chatrow(response.messages, 'prepend', true);
                         }
 
                     } catch (e) {
@@ -1017,15 +1116,17 @@ M.mod_webcast.room = {
 
     /**
      * Notice other users about the new file
+     * @param {object} args
      */
     chat_share_file: function (args) {
         "use strict";
+        var that = this;
         this.chatobject.message = '[file ' + Y.JSON.stringify(args) + ']';
         this.socket.emit("send", this.chatobject, function (response) {
             if (!response.status) {
-                M.mod_webcast.room.exception(response.error);
+                that.exception(response.error);
             } else {
-                M.mod_webcast.room.files_uploaded_hashes[args.hash] = true;
+                that.files_uploaded_hashes[args.hash] = true;
             }
         });
     },
@@ -1043,8 +1144,6 @@ M.mod_webcast.room = {
                     if (codes.hasOwnProperty(i)) {
                         code = codes[i];
                         this.emoticons_map[code] = name;
-                        // Set emoticon mapping
-                        this.emoticons_map[this.escape_emoticon(code)] = name;
                     }
                 }
             }
@@ -1064,33 +1163,19 @@ M.mod_webcast.room = {
      * filter text for icon usage
      * can be disabled in the options
      *
-     * @param text
-     * @return string
+     * @param {string} text
+     * @return {string}
      */
     add_emoticons: function (text) {
         "use strict";
+        var that = this;
         if (!this.options.enable_emoticons) {
             return text;
         }
 
         return text.replace(this.emoticons_regex, function (code) {
-            var name = M.mod_webcast.room.emoticons_map[code];
-            return ('<span class="emoticon emoticon-' + name + '" title="' + M.mod_webcast.room.emoticons[name].title + '">' + code + '</span>');
-        });
-    },
-
-    escape_emoticon: function (string) {
-        "use strict";
-        var entityMap = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;',
-            '/': '&#x2F;'
-        };
-        return String(string).replace(/[&<>"'\/]/g, function (s) {
-            return entityMap[s];
+            var name = that.emoticons_map[code];
+            return ('<span class="emoticon emoticon-' + name + '" title="' + that.emoticons[name].title + '">' + code + '</span>');
         });
     },
 
@@ -1100,7 +1185,7 @@ M.mod_webcast.room = {
     add_video: function () {
         "use strict";
         this.log('add_video');
-        var source = {};
+        var source = {},  techOrder = ['html5', 'flash'], that = this;
 
         videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
 
@@ -1118,12 +1203,12 @@ M.mod_webcast.room = {
         // Note: HLS has about a 30 second delay.
         if (!this.options.is_ended) {
             if (this.options.hls) {
+                techOrder = ['hls', 'html5', 'flash'];
                 source = {
                     type: "application/x-mpegURL",
                     src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
                 };
             } else {
-
                 // Default rtmp only work on flash based players :(
                 source = {
                     type: "rtmp/mp4",
@@ -1136,7 +1221,7 @@ M.mod_webcast.room = {
 
         // Set player settings
         this.player = videojs('room_stream', {
-            techOrder: ['hls', 'html5', 'flash'],
+            'techOrder' : techOrder,
             autoplay : true,
             preload  : 'auto',
             sources  : [source]
@@ -1146,41 +1231,43 @@ M.mod_webcast.room = {
         // https://github.com/videojs/video.js/blob/master/docs/api/vjs.Player.md#waiting-event
         // Fired whenever the media begins waiting
         this.player.on('waiting', function () {
-            M.mod_webcast.room.log('player_event(waiting)');
+            that.log('player_event(waiting)');
         });
 
         // Fired whenever the media has been paused
         this.player.on('pause', function () {
-            M.mod_webcast.room.log('player_event(pause)');
+            that.log('player_event(pause)');
         });
 
         // Fired whenever the media begins or resumes playback
         this.player.on('play', function () {
-            M.mod_webcast.room.log('player_event(play)');
+            that.log('player_event(play)');
         });
 
         // Fired when the end of the media resource is reached (currentTime == duration)
         this.player.on('ended', function () {
-            M.mod_webcast.room.log('player_event(ended)');
+            that.log('player_event(ended)');
         });
 
         // Fired while the user agent is downloading media data
         this.player.on('progress', function () {
-            M.mod_webcast.room.log('player_event(progress)');
+            that.log('player_event(progress)');
         });
 
         // Fired while the user agent is downloading media data
+        // Looks like this is called when a stream is really started
+        // Also when time no longer gets higher we are stopped
         this.player.on('loadedmetadata', function () {
-            M.mod_webcast.room.log('player_event(loadedmetadata)');
+            that.log('player_event(loadedmetadata)');
         });
 
         // Fired when an error occurs
         this.player.on('error', function () {
-            M.mod_webcast.room.log('player_event(error)');
+            that.log('player_event(error)');
         });
 
         this.player.on('loadstart', function () {
-            M.mod_webcast.room.log('player_event(loadstart)');
+            that.log('player_event(loadstart)');
         });
 
         this.log(source);
@@ -1194,7 +1281,7 @@ M.mod_webcast.room = {
         this.log('add_chat');
 
         // add tinyscrollbar
-        var el = document.getElementById("webcast-chatlist");
+        var that = this, el = document.getElementById("webcast-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
         this.nodeholder.chatlist = Y.one('#webcast-chatlist ul');
         this.nodeholder.loadhistorybtn = Y.one('#webcast-loadhistory');
@@ -1205,15 +1292,15 @@ M.mod_webcast.room = {
             // Join the public room
             this.socket.emit("join", this.chatobject, function (response) {
                 if (!response.status) {
-                    M.mod_webcast.room.exception(response.error);
+                    that.exception(response.error);
                 } else {
-                    M.mod_webcast.room.chat_local_message('joined');
+                    that.chat_local_message('joined');
                 }
             });
 
             // Socket call when getting a message
             this.socket.on("update-chat", function (data) {
-                M.mod_webcast.room.chat_add_chatrow(data);
+                that.chat_add_chatrow(data);
             });
         }
 
@@ -1230,42 +1317,116 @@ M.mod_webcast.room = {
             }, this);
         }
 
-        // Workaround for enterkey YUI event not working here..
+        // show emoticon dialog
+        if (this.options.enable_emoticons && !this.options.is_ended) {
+
+            this.log('Emoticons are enabled');
+            this.nodeholder.emoticonsdialog = Y.one("#webcast-emoticons-dialog");
+
+            this.nodeholder.emoticonsdialog.delegate('click', function () {
+                that.log('click emo');
+                that.nodeholder.message.set('value', that.nodeholder.message.get('value') + this.get('text') + ' ');
+                that.nodeholder.emoticonsdialog.hide();
+
+                that.nodeholder.message.focus();
+            }, 'span.emoticon');
+
+            Y.one('#webcast-emoticon-icon').on('click', function () {
+                this.log('click on emoticon icon');
+
+                // validate the emoticons are already build else build them first in a dialog
+                if (!Y.one('#webcast-emoticon-content')) {
+                    this.chat_build_emoticon_selector();
+                }
+
+                if ((this.nodeholder.emoticonsdialog.get('offsetWidth') === 0 &&
+                    this.nodeholder.emoticonsdialog.get('offsetHeight') === 0) ||
+                    this.nodeholder.emoticonsdialog.get('display') === 'none') {
+                    this.log('Show');
+                    this.nodeholder.emoticonsdialog.show();
+                } else {
+                    this.log('Hide');
+                    this.nodeholder.emoticonsdialog.hide();
+                }
+            }, this);
+        }
+
+        // Workaround for enter key YUI event not working here..
+        // @todo need new method we making this more private
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_webcast.room.chat_enter_listener(event);');
     },
 
+    /**
+     * Build emoticons overview
+     */
+    chat_build_emoticon_selector: function () {
+        "use strict";
+        var name, items = '';
+
+        // build preview for all emoticons
+        for (name in this.emoticons) {
+            if (this.emoticons.hasOwnProperty(name)) {
+                this.log(this.emoticons[name]);
+                items += '<span class="emoticon emoticon-' + name + '" title="' + this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] + '</span>';
+            }
+        }
+        var content = Y.Node.create('<div id="webcast-emoticon-content">' + items + '</div>');
+        content.appendTo('#webcast-emoticons-dialog div');
+    },
     /**
      * Check if enter is pressed send the message
      * @param e
      * @returns {boolean}
      */
-    chat_enter_listener: function (e) {
+    chat_enter_listener         : function (e) {
         "use strict";
+        var that = this;
         if (e.keyCode === 13) {
-            M.mod_webcast.room.chat_send_message();
+            that.chat_send_message();
             return false;
         }
     },
 
     /**
+     * add chat row to the chat
      *
+     * @param {object|boolean} data
+     * @param {string} direction
+     * @param {boolean} multiplelines
+     * @returns {string}
      */
-    chat_add_chatrow: function (data, direction, multiline) {
+    chat_add_chatrow: function (data, direction, multiplelines) {
         "use strict";
 
         this.log('chat_add_chatrow');
 
         // Setting vars
-        var chatline = '', date = 0, me = false, i;
+        var chatline = '', date = 0, me = false, i, messagetext;
 
         if (Y.Object.hasKey(data, 'message')) {
 
             this.log(data);
 
+
             // build the chatline and make sure nothing strange happens XSS!
             if (data.messagetype === 'default') {
 
                 me = (data.userid === this.options.userid);
+                messagetext = this.chat_parse_message(data);
+
+                // we skip the message
+                if (!messagetext) {
+                    return '';
+                }
+
+                // play sound on new message
+                if (this.options.enable_chat_sound &&
+                    this.options.userid !== data.userid &&
+                    this.audio_newmessage && !multiplelines
+                ) {
+                    this.log('Bleep sound..');
+                    this.audio_newmessage.play();
+                }
 
                 // Start
                 chatline += '<li class="webcast-chatline webcast-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
@@ -1280,7 +1441,7 @@ M.mod_webcast.room = {
 
                 chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + this.alpha_numeric(data.fullname) + '</span>' +
                     '<span class="webcast-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="webcast-message">' + this.chat_parse_message(data.message) + '</span>' +
+                    '<span class="webcast-message">' + messagetext + '</span>' +
                     '</div>' +
                     '</li>';
 
@@ -1309,13 +1470,13 @@ M.mod_webcast.room = {
                     '</li>';
             }
 
-            if (multiline) {
+            if (multiplelines) {
                 return chatline;
             }
         }
 
-        // Check if we using data as a multiline object
-        if (multiline) {
+        // Check if we using data as a multiple lines object
+        if (multiplelines) {
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
                     chatline += this.chat_add_chatrow(data[i], '', true);
@@ -1336,7 +1497,7 @@ M.mod_webcast.room = {
 
     /**
      * Add a local message to chat
-     * @param string
+     * @param {string} string
      */
     chat_local_message: function (string) {
         "use strict";
@@ -1347,42 +1508,55 @@ M.mod_webcast.room = {
 
         this.chat_add_chatrow(message);
     },
+
     /**
      * Make sure a message is a valid text
-     * @param message
-     * @returns string
+     * @param {object} data
+     * @returns {string|boolean}
      */
-    chat_parse_message: function (message) {
+    chat_parse_message: function (data) {
         "use strict";
 
         // check if we must replace text by a shortcode
-        if (message.charAt(0) === '[' && message.slice(-1) === ']') {
-            var newmessage = this.chat_parse_shortcodes(message);
+        if (data.message.charAt(0) === '[' && data.message.slice(-1) === ']') {
+            var newmessage = this.chat_parse_shortcodes(data);
             if (newmessage) {
                 return newmessage;
+            }
+
+            if (!newmessage) {
+                // we can skip the message
+                this.log('Skip message');
+                return false;
             }
 
             this.log('Error: shortcode not replaced');
         }
 
-        return this.add_emoticons(Y.Node.create("<div/>").setHTML(message).get('text'));
+        return this.add_emoticons(Y.Node.create("<div/>").setHTML(data.message).get('text'));
     },
 
     /**
      * Replace shortcode by special features if they exists
-     * @param message
+     * @param {object} data
      */
-    chat_parse_shortcodes: function (message) {
+    chat_parse_shortcodes: function (data) {
         "use strict";
-        var newmessage = false;
+        var newmessage = false, that = this;
 
-        if (this.shortcode_regex.test(message)) {
+        if (this.shortcode_regex.test(data.message)) {
             this.log('Has some shortcode:');
-            message.replace(this.shortcode_regex, function (a, command, args) {
-                M.mod_webcast.room.log(a);
+            data.message.replace(this.shortcode_regex, function (a, command, args) {
+                that.log(a);
                 switch (command) {
                     case 'file':
-                        newmessage = M.mod_webcast.room.chat_add_shortcode_file(args);
+                        newmessage = that.chat_add_shortcode_file(args);
+                        break;
+                    case 'question':
+                        newmessage = that.chat_add_shortcode_question(args);
+                        break;
+                    case 'answer':
+                        that.chat_add_shortcode_answer(args , data);
                         break;
                 }
             });
@@ -1394,6 +1568,7 @@ M.mod_webcast.room = {
 
     /**
      * get the file details from the server by hash
+     * @param {object} args
      */
     chat_add_shortcode_file: function (args) {
         "use strict";
@@ -1422,8 +1597,51 @@ M.mod_webcast.room = {
     },
 
     /**
+     * Add a question to the chat
+     * @param {object} args
+     */
+    chat_add_shortcode_question: function (args) {
+        "use strict";
+        var message = '';
+        this.log('Add file detail to the chat');
+
+        try {
+            var obj = Y.JSON.parse(args.slice(1));
+            this.log(obj);
+            message += '<div class="webcast-question">' +
+                '<span class="text">' + obj.text + '</span>' +
+                '<span class="webcast-button answerquestion" data-id="' + obj.question_id + '">' + M.util.get_string('js:answer', 'webcast', {}) + '</span>' +
+                '</div>';
+
+        } catch (e) {
+            this.log(e);
+        }
+        this.log(message);
+        return message;
+    },
+
+    /**
+     * Notice the broadcaster or teacher about a new answer
+     *
+     * @param {object} args
+     * @param {object} data
+     */
+    chat_add_shortcode_answer: function (args , data) {
+        "use strict";
+        this.log(data);
+        try {
+            var obj = Y.JSON.parse(args.slice(1));
+            if (this.options.userid === Number(obj.created_by)) {
+                this.notice_bar_message('added_answer', data);
+            }
+        } catch (e) {
+            this.log(e);
+        }
+    },
+
+    /**
      * Convert timestamp
-     * @param unix_timestamp
+     * @param {integer} unix_timestamp
      * @returns {string}
      */
     timestamp_to_humanreadable: function (unix_timestamp) {
@@ -1446,7 +1664,7 @@ M.mod_webcast.room = {
      */
     chat_send_message: function () {
         "use strict";
-        var message = String(this.nodeholder.message.get('value'));
+        var message = String(this.nodeholder.message.get('value')), that = this;
 
         // Check if the message is a command
         if (message.charAt(0) === '/') {
@@ -1466,7 +1684,7 @@ M.mod_webcast.room = {
         this.chatobject.message = message;
         this.socket.emit("send", this.chatobject, function (response) {
             if (!response.status) {
-                M.mod_webcast.room.chat_local_message(response.error);
+                that.chat_local_message(response.error);
             }
         });
 
@@ -1477,7 +1695,7 @@ M.mod_webcast.room = {
 
     /**
      * Set a exception
-     * @param errorstring
+     * @param {string} errorstring
      */
     exception: function (errorstring) {
         "use strict";
@@ -1486,8 +1704,8 @@ M.mod_webcast.room = {
 
     /**
      * Returns a alpha numeric string to prevent xss
-     * @param string
-     * @returns string
+     * @param {string} string
+     * @returns {string}
      */
     alpha_numeric: function (string) {
         "use strict";
@@ -1499,6 +1717,7 @@ M.mod_webcast.room = {
      */
     add_userlist: function () {
         "use strict";
+        var that = this;
         this.log('add_userlist');
 
         // set userlist node prevent searching the dom again
@@ -1511,13 +1730,13 @@ M.mod_webcast.room = {
 
         // Userlist listener
         this.socket.on("update-user-list", function (data) {
-            M.mod_webcast.room.update_userlist(data);
+            that.update_userlist(data);
         });
     },
 
     /**
      * Update userlist
-     * @param data
+     * @param {object} data
      */
     update_userlist: function (data) {
         "use strict";
@@ -1590,11 +1809,11 @@ M.mod_webcast.room = {
     },
 
     /**
-     *
+     * add_fileshare
      */
     add_fileshare: function () {
         "use strict";
-        var filelist = '', i, obj;
+        var filelist = '', i, obj, that = this;
 
         this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanager-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
@@ -1620,34 +1839,33 @@ M.mod_webcast.room = {
                 },
                 on    : {
                     success: function (id, o) {
-                        M.mod_webcast.room.log(id);
+                        that.log(id);
                         try {
                             var response = Y.JSON.parse(o.responseText);
-                            M.mod_webcast.room.log(response);
+                            that.log(response);
                             if (response.status) {
                                 // clear own file overview
                                 // Y.all('.fm-content-wrapper .fp-content').setHTML('');
 
                                 // hide the dialog
-                                M.mod_webcast.room.nodeholder.filemanagerdialog.hide();
+                                that.nodeholder.filemanagerdialog.hide();
                                 var hash;
                                 for (var i in response.files) {
                                     if (response.files.hasOwnProperty(i)) {
-
                                         hash = response.files[i].hash;
-                                        if (M.mod_webcast.room.files_uploaded_hashes[hash] !== undefined) {
-                                            M.mod_webcast.room.log('already shared skip!');
+                                        if (that.files_uploaded_hashes[hash] !== undefined) {
+                                            that.log('already shared skip!');
                                             continue;
                                         }
 
-                                        M.mod_webcast.room.chat_share_file(response.files[i]);
+                                        that.chat_share_file(response.files[i]);
                                     }
                                 }
                             }
 
                         } catch (e) {
                             // exception
-                            M.mod_webcast.room.log(e);
+                            that.log(e);
                         }
                     }
                 }
@@ -1695,10 +1913,10 @@ M.mod_webcast.room = {
                     },
                     on    : {
                         success: function (id, o) {
-                            M.mod_webcast.room.log(id);
+                            that.log(id);
                             try {
                                 var response = Y.JSON.parse(o.responseText);
-                                M.mod_webcast.room.log(response);
+                                that.log(response);
                                 if (response.status) {
 
                                     filelist = '';
@@ -1708,26 +1926,26 @@ M.mod_webcast.room = {
                                             obj = response.files[i];
                                             filelist += '<li class="webcast-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
-                                                '<span class="webcast-filename">' + M.mod_webcast.room.alpha_numeric(obj.filename) + '</span>' +
-                                                '<span class="webcast-filesize">' + M.mod_webcast.room.alpha_numeric(obj.filesize) + '</span>' +
-                                                '<span class="webcast-fileauthor">' + M.mod_webcast.room.alpha_numeric(obj.author) + '</span>' +
+                                                '<span class="webcast-filename">' + that.alpha_numeric(obj.filename) + '</span>' +
+                                                '<span class="webcast-filesize">' + that.alpha_numeric(obj.filesize) + '</span>' +
+                                                '<span class="webcast-fileauthor">' + that.alpha_numeric(obj.author) + '</span>' +
                                                 '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
-                                                'extra3=' + Number(obj.id) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
+                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.webcastid + '&extra1=' + that.options.courseid + '&' +
                                                 'sesskey=' + M.cfg.sesskey +
                                                 '" class="webcast-download webcast-button">Download</a>' +
                                                 '</li>';
                                         }
                                     }
-                                    M.mod_webcast.room.log(filelist);
+                                    that.log(filelist);
                                     // set ul
-                                    M.mod_webcast.room.nodeholder.fileoverview.setHTML(filelist);
-                                    M.mod_webcast.room.scale_room();
-                                    M.mod_webcast.room.scrollbar_fileoverview.update();
+                                    that.nodeholder.fileoverview.setHTML(filelist);
+                                    that.scale_room();
+                                    that.scrollbar_fileoverview.update();
                                 }
 
                             } catch (e) {
                                 // exception
-                                M.mod_webcast.room.log(e);
+                                that.log(e);
                             }
                         }
                     }
@@ -1762,10 +1980,402 @@ M.mod_webcast.room = {
     },
 
     /**
+     * Add a question manager that allows the broadcaster to:
+     * - Send questions to there clients
+     * - Crud question
+     * - See answers to the questions
+     * - Keep track of all question even on F5 or reentering the room
+     */
+    add_question_manager    : function () {
+        "use strict";
+        var that = this;
+
+        this.nodeholder.questionoverview = Y.one('#all-questions ul');
+        this.nodeholder.addquestionbtn = Y.one('#addquestion');
+
+        // init manager popup
+        this.nodeholder.questionmanager = new Y.Panel({
+            width   : 600,
+            height  : 400,
+            zIndex  : 10,
+            centered: true,
+            modal   : true,
+            visible : false,
+            render  : true,
+            srcNode : '#webcast-question-manager'
+        });
+
+        // add click listener
+        Y.one('#webcast-viewquestion-btn').on('click', function () {
+            this.nodeholder.questionmanager.show();
+            // load the question from the DB
+            this.question_load_overview();
+        }, this);
+
+
+        // back button on question detail
+        Y.one('body').delegate('click', function () {
+            Y.one('#question-answer').hide();
+            Y.one('#all-questions').show();
+            that.question_load_overview();
+        }, '.webcast-back-to-questionoverview');
+
+        // view a question or answer if we aren't a teacher or broadcaster
+        this.nodeholder.questionoverview.delegate('click', function () {
+            that.question_load_single(this.getData('id'));
+        }, '.viewquestionbtn');
+
+        // check if we can still add questions
+        if (!this.options.is_ended) {
+
+            // Press on add answer in chat
+            Y.one('body').delegate('click', function () {
+                that.nodeholder.questionmanager.show();
+                that.question_load_single(this.getData('id'));
+            }, '.answerquestion');
+
+            // add new question
+            if (this.nodeholder.addquestionbtn) {
+                // broadcaster or teacher can add questions
+
+                this.nodeholder.addquestionbtn.on('click', function () {
+                    Y.one('#all-questions').hide();
+                    Y.one('#question-type-selector').show();
+                });
+
+                // step 2 back to question type selector
+                Y.all('.webcast-button-previous-step2').on('click', function () {
+                    Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
+                    Y.one('#question-type-selector').show();
+                }, this);
+
+                // show the correct question type create form
+                Y.one('#webcast-button-next-step1').on('click', function () {
+                    Y.one('#question-type-selector').hide();
+                    var value = Y.one('#question-type').get('value');
+                    this.log(value);
+                    Y.one('#question-type-' + value).show();
+
+                    //  make sure all input is cleared
+                    this.question_clear_all_input();
+                }, this);
+
+                // back to question overview
+                Y.one('#webcast-button-previous-step1').on('click', function () {
+                    Y.one('#all-questions').show();
+                    Y.one('#question-type-selector').hide();
+                }, this);
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                var inputtruefalse = Y.one('#question-truefalse');
+                var truefalseaddbtn = Y.one('#truefalse-add-btn');
+                truefalseaddbtn.on('click', function () {
+                    if (!truefalseaddbtn.hasClass('disabled')) {
+                        inputtruefalse.setStyles({'border': '1px solid green'});
+                        truefalseaddbtn.removeClass('disabled');
+                        this.question_save('truefalse');
+                    } else {
+                        inputtruefalse.setStyles({'border': '1px solid red'});
+                    }
+                }, this);
+
+                inputtruefalse.on('keyup', function () {
+                    if (Y.Lang.trim(inputtruefalse.get('value')) !== "") {
+                        inputtruefalse.setStyles({'border': '1px solid green'});
+                        truefalseaddbtn.removeClass('disabled');
+                    } else {
+                        inputtruefalse.setStyles({'border': '1px solid red'});
+                        truefalseaddbtn.addClass('disabled');
+                    }
+                }, this);
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                var openaddbtn = Y.one('#open-add-btn');
+                var inputopen = Y.one('#question-open');
+                openaddbtn.on('click', function () {
+                    if (!openaddbtn.hasClass('disabled')) {
+                        inputopen.setStyles({'border': '1px solid green'});
+                        openaddbtn.removeClass('disabled');
+                        this.question_save('open');
+                    } else {
+                        inputopen.setStyles({'border': '1px solid red'});
+                    }
+                }, this);
+
+                inputopen.on('keyup', function () {
+                    if (Y.Lang.trim(inputopen.get('value')) !== "") {
+                        inputopen.setStyles({'border': '1px solid green'});
+                        openaddbtn.removeClass('disabled');
+                    } else {
+                        inputopen.setStyles({'border': '1px solid red'});
+                        openaddbtn.addClass('disabled');
+                    }
+                }, this);
+
+            } else {
+                // normal student
+            }
+
+            // prevent submits on enter
+            Y.all('#webcast-question-manager form').on('submit', function (e) {
+                e.preventDefault();
+                return false;
+            });
+        }
+    },
+    /**
+     * clear input to prevent strange thinks from happening
+     */
+    question_clear_all_input: function () {
+        "use strict";
+        // empty all input
+        Y.all('#webcast-question-manager input[type="text"], #webcast-question-manager textarea').set('value', '');
+        // reset the borders
+        Y.all('#webcast-question-manager input[type="text"]').setStyles({'border': '1px solid red'});
+        // disable the next buttons
+        Y.all('#open-add-btn , #truefalse-add-bt').addClass('disabled');
+    },
+
+    /**
+     * Get all the questions that belong to this webcast and check if its filled
+     */
+    question_load_overview: function () {
+        "use strict";
+        var that = this, html = '', i, question;
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+
+            data: {
+                'sesskey': M.cfg.sesskey,
+                'action' : "get_questions",
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.webcastid
+            },
+            on  : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            html = '';
+                            for (i in response.questions) {
+                                if (response.questions.hasOwnProperty(i)) {
+
+                                    question = response.questions[i];
+                                    html += '<li class="' + ((!question.manager && !question.my_answer) ? 'unanswered' : '') + '">';
+                                    html += '<span class="number">#' + i + '</span>';
+                                    html += '<span class="name">' + question.name + '</span>';
+                                    html += '<span class="webcast-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'webcast', {}) + '</span>';
+                                    html += '</li>';
+                                }
+                            }
+
+                            that.nodeholder.questionoverview.setHTML(html);
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+
+    },
+
+    /**
+     * Load a single question by id
+     * @param {integer} questionid
+     */
+    question_load_single: function (questionid) {
+        "use strict";
+        var that = this;
+        //@todo check user type for which api we need to call
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+
+            data: {
+                'sesskey'   : M.cfg.sesskey,
+                'action'    : "get_question",
+                'extra1'    : that.options.courseid,
+                'extra2'    : that.options.webcastid,
+                'questionid': questionid
+            },
+            on  : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            // hide question overview
+                            Y.one('#all-questions').hide();
+
+                            // answering a question
+                            if (response.item.form) {
+                                Y.one('#question-answer').setHTML(response.item.form).show();
+                                // listener for a answer on the question
+                                that.question_answer();
+                            } else {
+                                // We need to build total answer overview
+                                Y.one('#question-answer').setHTML(response.item.answers).show();
+                            }
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+    },
+
+    /**
+     * Answer a question
+     */
+    question_answer: function () {
+        "use strict";
+        var answerform = Y.one('#question-submit-answer'), that = this;
+        answerform.on('submit', function (e) {
+            e.preventDefault();
+
+            Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+                method: 'POST',
+                form  : {
+                    id         : answerform,
+                    useDisabled: true
+                },
+                data  : {
+                    'sesskey': M.cfg.sesskey,
+                    'action' : "add_answer",
+                    'extra1' : that.options.courseid,
+                    'extra2' : that.options.webcastid
+                },
+                on    : {
+                    success: function (id, o) {
+                        that.log(o.response);
+                        try {
+                            var response = Y.JSON.parse(o.response);
+                            if (response.status) {
+
+                                that.nodeholder.questionmanager.hide();
+                                // back to question overview
+                                // notice the broadcaster / teacher about the answer
+                                that.chatobject.message = '[answer ' + Y.JSON.stringify(response) + ']';
+                                that.socket.emit("send", that.chatobject, function (response) {
+                                    if (!response.status) {
+                                        that.exception(response.error);
+                                    }
+
+                                    that.chat_local_message('my_answer_saved');
+
+                                });
+                            } else {
+                                // we have a error display this to the user
+                                that.log('question_answer Error');
+                                Y.one('#question-error').setHTML(response.error).show();
+                            }
+                        } catch (exc) {
+                            that.log('question_answer Exception');
+                            that.log(exc);
+                        }
+                    },
+                    failure: function (x, o) {
+                        that.log('failure');
+                        that.log(o);
+                    }
+                }
+            });
+        });
+    },
+
+    /**
+     * Show a notice bar with a text can be triggered remotely
+     * @param {string} message
+     * @param {object} obj
+     */
+    notice_bar_message: function (message, obj) {
+        "use strict";
+        var that = this;
+        if (this.nodeholder.noticebar === null) {
+            this.nodeholder.noticebar = Y.one('#webcast-noticebar');
+        }
+
+        if ((this.nodeholder.noticebar.get('offsetWidth') === 0 && this.nodeholder.noticebar.get('offsetHeight') === 0) ||
+            this.nodeholder.noticebar.get('display') === 'none') {
+            // not visible we can show it directly
+            this.nodeholder.noticebar.setHTML(M.util.get_string('js:' + message, 'webcast', obj)).show();
+            setTimeout(function () {
+                that.nodeholder.noticebar.hide();
+            }, 2000);
+        } else {
+            // need some kind of queue
+            setTimeout(function () {
+                that.notice_bar_message(message, obj);
+            }, 4000);
+        }
+
+    },
+    /**
+     * Save question and notice the clients
+     * @param {string} questiontype
+     */
+    question_save     : function (questiontype) {
+        "use strict";
+        var formnode = Y.one('#question-type-' + questiontype + ' form'), that = this;
+        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            method: 'POST',
+            form  : {
+                id         : formnode,
+                useDisabled: true
+            },
+            data  : {
+                'sesskey'     : M.cfg.sesskey,
+                'action'      : "add_question",
+                'extra1'      : that.options.courseid,
+                'extra2'      : that.options.webcastid,
+                'questiontype': questiontype
+            },
+            on    : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            that.log('question_save Success');
+                            // close the dialog and hide steps
+                            Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
+                            Y.one('#all-questions').show();
+                            that.nodeholder.questionmanager.hide();
+                            that.chat_local_message('added_question');
+
+                            that.chatobject.message = '[question ' + Y.JSON.stringify(response) + ']';
+                            that.socket.emit("send", that.chatobject, function (response) {
+                                if (!response.status) {
+                                    that.exception(response.error);
+                                }
+                            });
+                        }
+                    } catch (exc) {
+                        that.log('question_save Exception');
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+
+    },
+    /**
      * Scale room
      * Should be executed when the browser window resize
      */
-    scale_room: function () {
+    scale_room        : function () {
         "use strict";
         var winWidth = this.nodeholder.body.get("winWidth");
         var winHeight = this.nodeholder.body.get("winHeight");
@@ -1833,7 +2443,7 @@ M.mod_webcast.room = {
             this.scrollbar_userlist.update('bottom');
         }
 
-        // filesharing
+        // file sharing
         if (this.options.filesharing) {
 
             if (!this.options.is_ended) {
@@ -1843,7 +2453,7 @@ M.mod_webcast.room = {
                 });
 
                 Y.one('.filemanager .fp-content').setStyles({
-                    'max-height': (wh - 200),
+                    'max-height': (wh - 200)
                 });
             }
 
@@ -1857,11 +2467,20 @@ M.mod_webcast.room = {
             });
         }
 
+        // emoticons dialog
+        if (this.options.enable_emoticons) {
+            if (!this.options.is_ended) {
+                this.nodeholder.emoticonsdialog.setStyles({
+                    height      : (wh + 25),
+                    'margin-top': -(wh + 25)
+                });
+            }
+        }
     },
 
     /**
      * Set options base on listed options
-     * @param options
+     * @param {object} options
      */
     set_options: function (options) {
         "use strict";
@@ -1887,9 +2506,9 @@ M.mod_webcast.room = {
 
     /**
      * internal event listener
-     * @param object
-     * @param type
-     * @param callback
+     * @param {object} object
+     * @param {string} type
+     * @param {function} callback
      */
     add_event: function (object, type, callback) {
         "use strict";
