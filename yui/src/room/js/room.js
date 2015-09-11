@@ -553,7 +553,7 @@ M.mod_webcast.room = {
         "use strict";
 
         // check if we can show the log
-        if (!M.mod_webcast.room.options.debugjs) {
+        if (!this.options.debugjs) {
             return;
         }
         try {
@@ -573,12 +573,12 @@ M.mod_webcast.room = {
      */
     init: function (options) {
         "use strict";
-
+var that = this;
         // Make sure videojs is loaded
         if (!videojs) {
-            M.mod_webcast.room.log('wait..');
+            that.log('wait..');
             setTimeout(function () {
-                M.mod_webcast.room.init(options);
+                that.init(options);
             }, 100);
         }
 
@@ -606,6 +606,7 @@ M.mod_webcast.room = {
      */
     build_room: function () {
         "use strict";
+        var that = this;
         this.log('build_room');
 
         // if room is ended prevent some things from happening
@@ -620,19 +621,19 @@ M.mod_webcast.room = {
 
         // Show a menu when clicking on topmenu
         this.nodeholder.topmenu.on('click', function () {
-            M.mod_webcast.room.log('Open topmenu');
+            that.log('Open topmenu');
 
             // Menu arrow
             if ((M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetWidth') === 0 &&
                 M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetHeight') === 0) ||
-                M.mod_webcast.room.nodeholder.leftsidemenu.get('display') === 'none') {
+                that.nodeholder.leftsidemenu.get('display') === 'none') {
 
-                M.mod_webcast.room.log('show');
+                that.log('show');
 
                 YUI().use('anim', function (Y) {
                     var a = new Y.Anim(
                         {
-                            node: M.mod_webcast.room.nodeholder.leftsidemenu,
+                            node: that.nodeholder.leftsidemenu,
                             from: {
                                 left: -200
                             },
@@ -651,12 +652,12 @@ M.mod_webcast.room = {
                 });
 
             } else {
-                M.mod_webcast.room.log('hide');
+                that.log('hide');
 
                 YUI().use('anim', function (Y) {
                     var a = new Y.Anim(
                         {
-                            node    : M.mod_webcast.room.nodeholder.leftsidemenu,
+                            node    : that.nodeholder.leftsidemenu,
                             from    : {
                                 left: 0
                             },
@@ -739,26 +740,26 @@ M.mod_webcast.room = {
                         data   : {
                             'sesskey': M.cfg.sesskey,
                             'action' : "endwebcast",
-                            'extra1' : M.mod_webcast.room.options.courseid,
-                            'extra2' : M.mod_webcast.room.options.webcastid
+                            'extra1' : that.options.courseid,
+                            'extra2' : that.options.webcastid
                         },
                         on     : {
                             success: function (id, o) {
-                                M.mod_webcast.room.log(id);
+                                that.log(id);
                                 try {
                                     var response = Y.JSON.parse(o.responseText);
-                                    M.mod_webcast.room.log(response);
+                                    that.log(response);
                                     if (response.status) {
 
                                         // Close the room on chat server // chat server will notice all clients
-                                        M.mod_webcast.room.chatobject.broadcaster_identifier = M.mod_webcast.room.options.broadcaster_identifier;
-                                        M.mod_webcast.room.socket.emit("ending", M.mod_webcast.room.chatobject, function (response) {
-                                            M.mod_webcast.room.log(response);
+                                        that.chatobject.broadcaster_identifier = that.options.broadcaster_identifier;
+                                        that.socket.emit("ending", that.chatobject, function (response) {
+                                            that.log(response);
                                         });
                                     }
                                 } catch (e) {
                                     // exception
-                                    M.mod_webcast.room.log(e);
+                                    that.log(e);
                                 }
                             }
                         },
@@ -774,7 +775,7 @@ M.mod_webcast.room = {
 
         // scaling listener
         this.add_event(window, "resize", function () {
-            M.mod_webcast.room.scale_room();
+            that.scale_room();
         });
 
         // Message before closing
@@ -782,12 +783,12 @@ M.mod_webcast.room = {
 
         // first time scale the room
         setTimeout(function () {
-            M.mod_webcast.room.scale_room();
+            that.scale_room();
         }, 300);
 
         if (this.options.ajax_timer && !this.options.is_ended) {
             setInterval(function () {
-                M.mod_webcast.room.ajax_timer_ping();
+                that.ajax_timer_ping();
             }, 60000);
         }
 
@@ -852,18 +853,19 @@ M.mod_webcast.room = {
      */
     chat_mute_usertype: function (usertype, value) {
         "use strict";
+        var that = this;
         if (this.options.is_broadcaster) {
             this.log('mute(' + usertype + ',' + value + ')');
 
             this.chatobject.broadcaster_identifier = this.options.broadcaster_identifier;
 
             this.socket.emit("mute", this.chatobject, usertype, value, function (response) {
-                M.mod_webcast.room.log(response);
+                that.log(response);
 
                 if (!response.status) {
-                    M.mod_webcast.room.exception(response.error);
+                    that.exception(response.error);
                 } else {
-                    M.mod_webcast.room.log(response.mute);
+                    that.log(response.mute);
                     // @todo make sure the switch not changed by someone else load the status of switch by loading the room
                 }
             });
@@ -875,6 +877,7 @@ M.mod_webcast.room = {
      */
     ajax_timer_ping: function () {
         "use strict";
+        var that = this;
         this.log('ajax_timer_ping');
 
         Y.io(this.options.ajax_path, {
@@ -882,18 +885,18 @@ M.mod_webcast.room = {
             data   : {
                 'sesskey': M.cfg.sesskey,
                 'action' : "ping",
-                'extra1' : M.mod_webcast.room.options.courseid,
-                'extra2' : M.mod_webcast.room.options.webcastid
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.webcastid
             },
             on     : {
                 success: function (id, o) {
-                    M.mod_webcast.room.log(id);
+                    that.log(id);
                     try {
                         var response = Y.JSON.parse(o.responseText);
-                        M.mod_webcast.room.log(response);
+                        that.log(response);
                         if (response.status) {
                             // set online somewhere??
-                            M.mod_webcast.room.log('You are here for ' + (response.online_minutes / 60) + ' minutes.');
+                            that.log('You are here for ' + (response.online_minutes / 60) + ' minutes.');
                         } else {
                             // session expired logout etc this bad
                             alert(M.util.get_string('js:error_logout_or_lostconnection', 'webcast', {}));
@@ -901,7 +904,7 @@ M.mod_webcast.room = {
 
                     } catch (e) {
                         // exception
-                        M.mod_webcast.room.log(e);
+                        that.log(e);
                     }
                 }
             },
@@ -916,7 +919,7 @@ M.mod_webcast.room = {
      */
     connect_to_socket: function () {
         "use strict";
-        var key;
+        var key, that = this;
         // Set the template
         for (key in this.chatobject) {
             if (this.chatobject.hasOwnProperty(key)) {
@@ -945,47 +948,47 @@ M.mod_webcast.room = {
         this.socket = io.connect(this.options.chat_server);
         this.socket.on('connect', function () {
 
-            if (M.mod_webcast.room.socket_is_connected === false) {
+            if (that.socket_is_connected === false) {
 
                 // we are reconnected
-                M.mod_webcast.room.chat_local_message('reconnected');
+                that.chat_local_message('reconnected');
 
                 // Join the public room again
-                this.emit("join", M.mod_webcast.room.chatobject, function (response) {
+                this.emit("join", that.chatobject, function (response) {
                     if (!response.status) {
-                        M.mod_webcast.room.exception(response.error);
+                        that.exception(response.error);
                     } else {
-                        M.mod_webcast.room.chat_local_message('joined');
+                        that.chat_local_message('joined');
                     }
                 });
             }
 
-            M.mod_webcast.room.log('isConnected');
-            M.mod_webcast.room.socket_is_connected = true;
+            that.log('isConnected');
+            that.socket_is_connected = true;
 
             // enable chat input
-            M.mod_webcast.room.nodeholder.message.removeAttribute('disabled');
-            M.mod_webcast.room.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
+            that.nodeholder.message.removeAttribute('disabled');
+            that.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
         });
 
         // connection failed
         this.socket.on('reconnect_failed', function () {
-            M.mod_webcast.room.socket_connection_failed('reconnect_failed');
+            that.socket_connection_failed('reconnect_failed');
         });
 
         // broadcaster ending webcast called
         this.socket.on('webcast-ended', function () {
-            this.chat_ended();
+            that.chat_ended();
         });
 
         // disconnect
         this.socket.on('disconnect', function () {
-            M.mod_webcast.room.socket_connection_failed('disconnect');
+            that.socket_connection_failed('disconnect');
         });
 
         // generic error
         this.socket.on('error', function () {
-            M.mod_webcast.room.log('Socket.io reported a generic error');
+            that.log('Socket.io reported a generic error');
         });
     },
 
@@ -1093,8 +1096,8 @@ M.mod_webcast.room = {
                         this.log(response);
                         if (response.status) {
                             // remove the button
-                            M.mod_webcast.room.nodeholder.loadhistorybtn.remove();
-                            M.mod_webcast.room.chat_add_chatrow(response.messages, 'prepend', true);
+                            that.nodeholder.loadhistorybtn.remove();
+                            that.chat_add_chatrow(response.messages, 'prepend', true);
                         }
 
                     } catch (e) {
@@ -1115,12 +1118,13 @@ M.mod_webcast.room = {
      */
     chat_share_file: function (args) {
         "use strict";
+        var that = this;
         this.chatobject.message = '[file ' + Y.JSON.stringify(args) + ']';
         this.socket.emit("send", this.chatobject, function (response) {
             if (!response.status) {
-                M.mod_webcast.room.exception(response.error);
+                that.exception(response.error);
             } else {
-                M.mod_webcast.room.files_uploaded_hashes[args.hash] = true;
+                that.files_uploaded_hashes[args.hash] = true;
             }
         });
     },
@@ -1162,13 +1166,14 @@ M.mod_webcast.room = {
      */
     add_emoticons: function (text) {
         "use strict";
+        var that = this;
         if (!this.options.enable_emoticons) {
             return text;
         }
 
         return text.replace(this.emoticons_regex, function (code) {
-            var name = M.mod_webcast.room.emoticons_map[code];
-            return ('<span class="emoticon emoticon-' + name + '" title="' + M.mod_webcast.room.emoticons[name].title + '">' + code + '</span>');
+            var name = that.emoticons_map[code];
+            return ('<span class="emoticon emoticon-' + name + '" title="' + that.emoticons[name].title + '">' + code + '</span>');
         });
     },
 
@@ -1178,7 +1183,7 @@ M.mod_webcast.room = {
     add_video: function () {
         "use strict";
         this.log('add_video');
-        var source = {},  techOrder = ['html5', 'flash'];
+        var source = {},  techOrder = ['html5', 'flash'], that = this;
 
         videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
 
@@ -1224,43 +1229,43 @@ M.mod_webcast.room = {
         // https://github.com/videojs/video.js/blob/master/docs/api/vjs.Player.md#waiting-event
         // Fired whenever the media begins waiting
         this.player.on('waiting', function () {
-            M.mod_webcast.room.log('player_event(waiting)');
+            that.log('player_event(waiting)');
         });
 
         // Fired whenever the media has been paused
         this.player.on('pause', function () {
-            M.mod_webcast.room.log('player_event(pause)');
+            that.log('player_event(pause)');
         });
 
         // Fired whenever the media begins or resumes playback
         this.player.on('play', function () {
-            M.mod_webcast.room.log('player_event(play)');
+            that.log('player_event(play)');
         });
 
         // Fired when the end of the media resource is reached (currentTime == duration)
         this.player.on('ended', function () {
-            M.mod_webcast.room.log('player_event(ended)');
+            that.log('player_event(ended)');
         });
 
         // Fired while the user agent is downloading media data
         this.player.on('progress', function () {
-            M.mod_webcast.room.log('player_event(progress)');
+            that.log('player_event(progress)');
         });
 
         // Fired while the user agent is downloading media data
         // Looks like this is called when a stream is really started
         // Also when time no longer gets higher we are stopped
         this.player.on('loadedmetadata', function () {
-            M.mod_webcast.room.log('player_event(loadedmetadata)');
+            that.log('player_event(loadedmetadata)');
         });
 
         // Fired when an error occurs
         this.player.on('error', function () {
-            M.mod_webcast.room.log('player_event(error)');
+            that.log('player_event(error)');
         });
 
         this.player.on('loadstart', function () {
-            M.mod_webcast.room.log('player_event(loadstart)');
+            that.log('player_event(loadstart)');
         });
 
         this.log(source);
@@ -1285,15 +1290,15 @@ M.mod_webcast.room = {
             // Join the public room
             this.socket.emit("join", this.chatobject, function (response) {
                 if (!response.status) {
-                    M.mod_webcast.room.exception(response.error);
+                    that.exception(response.error);
                 } else {
-                    M.mod_webcast.room.chat_local_message('joined');
+                    that.chat_local_message('joined');
                 }
             });
 
             // Socket call when getting a message
             this.socket.on("update-chat", function (data) {
-                M.mod_webcast.room.chat_add_chatrow(data);
+                that.chat_add_chatrow(data);
             });
         }
 
@@ -1345,6 +1350,7 @@ M.mod_webcast.room = {
         }
 
         // Workaround for enter key YUI event not working here..
+        // @todo need new method we making this more private
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_webcast.room.chat_enter_listener(event);');
     },
 
@@ -1372,8 +1378,9 @@ M.mod_webcast.room = {
      */
     chat_enter_listener         : function (e) {
         "use strict";
+        var that = this;
         if (e.keyCode === 13) {
-            M.mod_webcast.room.chat_send_message();
+            that.chat_send_message();
             return false;
         }
     },
@@ -1533,21 +1540,21 @@ M.mod_webcast.room = {
      */
     chat_parse_shortcodes: function (data) {
         "use strict";
-        var newmessage = false;
+        var newmessage = false, that = this;
 
         if (this.shortcode_regex.test(data.message)) {
             this.log('Has some shortcode:');
             data.message.replace(this.shortcode_regex, function (a, command, args) {
-                M.mod_webcast.room.log(a);
+                that.log(a);
                 switch (command) {
                     case 'file':
-                        newmessage = M.mod_webcast.room.chat_add_shortcode_file(args);
+                        newmessage = that.chat_add_shortcode_file(args);
                         break;
                     case 'question':
-                        newmessage = M.mod_webcast.room.chat_add_shortcode_question(args);
+                        newmessage = that.chat_add_shortcode_question(args);
                         break;
                     case 'answer':
-                        M.mod_webcast.room.chat_add_shortcode_answer(args , data);
+                        that.chat_add_shortcode_answer(args , data);
                         break;
                 }
             });
@@ -1655,7 +1662,7 @@ M.mod_webcast.room = {
      */
     chat_send_message: function () {
         "use strict";
-        var message = String(this.nodeholder.message.get('value'));
+        var message = String(this.nodeholder.message.get('value')), that = this;
 
         // Check if the message is a command
         if (message.charAt(0) === '/') {
@@ -1675,7 +1682,7 @@ M.mod_webcast.room = {
         this.chatobject.message = message;
         this.socket.emit("send", this.chatobject, function (response) {
             if (!response.status) {
-                M.mod_webcast.room.chat_local_message(response.error);
+                that.chat_local_message(response.error);
             }
         });
 
@@ -1708,6 +1715,7 @@ M.mod_webcast.room = {
      */
     add_userlist: function () {
         "use strict";
+        var that = this;
         this.log('add_userlist');
 
         // set userlist node prevent searching the dom again
@@ -1720,7 +1728,7 @@ M.mod_webcast.room = {
 
         // Userlist listener
         this.socket.on("update-user-list", function (data) {
-            M.mod_webcast.room.update_userlist(data);
+            that.update_userlist(data);
         });
     },
 
@@ -1803,7 +1811,7 @@ M.mod_webcast.room = {
      */
     add_fileshare: function () {
         "use strict";
-        var filelist = '', i, obj;
+        var filelist = '', i, obj, that = this;
 
         this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanager-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
@@ -1829,33 +1837,33 @@ M.mod_webcast.room = {
                 },
                 on    : {
                     success: function (id, o) {
-                        M.mod_webcast.room.log(id);
+                        that.log(id);
                         try {
                             var response = Y.JSON.parse(o.responseText);
-                            M.mod_webcast.room.log(response);
+                            that.log(response);
                             if (response.status) {
                                 // clear own file overview
                                 // Y.all('.fm-content-wrapper .fp-content').setHTML('');
 
                                 // hide the dialog
-                                M.mod_webcast.room.nodeholder.filemanagerdialog.hide();
+                                that.nodeholder.filemanagerdialog.hide();
                                 var hash;
                                 for (var i in response.files) {
                                     if (response.files.hasOwnProperty(i)) {
                                         hash = response.files[i].hash;
-                                        if (M.mod_webcast.room.files_uploaded_hashes[hash] !== undefined) {
-                                            M.mod_webcast.room.log('already shared skip!');
+                                        if (that.files_uploaded_hashes[hash] !== undefined) {
+                                            that.log('already shared skip!');
                                             continue;
                                         }
 
-                                        M.mod_webcast.room.chat_share_file(response.files[i]);
+                                        that.chat_share_file(response.files[i]);
                                     }
                                 }
                             }
 
                         } catch (e) {
                             // exception
-                            M.mod_webcast.room.log(e);
+                            that.log(e);
                         }
                     }
                 }
@@ -1903,10 +1911,10 @@ M.mod_webcast.room = {
                     },
                     on    : {
                         success: function (id, o) {
-                            M.mod_webcast.room.log(id);
+                            that.log(id);
                             try {
                                 var response = Y.JSON.parse(o.responseText);
-                                M.mod_webcast.room.log(response);
+                                that.log(response);
                                 if (response.status) {
 
                                     filelist = '';
@@ -1916,26 +1924,26 @@ M.mod_webcast.room = {
                                             obj = response.files[i];
                                             filelist += '<li class="webcast-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
-                                                '<span class="webcast-filename">' + M.mod_webcast.room.alpha_numeric(obj.filename) + '</span>' +
-                                                '<span class="webcast-filesize">' + M.mod_webcast.room.alpha_numeric(obj.filesize) + '</span>' +
-                                                '<span class="webcast-fileauthor">' + M.mod_webcast.room.alpha_numeric(obj.author) + '</span>' +
+                                                '<span class="webcast-filename">' + that.alpha_numeric(obj.filename) + '</span>' +
+                                                '<span class="webcast-filesize">' + that.alpha_numeric(obj.filesize) + '</span>' +
+                                                '<span class="webcast-fileauthor">' + that.alpha_numeric(obj.author) + '</span>' +
                                                 '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
-                                                'extra3=' + Number(obj.id) + '&extra2=' + M.mod_webcast.room.options.webcastid + '&extra1=' + M.mod_webcast.room.options.courseid + '&' +
+                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.webcastid + '&extra1=' + that.options.courseid + '&' +
                                                 'sesskey=' + M.cfg.sesskey +
                                                 '" class="webcast-download webcast-button">Download</a>' +
                                                 '</li>';
                                         }
                                     }
-                                    M.mod_webcast.room.log(filelist);
+                                    that.log(filelist);
                                     // set ul
-                                    M.mod_webcast.room.nodeholder.fileoverview.setHTML(filelist);
-                                    M.mod_webcast.room.scale_room();
-                                    M.mod_webcast.room.scrollbar_fileoverview.update();
+                                    that.nodeholder.fileoverview.setHTML(filelist);
+                                    that.scale_room();
+                                    that.scrollbar_fileoverview.update();
                                 }
 
                             } catch (e) {
                                 // exception
-                                M.mod_webcast.room.log(e);
+                                that.log(e);
                             }
                         }
                     }

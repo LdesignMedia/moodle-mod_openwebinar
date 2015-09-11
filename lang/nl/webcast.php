@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'mod_webcast', language 'en'
+ * Strings for component 'mod_webcast', language 'nl'
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
