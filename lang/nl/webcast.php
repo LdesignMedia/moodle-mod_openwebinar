@@ -25,228 +25,268 @@
  **/
 $string['modulename'] = 'MoodleFreak Webcast';
 $string['modulenameplural'] = 'MoodleFreak Webcast';
-$string['modulename_help'] = 'Webcast activity:<br/>
+$string['modulename_help'] = 'Webcast activiteit:<br/>
+<b>Room</b>
 <ul>
-    <li>Live chat</li>
-    <li>Live broadcasting</li>
-    <li>Online status log</li>
-    <li>Users in room list</li>
-    <li>Messages log</li>
-    <li>File sharing</li>
-    <li>HLS support</li>
-    <li>Reminder messages</li>
+	<li>De chat is schaalbaar (responsive)</li>
+	<li>Live en offline modus</li>
+	<li>Herinnering emails</li>
+	<li>Online tijd in de room meten</li>
+	<li>YUI 3 javascript modulen</li>
+	<li>Activiteit completion</li>
+	<li>Niet afgesloten chats worden automatisch gesloten</li>
+</ul>
+<b>Chat</b>
+<ul>
+	<li>Live socket chat</li>
+	<li>Chat geschiedenis word opgeslagen voor later</li>
+	<li>Emoticons zijn te gebruiken in de chat</li>
+	<li>Inladen van chat geschiedenis mogelijk</li>
+	<li>Gebruikers lijst , sorteert op type</li>
+	<li>Gebruikers lijst met browser en OS version</li>
+	<li>Geluid bij een nieuwe bericht</li>
+	<li>Ondersteuning voor de volgende chat commandos:
+	<ul>
+		<li>/clear Wis alle berichten uit het overzicht (lokaal)</li>
+	</ul>
+	</li>
+</ul>
+<b>Uitzender / Presentator</b>
+<ul>
+	<li>Berichten los blokkeren per status: gast, students en leraar</li>
+	<li>Webcast afsluiten na voltooiing</li>
+	<li>Vragen uitzetten naar de andere gebruikers in de chatruimte</li>
+</ul>
+<b>Gebruikers</b>
+<ul>
+	<li>Chatruimte kan aangepast worden via het configuratiescherm</li>
+	<li>Berichten sturen in de chatruimte</li>
+</ul>
+<b>Video</b>
+<ul>
+	<li>Bekijken van live en offline video stream</li>
+	<li>Streamen via RTMP (Real Time Messaging Protocol)</li>
+	<li>Stream in HLS (ondersteunt op de meeste apparaten) </li>
+	<li>Videojs gebruikt als video component</li>
+	<li>Toevoegen van een eerder gemaakte video</li>
+	<li>Video kan in volledig scherm afgespeeld worden</li>
+</ul>
+<b>Bestanden delen</b>
+<ul>
+	<li>Delen van bestanden in een webcast</li>
+	<li>Los overzicht van bestanden die in de chat toegevoegd zijn</li>
+</ul>
+<b>Gebruikers logboek</b>
+<ul>
+	<li>Tijd dat een gebruiker in de webcast is geweest</li>
+	<li>Bekijk wie de webcast heeft bekeken</li>
+	<li>Bekijk de chat geschiedenis van een specifieke gebruiker.</li>
 </ul>';
 
 $string['modulename_link'] = 'mod/webcast/view';
-$string['pluginadministration'] = 'MoodleFreak Webcast administration';
-$string['pluginname'] = 'MoodleFreak Webcast';
-$string['webcastfieldset'] = 'Custom example fieldset';
-$string['webcastname'] = 'MoodleFreak Webcast';
-$string['webcastname_help'] = 'The name of the webcast';
-$string['webcast'] = 'MoodleFreak Webcast';
-$string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
-$string['task:reminder'] = 'Send reminders';
-$string['messageprovider:reminder'] = 'Webcast reminder notifications';
+$string['pluginadministration'] = 'MoodleFreak webcast administrator';
+$string['pluginname'] = 'MoodleFreak webcast';
+$string['webcastname'] = 'MoodleFreak webcast';
+$string['webcastname_help'] = 'De naam van de webcast';
+$string['webcast'] = 'MoodleFreak webcast';
+$string['task:auto_close'] = 'Sluit chatruimte wanneer deze is afgelopen en niet is afgesloten door de presentator.';
+$string['task:reminder'] = 'Versturen van herinnering';
+$string['messageprovider:reminder'] = 'Webcast herinnering melding';
 
 // ACCESS
-$string['webcast:history'] = 'Allow viewing webcast history';
-$string['webcast:view'] = 'Allow viewing webcast';
-$string['webcast:addinstance'] = 'Add a webcast';
+$string['webcast:history'] = 'Bekijk van chat geschiedenis';
+$string['webcast:view'] = 'Webcast bekijken';
+$string['webcast:addinstance'] = 'Toevoegen van een webcast';
 $string['webcast:manager'] = 'Webcast manager';
-$string['webcast:teacher'] = 'Webcast teacher';
+$string['webcast:teacher'] = 'Webcast leraar';
 
 // ERRORS
-$string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
-$string['error:time_passed'] = 'Error:  Starttime has already been passed!';
-$string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
-$string['error:file_no_access'] = 'Error: No access to this file!';
-$string['error:no_access'] = 'Error: missing capability to do this.';
-$string['error:no_result'] = 'No result(s) found';
-$string['error:answer_already_saved'] = 'Your answer is already saved!';
-$string['error:not_for_guests'] = 'Error: not available for Guests';
+$string['error:webcast_notfound'] = 'Fout: de juiste webcast kan niet gevonden worden!';
+$string['error:file_not_exits'] = 'Fout: dit bestand bestaat niet!';
+$string['error:file_no_access'] = 'Fout: geen toegang tot dit bestand!';
+$string['error:no_access'] = 'Fout: u beschikt niet over de juiste rechten.';
+$string['error:no_result'] = 'Geen resultaten gevonden';
+$string['error:answer_already_saved'] = 'Uw antwoord is al opgeslagen!';
+$string['error:not_for_guests'] = 'Fout: gasten kunnen geen gebruik maken van deze functionaliteit';
 
 // SETTINGS
-$string['setting:heading_server'] = 'Communication settings';
-$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be override in each webcast activity)';
-$string['setting:streaming_server'] = 'Streaming url';
-$string['setting:streaming_server_desc'] = 'The location of your streaming server';
-$string['setting:chat_server'] = 'Chat/socket url';
-$string['setting:chat_server_desc'] = 'The location of your chat server';
-$string['setting:shared_secret'] = 'Shared secret';
-$string['setting:shared_secret_desc'] = 'A unique key that is shared with the chat/streaming server';
-$string['setting:heading_instance_defaults'] = 'Reminder default values (can be override in each webcast activity)';
-$string['setting:reminder_1'] = 'Reminder 1';
-$string['setting:reminder_1_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
-$string['setting:reminder_2'] = 'Reminder 2';
-$string['setting:reminder_2_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
-$string['setting:reminder_3'] = 'Reminder 1';
-$string['setting:reminder_3_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
-$string['setting:stream'] = 'Streaming enabled';
-$string['setting:stream_desc'] = 'If disabled the webcast don\'t shows a video player';
-$string['setting:chat'] = 'Chat enabled';
-$string['setting:chat_desc'] = 'If disabled the webcast don\'t shows a chat room';
-$string['setting:filesharing'] = 'Filesharing enabled';
-$string['setting:filesharing_desc'] = 'If disabled nobody can share files in the file drop zone.';
-$string['setting:filesharing_student'] = 'Allow student filesharing';
-$string['setting:filesharing_student_desc'] = 'Allow students to share there files';
-$string['setting:showuserpicture'] = 'Show user avatar';
-$string['setting:showuserpicture_desc'] = 'Show a avatar of user in the chat';
-$string['setting:userlist'] = 'Show userlist';
-$string['setting:userlist_desc'] = 'Show active users to the student';
-$string['setting:ajax_timer'] = 'Ajax based timing';
-$string['setting:ajax_timer_desc'] = 'This will send every 60 seconds a request to the server to update user his onlinetime. <br/>
-Warning with more then 25 users in the room this can give a high server load.';
-$string['setting:emoticons'] = 'Emoticons in chat';
-$string['setting:emoticons_desc'] = 'Shortcode will be converted to a emoticon. Also a dialog will be added where you can select a emoticon.';
-$string['setting:debugjs'] = 'Debug Javascript';
-$string['setting:debugjs_desc'] = 'Write js debug message to browser console. ';
+$string['setting:heading_server'] = 'Communicatie instellingen';
+$string['setting:heading_instance_features'] = 'Functies ingeschakeld of uitgeschakeld (kan overschreven worden door iedere webcast onafhankelijk)';
+$string['setting:streaming_server'] = 'Streaming locatie';
+$string['setting:streaming_server_desc'] = 'De locatie van de streaming server';
+$string['setting:chat_server'] = 'Chat/socket link';
+$string['setting:chat_server_desc'] = 'De locatie van de chatserver';
+$string['setting:shared_secret'] = 'Gedeeld Geheim';
+$string['setting:shared_secret_desc'] = 'Een unieke sleutel die wordt gedeeld met de chat / streaming server';
+$string['setting:heading_instance_defaults'] = 'Herinnering standaardwaarden (kan overschreven worden door iedere webcast onafhankelijk)';
+$string['setting:reminder_1'] = 'Herinnering 1';
+$string['setting:reminder_1_desc'] = 'Notificatie moment voor de start van de webcast.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_2'] = 'Herinnering 2';
+$string['setting:reminder_2_desc'] = 'Notificatie moment voor de start van de webcast.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_3'] = 'Herinnering 3';
+$string['setting:reminder_3_desc'] = 'Notificatie moment voor de start van de webcast.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:stream'] = 'Video ingeschakeld';
+$string['setting:stream_desc'] = 'Indien uitgeschakeld bevat de webcast geen video-speler';
+$string['setting:chat'] = 'Chat ingeschakeld';
+$string['setting:chat_desc'] = 'Indien uitgeschakeld bevat de webcast geen chatruimte';
+$string['setting:filesharing'] = 'Bestandsdeling ingeschakeld';
+$string['setting:filesharing_desc'] = 'Indien uitgeschakeld kan niemand bestanden delen.';
+$string['setting:filesharing_student'] = 'Studenten kunnen bestanden delen';
+$string['setting:filesharing_student_desc'] = 'Wanneer ingeschakeld kunnen student ook bestanden delen.';
+$string['setting:showuserpicture'] = 'Toon profiel foto';
+$string['setting:showuserpicture_desc'] = 'Toon profiel foto van gebruikers in de chatruimte';
+$string['setting:userlist'] = 'Toon gebruikerslijst';
+$string['setting:userlist_desc'] = 'Laat de actuele gebruikers in de chatruimte zien.';
+$string['setting:ajax_timer'] = 'AJAX timer';
+$string['setting:ajax_timer_desc'] = 'Dit zal elke 60 seconden een verzoek naar de server sturen om de gebruiker zijn online tijd in de chatruimte realtime opteslaan. <br/>
+Waarschuwing wanneer meer dan 25 gebruikers in de chatruimte aanwezig zijn kan dit voor een hogere serverload zorgen.';
+$string['setting:emoticons'] = 'Emoticons in chatruimte';
+$string['setting:emoticons_desc'] = 'Shortcode zal worden omgezet naar een emoticon. Ook een dialoog zal worden toegevoegd waar u een emoticon kunt selecteren.';
+$string['setting:debugjs'] = 'Debug javascript';
+$string['setting:debugjs_desc'] = 'Log javascript berichten naar de browser console.';
 $string['setting:hls'] = 'HLS video stream';
-$string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
+$string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moeten ook streamen naar server met HLS-uitgang.<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
 
 // Mod settings
-$string['mod_setting:settings'] = 'Webcast features';
-$string['mod_setting:timing'] = 'Webcast time';
+$string['mod_setting:settings'] = 'Webcast functies';
+$string['mod_setting:timing'] = 'Webcast tijd';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
-$string['mod_setting:make_a_selection'] = 'Select a user';
-$string['mod_setting:broadcaster'] = 'Webcast broadcaster';
-$string['mod_setting:reminders'] = 'Webcast reminder messages';
-$string['mod_setting:duration'] = 'Duration';
-$string['mod_setting:durationhelp'] = 'Duration';
-$string['mod_setting:durationhelp_help'] = 'Duration';
-$string['mod_setting:broadcastkey'] = 'Broadcastkey';
+$string['mod_setting:make_a_selection'] = 'Selecteer een gebruiker';
+$string['mod_setting:broadcaster'] = 'Webcast presentator';
+$string['mod_setting:reminders'] = 'Webcast herinnering bericht';
+$string['mod_setting:duration'] = 'Duur';
+$string['mod_setting:durationhelp'] = 'Duur';
+$string['mod_setting:durationhelp_help'] = 'Duur';
+$string['mod_setting:broadcastkey'] = 'Presentator sleutel';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
 // Text
-$string['text:live_webcast'] = '<br/>The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
-$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/webcast_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
-Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Webcast is offline</h3>This webcast was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this webcast by clicking on the button below.';
-$string['text:useractivity'] = 'User activity';
+$string['text:live_webcast'] = '<br/>De webcast is open vanaf: <b>{$a->timeopen}</b><br> U kunt nu de webcast openen via de knop hieronder.';
+$string['text:broadcaster_help'] = '<h3>U bent de presentator van deze webcast</h3><br>Presentator sleutel:<br><b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u vinden op: <a class="btn" target="_blank" href="http://moodlefreak.com/docs/webcast_broadcast_guide_2015_08_20.pdf">hier</a>.<br><br>
+Zorg ervoor dat u de streaming-software installeerd: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
+$string['text:history'] = '<h3>Webcast is offline</h3>Deze webcast werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de webcast/geschiedennis terugzien door te klikken op de onderstaande knop.';
+$string['text:useractivity'] = 'Gebruikers activiteit';
 
 // Buttons
-$string['btn:enter_live_webcast'] = 'Enter live webcast';
-$string['btn:enter_offline_webcast'] = 'Enter offline webcast';
+$string['btn:enter_live_webcast'] = 'Open de live webcast';
+$string['btn:enter_offline_webcast'] = 'Open de offline webcast';
 $string['btn:chattime'] = 'Report';
-$string['btn:chatlog'] = 'Chatlog';
-$string['btn:view'] = 'View';
-$string['btn:back'] = 'Back';
-$string['btn:addquestion'] = 'Add new question';
-$string['btn:open'] = 'Save';
+$string['btn:chatlog'] = 'Chat geschiedenis';
+$string['btn:view'] = 'Bekijken';
+$string['btn:back'] = 'Terug';
+$string['btn:addquestion'] = 'Voeg een nieuwe vraag toe';
+$string['btn:open'] = 'Opslaan';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';
-$string['users'] = 'Users';
+$string['users'] = 'Gebruikers';
 $string['browser'] = 'Browser';
-$string['ip_address'] = 'Ip address';
-$string['starttime'] = 'Start time';
-$string['online_time'] = 'Time in room';
-$string['endtime'] = 'End time';
-$string['time'] = 'Time';
+$string['ip_address'] = 'IP-adres';
+$string['starttime'] = 'Start tijd';
+$string['online_time'] = 'Tijd in chatruimte';
+$string['endtime'] = 'Eind tijd';
+$string['time'] = 'Tijd';
 $string['chat'] = 'Chat';
-$string['no'] = 'No';
-$string['yes'] = 'Yes';
-$string['menu'] = 'Control panel';
+$string['no'] = 'Nee';
+$string['yes'] = 'Ja';
+$string['menu'] = 'Configuratiescherm';
 $string['live'] = 'Live';
-$string['addfile'] = 'Add file';
-$string['attachment'] = 'Attachment';
-$string['offline'] = 'Offline (ended)';
+$string['addfile'] = 'Bestand toevoegen';
+$string['attachment'] = 'Bijlagen';
+$string['offline'] = 'Offline (beëindigd)';
 $string['filemanager'] = 'Uploader';
-$string['fileoverview'] = 'Files';
-$string['question_overview'] = 'Question';
-$string['broadcaster'] = 'Broadcaster';
+$string['fileoverview'] = 'Bestanden';
+$string['question_overview'] = 'Vraag';
+$string['broadcaster'] = 'Presentator';
 $string['student'] = 'Student';
-$string['guest'] = 'Guest';
-$string['teacher'] = 'Teacher';
-$string['message_placeholder'] = 'Type a message here....';
-$string['user_activity'] = 'Webcast user activity';
+$string['guest'] = 'Gast';
+$string['teacher'] = 'Leraar';
+$string['message_placeholder'] = 'Type een  bericht hier...';
+$string['user_activity'] = 'Webcast gebruikers activiteit';
+$string['starts_at'] = 'Webcast begint in:';
 
 // user options
-$string['opt:header_broadcaster'] = 'Broadcaster';
-$string['opt:header_exit'] = 'Exit';
-$string['opt:mute_guests'] = 'Mute guests';
-$string['opt:chat_sound'] = 'Chat sound';
-$string['opt:stream'] = 'Show stream';
-$string['opt:userlist'] = 'Show userlist';
-$string['opt:mute_students'] = 'Mute students';
-$string['opt:mute_teachers'] = 'Mute teachers';
-$string['opt:endwebcast'] = 'Close & end the webcast';
-$string['opt:endwebcast_desc'] = 'This will end the live webcast.';
-$string['opt:leave'] = 'Leave webcast';
-$string['opt:header_general'] = 'General';
+$string['opt:header_broadcaster'] = 'Presentator';
+$string['opt:header_exit'] = 'Beëindigd';
+$string['opt:mute_guests'] = 'Dempen gasten';
+$string['opt:chat_sound'] = 'Chat geluid';
+$string['opt:stream'] = 'Toon stream';
+$string['opt:userlist'] = 'Toon gebruikerslijst';
+$string['opt:mute_students'] = 'Dempen studenten';
+$string['opt:mute_teachers'] = 'Dempen leraren';
+$string['opt:endwebcast'] = 'Sluit & beëindigd de webcast';
+$string['opt:endwebcast_desc'] = 'Dit zal de live webcast afsluiten.';
+$string['opt:leave'] = 'Verlaat de webcast';
+$string['opt:header_general'] = 'Algemeen';
 
 // Js
-$string['js:my_answer_saved'] = 'Your answer is saved.';
-$string['js:send'] = 'Send';
-$string['js:answer'] = 'Answer';
-$string['js:added_answer'] = '{$a->fullname} added a answer.';
-$string['js:ending_webcast'] = 'Are you sure you wan\'t to end and close the webcast?';
-$string['js:muted'] = 'The messages are muted by the broadcaster!';
-$string['js:wait_on_connection'] = 'Waiting';
-$string['js:joined'] = 'Welcome to chatroom.';
-$string['js:disconnect'] = 'You are disconnected.';
-$string['js:reconnected'] = 'You are reconnected.';
-$string['js:script_user'] = 'System message';
+$string['js:my_answer_saved'] = 'Uw antwoord is opgeslagen.';
+$string['js:send'] = 'Verstuur';
+$string['js:answer'] = 'Antwoord';
+$string['js:added_answer'] = '{$a->fullname} heeft een antwoord toegevoegd.';
+$string['js:ending_webcast'] = 'Bent u er zeker van dat u de webcast wilt beëindigd?';
+$string['js:muted'] = 'Uw berichten worden gedempt door de presentator.';
+$string['js:wait_on_connection'] = 'Wachten..';
+$string['js:joined'] = 'Welkom.';
+$string['js:disconnect'] = 'Verbinding is verbroken.';
+$string['js:reconnected'] = 'Verbinding is hersteld.';
+$string['js:script_user'] = 'Systeem bericht';
 $string['js:system_user'] = 'Chat server';
-$string['js:connecting'] = 'Connecting to the chat server, please be patient.';
-$string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the webcast?';
-$string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the webcast.';
-$string['js:dialog_ending_text'] = 'Broadcaster has closed the webcast. You will be redirect to Moodle.';
-$string['js:dialog_ending_btn'] = 'Close webcast';
-$string['js:ended'] = 'Broadcaster has closed the webcast.';
-$string['js:chat_commands'] = '<h4>Error: unknown command</h4>
-<p>What are the available chat commands</p>
-<b>Users:</b>
+$string['js:connecting'] = 'Verbinding maken met de chat-server, even geduld.';
+$string['js:warning_message_closing_window'] = 'Weet u zeker dat u de webcast wilt verlaten?';
+$string['js:error_logout_or_lostconnection'] = 'Verbinding verbroken! U kunt het beste nu uw venster vernieuwen.';
+$string['js:dialog_ending_text'] = 'Presentator heeft de webcast beëindigd. Klik op onderstaande knop om terug te keren.';
+$string['js:dialog_ending_btn'] = 'Sluit webcast';
+$string['js:ended'] = 'Presentator heeft de webcast beëindigd.';
+$string['js:chat_commands'] = '<h4>Fout: onbekend commando</h4>
+<p>Onderstaande commandos zijn beschikbaar</p>
+<b>Gebruikers:</b>
 <ul class="command">
-<li>/clear <span class="note">Empty all messages in your overview</span></li>
-</ul>
-<br/>
-<b>Broadcaster:</b>
-<ul class="command">
-<li>/send_question_to_all <span class="note">Send a question to the all users. There answers only available for you.</span></li>
+<li>/clear <span class="note">Wis alle berichten in uw overzicht</span></li>
 </ul>';
-$string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
+$string['js:added_question'] = 'De vraag is uitgezet in de chatruimte. U ontvangt een bericht ontvangen als iemand een antwoord geeft.';
 
 // HEADING Tables
-$string['heading:picture'] = 'Avatar';
-$string['heading:firstname'] = 'Firstname';
-$string['heading:lastname'] = 'Lastname';
-$string['heading:email'] = 'Email';
-$string['heading:present'] = 'Present';
-$string['heading:action'] = 'Action';
-$string['heading:chatlog'] = 'Chatlog: {$a->fullname}';
-$string['heading:chattime'] = 'Report: {$a->fullname}';
-$string['heading:time'] = 'Time';
-$string['heading:message'] = 'Message';
-$string['heading:name'] = 'Name';
-$string['heading:value'] = 'Value';
+$string['heading:picture'] = 'Foto';
+$string['heading:firstname'] = 'Voornaam';
+$string['heading:lastname'] = 'Achternaam';
+$string['heading:email'] = 'E-mail';
+$string['heading:present'] = 'Aanwezig';
+$string['heading:action'] = 'Actie';
+$string['heading:chatlog'] = 'Chat geschiedenis: {$a->fullname}';
+$string['heading:chattime'] = 'Rapportage: {$a->fullname}';
+$string['heading:time'] = 'Tijd';
+$string['heading:message'] = 'Bericht';
+$string['heading:name'] = 'Naam';
+$string['heading:value'] = 'Waarde';
 
 // Email
-$string['mail:reminder_subject'] = 'Webcast reminder: {$a->name}';
-$string['mail:reminder_message'] = 'Dear ##fullname##, <br/><br/>
+$string['mail:reminder_subject'] = 'Webcast herinnering: {$a->name}';
+$string['mail:reminder_message'] = 'Beste ##fullname##, <br/><br/>
 
-Webcast Reminder for:<br/><br/>
+Webcast herinnering:<br/><br/>
 
 <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-        <td style="width: 200px"><b>Activity:</b></td>
+        <td style="width: 200px"><b>Activiteit:</b></td>
         <td>##name##</td>
     </tr>
     <tr>
-        <td><b>Start date:</b></td>
+        <td><b>Startdatum:</b></td>
         <td>##starttime##</td>
     </tr>
     <tr>
-        <td><b>Estimate duration:</b></td>
+        <td><b>Geschatte duur:</b></td>
         <td>##duration## Minutes</td>
     </tr>
     <tr>
         <td><b>Link</b></td>
-        <td><a href="##link##">Enter webcast</a> </td>
+        <td><a href="##link##">Bekijk de webcast</a> </td>
     </tr>
 </table>
 <br/>
-Kind regards,<br/>
+Met vriendelijke groet,<br/>
 
 ##broadcaster_fullname##';

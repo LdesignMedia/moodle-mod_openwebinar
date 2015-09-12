@@ -25,16 +25,62 @@
  **/
 $string['modulename'] = 'MoodleFreak Webcast';
 $string['modulenameplural'] = 'MoodleFreak Webcast';
-$string['modulename_help'] = 'Webcast activity:<br/>
+$string['modulename_help'] = 'Webcast activiteit:<br/>
+<b>Room</b>
 <ul>
-    <li>Live chat</li>
-    <li>Live broadcasting</li>
-    <li>Online status log</li>
-    <li>Users in room list</li>
-    <li>Messages log</li>
-    <li>File sharing</li>
-    <li>HLS support</li>
-    <li>Reminder messages</li>
+	<li>De chat is schaalbaar (responsive)</li>
+	<li>Live en offline modus</li>
+	<li>Herinnering emails</li>
+	<li>Online tijd in de room meten</li>
+	<li>YUI 3 javascript modulen</li>
+	<li>Activiteit completion</li>
+	<li>Niet afgesloten chats worden automatisch gesloten</li>
+</ul>
+<b>Chat</b>
+<ul>
+	<li>Live socket chat</li>
+	<li>Chat geschiedenis word opgeslagen voor later</li>
+	<li>Emoticons zijn te gebruiken in de chat</li>
+	<li>Inladen van chat geschiedenis mogelijk</li>
+	<li>Gebruikers lijst , sorteert op type</li>
+	<li>Gebruikers lijst met browser en OS version</li>
+	<li>Geluid bij een nieuwe bericht</li>
+	<li>Ondersteuning voor de volgende chat commandos:
+	<ul>
+		<li>/clear Wis alle berichten uit het overzicht (lokaal)</li>
+	</ul>
+	</li>
+</ul>
+<b>Uitzender / Presentator</b>
+<ul>
+	<li>Berichten los blokkeren per status: gast, students en leraar</li>
+	<li>Webcast afsluiten na voltooiing</li>
+	<li>Vragen uitzetten naar de andere gebruikers in de chatruimte</li>
+</ul>
+<b>Gebruikers</b>
+<ul>
+	<li>Chatruimte kan aangepast worden via het configuratiescherm</li>
+	<li>Berichten sturen in de chatruimte</li>
+</ul>
+<b>Video</b>
+<ul>
+	<li>Bekijken van live en offline video stream</li>
+	<li>Streamen via RTMP (Real Time Messaging Protocol)</li>
+	<li>Stream in HLS (ondersteunt op de meeste apparaten) </li>
+	<li>Videojs gebruikt als video component</li>
+	<li>Toevoegen van een eerder gemaakte video</li>
+	<li>Video kan in volledig scherm afgespeeld worden</li>
+</ul>
+<b>Bestanden delen</b>
+<ul>
+	<li>Delen van bestanden in een webcast</li>
+	<li>Los overzicht van bestanden die in de chat toegevoegd zijn</li>
+</ul>
+<b>Gebruikers logboek</b>
+<ul>
+	<li>Tijd dat een gebruiker in de webcast is geweest</li>
+	<li>Bekijk wie de webcast heeft bekeken</li>
+	<li>Bekijk de chat geschiedenis van een specifieke gebruiker.</li>
 </ul>';
 
 $string['modulename_link'] = 'mod/webcast/view';
@@ -57,7 +103,6 @@ $string['webcast:teacher'] = 'Webcast teacher';
 
 // ERRORS
 $string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
-$string['error:time_passed'] = 'Error:  Starttime has already been passed!';
 $string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
 $string['error:no_access'] = 'Error: missing capability to do this.';
@@ -67,19 +112,19 @@ $string['error:not_for_guests'] = 'Error: not available for Guests';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';
-$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be override in each webcast activity)';
+$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be overridden in each webcast activity)';
 $string['setting:streaming_server'] = 'Streaming url';
 $string['setting:streaming_server_desc'] = 'The location of your streaming server';
 $string['setting:chat_server'] = 'Chat/socket url';
 $string['setting:chat_server_desc'] = 'The location of your chat server';
 $string['setting:shared_secret'] = 'Shared secret';
 $string['setting:shared_secret_desc'] = 'A unique key that is shared with the chat/streaming server';
-$string['setting:heading_instance_defaults'] = 'Reminder default values (can be override in each webcast activity)';
+$string['setting:heading_instance_defaults'] = 'Reminder default values (can be overridden in each webcast activity)';
 $string['setting:reminder_1'] = 'Reminder 1';
 $string['setting:reminder_1_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
 $string['setting:reminder_2'] = 'Reminder 2';
 $string['setting:reminder_2_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
-$string['setting:reminder_3'] = 'Reminder 1';
+$string['setting:reminder_3'] = 'Reminder 3';
 $string['setting:reminder_3_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
 $string['setting:stream'] = 'Streaming enabled';
 $string['setting:stream_desc'] = 'If disabled the webcast don\'t shows a video player';
@@ -132,7 +177,7 @@ $string['btn:chattime'] = 'Report';
 $string['btn:chatlog'] = 'Chatlog';
 $string['btn:view'] = 'View';
 $string['btn:back'] = 'Back';
-$string['btn:addquestion'] = 'Add new question';
+$string['btn:addquestion'] = 'Add a new question';
 $string['btn:open'] = 'Save';
 
 // Helper strings
@@ -161,6 +206,7 @@ $string['guest'] = 'Guest';
 $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 $string['user_activity'] = 'Webcast user activity';
+$string['starts_at'] = 'Webcast starts in:';
 
 // user options
 $string['opt:header_broadcaster'] = 'Broadcaster';
@@ -200,11 +246,6 @@ $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <b>Users:</b>
 <ul class="command">
 <li>/clear <span class="note">Empty all messages in your overview</span></li>
-</ul>
-<br/>
-<b>Broadcaster:</b>
-<ul class="command">
-<li>/send_question_to_all <span class="note">Send a question to the all users. There answers only available for you.</span></li>
 </ul>';
 $string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
 

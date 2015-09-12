@@ -55,7 +55,6 @@ class mod_webcast_renderer extends plugin_renderer_base {
         $message = html_writer::tag('p', get_string('text:live_webcast', 'webcast', $obj), array('class' => 'webcast-message'));
         $url = new moodle_url('/mod/webcast/view_webcast.php', array('id' => $id));
 
-
         // button
         $output = html_writer::empty_tag('input', array('name' => 'id', 'type' => 'hidden', 'value' => $id));
         $output .= html_writer::tag('div', html_writer::empty_tag('input', array(
@@ -84,12 +83,39 @@ class mod_webcast_renderer extends plugin_renderer_base {
 
     /**
      * Show a page when the broadcast will be starting
+     *
+     * @param $webcast
+     *
+     * @return string
      */
     public function view_page_not_started_webcast($webcast) {
-        $html = __FUNCTION__ . '<br>';
+        global $PAGE;
+        $html = '';
+        $PAGE->requires->js('/mod/webcast/javascript/countdown.js');
 
+        // get cm
+        $cm = get_coursemodule_from_instance('webcast', $webcast->id, $webcast->course, false, MUST_EXIST);
 
-        return $html;
+        // Load js for countdown
+        $opts = array();
+        $opts['timeopen'] = $webcast->timeopen;
+        $opts['cmid'] = $cm->id;
+        $PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
+
+        // add id for the countdown
+        $html .= html_writer::tag('h3', get_string('starts_at' , 'webcast'), array(
+            'class' => 'webcast-center'
+        ));
+
+        $html .= html_writer::tag('h3', '', array(
+            'id' => 'pageTimer',
+            'class' => 'webcast-center'
+        ));
+
+        // show a count down
+        // reload page when it starts
+
+        return $html . '<hr/>';
     }
 
     /**
@@ -225,16 +251,20 @@ class mod_webcast_renderer extends plugin_renderer_base {
                 get_string('ip_address', 'webcast'),
                 $status->ip_address,
             );
-            $table->data[] = array('<b>' . get_string('time', 'webcast') . '</b>' , '');
+            $table->data[] = array('<b>' . get_string('time', 'webcast') . '</b>', '');
 
-            $table->data[] = array(get_string('starttime', 'webcast'), date('d-m-Y H:i:s' , $status->starttime));
-            $table->data[] = array(get_string('online_time', 'webcast'),  ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds));
-            $table->data[] = array(get_string('endtime', 'webcast'), ($status->endtime == 0) ? '-' : date('d-m-Y H:i:s' , $status->endtime));
+            $table->data[] = array(get_string('starttime', 'webcast'), date('d-m-Y H:i:s', $status->starttime));
+            $table->data[] = array(
+                get_string('online_time', 'webcast'),
+                ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds)
+            );
+            $table->data[] = array(
+                get_string('endtime', 'webcast'),
+                ($status->endtime == 0) ? '-' : date('d-m-Y H:i:s', $status->endtime)
+            );
 
             echo html_writer::table($table);
-
             // add time table
-
         }
 
         echo $OUTPUT->box_end();
@@ -292,6 +322,7 @@ class mod_webcast_renderer extends plugin_renderer_base {
         if (strpos($message, '[') === 0) {
             $message = '[shortcode]';
         }
+
         //@todo convert emoticons in chatlog
         return $message;
     }

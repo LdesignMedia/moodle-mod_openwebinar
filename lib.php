@@ -61,6 +61,32 @@ function webcast_supports($feature) {
 }
 
 /**
+ * Given a course_module object, this function returns any
+ * "extra" information that may be needed when printing
+ * this activity in a course listing.
+ * See get_array_of_activities() in course/lib.php
+ *
+ * @global object
+ *
+ * @param object $coursemodule
+ *
+ * @return cached_cm_info|null
+ */
+function webcast_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    if (($webcast = $DB->get_record('webcast', array('id' => $coursemodule->instance))) !== false) {
+        $info = new cached_cm_info();
+        $info->name = $webcast->name . ' - [' . date('d-m-Y H:i', $webcast->timeopen) . ']';
+        $info->content = format_module_intro('webcast', $webcast, $coursemodule->id, false);
+        return $info;
+    } else {
+        return null;
+    }
+}
+
+
+/**
  * Saves a new instance of the webcast into the database
  *
  * Given an object containing all the necessary data,
@@ -190,21 +216,6 @@ function webcast_user_outline($course, $user, $mod, $webcast) {
 }
 
 /**
- * Prints a detailed representation of what a user has done with
- * a given particular instance of this module, for user activity reports.
- *
- * It is supposed to echo directly without returning a value.
- *
- * @param stdClass $course  the current course record
- * @param stdClass $user    the record of the user we are generating report for
- * @param cm_info $mod      course module info
- * @param stdClass $webcast the module instance record
- */
-function webcast_user_complete($course, $user, $mod, $webcast) {
-
-}
-
-/**
  * Given a course and a time, this module should find recent activity
  * that has occurred in webcast activities and print it out.
  *
@@ -216,40 +227,6 @@ function webcast_user_complete($course, $user, $mod, $webcast) {
  */
 function webcast_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;
-}
-
-/**
- * Prepares the recent activity data
- *
- * This callback function is supposed to populate the passed array with
- * custom activity records. These records are then rendered into HTML via
- * {@link webcast_print_recent_mod_activity()}.
- *
- * Returns void, it adds items into $activities and increases $index.
- *
- * @param array $activities sequentially indexed array of objects with added 'cmid' property
- * @param int $index        the index in the $activities to use for the next record
- * @param int $timestart    append activity since this time
- * @param int $courseid     the id of the course we produce the report for
- * @param int $cmid         course module id
- * @param int $userid       check for a particular user's activity only, defaults to 0 (all users)
- * @param int $groupid      check for a particular group's activity only, defaults to 0 (all groups)
- */
-function webcast_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
-
-}
-
-/**
- * Prints single activity item prepared by {@link webcast_get_recent_mod_activity()}
- *
- * @param stdClass $activity  activity record with added 'cmid' property
- * @param int $courseid       the id of the course we produce the report for
- * @param bool $detail        print detailed report
- * @param array $modnames     as returned by {@link get_module_types_names()}
- * @param bool $viewfullnames display users' full names
- */
-function webcast_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
-
 }
 
 /**
