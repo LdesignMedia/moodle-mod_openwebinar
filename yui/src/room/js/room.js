@@ -594,7 +594,6 @@ M.mod_webcast.room = {
         // build room components when the dom is completely loaded
         Y.on('domready', function () {
             this.log('domready');
-
             this.build_room();
 
             Y.one('#webcast-loading').hide();
@@ -1079,7 +1078,7 @@ M.mod_webcast.room = {
      */
     load_chat_history: function () {
         "use strict";
-
+        var that = this;
         Y.io(this.options.ajax_path, {
             method : 'GET',
             data   : {

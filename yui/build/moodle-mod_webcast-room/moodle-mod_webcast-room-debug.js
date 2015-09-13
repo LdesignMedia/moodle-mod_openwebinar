@@ -575,7 +575,7 @@ M.mod_webcast.room = {
      */
     init: function (options) {
         "use strict";
-var that = this;
+        var that = this;
         // Make sure videojs is loaded
         if (!videojs) {
             that.log('wait..');
@@ -596,7 +596,6 @@ var that = this;
         // build room components when the dom is completely loaded
         Y.on('domready', function () {
             this.log('domready');
-
             this.build_room();
 
             Y.one('#webcast-loading').hide();
@@ -1081,7 +1080,7 @@ var that = this;
      */
     load_chat_history: function () {
         "use strict";
-
+        var that = this;
         Y.io(this.options.ajax_path, {
             method : 'GET',
             data   : {
@@ -1185,7 +1184,7 @@ var that = this;
     add_video: function () {
         "use strict";
         this.log('add_video');
-        var source = {},  techOrder = ['html5', 'flash'], that = this;
+        var source = {}, techOrder = ['html5', 'flash'], that = this;
 
         videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
 
@@ -1221,10 +1220,10 @@ var that = this;
 
         // Set player settings
         this.player = videojs('room_stream', {
-            'techOrder' : techOrder,
-            autoplay : true,
-            preload  : 'auto',
-            sources  : [source]
+            'techOrder': techOrder,
+            autoplay   : true,
+            preload    : 'auto',
+            sources    : [source]
         });
 
         // events
@@ -1407,7 +1406,6 @@ var that = this;
 
             this.log(data);
 
-
             // build the chatline and make sure nothing strange happens XSS!
             if (data.messagetype === 'default') {
 
@@ -1556,7 +1554,7 @@ var that = this;
                         newmessage = that.chat_add_shortcode_question(args);
                         break;
                     case 'answer':
-                        that.chat_add_shortcode_answer(args , data);
+                        that.chat_add_shortcode_answer(args, data);
                         break;
                 }
             });
@@ -1626,7 +1624,7 @@ var that = this;
      * @param {object} args
      * @param {object} data
      */
-    chat_add_shortcode_answer: function (args , data) {
+    chat_add_shortcode_answer: function (args, data) {
         "use strict";
         this.log(data);
         try {
@@ -2011,7 +2009,6 @@ var that = this;
             // load the question from the DB
             this.question_load_overview();
         }, this);
-
 
         // back button on question detail
         Y.one('body').delegate('click', function () {
