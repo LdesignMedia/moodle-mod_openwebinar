@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of webcast
+ * Prints a particular instance of openwebinar
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -31,16 +31,16 @@ require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
-$n = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
+$n = optional_param('n', 0, PARAM_INT);  // ... openwebinar instance ID - it should be named as the first character of the module.
 
 if ($id) {
-    $cm = get_coursemodule_from_id('webcast', $id, 0, false, MUST_EXIST);
+    $cm = get_coursemodule_from_id('openwebinar', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $webcast = $DB->get_record('webcast', array('id' => $cm->instance), '*', MUST_EXIST);
+    $openwebinar = $DB->get_record('openwebinar', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($n) {
-    $webcast = $DB->get_record('webcast', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $webcast->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
+    $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
@@ -48,39 +48,39 @@ if ($id) {
 require_login($course, true, $cm);
 
 // Print the page header.
-$PAGE->set_url('/mod/webcast/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($webcast->name));
+$PAGE->set_url('/mod/openwebinar/view.php', array('id' => $cm->id));
+$PAGE->set_title(format_string($openwebinar->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->add_body_class('moodlefreak-webcast');
+$PAGE->add_body_class('moodlefreak-openwebinar');
 
-// Convert webcast data to JS
-$opts = (array)$webcast;
+// Convert openwebinar data to JS
+$opts = (array)$openwebinar;
 unset($opts['intro'], $opts['broadcastkey']);
 
 // Load JS base
-$PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
+$PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
 // Permissions
-$permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
+$permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
 /**
  * Renderer
- * @var mod_webcast_renderer $renderer
+ * @var mod_openwebinar_renderer $renderer
  */
-$renderer = $PAGE->get_renderer('mod_webcast');
+$renderer = $PAGE->get_renderer('mod_openwebinar');
 
 // Get status
-$status = \mod_webcast\helper::get_webcast_status($webcast);
+$status = \mod_openwebinar\helper::get_openwebinar_status($openwebinar);
 
 // Output starts here.
 echo $OUTPUT->header();
 
 // Conditions to show the intro can change to look for own settings or whatever.
-// if ($webcast->intro) {
-// echo $OUTPUT->box(format_module_intro('webcast', $webcast, $cm->id), 'generalbox mod_introbox', 'webcastintro');
+// if ($openwebinar->intro) {
+// echo $OUTPUT->box(format_module_intro('openwebinar', $openwebinar, $cm->id), 'generalbox mod_introbox', 'openwebinarintro');
 //}
 
-echo $OUTPUT->heading(format_string($webcast->name), 1, 'webcast-center');
+echo $OUTPUT->heading(format_string($openwebinar->name), 1, 'openwebinar-center');
 
 /**
  * $completion=new completion_info($course);
@@ -88,29 +88,29 @@ echo $OUTPUT->heading(format_string($webcast->name), 1, 'webcast-center');
  */
 switch ($status) {
 
-    case \mod_webcast\helper::WEBCAST_LIVE:
-        echo $renderer->view_page_live_webcast($id, $webcast);
+    case \mod_openwebinar\helper::WEBCAST_LIVE:
+        echo $renderer->view_page_live_openwebinar($id, $openwebinar);
 
-        if ($webcast->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($webcast);
+        if ($openwebinar->broadcaster == $USER->id) {
+            echo $renderer->view_page_broadcaster_help($openwebinar);
         }
         break;
 
-    case \mod_webcast\helper::WEBCAST_CLOSED:
-    case \mod_webcast\helper::WEBCAST_BROADCASTED:
+    case \mod_openwebinar\helper::WEBCAST_CLOSED:
+    case \mod_openwebinar\helper::WEBCAST_BROADCASTED:
 
         if ($permissions->history) {
-            echo $renderer->view_page_history_webcast($id, $webcast);
+            echo $renderer->view_page_history_openwebinar($id, $openwebinar);
         } else {
-            echo $renderer->view_page_ended_message($webcast);
+            echo $renderer->view_page_ended_message($openwebinar);
         }
         break;
 
     default:
-        echo $renderer->view_page_not_started_webcast($webcast);
+        echo $renderer->view_page_not_started_openwebinar($openwebinar);
 
-        if ($webcast->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($webcast);
+        if ($openwebinar->broadcaster == $USER->id) {
+            echo $renderer->view_page_broadcaster_help($openwebinar);
         }
         break;
 

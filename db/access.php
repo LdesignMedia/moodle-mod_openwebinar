@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the webcast module
+ * Capability definitions for the openwebinar module
  *
  * The capabilities are loaded into the database table when the module is
  * installed or updated. Whenever the capability definitions are updated,
@@ -41,7 +41,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -50,7 +50,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // Modify capabilities as needed and remove this comment.
 $capabilities = array(
-    'mod/webcast:addinstance' => array(
+    'mod/openwebinar:addinstance' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -62,7 +62,7 @@ $capabilities = array(
     ),
 
     // View the module
-    'mod/webcast:view' => array(
+    'mod/openwebinar:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
@@ -75,7 +75,7 @@ $capabilities = array(
     ),
 
     // View the history
-    'mod/webcast:history' => array(
+    'mod/openwebinar:history' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
@@ -87,7 +87,7 @@ $capabilities = array(
     ),
 
     // View user online status
-    'mod/webcast:manager' => array(
+    'mod/openwebinar:manager' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
@@ -96,7 +96,7 @@ $capabilities = array(
     ),
 
     // Has teacher status in the chat
-    'mod/webcast:teacher' => array(
+    'mod/openwebinar:teacher' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(

@@ -22,7 +22,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -32,7 +32,7 @@
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_webcast_install() {
+function xmldb_openwebinar_install() {
 }
 
 /**
@@ -40,5 +40,5 @@ function xmldb_webcast_install() {
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_webcast_install_recovery() {
+function xmldb_openwebinar_install_recovery() {
 }

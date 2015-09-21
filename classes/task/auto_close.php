@@ -19,16 +19,16 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast\task;
+namespace mod_openwebinar\task;
 
 class auto_close extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('task:auto_close', 'webcast');
+        return get_string('task:auto_close', 'openwebinar');
     }
 
     /**
@@ -37,9 +37,9 @@ class auto_close extends \core\task\scheduled_task {
      */
     public function execute() {
 
-        mtrace('webcast: ' . __CLASS__);
+        mtrace('openwebinar: ' . __CLASS__);
 
-        $cron = new \mod_webcast\cron();
+        $cron = new \mod_openwebinar\cron();
         $cron->auto_close();
 
         mtrace(' ');

@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_webcast_activity_task class
+ * Defines backup_openwebinar_activity_task class
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/webcast/backup/moodle2/backup_webcast_stepslib.php');
+require_once($CFG->dirroot . '/mod/openwebinar/backup/moodle2/backup_openwebinar_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the webcast instance
+ * Provides the steps to perform one complete backup of the openwebinar instance
  */
-class backup_webcast_activity_task extends backup_activity_task {
+class backup_openwebinar_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity
@@ -40,10 +40,10 @@ class backup_webcast_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the webcast.xml file
+     * Defines a backup step to store the instance data in the openwebinar.xml file
      */
     protected function define_my_steps() {
-//        $this->add_step(new backup_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
+//        $this->add_step(new backup_openwebinar_activity_structure_step('openwebinar_structure', 'openwebinar.xml'));
     }
 
     /**
@@ -57,13 +57,13 @@ class backup_webcast_activity_task extends backup_activity_task {
 
 //        $base = preg_quote($CFG->wwwroot, '/');
 //
-//        // Link to the list of webcasts.
-//        $search = '/('.$base.'\/mod\/webcast\/index.php\?id\=)([0-9]+)/';
-//        $content = preg_replace($search, '$@webcastINDEX*$2@$', $content);
+//        // Link to the list of openwebinars.
+//        $search = '/('.$base.'\/mod\/openwebinar\/index.php\?id\=)([0-9]+)/';
+//        $content = preg_replace($search, '$@openwebinarINDEX*$2@$', $content);
 //
-//        // Link to webcast view by moduleid.
-//        $search = '/('.$base.'\/mod\/webcast\/view.php\?id\=)([0-9]+)/';
-//        $content = preg_replace($search, '$@webcastVIEWBYID*$2@$', $content);
+//        // Link to openwebinar view by moduleid.
+//        $search = '/('.$base.'\/mod\/openwebinar\/view.php\?id\=)([0-9]+)/';
+//        $content = preg_replace($search, '$@openwebinarVIEWBYID*$2@$', $content);
 
         return $content;
     }

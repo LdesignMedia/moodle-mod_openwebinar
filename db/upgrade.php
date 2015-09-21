@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the webcast module
+ * This file keeps track of upgrades to the openwebinar module
  *
  * Sometimes, changes between versions involve alterations to database
  * structures and other major things that may break installations. The upgrade
@@ -26,7 +26,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -34,12 +34,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Execute webcast upgrade from the given old version
+ * Execute openwebinar upgrade from the given old version
  *
  * @param int $oldversion
  * @return bool
  */
-function xmldb_webcast_upgrade($oldversion) {
+function xmldb_openwebinar_upgrade($oldversion) {
     global $DB;
    // $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
     return true;

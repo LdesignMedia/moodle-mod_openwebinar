@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,14 +61,14 @@ class helper {
      * get permission of a user
      *
      * @param $context
-     * @param \stdClass $webcast
+     * @param \stdClass $openwebinar
      * @param bool $user
      *
      * @return stdClass
      * @throws Exception
      * @throws \coding_exception
      */
-    static public function get_permissions($context, $webcast, $user = false) {
+    static public function get_permissions($context, $openwebinar, $user = false) {
 
         global $USER;
 
@@ -77,8 +77,8 @@ class helper {
             $user = $USER;
         }
 
-        if (empty($webcast)) {
-            throw new Exception(get_string('error:webcast_notfound', 'mod_webcast'));
+        if (empty($openwebinar)) {
+            throw new Exception(get_string('error:openwebinar_notfound', 'mod_openwebinar'));
         }
 
         // build internal caching
@@ -90,16 +90,16 @@ class helper {
         $access = new \stdClass();
 
         // is broadcaster
-        $access->broadcaster = ($user->id == $webcast->broadcaster) ? true : false;
+        $access->broadcaster = ($user->id == $openwebinar->broadcaster) ? true : false;
 
         // is manager
-        $access->manager = has_capability('mod/webcast:manager', $context, $user);
+        $access->manager = has_capability('mod/openwebinar:manager', $context, $user);
 
         // is teacher
-        $access->teacher = has_capability('mod/webcast:teacher', $context, $user);
+        $access->teacher = has_capability('mod/openwebinar:teacher', $context, $user);
 
         // view history
-        $access->history = has_capability('mod/webcast:history', $context, $user);
+        $access->history = has_capability('mod/openwebinar:history', $context, $user);
 
         // reference to scope var
         $obj[$user->id] = $access;
@@ -110,23 +110,23 @@ class helper {
     /**
      * Get the status
      *
-     * @param stdClass $webcast
+     * @param stdClass $openwebinar
      *
      * @return int
      * @throws Exception
      * @throws \coding_exception
      */
-    public static function get_webcast_status($webcast) {
+    public static function get_openwebinar_status($openwebinar) {
 
         // check 
-        if (empty($webcast)) {
-            throw new Exception(get_string('error:webcast_notfound', 'mod_webcast'));
+        if (empty($openwebinar)) {
+            throw new Exception(get_string('error:openwebinar_notfound', 'mod_openwebinar'));
         }
 
         $now = time();
-        if (!empty($webcast->is_ended)) {
+        if (!empty($openwebinar->is_ended)) {
             return self::WEBCAST_BROADCASTED;
-        } elseif ($now >= $webcast->timeopen) {
+        } elseif ($now >= $openwebinar->timeopen) {
             return self::WEBCAST_LIVE;
         }
 
@@ -189,7 +189,7 @@ class helper {
      */
     public static function save_messages($data = false) {
         global $DB;
-        $webcast = $DB->get_record('webcast', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*', MUST_EXIST);
+        $openwebinar = $DB->get_record('openwebinar', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*', MUST_EXIST);
 
         $now = time();
         foreach ($data->messages as $message) {
@@ -201,13 +201,13 @@ class helper {
             $obj->fullname = $message->fullname;
             $obj->messagetype = $message->messagetype;
             $obj->usertype = $message->usertype;
-            $obj->webcast_id = $webcast->id;
-            $obj->course_id = $webcast->course;
+            $obj->openwebinar_id = $openwebinar->id;
+            $obj->course_id = $openwebinar->course;
             $obj->message = $message->message;
             $obj->timestamp = (int)$message->timestamp;
             $obj->addedon = $now;
 
-            $DB->insert_record('webcast_messages', $obj);
+            $DB->insert_record('openwebinar_messages', $obj);
         }
 
         return true;
@@ -216,11 +216,11 @@ class helper {
     /**
      * set_user_online_status in the room
      *
-     * @param int $webcastid
+     * @param int $openwebinarid
      *
      * @return int the seconds active
      */
-    public static function set_user_online_status($webcastid = 0) {
+    public static function set_user_online_status($openwebinarid = 0) {
         global $DB, $USER;
 
         //  Guest no status will be saved for unregistered users
@@ -231,11 +231,11 @@ class helper {
         $object = new \stdClass();
 
         // check if record already exists
-        $row = $DB->get_record('webcast_userstatus', array('webcast_id' => $webcastid, 'userid' => $USER->id));
+        $row = $DB->get_record('openwebinar_userstatus', array('openwebinar_id' => $openwebinarid, 'userid' => $USER->id));
 
         if (!$row) {
             // set extra data
-            $object->webcast_id = $webcastid;
+            $object->openwebinar_id = $openwebinarid;
             $object->userid = $USER->id;
             $object->starttime = time();
             $object->timer_seconds = 0;
@@ -243,7 +243,7 @@ class helper {
             $object->useragent = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT', FILTER_SANITIZE_STRING);
             $object->ip_address = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP);
 
-            $DB->insert_record('webcast_userstatus', $object);
+            $DB->insert_record('openwebinar_userstatus', $object);
 
             return 0;
         }
@@ -252,7 +252,7 @@ class helper {
 
         $object->id = $row->id;
         $object->timer_seconds = $newtime;
-        $DB->update_record('webcast_userstatus', $object);
+        $DB->update_record('openwebinar_userstatus', $object);
 
         return $newtime;
     }
@@ -281,28 +281,28 @@ class helper {
      * get_module_data
      *
      * @param int $courseid
-     * @param int $webcastid
+     * @param int $openwebinarid
      *
-     * @return array array($course , $webcast , $cm , $context)
+     * @return array array($course , $openwebinar , $cm , $context)
      * @throws \coding_exception
      */
-    static public function get_module_data($courseid = 0, $webcastid = 0) {
+    static public function get_module_data($courseid = 0, $openwebinarid = 0) {
         global $DB;
 
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
         require_course_login($course);
 
-        // get the webcast
-        $webcast = $DB->get_record('webcast', array('id' => $webcastid), '*', MUST_EXIST);
+        // get the openwebinar
+        $openwebinar = $DB->get_record('openwebinar', array('id' => $openwebinarid), '*', MUST_EXIST);
 
         // get course module
-        $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 
         // get context
         $context = \context_module::instance($cm->id);
 
 
-        return array($course, $webcast, $cm, $context);
+        return array($course, $openwebinar, $cm, $context);
     }
 
     /**
@@ -336,15 +336,15 @@ class helper {
     }
 
     /**
-     * get_webcast_by_broadcastkey
+     * get_openwebinar_by_broadcastkey
      *
      * @param string $broadcastkey
      *
      * @return mixed
      */
-    static public function get_webcast_by_broadcastkey($broadcastkey = ''){
+    static public function get_openwebinar_by_broadcastkey($broadcastkey = ''){
         global $DB;
-        return $DB->get_record('webcast' , array('broadcastkey' => str_replace('_public', '',$broadcastkey)) ,'*' , MUST_EXIST);
+        return $DB->get_record('openwebinar' , array('broadcastkey' => str_replace('_public', '',$broadcastkey)) ,'*' , MUST_EXIST);
     }
 
     /**

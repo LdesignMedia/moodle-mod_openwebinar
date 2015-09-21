@@ -1,7 +1,7 @@
 {
-  "name": "moodle-mod_webcast-room",
+  "name": "moodle-mod_openwebinar-room",
   "builds": {
-    "moodle-mod_webcast-room": {
+    "moodle-mod_openwebinar-room": {
       "jsfiles": [
         "room.js"
       ]

@@ -19,18 +19,18 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 defined('MOODLE_INTERNAL') || die();
-require_once $CFG->dirroot . '/mod/webcast/lib/uaparser/vendor/autoload.php';
+require_once $CFG->dirroot . '/mod/openwebinar/lib/uaparser/vendor/autoload.php';
 use UAParser\Parser;
 
 /**
- * The renderer for the webcast module.
+ * The renderer for the openwebinar module.
  */
-class mod_webcast_renderer extends plugin_renderer_base {
+class mod_openwebinar_renderer extends plugin_renderer_base {
 
     /**
      * Number of rows will be shown foreach page
@@ -47,19 +47,19 @@ class mod_webcast_renderer extends plugin_renderer_base {
      * @return string
      * @throws coding_exception
      */
-    public function view_page_live_webcast($id = 0, $webcast) {
+    public function view_page_live_openwebinar($id = 0, $openwebinar) {
 
         $obj = new stdClass();
-        $obj->timeopen = date(get_string('dateformat', 'webcast'), $webcast->timeopen);
+        $obj->timeopen = date(get_string('dateformat', 'openwebinar'), $openwebinar->timeopen);
 
-        $message = html_writer::tag('p', get_string('text:live_webcast', 'webcast', $obj), array('class' => 'webcast-message'));
-        $url = new moodle_url('/mod/webcast/view_webcast.php', array('id' => $id));
+        $message = html_writer::tag('p', get_string('text:live_openwebinar', 'openwebinar', $obj), array('class' => 'openwebinar-message'));
+        $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
 
         // button
         $output = html_writer::empty_tag('input', array('name' => 'id', 'type' => 'hidden', 'value' => $id));
         $output .= html_writer::tag('div', html_writer::empty_tag('input', array(
             'type' => 'submit',
-            'value' => get_string('btn:enter_live_webcast', 'webcast'),
+            'value' => get_string('btn:enter_live_openwebinar', 'openwebinar'),
             'id' => 'id_submitbutton',
         )), array('class' => 'buttons'));
 
@@ -67,49 +67,49 @@ class mod_webcast_renderer extends plugin_renderer_base {
         return $this->output->container($message . html_writer::tag('form', $output, array(
                 'action' => $url->out(),
                 'method' => 'get'
-            )) . '<hr/>', 'generalbox attwidth webcast-center');
+            )) . '<hr/>', 'generalbox attwidth openwebinar-center');
     }
 
     /**
      * Show help info for broadcaster
      *
-     * @param $webcast
+     * @param $openwebinar
      *
      * @return string
      */
-    public function view_page_broadcaster_help($webcast) {
-        return $this->output->container(html_writer::tag('p', get_string('text:broadcaster_help', 'webcast', $webcast), array('class' => 'webcast-message')), 'generalbox attwidth webcast-center');
+    public function view_page_broadcaster_help($openwebinar) {
+        return $this->output->container(html_writer::tag('p', get_string('text:broadcaster_help', 'openwebinar', $openwebinar), array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
     }
 
     /**
      * Show a page when the broadcast will be starting
      *
-     * @param $webcast
+     * @param $openwebinar
      *
      * @return string
      */
-    public function view_page_not_started_webcast($webcast) {
+    public function view_page_not_started_openwebinar($openwebinar) {
         global $PAGE;
         $html = '';
-        $PAGE->requires->js('/mod/webcast/javascript/countdown.js');
+        $PAGE->requires->js('/mod/openwebinar/javascript/countdown.js');
 
         // get cm
-        $cm = get_coursemodule_from_instance('webcast', $webcast->id, $webcast->course, false, MUST_EXIST);
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
 
         // Load js for countdown
         $opts = array();
-        $opts['timeopen'] = $webcast->timeopen;
+        $opts['timeopen'] = $openwebinar->timeopen;
         $opts['cmid'] = $cm->id;
-        $PAGE->requires->yui_module('moodle-mod_webcast-base', 'M.mod_webcast.base.init', array($opts));
+        $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
         // add id for the countdown
-        $html .= html_writer::tag('h3', get_string('starts_at' , 'webcast'), array(
-            'class' => 'webcast-center'
+        $html .= html_writer::tag('h3', get_string('starts_at' , 'openwebinar'), array(
+            'class' => 'openwebinar-center'
         ));
 
         $html .= html_writer::tag('h3', '', array(
             'id' => 'pageTimer',
-            'class' => 'webcast-center'
+            'class' => 'openwebinar-center'
         ));
 
         // show a count down
@@ -122,25 +122,25 @@ class mod_webcast_renderer extends plugin_renderer_base {
      * User has access to the history
      *
      * @param int $id
-     * @param $webcast
+     * @param $openwebinar
      *
      * @return string
      * @throws coding_exception
      */
-    public function view_page_history_webcast($id = 0, $webcast) {
+    public function view_page_history_openwebinar($id = 0, $openwebinar) {
 
         $obj = new stdClass();
-        $obj->timeopen = date(get_string('dateformat', 'webcast'), $webcast->timeopen);
-        $content = html_writer::tag('p', get_string('text:history', 'webcast', $obj), array('class' => 'webcast-message'));
+        $obj->timeopen = date(get_string('dateformat', 'openwebinar'), $openwebinar->timeopen);
+        $content = html_writer::tag('p', get_string('text:history', 'openwebinar', $obj), array('class' => 'openwebinar-message'));
 
         // add link to the room
-        $url = new moodle_url('/mod/webcast/view_webcast.php', array('id' => $id));
+        $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
 
         // extra data
         $output = html_writer::empty_tag('input', array('name' => 'id', 'type' => 'hidden', 'value' => $id));
         $output .= html_writer::tag('div', html_writer::empty_tag('input', array(
             'type' => 'submit',
-            'value' => get_string('btn:enter_offline_webcast', 'webcast'),
+            'value' => get_string('btn:enter_offline_openwebinar', 'openwebinar'),
             'id' => 'id_submitbutton',
         )));
         ///
@@ -150,36 +150,36 @@ class mod_webcast_renderer extends plugin_renderer_base {
             'method' => 'get'
         ));
 
-        return $this->output->container($content, 'generalbox attwidth webcast-center');
+        return $this->output->container($content, 'generalbox attwidth openwebinar-center');
     }
 
     /**
      * Webcast has ended and user doesn't have access to history
      *
-     * @param $webcast
+     * @param $openwebinar
      *
      * @return string
      */
-    public function view_page_ended_message($webcast) {
+    public function view_page_ended_message($openwebinar) {
         $html = '';
 
         return $html;
     }
 
     /**
-     * get overview of all user activities in given webcast
+     * get overview of all user activities in given openwebinar
      *
-     * @param $webcast
+     * @param $openwebinar
      *
      * @return string
      */
-    public function view_user_activity_all($webcast) {
+    public function view_user_activity_all($openwebinar) {
         global $OUTPUT, $PAGE, $CFG, $DB;
 
         require_once($CFG->libdir . '/tablelib.php');
 
-        $table = new \mod_webcast\table\useractivity('outstation-list-table', $webcast);
-        echo $OUTPUT->heading(get_string('text:useractivity', 'webcast'));
+        $table = new \mod_openwebinar\table\useractivity('outstation-list-table', $openwebinar);
+        echo $OUTPUT->heading(get_string('text:useractivity', 'openwebinar'));
 
         echo '<hr/>';
 
@@ -196,12 +196,12 @@ class mod_webcast_renderer extends plugin_renderer_base {
         ));
 
         $table->define_headers(array(
-            get_string('heading:picture', 'webcast'),
-            get_string('heading:firstname', 'webcast'),
-            get_string('heading:lastname', 'webcast'),
-            get_string('heading:email', 'webcast'),
-            get_string('heading:present', 'webcast'),
-            get_string('heading:action', 'webcast'),
+            get_string('heading:picture', 'openwebinar'),
+            get_string('heading:firstname', 'openwebinar'),
+            get_string('heading:lastname', 'openwebinar'),
+            get_string('heading:email', 'openwebinar'),
+            get_string('heading:present', 'openwebinar'),
+            get_string('heading:action', 'openwebinar'),
         ));
 
         $table->no_sorting('action');
@@ -214,23 +214,23 @@ class mod_webcast_renderer extends plugin_renderer_base {
     /**
      * Load online time of the user
      *
-     * @param object|false $webcast
+     * @param object|false $openwebinar
      * @param int $userid
      */
-    public function view_user_chattime($webcast = false, $userid = 0) {
+    public function view_user_chattime($openwebinar = false, $userid = 0) {
         global $OUTPUT, $DB, $PAGE, $CFG;
-        $backurl = new \moodle_url('/mod/webcast/user_activity.php', $PAGE->url->params());
-        $btn = new single_button($backurl, get_string('btn:back', 'webcast'));
-        $btn->class = 'webcast_back';
+        $backurl = new \moodle_url('/mod/openwebinar/user_activity.php', $PAGE->url->params());
+        $btn = new single_button($backurl, get_string('btn:back', 'openwebinar'));
+        $btn->class = 'openwebinar_back';
         echo $this->render($btn);
         echo '<hr>';
         $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
         $user->fullname = fullname($user);
-        echo $OUTPUT->heading(get_string('heading:chattime', 'webcast', $user));
+        echo $OUTPUT->heading(get_string('heading:chattime', 'openwebinar', $user));
 
         echo $OUTPUT->box_start('generalbox');
 
-        $status = $DB->get_record('webcast_userstatus', array('webcast_id' => $webcast->id, 'userid' => $user->id));
+        $status = $DB->get_record('openwebinar_userstatus', array('openwebinar_id' => $openwebinar->id, 'userid' => $user->id));
 
         if ($status) {
             // user info
@@ -241,25 +241,25 @@ class mod_webcast_renderer extends plugin_renderer_base {
 
             $table = new html_table();
             $table->size = array('120px', '');
-            $table->head = array(get_string('heading:name', 'webcast'), get_string('heading:value', 'webcast'));
+            $table->head = array(get_string('heading:name', 'openwebinar'), get_string('heading:value', 'openwebinar'));
             $table->data = array();
             $table->data[] = array(
-                get_string('browser', 'webcast'),
+                get_string('browser', 'openwebinar'),
                 $browser->toString(),
             );
             $table->data[] = array(
-                get_string('ip_address', 'webcast'),
+                get_string('ip_address', 'openwebinar'),
                 $status->ip_address,
             );
-            $table->data[] = array('<b>' . get_string('time', 'webcast') . '</b>', '');
+            $table->data[] = array('<b>' . get_string('time', 'openwebinar') . '</b>', '');
 
-            $table->data[] = array(get_string('starttime', 'webcast'), date('d-m-Y H:i:s', $status->starttime));
+            $table->data[] = array(get_string('starttime', 'openwebinar'), date('d-m-Y H:i:s', $status->starttime));
             $table->data[] = array(
-                get_string('online_time', 'webcast'),
+                get_string('online_time', 'openwebinar'),
                 ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds)
             );
             $table->data[] = array(
-                get_string('endtime', 'webcast'),
+                get_string('endtime', 'openwebinar'),
                 ($status->endtime == 0) ? '-' : date('d-m-Y H:i:s', $status->endtime)
             );
 
@@ -273,30 +273,30 @@ class mod_webcast_renderer extends plugin_renderer_base {
     /**
      * Load chat log of a user
      *
-     * @param object|false $webcast
+     * @param object|false $openwebinar
      * @param int $userid
      */
-    public function view_user_chatlog($webcast = false, $userid = 0) {
+    public function view_user_chatlog($openwebinar = false, $userid = 0) {
         global $OUTPUT, $DB, $PAGE;
-        $backurl = new \moodle_url('/mod/webcast/user_activity.php', $PAGE->url->params());
-        $btn = new single_button($backurl, get_string('btn:back', 'webcast'));
-        $btn->class = 'webcast_back';
+        $backurl = new \moodle_url('/mod/openwebinar/user_activity.php', $PAGE->url->params());
+        $btn = new single_button($backurl, get_string('btn:back', 'openwebinar'));
+        $btn->class = 'openwebinar_back';
         echo $this->render($btn);
         echo '<hr>';
         $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
         $user->fullname = fullname($user);
-        echo $OUTPUT->heading(get_string('heading:chatlog', 'webcast', $user));
+        echo $OUTPUT->heading(get_string('heading:chatlog', 'openwebinar', $user));
 
         echo $OUTPUT->box_start('generalbox');
 
         $table = new html_table();
         $table->size = array('120px', '');
-        $table->head = array(get_string('heading:time', 'webcast'), get_string('heading:message', 'webcast'));
+        $table->head = array(get_string('heading:time', 'openwebinar'), get_string('heading:message', 'openwebinar'));
         $table->data = array();
 
-        $qr = $DB->get_recordset('webcast_messages', array(
+        $qr = $DB->get_recordset('openwebinar_messages', array(
             'userid' => $userid,
-            'webcast_id' => $webcast->id
+            'openwebinar_id' => $openwebinar->id
         ), 'id ASC');
 
         foreach ($qr as $record) {

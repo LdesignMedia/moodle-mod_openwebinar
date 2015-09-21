@@ -1,7 +1,7 @@
 {
-  "name": "moodle-mod_webcast-base",
+  "name": "moodle-mod_openwebinar-base",
   "builds": {
-    "moodle-mod_webcast-base": {
+    "moodle-mod_openwebinar-base": {
       "jsfiles": [
         "base.js"
       ]

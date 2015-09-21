@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast\table;
+namespace mod_openwebinar\table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,30 +39,30 @@ class useractivity extends \table_sql {
      *
      * @var bool|object
      */
-    public $webcast = false;
+    public $openwebinar = false;
 
     /**
      * Build the table and sql parts
      *
      * @param string $uniqueid
-     * @param $webcast
+     * @param $openwebinar
      *
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    function __construct($uniqueid, $webcast) {
+    function __construct($uniqueid, $openwebinar) {
 
         global $DB;
         parent::__construct($uniqueid);
 
-        // Set the webcast
-        $this->webcast = $webcast;
+        // Set the openwebinar
+        $this->openwebinar = $openwebinar;
 
         // Get instance active in the course
-        list($this->instancessql, $params) = $DB->get_in_or_equal(array_keys(enrol_get_instances($webcast->course, false)), SQL_PARAMS_NAMED);
+        list($this->instancessql, $params) = $DB->get_in_or_equal(array_keys(enrol_get_instances($openwebinar->course, false)), SQL_PARAMS_NAMED);
 
         // Get extra fields
-        $extrafields = get_extra_user_fields(\context_course::instance($webcast->course));
+        $extrafields = get_extra_user_fields(\context_course::instance($openwebinar->course));
         $extrafields[] = 'lastaccess';
         $dbfields = \user_picture::fields('u', $extrafields);
 
@@ -73,7 +73,7 @@ class useractivity extends \table_sql {
             'active' => ENROL_USER_ACTIVE,
             'now1' => $now,
             'now2' => $now,
-            'webcastid' => $webcast->id
+            'openwebinarid' => $openwebinar->id
         );
 
         $this->sql = new \stdClass();
@@ -81,7 +81,7 @@ class useractivity extends \table_sql {
         $this->sql->from = '{user} u
                       JOIN {user_enrolments} ue ON (ue.userid = u.id  AND ue.enrolid ' . $this->instancessql . ')
                       JOIN {enrol} e ON (e.id = ue.enrolid)
-                 LEFT JOIN {webcast_userstatus} status ON (status.userid = u.id  AND status.webcast_id = :webcastid)
+                 LEFT JOIN {openwebinar_userstatus} status ON (status.userid = u.id  AND status.openwebinar_id = :openwebinarid)
                  LEFT JOIN {groups_members} gm ON u.id = gm.userid';
 
         $this->sql->where = 'ue.status = :active AND e.status = :enabled AND ue.timestart < :now1
@@ -109,21 +109,21 @@ class useractivity extends \table_sql {
             return '';
         }
 
-        $chattime = new \moodle_url('/mod/webcast/user_activity.php', array(
+        $chattime = new \moodle_url('/mod/openwebinar/user_activity.php', array(
             'user_id' => $row->id,
             'id' => $PAGE->cm->id,
             'action' => 'user_chattime',
         ));
 
-        $chatlog = new \moodle_url('/mod/webcast/user_activity.php', array(
+        $chatlog = new \moodle_url('/mod/openwebinar/user_activity.php', array(
             'user_id' => $row->id,
             'id' => $PAGE->cm->id,
             'action' => 'user_chatlog',
         ));
 
-        return \html_writer::link($chattime, get_string('btn:chattime', 'webcast'), array(
+        return \html_writer::link($chattime, get_string('btn:chattime', 'openwebinar'), array(
             'class' => 'btn',
-        )) . ' ' . \html_writer::link($chatlog, get_string('btn:chatlog', 'webcast'), array(
+        )) . ' ' . \html_writer::link($chatlog, get_string('btn:chatlog', 'openwebinar'), array(
             'class' => 'btn',
         ));
     }
@@ -149,6 +149,6 @@ class useractivity extends \table_sql {
      * @return string
      */
     protected function col_present($row) {
-        return (!empty($row->starttime)) ? get_string('yes', 'webcast') : get_string('no', 'webcast');
+        return (!empty($row->starttime)) ? get_string('yes', 'openwebinar') : get_string('no', 'openwebinar');
     }
 }

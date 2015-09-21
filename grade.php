@@ -19,7 +19,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -27,4 +27,4 @@ require_once("../../config.php");
 // Course module ID.
 $id = required_param('id', PARAM_INT);
 //
-redirect('/mod/webcast/view.php?id=' . $id);
+redirect('/mod/openwebinar/view.php?id=' . $id);

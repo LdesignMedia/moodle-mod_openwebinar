@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_webcast instance list viewed event class
+ * The mod_openwebinar instance list viewed event class
  *
  * If the view mode needs to be stored as well, you may need to
  * override methods get_url() and get_legacy_log_data(), too.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 
-namespace mod_webcast\event;
+namespace mod_openwebinar\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class webcast_ping extends \core\event\base {
+class openwebinar_ping extends \core\event\base {
 
     /**
      * Initialize the event
@@ -39,11 +39,11 @@ class webcast_ping extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'webcast';
+        $this->data['objecttable'] = 'openwebinar';
     }
 
     public static function get_name() {
-        return 'webcast_ping';
+        return 'openwebinar_ping';
     }
 
     /**
@@ -61,7 +61,7 @@ class webcast_ping extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/webcast/view_webcast.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $this->contextinstanceid));
     }
 
 

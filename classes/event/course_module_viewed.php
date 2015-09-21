@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_webcast instance list viewed event class
+ * The mod_openwebinar instance list viewed event class
  *
  * If the view mode needs to be stored as well, you may need to
  * override methods get_url() and get_legacy_log_data(), too.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 
-namespace mod_webcast\event;
+namespace mod_openwebinar\event;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -37,7 +37,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * Initialize the event
      */
     protected function init() {
-        $this->data['objecttable'] = 'webcast';
+        $this->data['objecttable'] = 'openwebinar';
         parent::init();
     }
 }

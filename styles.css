@@ -1,4 +1,4 @@
-.webcast-center {
+.openwebinar-center {
     margin: 0 auto;
     text-align: center;
 }
@@ -12,44 +12,44 @@
 }
 
 /* ROOM STYLING THIS STANDALONE */
-#webcast-loading {
+#openwebinar-loading {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: #fff url([[pix:mod_webcast|loader]]) no-repeat scroll center center;
+    background: #fff url([[pix:mod_openwebinar|loader]]) no-repeat scroll center center;
     left: 0;
     top: 0;
     z-index: 99999;
 }
 
-#page-mod-webcast-view_webcast {
+#page-mod-openwebinar-view_openwebinar {
     background: #fff;
     padding: 0;
     margin: 0;
     font-size: 13px;
 }
 
-#page-mod-webcast-view_webcast #page {
+#page-mod-openwebinar-view_openwebinar #page {
     padding: 0;
     margin: 0;
 }
 
-#page-mod-webcast-view_webcast #webcast-stream-holder {
+#page-mod-openwebinar-view_openwebinar #openwebinar-stream-holder {
     margin: 70px 0 0 0;
     padding: 0 20px;
 }
 
-#page-mod-webcast-view_webcast header {
+#page-mod-openwebinar-view_openwebinar header {
     margin: 0 20px 10px 20px;
     padding: 5px 20px;
     background: #F5F5F5;
 }
 
-#page-mod-webcast-view_webcast header {
+#page-mod-openwebinar-view_openwebinar header {
     font-size: 16px;
 }
 
-#webcast-left-menu {
+#openwebinar-left-menu {
     top: 50px;
     bottom: 0;
     left: -200px;
@@ -61,28 +61,28 @@
     position: fixed;
 }
 
-#webcast-left-menu ul {
+#openwebinar-left-menu ul {
     margin: 0;
     padding: 0;
 }
 
-#webcast-left-menu li {
+#openwebinar-left-menu li {
     margin: 0;
     padding: 0;
 }
 
-#webcast-left-menu ul ul li {
+#openwebinar-left-menu ul ul li {
     padding: 10px;
     border-bottom: 1px dashed #CCCCCC;
     display: table;
     width: 180px;
 }
 
-#webcast-left-menu ul ul li:last-child {
+#openwebinar-left-menu ul ul li:last-child {
     border-bottom: none;
 }
 
-.webcast-button {
+.openwebinar-button {
     cursor: pointer;
     border-radius: 3px;
     display: block;
@@ -94,17 +94,17 @@
     color: #fff !important;
 }
 
-.webcast-button.red {
+.openwebinar-button.red {
     background: #b94a48;
     color: #fff;
 }
 
-.webcast-button.gray {
+.openwebinar-button.gray {
     background: rgba(57, 57, 57, 1);
     color: #fff;
 }
 
-#webcast-left-menu li.header {
+#openwebinar-left-menu li.header {
     border-bottom: 1px solid #CCCCCC;
     height: 35px;
     padding: 0 0 0 10px;
@@ -115,16 +115,16 @@
     background: #F5F5F5;
 }
 
-#webcast-left {
+#openwebinar-left {
     margin-right: 400px;
 }
 
-#webcast-holder {
+#openwebinar-holder {
     overflow: hidden;
     min-height: 100%;
 }
 
-#webcast-right {
+#openwebinar-right {
     background: #fff;
     width: 400px;
     position: fixed;
@@ -136,7 +136,7 @@
     border-left: 1px solid #CCCCCC;
 }
 
-#page-mod-webcast-view_webcast .webcast-header {
+#page-mod-openwebinar-view_openwebinar .openwebinar-header {
     height: 35px;
     background: #F5F5F5;
     line-height: 35px;
@@ -145,7 +145,7 @@
     border-bottom: 1px solid #CCCCCC;
 }
 
-#page-mod-webcast-view_webcast .webcast-header h2 {
+#page-mod-openwebinar-view_openwebinar .openwebinar-header h2 {
     margin: 0;
     padding: 0 10px;
     font-size: 14px;
@@ -153,7 +153,7 @@
     line-height: 35px;
 }
 
-#webcast-left-menu h3 {
+#openwebinar-left-menu h3 {
     line-height: 14px;
     font-size: 14px;
     padding: 0;
@@ -161,25 +161,25 @@
     font-weight: bold;
 }
 
-#webcast-left-menu .text {
+#openwebinar-left-menu .text {
     line-height: 18px;
 }
 
-#webcast-userlist-holder ul {
+#openwebinar-userlist-holder ul {
     margin: 0;
     padding: 0;
     list-style: none;
     width: 380px;
 }
 
-#webcast-fileoverview ul {
+#openwebinar-fileoverview ul {
     margin: 0;
     padding: 0;
     list-style: none;
     width: 380px;
 }
 
-#webcast-fileoverview ul li {
+#openwebinar-fileoverview ul li {
     width: 100%;
     margin: 10px 0 0 0;
     padding: 5px 0;
@@ -187,35 +187,35 @@
     display: block;
 }
 
-#webcast-userlist-holder ul li {
+#openwebinar-userlist-holder ul li {
     padding: 5px 10px;
     border-bottom: 1px dashed #CCCCCC;
 }
 
-#webcast-userlist-holder ul li img {
+#openwebinar-userlist-holder ul li img {
     width: 40px;
     height: 40px;
     margin-right: 10px;
 }
 
-#webcast-userlist-holder ul li.webcast-broadcaster span.fullname {
+#openwebinar-userlist-holder ul li.openwebinar-broadcaster span.fullname {
     font-weight: bold;
     color: #000;
 }
 
-#webcast-userlist-holder ul li.webcast-teacher span.fullname {
+#openwebinar-userlist-holder ul li.openwebinar-teacher span.fullname {
     color: #4A4B4C;
 }
 
-#webcast-userlist-holder ul li.webcast-student span.fullname {
+#openwebinar-userlist-holder ul li.openwebinar-student span.fullname {
     color: #6C6E70;
 }
 
-#webcast-userlist-holder ul li.webcast-guest span.fullname {
+#openwebinar-userlist-holder ul li.openwebinar-guest span.fullname {
     color: #B2B5B7;
 }
 
-#webcast-userlist-holder span.browser {
+#openwebinar-userlist-holder span.browser {
     float: right;
     font-size: 10px;
     display: block;
@@ -224,36 +224,36 @@
     text-align: right;
 }
 
-#webcast-userlist-holder ul li:last-child {
+#openwebinar-userlist-holder ul li:last-child {
     border-bottom: none;
 }
 
-.webcast-hidden {
+.openwebinar-hidden {
     display: none;
 }
 
-#webcast-loadhistory {
+#openwebinar-loadhistory {
     position: absolute;
     right: 0;
     margin: 4px 5px 0 5px;
     float: right;
 }
 
-#webcast-chatlist ul {
+#openwebinar-chatlist ul {
     list-style: none;
     margin: 0;
     padding: 0;
     width: 380px;
 }
 
-#webcast-chatlist ul li {
+#openwebinar-chatlist ul li {
     width: 100%;
     margin: 10px 0 0 0;
     padding: 0;
     overflow: hidden;
 }
 
-#webcast-chatlist .message-container {
+#openwebinar-chatlist .message-container {
     float: right;
     clear: both;
     width: 353px;
@@ -263,18 +263,18 @@
     border: 1px solid #EFF0F4;
 }
 
-#webcast-chatlist .webcast-socketserver .message-container, #webcast-chatlist .webcast-local .message-container {
+#openwebinar-chatlist .openwebinar-socketserver .message-container, #openwebinar-chatlist .openwebinar-local .message-container {
     background: #F1F1F1;
 }
 
-#page-mod-webcast-view_webcast .webcast-username {
+#page-mod-openwebinar-view_openwebinar .openwebinar-username {
     color: #5484BC;
     margin: 0 40px 0 0;
     float: left;
     font-weight: bold;
 }
 
-#page-mod-webcast-view_webcast .webcast-timestamp {
+#page-mod-openwebinar-view_openwebinar .openwebinar-timestamp {
     color: #5484BC;
     float: right;
     font-size: 10px;
@@ -282,7 +282,7 @@
     line-height: 10px;
 }
 
-#webcast-chatlist .webcast-message {
+#openwebinar-chatlist .openwebinar-message {
     word-wrap: break-word;
     display: block;
     width: 100%;
@@ -291,50 +291,50 @@
     margin: 5px 0;
 }
 
-.webcast-file img {
+.openwebinar-file img {
     width: 80px;
     margin-left: 5px;
 }
 
-.webcast-file .webcast-filename {
+.openwebinar-file .openwebinar-filename {
     position: absolute;
     font-weight: bold;
 }
 
-.webcast-file .webcast-filesize {
+.openwebinar-file .openwebinar-filesize {
     position: absolute;
     margin-top: 30px;
 }
 
-.webcast-file .webcast-fileauthor {
+.openwebinar-file .openwebinar-fileauthor {
     position: absolute;
     margin-top: 15px;
 }
 
-.webcast-file .webcast-download {
+.openwebinar-file .openwebinar-download {
     position: absolute;
     margin-top: -30px;
     position: absolute;
     right: 10px;
 }
 
-.webcast-question .text {
+.openwebinar-question .text {
     font-weight: bold;
     display: block;
     padding-bottom: 5px;
 }
 
-#webcast-chatlist ul li .webcast-avatar {
+#openwebinar-chatlist ul li .openwebinar-avatar {
     float: left;
     margin-right: 5px;
 }
 
-#webcast-chatlist ul li .webcast-avatar img {
+#openwebinar-chatlist ul li .openwebinar-avatar img {
     width: 20px;
     height: 20px;
 }
 
-#webcast-chatinput {
+#openwebinar-chatinput {
     border-top: 1px solid #CCCCCC;
     height: 60px;
     background: #F5F5F5;
@@ -344,7 +344,7 @@
     width: 400px;
 }
 
-#webcast-message {
+#openwebinar-message {
     border: none;
     background: #fff;
     margin: 0 10px;
@@ -359,7 +359,7 @@
     border: 1px solid #CCCCCC;
 }
 
-#webcast-send {
+#openwebinar-send {
     border-radius: 3px;
     display: block;
     cursor: pointer;
@@ -373,7 +373,7 @@
     float: right;
 }
 
-#webcast-topbar {
+#openwebinar-topbar {
     background: #4D68A1;
     height: 50px;
     width: 100%;
@@ -381,7 +381,7 @@
     top: 0;
 }
 
-#webcast-topbar-right {
+#openwebinar-topbar-right {
     float: right;
     color: #fff;
     width: 239px;
@@ -389,7 +389,7 @@
     cursor: pointer;
 }
 
-#webcast-topbar-right img {
+#openwebinar-topbar-right img {
     width: 50px;
     height: 50px;
     margin-top: 0;
@@ -398,21 +398,21 @@
     border-left: 1px solid #23355B;
 }
 
-#webcast-topbar-right .fullname {
+#openwebinar-topbar-right .fullname {
     position: absolute;
     right: 65px;
     margin-top: 6px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-#webcast-topbar-right .usertype {
+#openwebinar-topbar-right .usertype {
     position: absolute;
     right: 65px;
     margin-top: 20px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-#webcast-topbar-left {
+#openwebinar-topbar-left {
     position: absolute;
     color: #fff;
     height: 50px;
@@ -423,7 +423,7 @@
     border-right: 1px solid #23355B;
 }
 
-#webcast-topbar-left .arrow {
+#openwebinar-topbar-left .arrow {
     border-left: 1px solid #23355B;
     margin-right: 10px;
     font-size: 14px;
@@ -437,12 +437,12 @@
     cursor: pointer;
 }
 
-#webcast-toolbar {
+#openwebinar-toolbar {
     position: absolute;
     margin: 37px 0 0 10px;
 }
 
-#webcast-addquestion-btn, #webcast-viewquestion-btn, #webcast-filemanager-btn, #webcast-fileoverview-btn {
+#openwebinar-addquestion-btn, #openwebinar-viewquestion-btn, #openwebinar-filemanager-btn, #openwebinar-fileoverview-btn {
     float: left;
     color: #fff;
     cursor: pointer;
@@ -453,16 +453,16 @@
     margin-right: 5px;
 }
 
-#webcast-emoticon-icon {
+#openwebinar-emoticon-icon {
     position: absolute;
     width: 20px;
     height: 20px;
     cursor: pointer;
-    background: url([[pix:mod_webcast|smiley]]) no-repeat scroll 0 0;
+    background: url([[pix:mod_openwebinar|smiley]]) no-repeat scroll 0 0;
     margin: 5px 0 0 369px;
 }
 
-#webcast-status {
+#openwebinar-status {
     float: right;
     color: #fff;
     padding: 4px 10px;
@@ -471,21 +471,21 @@
     margin-top: 15px;
 }
 
-#webcast-status.online {
+#openwebinar-status.online {
     background: #2DCB73;
 }
 
-#webcast-status.offline {
+#openwebinar-status.offline {
     background: #b94a48;
 }
 
-.webcast-dialog {
+.openwebinar-dialog {
     position: absolute;
     width: 400px;
     background: #F5F5F5;
 }
 
-.webcast-dialog header {
+.openwebinar-dialog header {
     background: #b4b9be !important;
     height: 20px;
     text-transform: uppercase;
@@ -500,11 +500,11 @@
     cursor: pointer;
 }
 
-.webcast-dialog #emoticons-overview {
+.openwebinar-dialog #emoticons-overview {
     padding: 10px;
 }
 
-.webcast-dialog #emoticons-overview span {
+.openwebinar-dialog #emoticons-overview span {
     cursor: pointer;
 }
 
@@ -512,46 +512,46 @@
     margin: 0 5px;
 }
 
-.webcast-dialog header span {
+.openwebinar-dialog header span {
     padding: 0 5px;
 }
 
-#webcast-filemanager-dialog .fitemtitle {
+#openwebinar-filemanager-dialog .fitemtitle {
     display: none;
 }
 
-#webcast-filemanager-dialog .ffilemanager {
+#openwebinar-filemanager-dialog .ffilemanager {
     margin: 0;
     padding: 0 5px;
 }
 
-#webcast-filemanager-dialog .fp-restrictions {
+#openwebinar-filemanager-dialog .fp-restrictions {
     text-align: left;
     padding: 10px 5px;
 }
 
 /* Tiny Scrollbar */
-#page-mod-webcast-view_webcast .scroll {
+#page-mod-openwebinar-view_openwebinar .scroll {
     width: 400px;
     margin: 5px 0;
 }
 
-#page-mod-webcast-view_webcast .scroll .viewport {
+#page-mod-openwebinar-view_openwebinar .scroll .viewport {
     width: 380px;
     overflow: hidden;
     position: relative;
 }
 
-#webcast-question-manager input[type="text"] {
+#openwebinar-question-manager input[type="text"] {
     width: 550px;
 }
 
-#webcast-question-manager textarea {
+#openwebinar-question-manager textarea {
     max-width: 550px;
     width: 550px;
 }
 
-#page-mod-webcast-view_webcast .scroll .overview {
+#page-mod-openwebinar-view_openwebinar .scroll .overview {
     list-style: none;
     position: absolute;
     left: 0;
@@ -560,24 +560,24 @@
     margin: 0;
 }
 
-#page-mod-webcast-view_webcast .scroll .scrollbar {
-    /*background: transparent url([[pix:mod_webcast|bg-scrollbar-track-y]]) no-repeat 0 0;*/
+#page-mod-openwebinar-view_openwebinar .scroll .scrollbar {
+    /*background: transparent url([[pix:mod_openwebinar|bg-scrollbar-track-y]]) no-repeat 0 0;*/
     position: relative;
     background-position: 0 0;
     float: right;
     width: 15px;
 }
 
-#page-mod-webcast-view_webcast .scroll .track {
-    /*background: transparent url([[pix:mod_webcast|bg-scrollbar-trackend-y]]) no-repeat 0 100%;*/
+#page-mod-openwebinar-view_openwebinar .scroll .track {
+    /*background: transparent url([[pix:mod_openwebinar|bg-scrollbar-trackend-y]]) no-repeat 0 100%;*/
     height: 100%;
     width: 13px;
     position: relative;
     padding: 0 1px;
 }
 
-#page-mod-webcast-view_webcast .scroll .thumb {
-    background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 100%;
+#page-mod-openwebinar-view_openwebinar .scroll .thumb {
+    background: transparent url([[pix:mod_openwebinar|bg-scrollbar-thumb-y]]) no-repeat 50% 100%;
     height: 20px;
     width: 25px;
     cursor: pointer;
@@ -587,18 +587,18 @@
     left: -5px;
 }
 
-#page-mod-webcast-view_webcast .scroll .thumb .end {
-    background: transparent url([[pix:mod_webcast|bg-scrollbar-thumb-y]]) no-repeat 50% 0;
+#page-mod-openwebinar-view_openwebinar .scroll .thumb .end {
+    background: transparent url([[pix:mod_openwebinar|bg-scrollbar-thumb-y]]) no-repeat 50% 0;
     overflow: hidden;
     height: 5px;
     width: 25px;
 }
 
-#page-mod-webcast-view_webcast .scroll .disable {
+#page-mod-openwebinar-view_openwebinar .scroll .disable {
     display: none;
 }
 
-#page-mod-webcast-view_webcast .noSelect {
+#page-mod-openwebinar-view_openwebinar .noSelect {
     user-select: none;
     -o-user-select: none;
     -moz-user-select: none;
@@ -606,7 +606,7 @@
     -webkit-user-select: none;
 }
 
-#page-mod-webcast-view_webcast .selectable {
+#page-mod-openwebinar-view_openwebinar .selectable {
     user-select: all;
     -o-user-select: auto;
     -moz-user-select: all;
@@ -614,11 +614,11 @@
     -webkit-user-select: auto;
 }
 
-#webcast-question-manager .webcast-button {
+#openwebinar-question-manager .openwebinar-button {
     width: 140px;
 }
 
-#webcast-question-manager .yui3-widget-bd {
+#openwebinar-question-manager .yui3-widget-bd {
     padding: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -645,15 +645,15 @@
     width: 560px !important;
 }
 
-#webcast-question-manager #all-questions li.unanswered {
+#openwebinar-question-manager #all-questions li.unanswered {
     background: #ffb3a6;
 }
 
-#webcast-question-manager #all-questions li .number {
+#openwebinar-question-manager #all-questions li .number {
     float: left;
 }
 
-#webcast-question-manager #all-questions li .name {
+#openwebinar-question-manager #all-questions li .name {
     font-weight: bold;
     float: left;
     clear: both;
@@ -679,7 +679,7 @@
     font-weight: bold;
 }
 
-#webcast-noticebar {
+#openwebinar-noticebar {
     position: absolute;
     width: 390px;
     height: 18px;
@@ -692,43 +692,43 @@
     font-size: 10px;
 }
 
-#webcast-question-manager #all-questions li .webcast-button {
+#openwebinar-question-manager #all-questions li .openwebinar-button {
     float: right;
     width: 100px;
     margin: -9px 0 0 0;
 }
 
-#webcast-question-manager .webcast-button.previous {
+#openwebinar-question-manager .openwebinar-button.previous {
     position: absolute;
     margin: 315px 0 0 0;
     background: #585858;
 }
 
-#webcast-question-manager .webcast-button.next {
+#openwebinar-question-manager .openwebinar-button.next {
     position: absolute;
     margin: 315px 0 0 420px;
     background: #444444;
 }
 
-#webcast-question-manager .webcast-button.disabled {
+#openwebinar-question-manager .openwebinar-button.disabled {
     background: #a4a4a4;
     cursor: not-allowed;
 }
 
 /* SWITCHES */
-#page-mod-webcast-view_webcast input[type="radio"] + label, #page-mod-webcast-view_webcast input[type="checkbox"] + label {
+#page-mod-openwebinar-view_openwebinar input[type="radio"] + label, #page-mod-openwebinar-view_openwebinar input[type="checkbox"] + label {
     display: block !important;
     padding: 0 !important;
     margin: 0 !important;
 }
 
-.webcast-toggle {
+.openwebinar-toggle {
     position: absolute;
     margin-left: -9999px;
     visibility: hidden;
 }
 
-.webcast-toggle + label {
+.openwebinar-toggle + label {
     display: block;
     position: relative;
     cursor: pointer;
@@ -736,7 +736,7 @@
     user-select: none;
 }
 
-input.webcast-toggle + label {
+input.openwebinar-toggle + label {
     padding: 2px;
     width: 42px;
     height: 21px;
@@ -748,7 +748,7 @@ input.webcast-toggle + label {
     border-radius: 21px;
 }
 
-input.webcast-toggle + label:before, input.webcast-toggle + label:after {
+input.openwebinar-toggle + label:before, input.openwebinar-toggle + label:after {
     display: block;
     position: absolute;
     top: 1px;
@@ -757,7 +757,7 @@ input.webcast-toggle + label:before, input.webcast-toggle + label:after {
     content: "";
 }
 
-input.webcast-toggle + label:before {
+input.openwebinar-toggle + label:before {
     right: 1px;
     background-color: #f1f1f1;
     -webkit-border-radius: 21px;
@@ -771,7 +771,7 @@ input.webcast-toggle + label:before {
     transition: background 0.4s;
 }
 
-input.webcast-toggle + label:after {
+input.openwebinar-toggle + label:after {
     width: 20px;
     background-color: #fff;
     -webkit-border-radius: 100%;
@@ -788,22 +788,22 @@ input.webcast-toggle + label:after {
     transition: margin 0.4s;
 }
 
-input.webcast-toggle:checked + label:before {
+input.openwebinar-toggle:checked + label:before {
     background-color: #2DCB73;
 }
 
-input.webcast-toggle:checked + label:after {
+input.openwebinar-toggle:checked + label:after {
     margin-left: 21px;
 }
 
-#webcast-left-menu .question, #webcast-left-menu .switch {
+#openwebinar-left-menu .question, #openwebinar-left-menu .switch {
     display: table-cell;
     vertical-align: middle;
     width: 128px;
     margin: 0;
 }
 
-#webcast-left-menu .switch {
+#openwebinar-left-menu .switch {
     text-align: right;
     width: 40px;
 }

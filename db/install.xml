@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/webcast/db" VERSION="20150913" COMMENT="XMLDB file for Moodle mod/webcast"
+<XMLDB PATH="mod/openwebinar/db" VERSION="20150913" COMMENT="XMLDB file for Moodle mod/openwebinar"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
         >
     <TABLES>
-        <TABLE NAME="webcast_messages" COMMENT="webcast_messages table retrofitted from MySQL">
+        <TABLE NAME="openwebinar_messages" COMMENT="openwebinar_messages table retrofitted from MySQL">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="userid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="fullname" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="messagetype" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="usertype" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="webcast_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="openwebinar_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="course_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="message" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="roomtype" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="_public" SEQUENCE="false"/>
@@ -22,13 +22,13 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
             <INDEXES>
-                <INDEX NAME="webcast_id" UNIQUE="false" FIELDS="webcast_id, timestamp"/>
+                <INDEX NAME="openwebinar_id" UNIQUE="false" FIELDS="openwebinar_id, timestamp"/>
             </INDEXES>
         </TABLE>
-        <TABLE NAME="webcast_question" COMMENT="webcast_question table retrofitted from MySQL">
+        <TABLE NAME="openwebinar_question" COMMENT="openwebinar_question table retrofitted from MySQL">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="webcast_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="openwebinar_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="created_by" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="question_type" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="question_data" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
@@ -39,12 +39,12 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
         </TABLE>
-        <TABLE NAME="webcast_question_answer" COMMENT="webcast_question_answer table retrofitted from MySQL">
+        <TABLE NAME="openwebinar_question_answer" COMMENT="openwebinar_question_answer table retrofitted from MySQL">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="answer_data" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="user_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="webcast_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="openwebinar_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="question_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="added_on" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
             </FIELDS>
@@ -52,10 +52,10 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
         </TABLE>
-        <TABLE NAME="webcast_userstatus" COMMENT="webcast_userstatus table retrofitted from MySQL">
+        <TABLE NAME="openwebinar_userstatus" COMMENT="openwebinar_userstatus table retrofitted from MySQL">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="webcast_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="openwebinar_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="userid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="ip_address" TYPE="char" LENGTH="39" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="useragent" TYPE="char" LENGTH="300" NOTNULL="true" SEQUENCE="false"/>
@@ -65,10 +65,10 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="webcast_id" TYPE="unique" FIELDS="webcast_id, userid"/>
+                <KEY NAME="openwebinar_id" TYPE="unique" FIELDS="openwebinar_id, userid"/>
             </KEYS>
         </TABLE>
-        <TABLE NAME="webcast" COMMENT="webcast table retrofitted from MySQL">
+        <TABLE NAME="openwebinar" COMMENT="openwebinar table retrofitted from MySQL">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="broadcastkey" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>

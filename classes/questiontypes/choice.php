@@ -19,14 +19,14 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast\questiontypes;
+namespace mod_openwebinar\questiontypes;
 
-use mod_webcast\question;
-use mod_webcast\questiontypes;
+use mod_openwebinar\question;
+use mod_openwebinar\questiontypes;
 
 defined('MOODLE_INTERNAL') || die();
 

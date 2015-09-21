@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/formslib.php');
@@ -38,7 +38,7 @@ class formfilemanager extends \moodleform {
         global $DB, $CFG;
         $mform = &$this->_form;
         $context =  $this->_customdata['context'];
-        $mform->addElement('filemanager', 'files_filemanager', get_string('attachment', 'webcast'), null, \mod_webcast\helper::get_file_options($context));
+        $mform->addElement('filemanager', 'files_filemanager', get_string('attachment', 'openwebinar'), null, \mod_openwebinar\helper::get_file_options($context));
     }
 
 }

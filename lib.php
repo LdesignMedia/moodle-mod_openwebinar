@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module webcast
+ * Library of interface functions and constants for module openwebinar
  *
  * All the core Moodle functions, needed to allow the module to work
  * integrated in Moodle should be placed here.
  *
- * All the webcast specific functions, needed to implement all the module
+ * All the openwebinar specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
@@ -44,7 +44,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @return mixed true if the feature is supported, null if unknown
  */
-function webcast_supports($feature) {
+function openwebinar_supports($feature) {
 
     switch ($feature) {
         case FEATURE_MOD_INTRO:
@@ -72,13 +72,13 @@ function webcast_supports($feature) {
  *
  * @return cached_cm_info|null
  */
-function webcast_get_coursemodule_info($coursemodule) {
+function openwebinar_get_coursemodule_info($coursemodule) {
     global $DB;
 
-    if (($webcast = $DB->get_record('webcast', array('id' => $coursemodule->instance))) !== false) {
+    if (($openwebinar = $DB->get_record('openwebinar', array('id' => $coursemodule->instance))) !== false) {
         $info = new cached_cm_info();
-        $info->name = $webcast->name . ' - [' . date('d-m-Y H:i', $webcast->timeopen) . ']';
-        $info->content = format_module_intro('webcast', $webcast, $coursemodule->id, false);
+        $info->name = $openwebinar->name . ' - [' . date('d-m-Y H:i', $openwebinar->timeopen) . ']';
+        $info->content = format_module_intro('openwebinar', $openwebinar, $coursemodule->id, false);
         return $info;
     } else {
         return null;
@@ -87,72 +87,72 @@ function webcast_get_coursemodule_info($coursemodule) {
 
 
 /**
- * Saves a new instance of the webcast into the database
+ * Saves a new instance of the openwebinar into the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param stdClass $webcast           Submitted data from the form in mod_form.php
- * @param mod_webcast_mod_form $mform The form instance itself (if needed)
+ * @param stdClass $openwebinar           Submitted data from the form in mod_form.php
+ * @param mod_openwebinar_mod_form $mform The form instance itself (if needed)
  *
- * @return int The id of the newly inserted webcast record
+ * @return int The id of the newly inserted openwebinar record
  */
-function webcast_add_instance(stdClass $webcast, mod_webcast_mod_form $mform = null) {
+function openwebinar_add_instance(stdClass $openwebinar, mod_openwebinar_mod_form $mform = null) {
     global $DB;
 
-    $webcast->timecreated = time();
-    $webcast->broadcaster_identifier = md5(\mod_webcast\helper::generate_key());
-    $webcast->id = $DB->insert_record('webcast', $webcast);
+    $openwebinar->timecreated = time();
+    $openwebinar->broadcaster_identifier = md5(\mod_openwebinar\helper::generate_key());
+    $openwebinar->id = $DB->insert_record('openwebinar', $openwebinar);
 
     $event = new stdClass();
-    $event->name = $webcast->name;
-    $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
-    $event->courseid = $webcast->course;
+    $event->name = $openwebinar->name;
+    $event->description = format_module_intro('openwebinar', $openwebinar, $openwebinar->coursemodule);
+    $event->courseid = $openwebinar->course;
     $event->groupid = 0;
     $event->userid = 0;
-    $event->modulename = 'webcast';
-    $event->instance = $webcast->id;
-    $event->eventtype = 'webcasttime';
-    $event->timestart = $webcast->timeopen;
-    $event->timeduration = $webcast->duration;
+    $event->modulename = 'openwebinar';
+    $event->instance = $openwebinar->id;
+    $event->eventtype = 'openwebinartime';
+    $event->timestart = $openwebinar->timeopen;
+    $event->timeduration = $openwebinar->duration;
 
     calendar_event::create($event);
 
-    return $webcast->id;
+    return $openwebinar->id;
 }
 
 /**
- * Updates an instance of the webcast in the database
+ * Updates an instance of the openwebinar in the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param stdClass $webcast           An object from the form in mod_form.php
- * @param mod_webcast_mod_form $mform The form instance itself (if needed)
+ * @param stdClass $openwebinar           An object from the form in mod_form.php
+ * @param mod_openwebinar_mod_form $mform The form instance itself (if needed)
  *
  * @return boolean Success/Fail
  */
-function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform = null) {
+function openwebinar_update_instance(stdClass $openwebinar, mod_openwebinar_mod_form $mform = null) {
     global $DB;
 
-    $webcast->timemodified = time();
-    $webcast->id = $webcast->instance;
+    $openwebinar->timemodified = time();
+    $openwebinar->id = $openwebinar->instance;
 
     // You may have to add extra stuff in here.
 
-    $result = $DB->update_record('webcast', $webcast);
+    $result = $DB->update_record('openwebinar', $openwebinar);
 
     $event = new stdClass();
 
-    if ($event->id = $DB->get_field('event', 'id', array('modulename' => 'webcast', 'instance' => $webcast->id))) {
+    if ($event->id = $DB->get_field('event', 'id', array('modulename' => 'openwebinar', 'instance' => $openwebinar->id))) {
 
-        $event->name = $webcast->name;
-        $event->description = format_module_intro('webcast', $webcast, $webcast->coursemodule);
-        $event->timestart = $webcast->timeopen;
-        $event->timeduration = $webcast->duration;
+        $event->name = $openwebinar->name;
+        $event->description = format_module_intro('openwebinar', $openwebinar, $openwebinar->coursemodule);
+        $event->timestart = $openwebinar->timeopen;
+        $event->timeduration = $openwebinar->duration;
 
         $calendarevent = calendar_event::load($event->id);
         $calendarevent->update($event);
@@ -162,7 +162,7 @@ function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform 
 }
 
 /**
- * Removes an instance of the webcast from the database
+ * Removes an instance of the openwebinar from the database
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
@@ -172,18 +172,18 @@ function webcast_update_instance(stdClass $webcast, mod_webcast_mod_form $mform 
  *
  * @return boolean Success/Failure
  */
-function webcast_delete_instance($id) {
+function openwebinar_delete_instance($id) {
     global $DB;
 
-    if (!$webcast = $DB->get_record('webcast', array('id' => $id))) {
+    if (!$openwebinar = $DB->get_record('openwebinar', array('id' => $id))) {
         return false;
     }
 
     // Delete any dependent records here.
-    $DB->delete_records('webcast', array('id' => $webcast->id));
+    $DB->delete_records('openwebinar', array('id' => $openwebinar->id));
 
     // remove the event
-    $DB->delete_records('event', array('modulename' => 'webcast', 'instance' => $webcast->id));
+    $DB->delete_records('event', array('modulename' => 'openwebinar', 'instance' => $openwebinar->id));
 
     // @todo remove chatlogs
     // @todo remove useronline status
@@ -202,11 +202,11 @@ function webcast_delete_instance($id) {
  * @param stdClass $course      The course record
  * @param stdClass $user        The user record
  * @param cm_info|stdClass $mod The course module info object or record
- * @param stdClass $webcast     The webcast instance record
+ * @param stdClass $openwebinar     The openwebinar instance record
  *
  * @return stdClass|null
  */
-function webcast_user_outline($course, $user, $mod, $webcast) {
+function openwebinar_user_outline($course, $user, $mod, $openwebinar) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -217,7 +217,7 @@ function webcast_user_outline($course, $user, $mod, $webcast) {
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in webcast activities and print it out.
+ * that has occurred in openwebinar activities and print it out.
  *
  * @param stdClass $course    The course record
  * @param bool $viewfullnames Should we display full names
@@ -225,7 +225,7 @@ function webcast_user_outline($course, $user, $mod, $webcast) {
  *
  * @return boolean True if anything was printed, otherwise false
  */
-function webcast_print_recent_activity($course, $viewfullnames, $timestart) {
+function openwebinar_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;
 }
 
@@ -239,7 +239,7 @@ function webcast_print_recent_activity($course, $viewfullnames, $timestart) {
  *
  * @return boolean
  */
-function webcast_cron() {
+function openwebinar_cron() {
     return true;
 }
 
@@ -251,7 +251,7 @@ function webcast_cron() {
  *
  * @return array
  */
-function webcast_get_extra_capabilities() {
+function openwebinar_get_extra_capabilities() {
     return array();
 }
 
@@ -269,14 +269,14 @@ function webcast_get_extra_capabilities() {
  *
  * @return array of [(string)filearea] => (string)description
  */
-function webcast_get_file_areas($course, $cm, $context) {
+function openwebinar_get_file_areas($course, $cm, $context) {
     return array('');
 }
 
 /**
- * File browsing support for webcast file areas
+ * File browsing support for openwebinar file areas
  *
- * @package  mod_webcast
+ * @package  mod_openwebinar
  * @category files
  *
  * @param file_browser $browser
@@ -291,27 +291,27 @@ function webcast_get_file_areas($course, $cm, $context) {
  *
  * @return file_info instance or null if not found
  */
-function webcast_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function openwebinar_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     return null;
 }
 
 /**
- * Serves the files from the webcast file areas
+ * Serves the files from the openwebinar file areas
  *
  * @note     we use own version in api class
  *
- * @package  mod_webcast
+ * @package  mod_openwebinar
  * @category files
  *
  * @param stdClass $course    the course object
  * @param stdClass $cm        the course module object
- * @param stdClass $context   the webcast's context
+ * @param stdClass $context   the openwebinar's context
  * @param string $filearea    the name of the file area
  * @param array $args         extra arguments (itemid, path)
  * @param bool $forcedownload whether or not force download
  * @param array $options      additional options affecting the file serving
  */
-function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
+function openwebinar_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
     send_file_not_found();
 }
 
@@ -322,16 +322,16 @@ function webcast_pluginfile($course, $cm, $context, $filearea, array $args, $for
  * context when this is called
  *
  * @param settings_navigation $settings
- * @param navigation_node $webcastnode
+ * @param navigation_node $openwebinarnode
  *
  * @return void
  */
-function webcast_extend_settings_navigation($settings, $webcastnode) {
+function openwebinar_extend_settings_navigation($settings, $openwebinarnode) {
     global $PAGE, $CFG;
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
-    $keys = $webcastnode->get_children_key_list();
+    $keys = $openwebinarnode->get_children_key_list();
     $beforekey = null;
     $i = array_search('modedit', $keys);
     if ($i === false and array_key_exists(0, $keys)) {
@@ -340,13 +340,13 @@ function webcast_extend_settings_navigation($settings, $webcastnode) {
         $beforekey = $keys[$i + 1];
     }
 
-    if (has_capability('mod/webcast:manager', $PAGE->cm->context)) {
-        $url = new moodle_url('/mod/webcast/user_activity.php', array('id' => $PAGE->cm->id));
-        $node = navigation_node::create(get_string('user_activity', 'webcast'), $url, navigation_node::TYPE_SETTING, null, 'mod_webcast_user_activity', new pix_icon('i/preview', ''));
-        $webcastnode->add_node($node, $beforekey);
+    if (has_capability('mod/openwebinar:manager', $PAGE->cm->context)) {
+        $url = new moodle_url('/mod/openwebinar/user_activity.php', array('id' => $PAGE->cm->id));
+        $node = navigation_node::create(get_string('user_activity', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null, 'mod_openwebinar_user_activity', new pix_icon('i/preview', ''));
+        $openwebinarnode->add_node($node, $beforekey);
     }
 
     // Included here as we only ever want to include this file if we really need to.
     require_once($CFG->libdir . '/questionlib.php');
-    question_extend_settings_navigation($webcastnode, $PAGE->cm->context)->trim_if_empty();
+    question_extend_settings_navigation($openwebinarnode, $PAGE->cm->context)->trim_if_empty();
 }

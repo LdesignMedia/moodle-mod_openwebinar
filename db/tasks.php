@@ -19,13 +19,13 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
 $tasks = array(
     array(
-        'classname' => 'mod_webcast\task\auto_close',
+        'classname' => 'mod_openwebinar\task\auto_close',
         'blocking'  => 0,
         'minute'    => '30',
         'hour'      => '*',
@@ -34,7 +34,7 @@ $tasks = array(
         'month'     => '*'
     ),
     array(
-        'classname' => 'mod_webcast\task\reminder',
+        'classname' => 'mod_openwebinar\task\reminder',
         'blocking'  => 0,
         'minute'    => '*',
         'hour'      => '*',

@@ -19,15 +19,15 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 
-use mod_webcast\event\webcast_ping;
-use mod_webcast\helper;
-use mod_webcast\question;
+use mod_openwebinar\event\openwebinar_ping;
+use mod_openwebinar\helper;
+use mod_openwebinar\question;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -95,7 +95,7 @@ class api {
      *
      * @var bool|object
      */
-    protected $webcast = false;
+    protected $openwebinar = false;
 
     /**
      * Container
@@ -170,7 +170,7 @@ class api {
         if ($this->course) {
             return;
         }
-        list($this->course, $this->webcast, $this->cm, $this->context) = helper::get_module_data($this->extra1, $this->extra2);
+        list($this->course, $this->openwebinar, $this->cm, $this->context) = helper::get_module_data($this->extra1, $this->extra2);
     }
 
     /**
@@ -196,8 +196,8 @@ class api {
         // Set information
         $this->get_module_information();
 
-        // Protect updating time when webcast is already ended
-        if (!empty($this->webcast->is_ended)) {
+        // Protect updating time when openwebinar is already ended
+        if (!empty($this->openwebinar->is_ended)) {
             $this->response['status'] = false;
             $this->response['is_ended'] = true;
             $this->output_json();
@@ -210,12 +210,12 @@ class api {
             'objectid' => $this->cm->id,
         );
         // add new log entry
-        $event = webcast_ping::create($params);
+        $event = openwebinar_ping::create($params);
 
         $event->add_record_snapshot('course', $this->course);
         $event->trigger();
 
-        $this->response['online_minutes'] = helper::set_user_online_status($this->webcast->id);
+        $this->response['online_minutes'] = helper::set_user_online_status($this->openwebinar->id);
         $this->response['status'] = true;
         $this->response['is_ended'] = false;
         $this->output_json();
@@ -223,11 +223,11 @@ class api {
     }
 
     /**
-     * End webcast
+     * End openwebinar
      *
      * @throws \Exception
      */
-    public function api_call_endwebcast() {
+    public function api_call_endopenwebinar() {
 
         global $DB;
         // Valid sesskey
@@ -236,21 +236,21 @@ class api {
         // Set information
         $this->get_module_information();
 
-        if (!empty($this->webcast->is_ended)) {
-            throw new \Exception("webcast_already_ended");
+        if (!empty($this->openwebinar->is_ended)) {
+            throw new \Exception("openwebinar_already_ended");
         }
         $obj = new \stdClass();
-        $obj->id = $this->webcast->id;
+        $obj->id = $this->openwebinar->id;
         $obj->is_ended = 1;
 
-        $DB->update_record('webcast', $obj);
+        $DB->update_record('openwebinar', $obj);
         $this->response['status'] = true;
 
         $this->output_json();
     }
 
     /**
-     * Load history from a webcast room
+     * Load history from a openwebinar room
      *
      * @throws \Exception
      */
@@ -264,14 +264,14 @@ class api {
         // Set information
         $this->get_module_information();
 
-        $this->response['messages'] = $DB->get_records('webcast_messages', array('webcast_id' => $this->webcast->id), 'timestamp ASC');
+        $this->response['messages'] = $DB->get_records('openwebinar_messages', array('openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
         $this->response['status'] = true;
 
         $this->output_json();
     }
 
     /**
-     * Return webcast information to the chatserver
+     * Return openwebinar information to the chatserver
      *
      * @throws \Exception
      */
@@ -285,14 +285,14 @@ class api {
 
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
             $this->response['status'] = true;
-            $this->response['webcast'] = helper::get_webcast_by_broadcastkey($this->jsondata->broadcastkey);
+            $this->response['openwebinar'] = helper::get_openwebinar_by_broadcastkey($this->jsondata->broadcastkey);
         }
 
         $this->output_json();
     }
 
     /**
-     * Add files to a webcast
+     * Add files to a openwebinar
      *
      * @throws \coding_exception
      */
@@ -307,7 +307,7 @@ class api {
 
         $data = new \stdClass();
         $data->files_filemanager = required_param('files_filemanager', PARAM_INT);
-        $data = file_postupdate_standard_filemanager($data, 'files', helper::get_file_options($this->context), $this->context, 'mod_webcast', 'attachments', $data->files_filemanager);
+        $data = file_postupdate_standard_filemanager($data, 'files', helper::get_file_options($this->context), $this->context, 'mod_openwebinar', 'attachments', $data->files_filemanager);
 
         $this->response['status'] = true;
         $this->response['itemid'] = $data->files_filemanager;
@@ -319,7 +319,7 @@ class api {
             'contextid' => $this->context->id,
             'userid' => $USER->id,
             'itemid' => $data->files_filemanager,
-            'component' => 'mod_webcast',
+            'component' => 'mod_openwebinar',
             'filearea' => 'attachments'
         ));
         foreach ($files as $file) {
@@ -335,7 +335,7 @@ class api {
     }
 
     /**
-     * List of all files in a webcast
+     * List of all files in a openwebinar
      */
     public function api_call_list_all_files() {
 
@@ -346,7 +346,7 @@ class api {
         $this->get_module_information();
 
         $fs = get_file_storage();
-        $files = $fs->get_area_files($this->context->id, 'mod_webcast', 'attachments');
+        $files = $fs->get_area_files($this->context->id, 'mod_openwebinar', 'attachments');
 
         foreach ($files as $f) {
             if ($f && $f->get_filename() !== '.' && !$f->is_directory()) {
@@ -385,7 +385,7 @@ class api {
     }
 
     /**
-     * Add new question to the webcast
+     * Add new question to the openwebinar
      */
     public function api_call_add_question() {
 
@@ -398,7 +398,7 @@ class api {
         $this->get_module_information();
 
         // class
-        $question = new question($this->webcast);
+        $question = new question($this->openwebinar);
 
         // get post data
         $questiontype = required_param('questiontype', PARAM_ALPHA);
@@ -439,13 +439,13 @@ class api {
         $this->get_module_information();
 
         // class
-        $question = new question($this->webcast);
-        // get all questions in this webcast
+        $question = new question($this->openwebinar);
+        // get all questions in this openwebinar
         $questions = $question->get_all_question();
 
         /**
          * @var int $id
-         * @var \mod_webcast\questiontypes $quest
+         * @var \mod_openwebinar\questiontypes $quest
          */
         foreach ($questions as $id => $quest) {
             $obj = new \stdClass();
@@ -457,7 +457,7 @@ class api {
         }
         $this->response['status'] = true;
 
-        $permissions = helper::get_permissions($PAGE->context, $this->webcast);
+        $permissions = helper::get_permissions($PAGE->context, $this->openwebinar);
         $this->response['manager'] = ($permissions->broadcaster || $permissions->teacher) ? true : false;
         $this->output_json();
     }
@@ -481,17 +481,17 @@ class api {
         $questionid = required_param('questionid', PARAM_INT);
 
         // class
-        $question = new question($this->webcast);
+        $question = new question($this->openwebinar);
 
         /**
-         * @var \mod_webcast\questiontypes $questiontype
+         * @var \mod_openwebinar\questiontypes $questiontype
          */
         $questiontype = $question->get_question_by_id($questionid);
 
         $obj = new \stdClass();
 
         // include answers from the other for the teacher and the broadcaster
-        $permissions = helper::get_permissions($PAGE->context, $this->webcast);
+        $permissions = helper::get_permissions($PAGE->context, $this->openwebinar);
         if ($permissions->broadcaster || $permissions->teacher) {
             $obj->answers = $questiontype->render_answers($question->get_answers($questionid));
         } else {
@@ -512,7 +512,7 @@ class api {
         $this->has_valid_sesskey();
 
         if ($USER->id <= 1) {
-            throw new \Exception(get_string('error:not_for_guests', 'webcast'));
+            throw new \Exception(get_string('error:not_for_guests', 'openwebinar'));
         }
 
         // Set information
@@ -521,7 +521,7 @@ class api {
         // get question id to query
         $questionid = required_param('question_id', PARAM_INT);
 
-        $question = new question($this->webcast);
+        $question = new question($this->openwebinar);
         $this->response = $question->save_answer($questionid);
         $this->output_json();
     }
@@ -530,14 +530,14 @@ class api {
      * Manual run a task/cron function
      *
      * Sample:
-     * /mod/webcast/api.php?action=task_test&taskname=reminder
+     * /mod/openwebinar/api.php?action=task_test&taskname=reminder
      *
      * @throws \coding_exception
      */
     public function api_call_task_test() {
         $task = required_param('taskname', PARAM_TEXT);
 
-        $cron = new \mod_webcast\cron();
+        $cron = new \mod_openwebinar\cron();
         if (is_callable(array($cron, $task))) {
             $cron->$task();
         } else{
@@ -547,7 +547,7 @@ class api {
     }
 
     /**
-     * Set the webcast plugin config to this class
+     * Set the openwebinar plugin config to this class
      *
      * @throws \Exception
      * @throws \dml_exception
@@ -558,7 +558,7 @@ class api {
             return;
         }
 
-        $this->config = get_config('webcast');
+        $this->config = get_config('openwebinar');
     }
 
     /**

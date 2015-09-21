@@ -1,11 +1,11 @@
-YUI.add('moodle-mod_webcast-room', function (Y, NAME) {
+YUI.add('moodle-mod_openwebinar-room', function (Y, NAME) {
 
 /**
  * The broadcast room
  *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package mod_webcast
+ * @package mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author Luuk Verhoeven
  **/
@@ -16,9 +16,9 @@ YUI.add('moodle-mod_webcast-room', function (Y, NAME) {
  * This object is public accessible
  * @type {{}|*}
  */
-M.mod_webcast = M.mod_webcast || {};
+M.mod_openwebinar = M.mod_openwebinar || {};
 // @todo Don't allow this to be public accessible
-M.mod_webcast.room = {
+M.mod_openwebinar.room = {
 
     /**
      * Emoticons mapping
@@ -407,7 +407,7 @@ M.mod_webcast.room = {
         timeopen              : 0,
         cmid                  : 0,
         courseid              : 0,
-        webcastid             : 0,
+        openwebinarid             : 0,
         filesharing           : false,
         filesharing_student   : false,
         viewhistory           : false,
@@ -511,7 +511,7 @@ M.mod_webcast.room = {
         cmid         : 0,
         useragent    : {},
         courseid     : 0,
-        webcastid    : 0,
+        openwebinarid    : 0,
         userid       : 0,
         fullname     : "",
         broadcastkey : "",
@@ -591,14 +591,14 @@ M.mod_webcast.room = {
         this.log(this.options);
 
         // load message sound
-        this.audio_newmessage = new Audio(M.cfg.wwwroot + '/mod/webcast/sound/newmessage.mp3');
+        this.audio_newmessage = new Audio(M.cfg.wwwroot + '/mod/openwebinar/sound/newmessage.mp3');
 
         // build room components when the dom is completely loaded
         Y.on('domready', function () {
             this.log('domready');
             this.build_room();
 
-            Y.one('#webcast-loading').hide();
+            Y.one('#openwebinar-loading').hide();
         }, this);
     },
 
@@ -617,16 +617,16 @@ M.mod_webcast.room = {
 
         // Set some important nodes to this class reference
         this.nodeholder.body = Y.one("body");
-        this.nodeholder.topmenu = Y.one("#webcast-topbar-left");
-        this.nodeholder.leftsidemenu = Y.one("#webcast-left-menu");
+        this.nodeholder.topmenu = Y.one("#openwebinar-topbar-left");
+        this.nodeholder.leftsidemenu = Y.one("#openwebinar-left-menu");
 
         // Show a menu when clicking on topmenu
         this.nodeholder.topmenu.on('click', function () {
             that.log('Open topmenu');
 
             // Menu arrow
-            if ((M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetWidth') === 0 &&
-                M.mod_webcast.room.nodeholder.leftsidemenu.get('offsetHeight') === 0) ||
+            if ((M.mod_openwebinar.room.nodeholder.leftsidemenu.get('offsetWidth') === 0 &&
+                M.mod_openwebinar.room.nodeholder.leftsidemenu.get('offsetHeight') === 0) ||
                 that.nodeholder.leftsidemenu.get('display') === 'none') {
 
                 that.log('show');
@@ -647,7 +647,7 @@ M.mod_webcast.room = {
                     );
                     a.get('node').show();
                     a.on('end', function () {
-                        Y.one("#webcast-topbar-left .arrow").setHTML('&#x25C4;');
+                        Y.one("#openwebinar-topbar-left .arrow").setHTML('&#x25C4;');
                     });
                     a.run();
                 });
@@ -671,7 +671,7 @@ M.mod_webcast.room = {
 
                     a.on('end', function () {
                         a.get('node').hide();
-                        Y.one("#webcast-topbar-left .arrow").setHTML('&#x25BA;');
+                        Y.one("#openwebinar-topbar-left .arrow").setHTML('&#x25BA;');
                     });
                     a.run();
                 });
@@ -679,7 +679,7 @@ M.mod_webcast.room = {
         });
 
         // setting helpers
-        Y.all('.webcast-toggle').on('click', function (e) {
+        Y.all('.openwebinar-toggle').on('click', function (e) {
             this.set_user_setting(e.currentTarget.get('id'), e.currentTarget.get('checked'));
         }, this);
 
@@ -698,7 +698,7 @@ M.mod_webcast.room = {
         if (this.options.userlist) {
             this.add_userlist();
         } else {
-            Y.one('#webcast-userlist-holder').hide();
+            Y.one('#openwebinar-userlist-holder').hide();
         }
 
         if (this.options.enable_emoticons) {
@@ -710,7 +710,7 @@ M.mod_webcast.room = {
             this.add_chat();
         } else {
             // remove chat components
-            Y.all('#webcast-chat-holder .webcast-header, #webcast-message , #webcast-send , #webcast-emoticon-icon').hide();
+            Y.all('#openwebinar-chat-holder .openwebinar-header, #openwebinar-message , #openwebinar-send , #openwebinar-emoticon-icon').hide();
         }
 
         // add file sharing
@@ -726,23 +726,23 @@ M.mod_webcast.room = {
         }
 
         // add action on the leave button
-        Y.one('#webcast-leave').on('click', function () {
+        Y.one('#openwebinar-leave').on('click', function () {
 
             if (this.options.is_ended) {
                 this.options.preventclosewaring = true;
-                window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + this.options.cmid;
+                window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + this.options.cmid;
             } else if (this.options.is_broadcaster) {
                 // confirm closing
-                var a = confirm(M.util.get_string('js:ending_webcast', 'webcast', {}));
+                var a = confirm(M.util.get_string('js:ending_openwebinar', 'openwebinar', {}));
                 if (a) {
                     // close chat with a API call
                     Y.io(this.options.ajax_path, {
                         method : 'GET',
                         data   : {
                             'sesskey': M.cfg.sesskey,
-                            'action' : "endwebcast",
+                            'action' : "endopenwebinar",
                             'extra1' : that.options.courseid,
-                            'extra2' : that.options.webcastid
+                            'extra2' : that.options.openwebinarid
                         },
                         on     : {
                             success: function (id, o) {
@@ -770,7 +770,7 @@ M.mod_webcast.room = {
                     });
                 }
             } else {
-                window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + this.options.cmid;
+                window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + this.options.cmid;
             }
         }, this);
 
@@ -816,7 +816,7 @@ M.mod_webcast.room = {
                     this.add_video();
                 } else {
                     this.player.dispose();
-                    Y.one('#webcast-stream-holder').setHTML("");
+                    Y.one('#openwebinar-stream-holder').setHTML("");
                 }
 
                 this.options.stream = value;
@@ -826,9 +826,9 @@ M.mod_webcast.room = {
             case 'userlist':
 
                 if (value) {
-                    Y.one('#webcast-userlist-holder').show();
+                    Y.one('#openwebinar-userlist-holder').show();
                 } else {
-                    Y.one('#webcast-userlist-holder').hide();
+                    Y.one('#openwebinar-userlist-holder').hide();
                 }
 
                 this.options.userlist = value;
@@ -887,7 +887,7 @@ M.mod_webcast.room = {
                 'sesskey': M.cfg.sesskey,
                 'action' : "ping",
                 'extra1' : that.options.courseid,
-                'extra2' : that.options.webcastid
+                'extra2' : that.options.openwebinarid
             },
             on     : {
                 success: function (id, o) {
@@ -900,7 +900,7 @@ M.mod_webcast.room = {
                             that.log('You are here for ' + (response.online_minutes / 60) + ' minutes.');
                         } else {
                             // session expired logout etc this bad
-                            alert(M.util.get_string('js:error_logout_or_lostconnection', 'webcast', {}));
+                            alert(M.util.get_string('js:error_logout_or_lostconnection', 'openwebinar', {}));
                         }
 
                     } catch (e) {
@@ -937,8 +937,8 @@ M.mod_webcast.room = {
         this.log('connect_to_socket');
 
         // Nodes
-        this.nodeholder.sendbutton = Y.one('#webcast-send');
-        this.nodeholder.message = Y.one('#webcast-message');
+        this.nodeholder.sendbutton = Y.one('#openwebinar-send');
+        this.nodeholder.message = Y.one('#openwebinar-message');
 
         // skip if its ended
         if (this.options.is_ended) {
@@ -969,7 +969,7 @@ M.mod_webcast.room = {
 
             // enable chat input
             that.nodeholder.message.removeAttribute('disabled');
-            that.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'webcast', {}));
+            that.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'openwebinar', {}));
         });
 
         // connection failed
@@ -977,8 +977,8 @@ M.mod_webcast.room = {
             that.socket_connection_failed('reconnect_failed');
         });
 
-        // broadcaster ending webcast called
-        this.socket.on('webcast-ended', function () {
+        // broadcaster ending openwebinar called
+        this.socket.on('openwebinar-ended', function () {
             that.chat_ended();
         });
 
@@ -994,14 +994,14 @@ M.mod_webcast.room = {
     },
 
     /**
-     * Called when the broadcaster end the webcast
+     * Called when the broadcaster end the openwebinar
      */
     chat_ended: function () {
         "use strict";
         this.chat_local_message('ended');
         var that = this, dialog = new Y.Panel({
             contentBox : Y.Node.create('<div id="dialog" />'),
-            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' + M.util.get_string('js:dialog_ending_text', 'webcast', {}) + '</div>',
+            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' + M.util.get_string('js:dialog_ending_text', 'openwebinar', {}) + '</div>',
             width      : 410,
             zIndex     : 6,
             modal      : true, // modal behavior
@@ -1012,7 +1012,7 @@ M.mod_webcast.room = {
                 footer: [
                     {
                         name  : 'proceed',
-                        label : M.util.get_string('js:dialog_ending_btn', 'webcast', {}),
+                        label : M.util.get_string('js:dialog_ending_btn', 'openwebinar', {}),
                         action: 'onOK'
                     }
                 ]
@@ -1021,7 +1021,7 @@ M.mod_webcast.room = {
         dialog.onOK = function (e) {
             e.preventDefault();
             // redirect to previous page
-            window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + that.options.cmid;
+            window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
         };
         dialog.show();
     },
@@ -1037,7 +1037,7 @@ M.mod_webcast.room = {
 
         // disable chat input
         this.nodeholder.message.setAttribute('disabled', 'disabled');
-        this.nodeholder.sendbutton.set('text', M.util.get_string('js:wait_on_connection', 'webcast', {}));
+        this.nodeholder.sendbutton.set('text', M.util.get_string('js:wait_on_connection', 'openwebinar', {}));
 
         this.chat_local_message(message);
 
@@ -1087,7 +1087,7 @@ M.mod_webcast.room = {
                 'sesskey': M.cfg.sesskey,
                 'action' : "load_public_history",
                 'extra1' : this.options.courseid,
-                'extra2' : this.options.webcastid
+                'extra2' : this.options.openwebinarid
             },
             on     : {
                 success: function (id, o) {
@@ -1186,7 +1186,7 @@ M.mod_webcast.room = {
         this.log('add_video');
         var source = {}, techOrder = ['html5', 'flash'], that = this;
 
-        videojs.options.flash.swf = M.cfg.wwwroot + "/mod/webcast/javascript/video-js/video-js.swf";
+        videojs.options.flash.swf = M.cfg.wwwroot + "/mod/openwebinar/javascript/video-js/video-js.swf";
 
         var attributes = {
             'id'      : 'room_stream',
@@ -1197,7 +1197,7 @@ M.mod_webcast.room = {
         };
 
         var video = Y.Node.create('<video class="video-js vjs-default-skin"></video>').setAttrs(attributes);
-        video.appendTo('#webcast-stream-holder');
+        video.appendTo('#openwebinar-stream-holder');
 
         // Note: HLS has about a 30 second delay.
         if (!this.options.is_ended) {
@@ -1280,10 +1280,10 @@ M.mod_webcast.room = {
         this.log('add_chat');
 
         // add tinyscrollbar
-        var that = this, el = document.getElementById("webcast-chatlist");
+        var that = this, el = document.getElementById("openwebinar-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
-        this.nodeholder.chatlist = Y.one('#webcast-chatlist ul');
-        this.nodeholder.loadhistorybtn = Y.one('#webcast-loadhistory');
+        this.nodeholder.chatlist = Y.one('#openwebinar-chatlist ul');
+        this.nodeholder.loadhistorybtn = Y.one('#openwebinar-loadhistory');
 
         if (!this.options.is_ended) {
             // Add first message to the chat
@@ -1320,7 +1320,7 @@ M.mod_webcast.room = {
         if (this.options.enable_emoticons && !this.options.is_ended) {
 
             this.log('Emoticons are enabled');
-            this.nodeholder.emoticonsdialog = Y.one("#webcast-emoticons-dialog");
+            this.nodeholder.emoticonsdialog = Y.one("#openwebinar-emoticons-dialog");
 
             this.nodeholder.emoticonsdialog.delegate('click', function () {
                 that.log('click emo');
@@ -1330,11 +1330,11 @@ M.mod_webcast.room = {
                 that.nodeholder.message.focus();
             }, 'span.emoticon');
 
-            Y.one('#webcast-emoticon-icon').on('click', function () {
+            Y.one('#openwebinar-emoticon-icon').on('click', function () {
                 this.log('click on emoticon icon');
 
                 // validate the emoticons are already build else build them first in a dialog
-                if (!Y.one('#webcast-emoticon-content')) {
+                if (!Y.one('#openwebinar-emoticon-content')) {
                     this.chat_build_emoticon_selector();
                 }
 
@@ -1352,7 +1352,7 @@ M.mod_webcast.room = {
 
         // Workaround for enter key YUI event not working here..
         // @todo need new method we making this more private
-        this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_webcast.room.chat_enter_listener(event);');
+        this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_openwebinar.room.chat_enter_listener(event);');
     },
 
     /**
@@ -1369,8 +1369,8 @@ M.mod_webcast.room = {
                 items += '<span class="emoticon emoticon-' + name + '" title="' + this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] + '</span>';
             }
         }
-        var content = Y.Node.create('<div id="webcast-emoticon-content">' + items + '</div>');
-        content.appendTo('#webcast-emoticons-dialog div');
+        var content = Y.Node.create('<div id="openwebinar-emoticon-content">' + items + '</div>');
+        content.appendTo('#openwebinar-emoticons-dialog div');
     },
     /**
      * Check if enter is pressed send the message
@@ -1427,30 +1427,30 @@ M.mod_webcast.room = {
                 }
 
                 // Start
-                chatline += '<li class="webcast-chatline webcast-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
+                chatline += '<li class="openwebinar-chatline openwebinar-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
                     '<div class="message-container">';
 
                 if (this.options.showuserpicture) {
                     // Add avatar
-                    chatline += '<span class="webcast-avatar">' +
+                    chatline += '<span class="openwebinar-avatar">' +
                         '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(data.userid) + '/f1.jpg" />' +
                         '</span>';
                 }
 
-                chatline += '<span class="webcast-username" data-userid="' + Number(data.userid) + '">' + this.alpha_numeric(data.fullname) + '</span>' +
-                    '<span class="webcast-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="webcast-message">' + messagetext + '</span>' +
+                chatline += '<span class="openwebinar-username" data-userid="' + Number(data.userid) + '">' + this.alpha_numeric(data.fullname) + '</span>' +
+                    '<span class="openwebinar-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                    '<span class="openwebinar-message">' + messagetext + '</span>' +
                     '</div>' +
                     '</li>';
 
             } else if (data.messagetype === 'system') {
 
                 // Messages generate by server
-                chatline += '<li class="webcast-chatline webcast-socketserver">' +
+                chatline += '<li class="openwebinar-chatline openwebinar-socketserver">' +
                     '<div class="message-container">' +
-                    '<span class="webcast-username">' + M.util.get_string('js:system_user', 'webcast', {}) + '</span>' +
-                    '<span class="webcast-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="webcast-message">' + M.util.get_string('js:' + data.message, 'webcast', {}) + '</span>' +
+                    '<span class="openwebinar-username">' + M.util.get_string('js:system_user', 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                    '<span class="openwebinar-message">' + M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
                     '</div>' +
                     '</li>';
 
@@ -1459,11 +1459,11 @@ M.mod_webcast.room = {
                 date = new Date().getTime() / 1000;
 
                 // Messages generate by this script local
-                chatline += '<li class="webcast-chatline webcast-local">' +
+                chatline += '<li class="openwebinar-chatline openwebinar-local">' +
                     '<div class="message-container">' +
-                    '<span class="webcast-username noSelect">' + M.util.get_string('js:script_user', 'webcast', {}) + '</span>' +
-                    '<span class="webcast-timestamp noSelect">' + this.timestamp_to_humanreadable(date) + '</span>' +
-                    '<span class="webcast-message noSelect">' + M.util.get_string('js:' + data.message, 'webcast', {}) + '</span>' +
+                    '<span class="openwebinar-username noSelect">' + M.util.get_string('js:script_user', 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-timestamp noSelect">' + this.timestamp_to_humanreadable(date) + '</span>' +
+                    '<span class="openwebinar-message noSelect">' + M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
                     '</div>' +
                     '</li>';
             }
@@ -1576,15 +1576,15 @@ M.mod_webcast.room = {
         try {
             var obj = Y.JSON.parse(args.slice(1));
             this.log(obj);
-            message += '<div class="webcast-file">' +
+            message += '<div class="openwebinar-file">' +
                 '<img src="' + obj.thumbnail + '" alt="" />' +
-                '<span class="webcast-filename">' + this.alpha_numeric(obj.filename) + '</span>' +
-                '<span class="webcast-filesize">' + this.alpha_numeric(obj.filesize) + '</span>' +
-                '<span class="webcast-fileauthor">' + this.alpha_numeric(obj.author) + '</span>' +
-                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
-                'extra3=' + Number(obj.id) + '&extra2=' + this.options.webcastid + '&extra1=' + this.options.courseid + '&' +
+                '<span class="openwebinar-filename">' + this.alpha_numeric(obj.filename) + '</span>' +
+                '<span class="openwebinar-filesize">' + this.alpha_numeric(obj.filesize) + '</span>' +
+                '<span class="openwebinar-fileauthor">' + this.alpha_numeric(obj.author) + '</span>' +
+                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/openwebinar/download.php?' +
+                'extra3=' + Number(obj.id) + '&extra2=' + this.options.openwebinarid + '&extra1=' + this.options.courseid + '&' +
                 'sesskey=' + M.cfg.sesskey +
-                '" class="webcast-download webcast-button">Download</a>' +
+                '" class="openwebinar-download openwebinar-button">Download</a>' +
                 '</div>';
 
         } catch (e) {
@@ -1606,9 +1606,9 @@ M.mod_webcast.room = {
         try {
             var obj = Y.JSON.parse(args.slice(1));
             this.log(obj);
-            message += '<div class="webcast-question">' +
+            message += '<div class="openwebinar-question">' +
                 '<span class="text">' + obj.text + '</span>' +
-                '<span class="webcast-button answerquestion" data-id="' + obj.question_id + '">' + M.util.get_string('js:answer', 'webcast', {}) + '</span>' +
+                '<span class="openwebinar-button answerquestion" data-id="' + obj.question_id + '">' + M.util.get_string('js:answer', 'openwebinar', {}) + '</span>' +
                 '</div>';
 
         } catch (e) {
@@ -1719,11 +1719,11 @@ M.mod_webcast.room = {
         this.log('add_userlist');
 
         // set userlist node prevent searching the dom again
-        this.nodeholder.userlist = Y.one('#webcast-userlist ul');
-        this.nodeholder.userlist_counter = Y.one('#webcast-usercounter');
+        this.nodeholder.userlist = Y.one('#openwebinar-userlist ul');
+        this.nodeholder.userlist_counter = Y.one('#openwebinar-usercounter');
 
         // add tinyscrollbar
-        var el = document.getElementById("webcast-userlist");
+        var el = document.getElementById("openwebinar-userlist");
         this.scrollbar_userlist = tinyscrollbar(el);
 
         // Userlist listener
@@ -1755,7 +1755,7 @@ M.mod_webcast.room = {
 
                 this.log(userobject);
 
-                li = '<li id="userlist-user-' + Number(userobject.userid) + '" class="webcast-' + this.alpha_numeric(userobject.usertype) + ' noSelect">';
+                li = '<li id="userlist-user-' + Number(userobject.userid) + '" class="openwebinar-' + this.alpha_numeric(userobject.usertype) + ' noSelect">';
 
                 if (this.options.showuserpicture) {
                     li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(userobject.userid) + '/f1.jpg" />';
@@ -1813,11 +1813,11 @@ M.mod_webcast.room = {
         "use strict";
         var filelist = '', i, obj, that = this;
 
-        this.nodeholder.filemanagerdialog = Y.one("#webcast-filemanager-dialog");
-        this.nodeholder.fileoverviewdialog = Y.one("#webcast-fileoverview-dialog");
-        var el = document.getElementById("webcast-fileoverview");
+        this.nodeholder.filemanagerdialog = Y.one("#openwebinar-filemanager-dialog");
+        this.nodeholder.fileoverviewdialog = Y.one("#openwebinar-fileoverview-dialog");
+        var el = document.getElementById("openwebinar-fileoverview");
         this.scrollbar_fileoverview = tinyscrollbar(el);
-        this.nodeholder.fileoverview = Y.one('#webcast-fileoverview ul');
+        this.nodeholder.fileoverview = Y.one('#openwebinar-fileoverview ul');
 
         Y.one('#add-file-btn').on('click', function () {
             this.log('Add files to the room');
@@ -1830,7 +1830,7 @@ M.mod_webcast.room = {
                     'sesskey': M.cfg.sesskey,
                     'action' : "add_file",
                     'extra1' : this.options.courseid,
-                    'extra2' : this.options.webcastid
+                    'extra2' : this.options.openwebinarid
                 },
                 form  : {
                     id: form
@@ -1872,7 +1872,7 @@ M.mod_webcast.room = {
         }, this);
 
         if (!this.options.is_ended) {
-            Y.one('#webcast-filemanager-btn').on('click', function () {
+            Y.one('#openwebinar-filemanager-btn').on('click', function () {
                 this.log('Filemanager');
                 if ((this.nodeholder.filemanagerdialog.get('offsetWidth') === 0 &&
                     this.nodeholder.filemanagerdialog.get('offsetHeight') === 0) ||
@@ -1888,10 +1888,10 @@ M.mod_webcast.room = {
                 this.scale_room();
             }, this);
         } else {
-            Y.one('#webcast-filemanager-btn').hide();
+            Y.one('#openwebinar-filemanager-btn').hide();
         }
 
-        Y.one('#webcast-fileoverview-btn').on('click', function () {
+        Y.one('#openwebinar-fileoverview-btn').on('click', function () {
             this.log('Filemanager');
             if ((this.nodeholder.fileoverviewdialog.get('offsetWidth') === 0 &&
                 this.nodeholder.fileoverviewdialog.get('offsetHeight') === 0) ||
@@ -1907,7 +1907,7 @@ M.mod_webcast.room = {
                         'sesskey': M.cfg.sesskey,
                         'action' : "list_all_files",
                         'extra1' : this.options.courseid,
-                        'extra2' : this.options.webcastid
+                        'extra2' : this.options.openwebinarid
                     },
                     on    : {
                         success: function (id, o) {
@@ -1922,15 +1922,15 @@ M.mod_webcast.room = {
                                     for (i in response.files) {
                                         if (response.files.hasOwnProperty(i)) {
                                             obj = response.files[i];
-                                            filelist += '<li class="webcast-file">' +
+                                            filelist += '<li class="openwebinar-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
-                                                '<span class="webcast-filename">' + that.alpha_numeric(obj.filename) + '</span>' +
-                                                '<span class="webcast-filesize">' + that.alpha_numeric(obj.filesize) + '</span>' +
-                                                '<span class="webcast-fileauthor">' + that.alpha_numeric(obj.author) + '</span>' +
-                                                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/webcast/download.php?' +
-                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.webcastid + '&extra1=' + that.options.courseid + '&' +
+                                                '<span class="openwebinar-filename">' + that.alpha_numeric(obj.filename) + '</span>' +
+                                                '<span class="openwebinar-filesize">' + that.alpha_numeric(obj.filesize) + '</span>' +
+                                                '<span class="openwebinar-fileauthor">' + that.alpha_numeric(obj.author) + '</span>' +
+                                                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/openwebinar/download.php?' +
+                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.openwebinarid + '&extra1=' + that.options.courseid + '&' +
                                                 'sesskey=' + M.cfg.sesskey +
-                                                '" class="webcast-download webcast-button">Download</a>' +
+                                                '" class="openwebinar-download openwebinar-button">Download</a>' +
                                                 '</li>';
                                         }
                                     }
@@ -1960,7 +1960,7 @@ M.mod_webcast.room = {
         // Close by clicking the header of dialog
         Y.one('body').delegate('click', function () {
             this.get('parentNode').hide();
-        }, '.webcast-dialog header');
+        }, '.openwebinar-dialog header');
 
         this.log('add_fileshare @todo');
     },
@@ -1972,7 +1972,7 @@ M.mod_webcast.room = {
         "use strict";
         window.onbeforeunload = function () {
             if (!this.options.preventclosewaring) {
-                return M.util.get_string('js:warning_message_closing_window', 'webcast', {});
+                return M.util.get_string('js:warning_message_closing_window', 'openwebinar', {});
             }
         };
     },
@@ -2000,11 +2000,11 @@ M.mod_webcast.room = {
             modal   : true,
             visible : false,
             render  : true,
-            srcNode : '#webcast-question-manager'
+            srcNode : '#openwebinar-question-manager'
         });
 
         // add click listener
-        Y.one('#webcast-viewquestion-btn').on('click', function () {
+        Y.one('#openwebinar-viewquestion-btn').on('click', function () {
             this.nodeholder.questionmanager.show();
             // load the question from the DB
             this.question_load_overview();
@@ -2015,7 +2015,7 @@ M.mod_webcast.room = {
             Y.one('#question-answer').hide();
             Y.one('#all-questions').show();
             that.question_load_overview();
-        }, '.webcast-back-to-questionoverview');
+        }, '.openwebinar-back-to-questionoverview');
 
         // view a question or answer if we aren't a teacher or broadcaster
         this.nodeholder.questionoverview.delegate('click', function () {
@@ -2041,13 +2041,13 @@ M.mod_webcast.room = {
                 });
 
                 // step 2 back to question type selector
-                Y.all('.webcast-button-previous-step2').on('click', function () {
+                Y.all('.openwebinar-button-previous-step2').on('click', function () {
                     Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
                     Y.one('#question-type-selector').show();
                 }, this);
 
                 // show the correct question type create form
-                Y.one('#webcast-button-next-step1').on('click', function () {
+                Y.one('#openwebinar-button-next-step1').on('click', function () {
                     Y.one('#question-type-selector').hide();
                     var value = Y.one('#question-type').get('value');
                     this.log(value);
@@ -2058,7 +2058,7 @@ M.mod_webcast.room = {
                 }, this);
 
                 // back to question overview
-                Y.one('#webcast-button-previous-step1').on('click', function () {
+                Y.one('#openwebinar-button-previous-step1').on('click', function () {
                     Y.one('#all-questions').show();
                     Y.one('#question-type-selector').hide();
                 }, this);
@@ -2112,7 +2112,7 @@ M.mod_webcast.room = {
             }
 
             // prevent submits on enter
-            Y.all('#webcast-question-manager form').on('submit', function (e) {
+            Y.all('#openwebinar-question-manager form').on('submit', function (e) {
                 e.preventDefault();
                 return false;
             });
@@ -2124,27 +2124,27 @@ M.mod_webcast.room = {
     question_clear_all_input: function () {
         "use strict";
         // empty all input
-        Y.all('#webcast-question-manager input[type="text"], #webcast-question-manager textarea').set('value', '');
+        Y.all('#openwebinar-question-manager input[type="text"], #openwebinar-question-manager textarea').set('value', '');
         // reset the borders
-        Y.all('#webcast-question-manager input[type="text"]').setStyles({'border': '1px solid red'});
+        Y.all('#openwebinar-question-manager input[type="text"]').setStyles({'border': '1px solid red'});
         // disable the next buttons
         Y.all('#open-add-btn , #truefalse-add-bt').addClass('disabled');
     },
 
     /**
-     * Get all the questions that belong to this webcast and check if its filled
+     * Get all the questions that belong to this openwebinar and check if its filled
      */
     question_load_overview: function () {
         "use strict";
         var that = this, html = '', i, question;
-        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+        Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
             data: {
                 'sesskey': M.cfg.sesskey,
                 'action' : "get_questions",
                 'extra1' : that.options.courseid,
-                'extra2' : that.options.webcastid
+                'extra2' : that.options.openwebinarid
             },
             on  : {
                 success: function (id, o) {
@@ -2160,7 +2160,7 @@ M.mod_webcast.room = {
                                     html += '<li class="' + ((!question.manager && !question.my_answer) ? 'unanswered' : '') + '">';
                                     html += '<span class="number">#' + i + '</span>';
                                     html += '<span class="name">' + question.name + '</span>';
-                                    html += '<span class="webcast-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'webcast', {}) + '</span>';
+                                    html += '<span class="openwebinar-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'openwebinar', {}) + '</span>';
                                     html += '</li>';
                                 }
                             }
@@ -2188,14 +2188,14 @@ M.mod_webcast.room = {
         "use strict";
         var that = this;
         //@todo check user type for which api we need to call
-        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+        Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
             data: {
                 'sesskey'   : M.cfg.sesskey,
                 'action'    : "get_question",
                 'extra1'    : that.options.courseid,
-                'extra2'    : that.options.webcastid,
+                'extra2'    : that.options.openwebinarid,
                 'questionid': questionid
             },
             on  : {
@@ -2238,7 +2238,7 @@ M.mod_webcast.room = {
         answerform.on('submit', function (e) {
             e.preventDefault();
 
-            Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+            Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
                 method: 'POST',
                 form  : {
                     id         : answerform,
@@ -2248,7 +2248,7 @@ M.mod_webcast.room = {
                     'sesskey': M.cfg.sesskey,
                     'action' : "add_answer",
                     'extra1' : that.options.courseid,
-                    'extra2' : that.options.webcastid
+                    'extra2' : that.options.openwebinarid
                 },
                 on    : {
                     success: function (id, o) {
@@ -2297,13 +2297,13 @@ M.mod_webcast.room = {
         "use strict";
         var that = this;
         if (this.nodeholder.noticebar === null) {
-            this.nodeholder.noticebar = Y.one('#webcast-noticebar');
+            this.nodeholder.noticebar = Y.one('#openwebinar-noticebar');
         }
 
         if ((this.nodeholder.noticebar.get('offsetWidth') === 0 && this.nodeholder.noticebar.get('offsetHeight') === 0) ||
             this.nodeholder.noticebar.get('display') === 'none') {
             // not visible we can show it directly
-            this.nodeholder.noticebar.setHTML(M.util.get_string('js:' + message, 'webcast', obj)).show();
+            this.nodeholder.noticebar.setHTML(M.util.get_string('js:' + message, 'openwebinar', obj)).show();
             setTimeout(function () {
                 that.nodeholder.noticebar.hide();
             }, 2000);
@@ -2322,7 +2322,7 @@ M.mod_webcast.room = {
     question_save     : function (questiontype) {
         "use strict";
         var formnode = Y.one('#question-type-' + questiontype + ' form'), that = this;
-        Y.io(M.cfg.wwwroot + "/mod/webcast/api.php", {
+        Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
             form  : {
                 id         : formnode,
@@ -2332,7 +2332,7 @@ M.mod_webcast.room = {
                 'sesskey'     : M.cfg.sesskey,
                 'action'      : "add_question",
                 'extra1'      : that.options.courseid,
-                'extra2'      : that.options.webcastid,
+                'extra2'      : that.options.openwebinarid,
                 'questiontype': questiontype
             },
             on    : {
@@ -2380,8 +2380,8 @@ M.mod_webcast.room = {
 
         // set elements one time
         if (this.nodeholder.userlist_viewport === null) {
-            this.nodeholder.userlist_viewport = Y.one('#webcast-userlist .viewport');
-            this.nodeholder.chatlist_viewport = Y.one('#webcast-chatlist .viewport');
+            this.nodeholder.userlist_viewport = Y.one('#openwebinar-userlist .viewport');
+            this.nodeholder.chatlist_viewport = Y.one('#openwebinar-chatlist .viewport');
         }
 
         this.log('scale_room for : ' + winWidth + 'x' + winHeight);
@@ -2410,13 +2410,13 @@ M.mod_webcast.room = {
             // 30% 70% - 200 for the other components
             wh = winHeight - ((36 * 2) + 50 + 100);
 
-            Y.one('#webcast-userlist .viewport').setStyles({
+            Y.one('#openwebinar-userlist .viewport').setStyles({
                 height: wh * 0.3
             });
             this.scrollbar_userlist.update();
 
             wh *= 0.7;
-            Y.one('#webcast-chatlist .viewport').setStyles({
+            Y.one('#openwebinar-chatlist .viewport').setStyles({
                 height: wh
             });
             this.scrollbar_chatlist.update('bottom');
@@ -2425,7 +2425,7 @@ M.mod_webcast.room = {
 
             // only chat
             wh = winHeight - ((36) + 50 + 100);
-            Y.one('#webcast-chatlist .viewport').setStyles({
+            Y.one('#openwebinar-chatlist .viewport').setStyles({
                 height: wh
             });
             this.scrollbar_chatlist.update('bottom');
@@ -2434,7 +2434,7 @@ M.mod_webcast.room = {
 
             // only userlist
             wh = winHeight - ((36) + 50 + 100);
-            Y.one('#webcast-userlist .viewport').setStyles({
+            Y.one('#openwebinar-userlist .viewport').setStyles({
                 height: wh
             });
             this.scrollbar_userlist.update('bottom');
@@ -2459,7 +2459,7 @@ M.mod_webcast.room = {
                 'margin-top': -(wh + 25)
             });
 
-            Y.one('#webcast-fileoverview .viewport').setStyles({
+            Y.one('#openwebinar-fileoverview .viewport').setStyles({
                 height: wh
             });
         }

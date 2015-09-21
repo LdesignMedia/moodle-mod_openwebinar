@@ -3,14 +3,14 @@
  *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package mod_webcast
+ * @package mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
 /*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio, countdown */
-M.mod_webcast = M.mod_webcast || {};
-M.mod_webcast.base = {
+M.mod_openwebinar = M.mod_openwebinar || {};
+M.mod_openwebinar.base = {
 
     /**
      * Webcast variables
@@ -74,7 +74,7 @@ M.mod_webcast.base = {
                 var ts = countdown(start, null, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
                 if ((ts.value > 0)) {
                     clearInterval(interval);
-                    window.location = M.cfg.wwwroot + "/mod/webcast/view.php?id=" + that.options.cmid;
+                    window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
                 } else {
                     timerspan.innerHTML = ts.toHTML("strong");
                 }

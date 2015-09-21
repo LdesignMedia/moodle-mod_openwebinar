@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 defined('MOODLE_INTERNAL') || die();
 
 final class cron {
@@ -74,20 +74,20 @@ final class cron {
     public function auto_close() {
         global $DB;
         $now = time();
-        $webcasts = $DB->get_records('webcast', array('is_ended' => 0));
-        if ($webcasts) {
-            foreach ($webcasts as $webcast) {
+        $openwebinars = $DB->get_records('openwebinar', array('is_ended' => 0));
+        if ($openwebinars) {
+            foreach ($openwebinars as $openwebinar) {
 
-                // we must end this webcast
-                if ($now > $webcast->timeopen + self::MAX_DURATION) {
+                // we must end this openwebinar
+                if ($now > $openwebinar->timeopen + self::MAX_DURATION) {
 
                     // set to closed
                     $obj = new \stdClass();
-                    $obj->id = $webcast->id;
+                    $obj->id = $openwebinar->id;
                     $obj->is_ended = 1;
-                    $DB->update_record('webcast', $obj);
+                    $DB->update_record('openwebinar', $obj);
 
-                    mtrace('Closed -> ' . $webcast->name);
+                    mtrace('Closed -> ' . $openwebinar->name);
                 }
             }
         }
@@ -98,10 +98,10 @@ final class cron {
      */
     public function reminder() {
         global $DB;
-        // get all webcast that aren't started
+        // get all openwebinar that aren't started
         mtrace('Check if we need send reminders');
         mtrace('Now: ' . date('d-m-Y H:i:s'));
-        $sql = 'SELECT * FROM {webcast} WHERE timeopen > :now';
+        $sql = 'SELECT * FROM {openwebinar} WHERE timeopen > :now';
         $results = $DB->get_records_sql($sql, array('now' => time()));
         if ($results) {
             foreach ($results as $result) {
@@ -119,47 +119,47 @@ final class cron {
     /**
      * Send a reminder
      *
-     * @param bool|false $webcast
+     * @param bool|false $openwebinar
      * @param int $number
      */
-    protected function reminder_send_invites($webcast = false, $number = 0) {
+    protected function reminder_send_invites($openwebinar = false, $number = 0) {
 
         global $DB;
         $remindersend = 'reminder_' . $number . '_send';
         $remindertime = 'reminder_' . $number;
 
         // skip there is no time set
-        if (empty($webcast->$remindertime)) {
+        if (empty($openwebinar->$remindertime)) {
             return;
         }
 
-        if ($webcast->$remindersend == 0) {
+        if ($openwebinar->$remindersend == 0) {
 
-            $sendtime = $webcast->timeopen - $webcast->$remindertime;
+            $sendtime = $openwebinar->timeopen - $openwebinar->$remindertime;
             mtrace('Step ' . $number . ' send on: ' . date('d-m-Y H:i:s', $sendtime));
 
             if ($sendtime <= time()) {
                 mtrace('Send: ' . $remindersend . ' / ' . $remindertime);
 
                 // get the broadcaster
-                $broadcaster = $DB->get_record('user', array('id' => $webcast->broadcaster), '*', MUST_EXIST);
+                $broadcaster = $DB->get_record('user', array('id' => $openwebinar->broadcaster), '*', MUST_EXIST);
 
                 // get students in the course
-                $students = helper::get_active_course_users($webcast->course);
+                $students = helper::get_active_course_users($openwebinar->course);
 
                 // get message
-//                $message = $DB->get_record('webcast_tpl', array(
-//                    'webcast_id' => $webcast->id,
+//                $message = $DB->get_record('openwebinar_tpl', array(
+//                    'openwebinar_id' => $openwebinar->id,
 //                    'name' => 'reminder'
 //                ), '*', IGNORE_MULTIPLE);
 //                if (!$message) {
                     // get the global message if there is no tpl
-                    $message = get_string('mail:reminder_message', 'webcast');
+                    $message = get_string('mail:reminder_message', 'openwebinar');
 //                }
 
                 // get url
-                $cm = get_coursemodule_from_instance('webcast', $webcast->id, $webcast->course, false, MUST_EXIST);
-                $url = new \moodle_url('/mod/webcast/view.php', array('id' => $cm->id));
+                $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
+                $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
 
                 foreach ($students as $student) {
 
@@ -172,35 +172,35 @@ final class cron {
                         '##broadcaster_fullname##',
                     ), array(
                         fullname($student),
-                        date('d-m-Y H:i', $webcast->timeopen),
-                        round($webcast->duration / 60),
+                        date('d-m-Y H:i', $openwebinar->timeopen),
+                        round($openwebinar->duration / 60),
                         $url,
-                        $webcast->name,
+                        $openwebinar->name,
                         fullname($broadcaster)
                     ), $message);
 
                     $eventdata = new \stdClass();
                     $eventdata->userfrom = $broadcaster;
                     $eventdata->userto = $student;
-                    $eventdata->subject = get_string('mail:reminder_subject', 'webcast', $webcast);
+                    $eventdata->subject = get_string('mail:reminder_subject', 'openwebinar', $openwebinar);
                     $eventdata->smallmessage = html_to_text($htmlmessage);
                     $eventdata->fullmessage = html_to_text($htmlmessage);
                     $eventdata->fullmessagehtml = $htmlmessage;
                     $eventdata->fullmessageformat = FORMAT_HTML;
 
                     $eventdata->name = 'reminder';
-                    $eventdata->component = 'mod_webcast';
+                    $eventdata->component = 'mod_openwebinar';
                     $eventdata->notification = 1;
                     $eventdata->contexturl = $url->out();
-                    $eventdata->contexturlname = $webcast->name;
+                    $eventdata->contexturlname = $openwebinar->name;
                     message_send($eventdata);
                 }
 
                 // save to DB to prevent sending again
                 $obj = new \stdClass();
-                $obj->id = $webcast->id;
+                $obj->id = $openwebinar->id;
                 $obj->$remindersend = 1;
-                $DB->update_record('webcast', $obj);
+                $DB->update_record('openwebinar', $obj);
 
             } else {
                 mtrace('....');

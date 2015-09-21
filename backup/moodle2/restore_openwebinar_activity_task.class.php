@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Restore task for the webcast activity module
+ * Restore task for the openwebinar activity module
  *
  * Provides all the settings and steps to perform complete restore of the activity.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/webcast/backup/moodle2/restore_webcast_stepslib.php');
+require_once($CFG->dirroot . '/mod/openwebinar/backup/moodle2/restore_openwebinar_stepslib.php');
 
-class restore_webcast_activity_task extends restore_activity_task {
+class restore_openwebinar_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have
@@ -44,7 +44,7 @@ class restore_webcast_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // We have just one structure step here.
-//        $this->add_step(new restore_webcast_activity_structure_step('webcast_structure', 'webcast.xml'));
+//        $this->add_step(new restore_openwebinar_activity_structure_step('openwebinar_structure', 'openwebinar.xml'));
     }
 
     /**
@@ -54,7 +54,7 @@ class restore_webcast_activity_task extends restore_activity_task {
     static public function define_decode_contents() {
         // $contents = array();
 
-        // $contents[] = new restore_decode_content('webcast', array('intro'), 'webcast');
+        // $contents[] = new restore_decode_content('openwebinar', array('intro'), 'openwebinar');
 
         // return $contents;
     }
@@ -66,8 +66,8 @@ class restore_webcast_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         //$rules = array();
 
-        //  $rules[] = new restore_decode_rule('webcastVIEWBYID', '/mod/webcast/view.php?id=$1', 'course_module');
-        // $rules[] = new restore_decode_rule('webcastINDEX', '/mod/webcast/index.php?id=$1', 'course');
+        //  $rules[] = new restore_decode_rule('openwebinarVIEWBYID', '/mod/openwebinar/view.php?id=$1', 'course_module');
+        // $rules[] = new restore_decode_rule('openwebinarINDEX', '/mod/openwebinar/index.php?id=$1', 'course');
 
 //        return $rules;
 
@@ -76,15 +76,15 @@ class restore_webcast_activity_task extends restore_activity_task {
     /**
      * Define the restore log rules that will be applied
      * by the {@link restore_logs_processor} when restoring
-     * webcast logs. It must return one array
+     * openwebinar logs. It must return one array
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
 //        $rules = array();
 //
-//        $rules[] = new restore_log_rule('webcast', 'add', 'view.php?id={course_module}', '{webcast}');
-//        $rules[] = new restore_log_rule('webcast', 'update', 'view.php?id={course_module}', '{webcast}');
-//        $rules[] = new restore_log_rule('webcast', 'view', 'view.php?id={course_module}', '{webcast}');
+//        $rules[] = new restore_log_rule('openwebinar', 'add', 'view.php?id={course_module}', '{openwebinar}');
+//        $rules[] = new restore_log_rule('openwebinar', 'update', 'view.php?id={course_module}', '{openwebinar}');
+//        $rules[] = new restore_log_rule('openwebinar', 'view', 'view.php?id={course_module}', '{openwebinar}');
 
 //        return $rules;
     }
@@ -102,7 +102,7 @@ class restore_webcast_activity_task extends restore_activity_task {
     static public function define_restore_log_rules_for_course() {
 //        $rules = array();
 //
-//        $rules[] = new restore_log_rule('webcast', 'view all', 'index.php?id={course}', null);
+//        $rules[] = new restore_log_rule('openwebinar', 'view all', 'index.php?id={course}', null);
 //
 //        return $rules;
     }

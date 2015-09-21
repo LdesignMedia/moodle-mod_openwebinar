@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The main webcast configuration form
+ * The main openwebinar configuration form
  *
  * It uses the standard core Moodle formslib. For more info about them, please
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -36,13 +36,13 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
-class mod_webcast_mod_form extends moodleform_mod {
+class mod_openwebinar_mod_form extends moodleform_mod {
 
-    /** @var array options to be used with date_time_selector fields in the webcast. */
+    /** @var array options to be used with date_time_selector fields in the openwebinar. */
     public static $datefieldoptions = array('optional' => false, 'step' => 1);
 
     /**
@@ -54,13 +54,13 @@ class mod_webcast_mod_form extends moodleform_mod {
         $mform = $this->_form;
 
         // Load default config
-        $config = get_config('webcast');
+        $config = get_config('openwebinar');
 
         // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('webcastname', 'webcast'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('openwebinarname', 'openwebinar'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -68,56 +68,56 @@ class mod_webcast_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'webcastname', 'webcast');
+        $mform->addHelpButton('name', 'openwebinarname', 'openwebinar');
 
         // Adding the standard "intro" and "introformat" fields.
         $this->add_intro_editor();
 
-        $mform->addElement('header', 'timing', get_string('mod_setting:timing', 'webcast'));
+        $mform->addElement('header', 'timing', get_string('mod_setting:timing', 'openwebinar'));
 
         // Open and close dates.
-        $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'webcast'), self::$datefieldoptions);
-        $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'webcast');
+        $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'openwebinar'), self::$datefieldoptions);
+        $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'openwebinar');
 
-        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'webcast') , array('defaultunit' => 3600 , 'optional' => false));
-        $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'webcast');
+        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'openwebinar') , array('defaultunit' => 3600 , 'optional' => false));
+        $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'openwebinar');
         $mform->setDefault('duration', 3600);
 
-        $mform->addElement('header', 'settings', get_string('mod_setting:settings', 'webcast'));
-        $mform->addElement('selectyesno', 'stream', get_string('setting:stream', 'webcast'));
+        $mform->addElement('header', 'settings', get_string('mod_setting:settings', 'openwebinar'));
+        $mform->addElement('selectyesno', 'stream', get_string('setting:stream', 'openwebinar'));
         $mform->setDefault('stream', $config->stream);
-        $mform->addElement('selectyesno', 'chat', get_string('setting:chat', 'webcast'));
+        $mform->addElement('selectyesno', 'chat', get_string('setting:chat', 'openwebinar'));
         $mform->setDefault('chat', $config->chat);
-        $mform->addElement('selectyesno', 'filesharing', get_string('setting:filesharing', 'webcast'));
+        $mform->addElement('selectyesno', 'filesharing', get_string('setting:filesharing', 'openwebinar'));
         $mform->setDefault('filesharing', $config->filesharing);
-        $mform->addElement('selectyesno', 'filesharing_student', get_string('setting:filesharing_student', 'webcast'));
+        $mform->addElement('selectyesno', 'filesharing_student', get_string('setting:filesharing_student', 'openwebinar'));
         $mform->setDefault('filesharing_student', $config->filesharing_student);
-        $mform->addElement('selectyesno', 'showuserpicture', get_string('setting:showuserpicture', 'webcast'));
+        $mform->addElement('selectyesno', 'showuserpicture', get_string('setting:showuserpicture', 'openwebinar'));
         $mform->setDefault('showuserpicture', $config->showuserpicture);
-        $mform->addElement('selectyesno', 'userlist', get_string('setting:userlist', 'webcast'));
+        $mform->addElement('selectyesno', 'userlist', get_string('setting:userlist', 'openwebinar'));
         $mform->setDefault('userlist', $config->userlist);
 
-        $mform->addElement('selectyesno', 'ajax_timer', get_string('setting:ajax_timer', 'webcast'));
+        $mform->addElement('selectyesno', 'ajax_timer', get_string('setting:ajax_timer', 'openwebinar'));
         $mform->setDefault('ajax_timer', $config->ajax_timer);
 
-        $mform->addElement('selectyesno', 'emoticons', get_string('setting:emoticons', 'webcast'));
+        $mform->addElement('selectyesno', 'emoticons', get_string('setting:emoticons', 'openwebinar'));
         $mform->setDefault('emoticons', $config->emoticons);
 
-        $mform->addElement('selectyesno', 'hls', get_string('setting:hls', 'webcast'));
+        $mform->addElement('selectyesno', 'hls', get_string('setting:hls', 'openwebinar'));
         $mform->setDefault('hls', $config->hls);
 
-        $mform->addElement('header', 'broadcasterheader', get_string('mod_setting:broadcaster', 'webcast'));
-        $this->add_webcast_user_selector();
+        $mform->addElement('header', 'broadcasterheader', get_string('mod_setting:broadcaster', 'openwebinar'));
+        $this->add_openwebinar_user_selector();
 
         // add broadcastkey
         if (empty($this->current->instance)) {
 
-            $key = \mod_webcast\helper::generate_key();
+            $key = \mod_openwebinar\helper::generate_key();
 
             $obj = new stdClass();
             $obj->broadcastkey = $key;
 
-            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'webcast'), get_string('mod_setting:broadcastkey_desc', 'webcast', $obj));
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'), get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
 
             // add value to the form
             $mform->addElement('hidden', 'broadcastkey');
@@ -127,15 +127,15 @@ class mod_webcast_mod_form extends moodleform_mod {
         } else {
             $obj = new stdClass();
             $obj->broadcastkey = $this->current->broadcastkey;
-            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'webcast'), get_string('mod_setting:broadcastkey_desc', 'webcast', $obj));
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'), get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
         }
 
-        $mform->addElement('header', 'reminders', get_string('mod_setting:reminders', 'webcast'));
-        $mform->addElement('duration', 'reminder_1', get_string('setting:reminder_1', 'webcast'));
+        $mform->addElement('header', 'reminders', get_string('mod_setting:reminders', 'openwebinar'));
+        $mform->addElement('duration', 'reminder_1', get_string('setting:reminder_1', 'openwebinar'));
         $mform->setDefault('reminder_1', $config->reminder_1);
-        $mform->addElement('duration', 'reminder_2', get_string('setting:reminder_2', 'webcast'));
+        $mform->addElement('duration', 'reminder_2', get_string('setting:reminder_2', 'openwebinar'));
         $mform->setDefault('reminder_2', $config->reminder_2);
-        $mform->addElement('duration', 'reminder_3', get_string('setting:reminder_3', 'webcast'));
+        $mform->addElement('duration', 'reminder_3', get_string('setting:reminder_3', 'openwebinar'));
         $mform->setDefault('reminder_3', $config->reminder_3);
 
         // Add standard grading elements.
@@ -151,9 +151,9 @@ class mod_webcast_mod_form extends moodleform_mod {
     /**
      * add a select element for a broadcaster
      */
-    protected function add_webcast_user_selector() {
+    protected function add_openwebinar_user_selector() {
         global $DB;
-        $array = array('' => get_string('mod_setting:make_a_selection', 'webcast'));
+        $array = array('' => get_string('mod_setting:make_a_selection', 'openwebinar'));
         $rs = $DB->get_recordset_sql('SELECT {user}.id , {user}.firstname ,{user}.lastname
                                         FROM {user}
                                         WHERE {user}.deleted = 0
@@ -162,7 +162,7 @@ class mod_webcast_mod_form extends moodleform_mod {
             $array[$user->id] = $user->firstname . " " . $user->lastname . " ({$user->id})";
         }
         $rs->close();
-        $this->_form->addElement('select', 'broadcaster', get_string('mod_setting:broadcaster', 'webcast'), $array);
+        $this->_form->addElement('select', 'broadcaster', get_string('mod_setting:broadcaster', 'openwebinar'), $array);
         $this->_form->addRule('broadcaster', null, 'required', null, 'client');
     }
 
@@ -171,7 +171,7 @@ class mod_webcast_mod_form extends moodleform_mod {
 
         // Make sure that time is yet to come
 //        if(time() > $data['timeopen']){
-//            $errors['timeopen'] = get_string('error:time_passed' , 'webcast');
+//            $errors['timeopen'] = get_string('error:time_passed' , 'openwebinar');
 //        }
 
         return $errors;

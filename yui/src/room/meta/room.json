@@ -1,5 +1,5 @@
 {
-  "moodle-mod_webcast-base": {
+  "moodle-mod_openwebinar-base": {
     "requires": [
       "base",
       "node",

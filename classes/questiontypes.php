@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -121,12 +121,12 @@ abstract class questiontypes {
     }
 
     /**
-     * The question webcast_id
+     * The question openwebinar_id
      *
      * @return int
      */
-    public function get_webcast_id() {
-        return !empty($this->questionrecord->webcast_id) ? $this->questionrecord->webcast_id : 0;
+    public function get_openwebinar_id() {
+        return !empty($this->questionrecord->openwebinar_id) ? $this->questionrecord->openwebinar_id : 0;
     }
 
     /**
@@ -136,7 +136,7 @@ abstract class questiontypes {
      * @throws \coding_exception
      */
     protected function render_back_link() {
-        return \html_writer::span(get_string('btn:back', 'webcast'), 'btn webcast-back-to-questionoverview');
+        return \html_writer::span(get_string('btn:back', 'openwebinar'), 'btn openwebinar-back-to-questionoverview');
     }
 
     /**
@@ -162,7 +162,7 @@ abstract class questiontypes {
      */
     protected function get_all_answers($questionid = 0) {
         global $DB;
-        $answers = $DB->get_records('webcast_question_answer', array('question_id' => $questionid), 'id DESC');
+        $answers = $DB->get_records('openwebinar_question_answer', array('question_id' => $questionid), 'id DESC');
 
         //@todo recordset is possible a faster method
         foreach ($answers as &$answer) {
@@ -188,7 +188,7 @@ abstract class questiontypes {
         }
 
         // check if we have the answer in the DB
-        $answer = $DB->get_record('webcast_question_answer', array(
+        $answer = $DB->get_record('openwebinar_question_answer', array(
             'user_id' => $USER->id,
             'question_id' => $this->get_id()
         ));
@@ -248,18 +248,18 @@ abstract class questiontypes {
     public function save_user_input() {
         global $DB, $USER;
 
-        $result = $DB->get_record('webcast_question_answer', array(
+        $result = $DB->get_record('openwebinar_question_answer', array(
             'question_id' => $this->get_id(),
             'user_id' => $USER->id
         ), 'id', IGNORE_MULTIPLE);
         if ($result && !$this->allowoverideanswer) {
-            throw new \Exception(get_string('error:answer_already_saved', 'webcast'));
+            throw new \Exception(get_string('error:answer_already_saved', 'openwebinar'));
         }
 
         // build answer record
         $obj = new \stdClass();
         $obj->user_id = $USER->id;
-        $obj->webcast_id = $this->get_webcast_id();
+        $obj->openwebinar_id = $this->get_openwebinar_id();
         $obj->question_id = $this->get_id();
 
         // serialize form input
@@ -268,13 +268,13 @@ abstract class questiontypes {
         // if its allowed to override previous answer
         if ($result) {
             $obj->id = $result->id;
-            $DB->update_record('webcast_question_answer', $obj);
+            $DB->update_record('openwebinar_question_answer', $obj);
 
             return $result->id;
         }
 
         $obj->added_on = time();
 
-        return $DB->insert_record('webcast_question_answer', $obj);
+        return $DB->insert_record('openwebinar_question_answer', $obj);
     }
 }

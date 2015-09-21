@@ -19,7 +19,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
@@ -48,12 +48,12 @@ $extra1 = optional_param('extra1', false, PARAM_TEXT);
 $extra2 = optional_param('extra2', false, PARAM_TEXT);
 
 // Load plugin config
-$config = get_config('webcast');
+$config = get_config('openwebinar');
 
-$PAGE->set_url('/mod/webcast/api.php');
+$PAGE->set_url('/mod/openwebinar/api.php');
 
 // Load the class
-$api = new \mod_webcast\api();
+$api = new \mod_openwebinar\api();
 $api->setSesskey($sesskey);
 $api->setExtra1($extra1);
 $api->setExtra2($extra2);

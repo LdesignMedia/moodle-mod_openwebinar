@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_webcast instance list viewed event.
+ * The mod_openwebinar instance list viewed event.
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
 
-namespace mod_webcast\event;
+namespace mod_openwebinar\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_webcast instance list viewed event class.
+ * The mod_openwebinar instance list viewed event class.
  */
 class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
 }

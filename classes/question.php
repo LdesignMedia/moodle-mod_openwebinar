@@ -19,11 +19,11 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast;
+namespace mod_openwebinar;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -56,15 +56,15 @@ class question {
      *
      * @var object
      */
-    protected $webcast = false;
+    protected $openwebinar = false;
 
     /**
-     * Set webcast
+     * Set openwebinar
      *
-     * @param object $webcast
+     * @param object $openwebinar
      */
-    public function __construct($webcast) {
-        $this->webcast = (object)$webcast;
+    public function __construct($openwebinar) {
+        $this->openwebinar = (object)$openwebinar;
     }
 
     /**
@@ -80,14 +80,14 @@ class question {
 
         global $DB , $USER;
         $obj = new \stdClass();
-        $obj->webcast_id = $this->webcast->id;
+        $obj->openwebinar_id = $this->openwebinar->id;
         $obj->added_on = time();
         $obj->created_by = $USER->id;
         $obj->question_type = (int)$type;
         $obj->question_data = serialize($data);
         $obj->question_users = serialize($users);
 
-        return $DB->insert_record('webcast_question', $obj);
+        return $DB->insert_record('openwebinar_question', $obj);
     }
 
     /**
@@ -165,22 +165,22 @@ class question {
      */
     public function delete($questionid = 0) {
         global $DB;
-        $DB->delete_records('webcast_question', array('id' => $questionid));
-        $DB->delete_records('webcast_question_answer', array('question_id' => $questionid));
+        $DB->delete_records('openwebinar_question', array('id' => $questionid));
+        $DB->delete_records('openwebinar_question_answer', array('question_id' => $questionid));
     }
 
     /**
-     * Get all questions from this webcast
+     * Get all questions from this openwebinar
      *
      * @return bool|array
      */
     public function get_all_question() {
         global $DB;
-        $questions = $DB->get_records('webcast_question', array('webcast_id' => $this->webcast->id), 'added_on ASC');
+        $questions = $DB->get_records('openwebinar_question', array('openwebinar_id' => $this->openwebinar->id), 'added_on ASC');
 
         if ($questions) {
             foreach ($questions as $id => $question) {
-                $class = '\mod_webcast\questiontypes\\' . $this->question_type_int_to_string($question->question_type);
+                $class = '\mod_openwebinar\questiontypes\\' . $this->question_type_int_to_string($question->question_type);
                 $questions[$id] = new $class($question, false, true);
             }
         }
@@ -197,9 +197,9 @@ class question {
      */
     public function get_question_by_id($questionid = 0) {
         global $DB;
-        $question = $DB->get_record('webcast_question', array('id' => $questionid, 'webcast_id' => $this->webcast->id));
+        $question = $DB->get_record('openwebinar_question', array('id' => $questionid, 'openwebinar_id' => $this->openwebinar->id));
         if ($question) {
-            $class = '\mod_webcast\questiontypes\\' . $this->question_type_int_to_string($question->question_type);
+            $class = '\mod_openwebinar\questiontypes\\' . $this->question_type_int_to_string($question->question_type);
             $question = new $class($question, false, true);
         }
 
@@ -216,7 +216,7 @@ class question {
     public function get_answers($questionid = 0) {
         global $DB;
 
-        $sql = 'SELECT a.*,u.firstname, u.lastname FROM {webcast_question_answer} a
+        $sql = 'SELECT a.*,u.firstname, u.lastname FROM {openwebinar_question_answer} a
                 JOIN {user} u ON u.id = a.user_id
                 WHERE a.question_id = :question_id
                 ORDER BY id DESC';

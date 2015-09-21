@@ -21,7 +21,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -34,19 +34,19 @@ require_course_login($course);
 $params = array(
     'context' => context_course::instance($course->id)
 );
-$event = \mod_webcast\event\course_module_instance_list_viewed::create($params);
+$event = \mod_openwebinar\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
-$strname = get_string('modulenameplural', 'mod_webcast');
-$PAGE->set_url('/mod/webcast/index.php', array('id' => $id));
+$strname = get_string('modulenameplural', 'mod_openwebinar');
+$PAGE->set_url('/mod/openwebinar/index.php', array('id' => $id));
 $PAGE->navbar->add($strname);
 $PAGE->set_title("$course->shortname: $strname");
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('incourse');
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strname);
-if (! $webcasts = get_all_instances_in_course('webcast', $course)) {
-    notice(get_string('nowebcasts', 'webcast'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (! $openwebinars = get_all_instances_in_course('openwebinar', $course)) {
+    notice(get_string('noopenwebinars', 'openwebinar'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 $usesections = course_format_uses_sections($course->format);
 $table = new html_table();
@@ -61,7 +61,7 @@ if ($usesections) {
 }
 $modinfo = get_fast_modinfo($course);
 $currentsection = '';
-foreach ($modinfo->instances['webcast'] as $cm) {
+foreach ($modinfo->instances['openwebinar'] as $cm) {
     $row = array();
     if ($usesections) {
         if ($cm->sectionnum !== $currentsection) {

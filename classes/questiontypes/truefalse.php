@@ -19,14 +19,14 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast\questiontypes;
+namespace mod_openwebinar\questiontypes;
 
-use mod_webcast\question;
-use mod_webcast\questiontypes;
+use mod_openwebinar\question;
+use mod_openwebinar\questiontypes;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,10 +61,10 @@ class truefalse extends questiontypes {
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <select name="answer">
-                        <option value="yes" '.($answer == 'yes' ? 'selected' : '').'>'.get_string('yes' , 'webcast').'</option>
-                        <option value="no" '.($answer == 'no' ? 'selected' : '').'>'.get_string('no' , 'webcast').'</option>
+                        <option value="yes" '.($answer == 'yes' ? 'selected' : '').'>'.get_string('yes' , 'openwebinar').'</option>
+                        <option value="no" '.($answer == 'no' ? 'selected' : '').'>'.get_string('no' , 'openwebinar').'</option>
                     </select>
-                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'webcast') . '" class="btn-primary"/>
+                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '" class="btn-primary"/>
                 </form>';
     }
 
@@ -95,7 +95,7 @@ class truefalse extends questiontypes {
         if (empty($this->postdata->answer) && ($this->postdata->answer !== 'yes' && $this->postdata->answer !== 'no')) {
             $return = array(
                 'status' => false,
-                'error' => get_string('error:empty_not_allowed', 'webcast')
+                'error' => get_string('error:empty_not_allowed', 'openwebinar')
             );
         }
 
@@ -125,11 +125,11 @@ class truefalse extends questiontypes {
             foreach ($answers as $answer) {
                     $return .= '<div class="question-answer open">
                     <span class="fullname">' . $answer->firstname . ' ' . $answer->lastname . '</span>
-                    <p class="answer">' . get_string($answer->answer_data->answer, 'webcast') . '</p>
+                    <p class="answer">' . get_string($answer->answer_data->answer, 'openwebinar') . '</p>
                 </div>';
             }
         } else {
-            $return .= '<span class="webcast-no-result">' . get_string('error:no_result', 'webcast') . '</span>';
+            $return .= '<span class="openwebinar-no-result">' . get_string('error:no_result', 'openwebinar') . '</span>';
         }
 
         return $return;

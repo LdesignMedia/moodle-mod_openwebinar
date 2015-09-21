@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * If webcast is available this will be the page you load
+ * If openwebinar is available this will be the page you load
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
@@ -27,16 +27,16 @@ require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
-$n = optional_param('n', 0, PARAM_INT);  // ... webcast instance ID - it should be named as the first character of the module.
+$n = optional_param('n', 0, PARAM_INT);  // ... openwebinar instance ID - it should be named as the first character of the module.
 
 if ($id) {
-    $cm = get_coursemodule_from_id('webcast', $id, 0, false, MUST_EXIST);
+    $cm = get_coursemodule_from_id('openwebinar', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $webcast = $DB->get_record('webcast', array('id' => $cm->instance), '*', MUST_EXIST);
+    $openwebinar = $DB->get_record('openwebinar', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($n) {
-    $webcast = $DB->get_record('webcast', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $webcast->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('webcast', $webcast->id, $course->id, false, MUST_EXIST);
+    $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
@@ -46,46 +46,46 @@ require_login($course, true, $cm);
 // get context
 $context = context_module::instance($cm->id);
 
-$event = \mod_webcast\event\course_module_viewed::create(array(
+$event = \mod_openwebinar\event\course_module_viewed::create(array(
     'objectid' => $PAGE->cm->instance,
     'context' => $PAGE->context,
 ));
 $event->add_record_snapshot('course', $PAGE->course);
-$event->add_record_snapshot($PAGE->cm->modname, $webcast);
+$event->add_record_snapshot($PAGE->cm->modname, $openwebinar);
 $event->trigger();
 
 // Print the page header.
-$PAGE->set_url('/mod/webcast/view_webcast.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($webcast->name));
+$PAGE->set_url('/mod/openwebinar/view_openwebinar.php', array('id' => $cm->id));
+$PAGE->set_title(format_string($openwebinar->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->add_body_class('moodlefreak-webcast-room');
+$PAGE->add_body_class('moodlefreak-openwebinar-room');
 $PAGE->set_pagelayout('embedded');
 
 // Load plugin config
-$config = get_config('webcast');
+$config = get_config('openwebinar');
 
 // Permissions
-$permissions = \mod_webcast\helper::get_permissions($PAGE->context, $webcast);
+$permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
 // Set user online status
-\mod_webcast\helper::set_user_online_status($webcast->id);
+\mod_openwebinar\helper::set_user_online_status($openwebinar->id);
 
-// Convert webcast data to JS
-$opts = (array)$webcast;
+// Convert openwebinar data to JS
+$opts = (array)$openwebinar;
 $opts['userid'] = $USER->id;
 $opts['is_broadcaster'] = $permissions->broadcaster;
 
 // Set booleans  / convert int to bool
-$opts['userlist'] = ($webcast->userlist == 1);
-$opts['filesharing'] = ($webcast->filesharing == 1);
-$opts['filesharing_student'] = ($webcast->filesharing_student == 1);
-$opts['stream'] = ($webcast->stream == 1);
-$opts['showuserpicture'] = ($webcast->showuserpicture == 1);
-$opts['chat'] = ($webcast->chat == 1);
-$opts['is_ended'] = ($webcast->is_ended == 1);
-$opts['hls'] = ($webcast->hls == 1);
-$opts['ajax_timer'] = ($webcast->ajax_timer == 1);
-$opts['emoticons'] = ($webcast->emoticons == 1);
+$opts['userlist'] = ($openwebinar->userlist == 1);
+$opts['filesharing'] = ($openwebinar->filesharing == 1);
+$opts['filesharing_student'] = ($openwebinar->filesharing_student == 1);
+$opts['stream'] = ($openwebinar->stream == 1);
+$opts['showuserpicture'] = ($openwebinar->showuserpicture == 1);
+$opts['chat'] = ($openwebinar->chat == 1);
+$opts['is_ended'] = ($openwebinar->is_ended == 1);
+$opts['hls'] = ($openwebinar->hls == 1);
+$opts['ajax_timer'] = ($openwebinar->ajax_timer == 1);
+$opts['emoticons'] = ($openwebinar->emoticons == 1);
 $opts['viewhistory'] = $permissions->history;
 $opts['questions'] = true; // @todo make this optional to use the question manager
 
@@ -93,12 +93,12 @@ $opts['fullname'] = fullname($USER);
 $opts['debugjs'] = ($config->debugjs == 1);
 $opts['cmid'] = $cm->id;
 $opts['courseid'] = $course->id;
-$opts['webcastid'] = $webcast->id;
+$opts['openwebinarid'] = $openwebinar->id;
 $opts['streaming_server'] = $config->streaming_server;
 $opts['chat_server'] = $config->chat_server;
 $opts['shared_secret'] = $config->shared_secret;
-$opts['usertype'] = \mod_webcast\helper::get_usertype($USER, $permissions);
-$opts['ajax_path'] = $CFG->wwwroot . '/mod/webcast/api.php';
+$opts['usertype'] = \mod_openwebinar\helper::get_usertype($USER, $permissions);
+$opts['ajax_path'] = $CFG->wwwroot . '/mod/openwebinar/api.php';
 unset($opts['intro']);
 
 if (!$opts['is_broadcaster']) {
@@ -106,27 +106,27 @@ if (!$opts['is_broadcaster']) {
 }
 
 // VIDEO Player
-$PAGE->requires->js('/mod/webcast/javascript/video-js/video.js', true);
+$PAGE->requires->js('/mod/openwebinar/javascript/video-js/video.js', true);
 
 if ($opts['hls']) {
     // Only needed for fully support HLS
-    $PAGE->requires->js('/mod/webcast/javascript/video-js/videojs-media-sources.js', true);
-    $PAGE->requires->js('/mod/webcast/javascript/video-js/videojs.hls.min.js', true);
+    $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs-media-sources.js', true);
+    $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs.hls.min.js', true);
 }
 // Base videoJS to accept the rtmp stream
-$PAGE->requires->css('/mod/webcast/javascript/video-js/video-js.min.css');
+$PAGE->requires->css('/mod/openwebinar/javascript/video-js/video-js.min.css');
 
 // Emoticons
-$PAGE->requires->css('/mod/webcast/stylesheet/emoticons.css');
+$PAGE->requires->css('/mod/openwebinar/stylesheet/emoticons.css');
 
 // Custom scrollbar
-$PAGE->requires->js('/mod/webcast/javascript/tinyscrollbar.min.js', true);
+$PAGE->requires->js('/mod/openwebinar/javascript/tinyscrollbar.min.js', true);
 
 // Socket.io script
-$PAGE->requires->js('/mod/webcast/javascript/socket.io-1.3.5.js', true);
+$PAGE->requires->js('/mod/openwebinar/javascript/socket.io-1.3.5.js', true);
 
 // Room js, most of logic is here
-$PAGE->requires->yui_module('moodle-mod_webcast-room', 'M.mod_webcast.room.init', array($opts));
+$PAGE->requires->yui_module('moodle-mod_openwebinar-room', 'M.mod_openwebinar.room.init', array($opts));
 
 // Language strings
 $PAGE->requires->strings_for_js(array(
@@ -140,7 +140,7 @@ $PAGE->requires->strings_for_js(array(
     'js:system_user',
     'js:warning_message_closing_window',
     'js:error_logout_or_lostconnection',
-    'js:ending_webcast',
+    'js:ending_openwebinar',
     'js:dialog_ending_text',
     'js:dialog_ending_btn',
     'js:ended',
@@ -151,19 +151,19 @@ $PAGE->requires->strings_for_js(array(
     'js:answer',
     'js:added_answer',
     'js:my_answer_saved',
-), 'webcast');
+), 'openwebinar');
 
 /**
  * Renderer
  *
- * @var mod_webcast_renderer $renderer
+ * @var mod_openwebinar_renderer $renderer
  */
-$renderer = $PAGE->get_renderer('mod_webcast');
+$renderer = $PAGE->get_renderer('mod_openwebinar');
 
 if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) && $USER->id > 1) {
-    $form = new \mod_webcast\formfilemanager("", array('context' => $context));
+    $form = new \mod_openwebinar\formfilemanager("", array('context' => $context));
     $data = new stdClass();
-    file_prepare_standard_filemanager($data, 'files', \mod_webcast\helper::get_file_options($context), $context, 'mod_webcast', 'attachments');
+    file_prepare_standard_filemanager($data, 'files', \mod_openwebinar\helper::get_file_options($context), $context, 'mod_openwebinar', 'attachments');
 }
 
 // still here? we should mark it for course completion if possible
@@ -176,43 +176,43 @@ if ($completion->is_enabled($cm)) {
 // Output starts here.
 echo $OUTPUT->header();
 ?>
-    <div id="webcast-loading"></div>
-    <div id="webcast-holder" class="noSelect">
-        <section id="webcast-topbar">
-            <div id="webcast-topbar-left">
-                <div id="webcast-menu">
+    <div id="openwebinar-loading"></div>
+    <div id="openwebinar-holder" class="noSelect">
+        <section id="openwebinar-topbar">
+            <div id="openwebinar-topbar-left">
+                <div id="openwebinar-menu">
                     <span class="arrow">&#x25BA;</span>
-                    <?php echo get_string('menu', 'webcast') ?>
+                    <?php echo get_string('menu', 'openwebinar') ?>
                 </div>
             </div>
-            <div id="webcast-topbar-right">
+            <div id="openwebinar-topbar-right">
                 <?php if ($opts['showuserpicture']): ?>
                     <img src="<?php echo $CFG->wwwroot ?>/user/pix.php?file=/<?php echo $USER->id ?>/f1.jpg"/>
                 <?php endif ?>
                 <span class="fullname"><?php echo fullname($USER) ?> </span>
-                <span class="usertype"><?php echo get_string($opts['usertype'], 'webcast') ?></span>
+                <span class="usertype"><?php echo get_string($opts['usertype'], 'openwebinar') ?></span>
             </div>
         </section>
-        <section id="webcast-left-menu" style="display: none">
+        <section id="openwebinar-left-menu" style="display: none">
             <ul>
-                <li class="header"><?php echo get_string('opt:header_general', 'webcast') ?></li>
+                <li class="header"><?php echo get_string('opt:header_general', 'openwebinar') ?></li>
                 <ul>
                     <li>
                         <div class="question">
-                            <?php echo get_string('opt:stream', 'webcast') ?>
+                            <?php echo get_string('opt:stream', 'openwebinar') ?>
                         </div>
                         <div class="switch">
-                            <input id="stream" class="webcast-toggle" type="checkbox" checked>
+                            <input id="stream" class="openwebinar-toggle" type="checkbox" checked>
                             <label for="stream"></label>
                         </div>
                     </li>
                     <?php if ($opts['userlist'] && !$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:userlist', 'webcast') ?>
+                                <?php echo get_string('opt:userlist', 'openwebinar') ?>
                             </div>
                             <div class="switch">
-                                <input id="userlist" class="webcast-toggle" type="checkbox" checked>
+                                <input id="userlist" class="openwebinar-toggle" type="checkbox" checked>
                                 <label for="userlist"></label>
                             </div>
                         </li>
@@ -220,82 +220,82 @@ echo $OUTPUT->header();
                     <?php if (!$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:chat_sound', 'webcast') ?>
+                                <?php echo get_string('opt:chat_sound', 'openwebinar') ?>
                             </div>
                             <div class="switch">
-                                <input id="sound" class="webcast-toggle" type="checkbox" checked>
+                                <input id="sound" class="openwebinar-toggle" type="checkbox" checked>
                                 <label for="sound"></label>
                             </div>
                         </li>
                     <?php endif; ?>
                 </ul>
                 <?php if ($permissions->broadcaster && !$opts['is_ended']): ?>
-                    <li class="header"><?php echo get_string('opt:header_broadcaster', 'webcast') ?></li>
+                    <li class="header"><?php echo get_string('opt:header_broadcaster', 'openwebinar') ?></li>
                     <ul>
                         <li class="text">
-                            <?php echo get_string('text:broadcaster_help', 'webcast', $webcast) ?>
+                            <?php echo get_string('text:broadcaster_help', 'openwebinar', $openwebinar) ?>
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_guests', 'webcast') ?>
+                                <?php echo get_string('opt:mute_guests', 'openwebinar') ?>
                             </div>
                             <div class="switch">
-                                <input id="mute_guest" class="webcast-toggle" type="checkbox" checked>
+                                <input id="mute_guest" class="openwebinar-toggle" type="checkbox" checked>
                                 <label for="mute_guest"></label>
                             </div>
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_students', 'webcast') ?>
+                                <?php echo get_string('opt:mute_students', 'openwebinar') ?>
                             </div>
                             <div class="switch">
-                                <input id="mute_student" class="webcast-toggle" type="checkbox">
+                                <input id="mute_student" class="openwebinar-toggle" type="checkbox">
                                 <label for="mute_student"></label>
                             </div>
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_teachers', 'webcast') ?>
+                                <?php echo get_string('opt:mute_teachers', 'openwebinar') ?>
                             </div>
                             <div class="switch">
-                                <input id="mute_teacher" class="webcast-toggle" type="checkbox">
+                                <input id="mute_teacher" class="openwebinar-toggle" type="checkbox">
                                 <label for="mute_teacher"></label>
                             </div>
                         </li>
                         <li>
-                            <p><?php echo get_string('opt:endwebcast_desc', 'webcast') ?></p>
-                            <span class="webcast-button red" id="webcast-leave"><?php echo get_string('opt:endwebcast', 'webcast') ?></span>
+                            <p><?php echo get_string('opt:endopenwebinar_desc', 'openwebinar') ?></p>
+                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar', 'openwebinar') ?></span>
                         </li>
                     </ul>
                 <?php else: ?>
-                    <li class="header"><?php echo get_string('opt:header_exit', 'webcast') ?></li>
+                    <li class="header"><?php echo get_string('opt:header_exit', 'openwebinar') ?></li>
                     <ul>
                         <li>
-                            <span class="webcast-button red" id="webcast-leave"><?php echo get_string('opt:leave', 'webcast') ?></span>
+                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:leave', 'openwebinar') ?></span>
                         </li>
                     </ul>
                 <?php endif ?>
             </ul>
         </section>
-        <section id="webcast-left">
-            <div id="webcast-stream-holder"></div>
+        <section id="openwebinar-left">
+            <div id="openwebinar-stream-holder"></div>
             <header>
-                <?php if ($webcast->is_ended == 0): ?>
-                    <span id="webcast-status" class="online"><?php echo get_string('live', 'webcast') ?></span>
+                <?php if ($openwebinar->is_ended == 0): ?>
+                    <span id="openwebinar-status" class="online"><?php echo get_string('live', 'openwebinar') ?></span>
                 <?php else: ?>
-                    <span id="webcast-status" class="offline"><?php echo get_string('offline', 'webcast') ?></span>
+                    <span id="openwebinar-status" class="offline"><?php echo get_string('offline', 'openwebinar') ?></span>
                 <?php endif ?>
-                <h1><?php echo format_string($webcast->name) ?>
+                <h1><?php echo format_string($openwebinar->name) ?>
                     <small><?php echo format_string($course->fullname) ?></small>
                 </h1>
             </header>
         </section>
-        <section id="webcast-right">
-            <div id="webcast-userlist-holder">
-                <div class="webcast-header">
-                    <h2><?php echo get_string('users', 'webcast') ?> <span id="webcast-usercounter">(0)</span></h2>
+        <section id="openwebinar-right">
+            <div id="openwebinar-userlist-holder">
+                <div class="openwebinar-header">
+                    <h2><?php echo get_string('users', 'openwebinar') ?> <span id="openwebinar-usercounter">(0)</span></h2>
                 </div>
-                <div id="webcast-userlist" class="scroll">
+                <div id="openwebinar-userlist" class="scroll">
                     <div class="scrollbar">
                         <div class="track">
                             <div class="thumb">
@@ -312,12 +312,12 @@ echo $OUTPUT->header();
                     </div>
                 </div>
             </div>
-            <div id="webcast-chat-holder">
-                <div class="webcast-header">
-                    <span id="webcast-loadhistory" class="webcast-button" style="display: none">Load previous messages</span>
-                    <h2><?php echo get_string('chat', 'webcast') ?></h2>
+            <div id="openwebinar-chat-holder">
+                <div class="openwebinar-header">
+                    <span id="openwebinar-loadhistory" class="openwebinar-button" style="display: none">Load previous messages</span>
+                    <h2><?php echo get_string('chat', 'openwebinar') ?></h2>
                 </div>
-                <div id="webcast-chatlist" class="scroll">
+                <div id="openwebinar-chatlist" class="scroll">
                     <div class="scrollbar">
                         <div class="track">
                             <div class="thumb">
@@ -333,16 +333,16 @@ echo $OUTPUT->header();
                         </div>
                     </div>
                 </div>
-                <div id="webcast-chatinput">
-                    <div id="webcast-noticebar" style="display: none">
+                <div id="openwebinar-chatinput">
+                    <div id="openwebinar-noticebar" style="display: none">
                         alert message here
                     </div>
-                    <div id="webcast-fileoverview-dialog" class="webcast-dialog" style="display: none">
+                    <div id="openwebinar-fileoverview-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
                             <span>Close</span>
-                            <span class="webcast-close-sign">X</span>
+                            <span class="openwebinar-close-sign">X</span>
                         </header>
-                        <div id="webcast-fileoverview" class="scroll">
+                        <div id="openwebinar-fileoverview" class="scroll">
                             <div class="scrollbar">
                                 <div class="track">
                                     <div class="thumb">
@@ -359,46 +359,46 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="webcast-filemanager-dialog" class="webcast-dialog" style="display: none">
+                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
                             <span>Close</span>
-                            <span class="webcast-close-sign">X</span>
+                            <span class="openwebinar-close-sign">X</span>
                         </header>
                         <?php if (!empty($form)): ?>
                             <?php echo $form->render() ?>
-                            <span id="add-file-btn" class="webcast-button"><?php echo get_string('addfile', 'webcast') ?></span>
+                            <span id="add-file-btn" class="openwebinar-button"><?php echo get_string('addfile', 'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
-                    <div id="webcast-emoticons-dialog" class="webcast-dialog" style="display: none">
+                    <div id="openwebinar-emoticons-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
                             <span>Close</span>
-                            <span class="webcast-close-sign">X</span>
+                            <span class="openwebinar-close-sign">X</span>
                         </header>
                         <div id="emoticons-overview">
                             <!-- Holder -->
                         </div>
                     </div>
-                    <div id="webcast-toolbar">
+                    <div id="openwebinar-toolbar">
                         <?php if ($opts['filesharing']): ?>
-                            <span id="webcast-filemanager-btn"><?php echo get_string('filemanager', 'webcast') ?></span>
-                            <span id="webcast-fileoverview-btn"><?php echo get_string('fileoverview', 'webcast') ?></span>
+                            <span id="openwebinar-filemanager-btn"><?php echo get_string('filemanager', 'openwebinar') ?></span>
+                            <span id="openwebinar-fileoverview-btn"><?php echo get_string('fileoverview', 'openwebinar') ?></span>
                         <?php endif ?>
                         <?php if ($opts['questions']): ?>
-                            <span id="webcast-viewquestion-btn"><?php echo get_string('question_overview', 'webcast') ?></span>
+                            <span id="openwebinar-viewquestion-btn"><?php echo get_string('question_overview', 'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
-                    <span id="webcast-emoticon-icon"></span>
-                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'webcast') ?>" name="message" id="webcast-message"/>
-                    <span id="webcast-send"><?php echo get_string('js:wait_on_connection', 'webcast') ?></span>
+                    <span id="openwebinar-emoticon-icon"></span>
+                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'openwebinar') ?>" name="message" id="openwebinar-message"/>
+                    <span id="openwebinar-send"><?php echo get_string('js:wait_on_connection', 'openwebinar') ?></span>
                 </div>
             </div>
         </section>
     </div>
-    <div id="webcast-question-manager">
+    <div id="openwebinar-question-manager">
         <div class="yui3-widget-bd">
             <div id="all-questions">
-                <?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>
-                    <span class="webcast-button" id="addquestion"><?php echo get_string('btn:addquestion', 'webcast') ?></span>
+                <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
+                    <span class="openwebinar-button" id="addquestion"><?php echo get_string('btn:addquestion', 'openwebinar') ?></span>
                 <?php endif ?>
                 <div class="overview">
                     <ul>
@@ -409,10 +409,10 @@ echo $OUTPUT->header();
             <div id="question-answer" style="display: none">
                 <!-- Holder -->
             </div>
-            <?php if (($permissions->broadcaster || $permissions->teacher) && $webcast->is_ended == 0): ?>
+            <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
                 <div id="question-type-selector" style="display: none">
-                    <span id="webcast-button-previous-step1" class="webcast-button previous">Previous</span>
-                    <span id="webcast-button-next-step1" class="webcast-button next">Next</span>
+                    <span id="openwebinar-button-previous-step1" class="openwebinar-button previous">Previous</span>
+                    <span id="openwebinar-button-next-step1" class="openwebinar-button next">Next</span>
                     <h3>Select a question type</h3>
                     <label for="question-type">
                         Question type
@@ -426,8 +426,8 @@ echo $OUTPUT->header();
                     </select>
                 </div>
                 <div id="question-type-open" style="display: none">
-                    <span class="webcast-button previous  webcast-button-previous-step2">Previous</span>
-                    <span class="webcast-button next disabled" id="open-add-btn">Create</span>
+                    <span class="openwebinar-button previous  openwebinar-button-previous-step2">Previous</span>
+                    <span class="openwebinar-button next disabled" id="open-add-btn">Create</span>
                     <h3>Create your open question</h3>
 
                     <form>
@@ -442,8 +442,8 @@ echo $OUTPUT->header();
                     </form>
                 </div>
                 <div id="question-type-truefalse" style="display: none">
-                    <span class="webcast-button previous webcast-button-previous-step2">Previous</span>
-                    <span class="webcast-button next disabled" id="truefalse-add-btn">Create</span>
+                    <span class="openwebinar-button previous openwebinar-button-previous-step2">Previous</span>
+                    <span class="openwebinar-button next disabled" id="truefalse-add-btn">Create</span>
                     <h3>Create your true or false question</h3>
 
                     <form>
@@ -458,8 +458,8 @@ echo $OUTPUT->header();
                     </form>
                 </div>
                 <div id="question-type-choice" style="display: none">
-                    <span class="webcast-button previous webcast-button-previous-step2">Previous</span>
-                    <span class="webcast-button next disabled">Create</span>
+                    <span class="openwebinar-button previous openwebinar-button-previous-step2">Previous</span>
+                    <span class="openwebinar-button next disabled">Create</span>
                     @TODO
                 </div>
             <?php endif ?>

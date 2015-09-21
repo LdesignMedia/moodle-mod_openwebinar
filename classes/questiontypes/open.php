@@ -19,14 +19,14 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-namespace mod_webcast\questiontypes;
+namespace mod_openwebinar\questiontypes;
 
-use mod_webcast\question;
-use mod_webcast\questiontypes;
+use mod_openwebinar\question;
+use mod_openwebinar\questiontypes;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -60,7 +60,7 @@ class open extends questiontypes {
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <textarea name="answer">' . $this->get_my_answer_string() . '</textarea>
-                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'webcast') . '" class="btn-primary"/>
+                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '" class="btn-primary"/>
                 </form>';
     }
 
@@ -90,7 +90,7 @@ class open extends questiontypes {
         if (empty($this->postdata->answer)) {
             $return = array(
                 'status' => false,
-                'error' => get_string('error:empty_not_allowed', 'webcast')
+                'error' => get_string('error:empty_not_allowed', 'openwebinar')
             );
         }
 
@@ -134,7 +134,7 @@ class open extends questiontypes {
                 </div>';
             }
         } else {
-            $return .= '<span class="webcast-no-result">' . get_string('error:no_result', 'webcast') . '</span>';
+            $return .= '<span class="openwebinar-no-result">' . get_string('error:no_result', 'openwebinar') . '</span>';
         }
 
         return $return;

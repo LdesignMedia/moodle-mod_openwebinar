@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Structure step to restore one webcast activity
+ * Structure step to restore one openwebinar activity
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  */
-class restore_webcast_activity_structure_step extends restore_activity_structure_step {
+class restore_openwebinar_activity_structure_step extends restore_activity_structure_step {
 
     /**
      * Defines structure of path elements to be processed during the restore
@@ -33,7 +33,7 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
     protected function define_structure() {
 
 //        $paths = array();
-//        $paths[] = new restore_path_element('webcast', '/activity/webcast');
+//        $paths[] = new restore_path_element('openwebinar', '/activity/openwebinar');
 //
 //        // Return the paths wrapped into standard activity structure.
 //        return $this->prepare_activity_structure($paths);
@@ -44,7 +44,7 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
      *
      * @param array $data parsed element data
      */
-    protected function process_webcast($data) {
+    protected function process_openwebinar($data) {
 //        global $DB;
 //
 //        $data = (object)$data;
@@ -64,8 +64,8 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
 //            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
 //        }
 //
-//        // Create the webcast instance.
-//        $newitemid = $DB->insert_record('webcast', $data);
+//        // Create the openwebinar instance.
+//        $newitemid = $DB->insert_record('openwebinar', $data);
 //        $this->apply_activity_instance($newitemid);
     }
 
@@ -73,7 +73,7 @@ class restore_webcast_activity_structure_step extends restore_activity_structure
      * Post-execution actions
      */
     protected function after_execute() {
-        // Add webcast related files, no need to match by itemname (just internally handled context).
-//        $this->add_related_files('mod_webcast', 'intro', null);
+        // Add openwebinar related files, no need to match by itemname (just internally handled context).
+//        $this->add_related_files('mod_openwebinar', 'intro', null);
     }
 }

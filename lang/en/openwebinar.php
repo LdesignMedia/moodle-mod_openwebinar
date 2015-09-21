@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'mod_webcast', language 'en'
+ * Strings for component 'mod_openwebinar', language 'en'
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
@@ -73,36 +73,36 @@ $string['modulename_help'] = 'Webcast activiteit:<br/>
 </ul>
 <b>Bestanden delen</b>
 <ul>
-	<li>Delen van bestanden in een webcast</li>
+	<li>Delen van bestanden in een openwebinar</li>
 	<li>Los overzicht van bestanden die in de chat toegevoegd zijn</li>
 </ul>
 <b>Gebruikers logboek</b>
 <ul>
-	<li>Tijd dat een gebruiker in de webcast is geweest</li>
-	<li>Bekijk wie de webcast heeft bekeken</li>
+	<li>Tijd dat een gebruiker in de openwebinar is geweest</li>
+	<li>Bekijk wie de openwebinar heeft bekeken</li>
 	<li>Bekijk de chat geschiedenis van een specifieke gebruiker.</li>
 </ul>';
 
-$string['modulename_link'] = 'mod/webcast/view';
+$string['modulename_link'] = 'mod/openwebinar/view';
 $string['pluginadministration'] = 'MoodleFreak Webcast administration';
 $string['pluginname'] = 'MoodleFreak Webcast';
-$string['webcastfieldset'] = 'Custom example fieldset';
-$string['webcastname'] = 'MoodleFreak Webcast';
-$string['webcastname_help'] = 'The name of the webcast';
-$string['webcast'] = 'MoodleFreak Webcast';
+$string['openwebinarfieldset'] = 'Custom example fieldset';
+$string['openwebinarname'] = 'MoodleFreak Webcast';
+$string['openwebinarname_help'] = 'The name of the openwebinar';
+$string['openwebinar'] = 'MoodleFreak Webcast';
 $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
 $string['task:reminder'] = 'Send reminders';
 $string['messageprovider:reminder'] = 'Webcast reminder notifications';
 
 // ACCESS
-$string['webcast:history'] = 'Allow viewing webcast history';
-$string['webcast:view'] = 'Allow viewing webcast';
-$string['webcast:addinstance'] = 'Add a webcast';
-$string['webcast:manager'] = 'Webcast manager';
-$string['webcast:teacher'] = 'Webcast teacher';
+$string['openwebinar:history'] = 'Allow viewing openwebinar history';
+$string['openwebinar:view'] = 'Allow viewing openwebinar';
+$string['openwebinar:addinstance'] = 'Add a openwebinar';
+$string['openwebinar:manager'] = 'Webcast manager';
+$string['openwebinar:teacher'] = 'Webcast teacher';
 
 // ERRORS
-$string['error:webcast_notfound'] = 'Error: We can\'t get the correct webcast!';
+$string['error:openwebinar_notfound'] = 'Error: We can\'t get the correct openwebinar!';
 $string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
 $string['error:no_access'] = 'Error: missing capability to do this.';
@@ -112,24 +112,24 @@ $string['error:not_for_guests'] = 'Error: not available for Guests';
 
 // SETTINGS
 $string['setting:heading_server'] = 'Communication settings';
-$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be overridden in each webcast activity)';
+$string['setting:heading_instance_features'] = 'Features enabled or disabled (can be overridden in each openwebinar activity)';
 $string['setting:streaming_server'] = 'Streaming url';
 $string['setting:streaming_server_desc'] = 'The location of your streaming server';
 $string['setting:chat_server'] = 'Chat/socket url';
 $string['setting:chat_server_desc'] = 'The location of your chat server';
 $string['setting:shared_secret'] = 'Shared secret';
 $string['setting:shared_secret_desc'] = 'A unique key that is shared with the chat/streaming server';
-$string['setting:heading_instance_defaults'] = 'Reminder default values (can be overridden in each webcast activity)';
+$string['setting:heading_instance_defaults'] = 'Reminder default values (can be overridden in each openwebinar activity)';
 $string['setting:reminder_1'] = 'Reminder 1';
-$string['setting:reminder_1_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:reminder_1_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
 $string['setting:reminder_2'] = 'Reminder 2';
-$string['setting:reminder_2_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:reminder_2_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
 $string['setting:reminder_3'] = 'Reminder 3';
-$string['setting:reminder_3_desc'] = 'Notification moment before the start of the webcast.<br> Set to 0 to disable the notification';
+$string['setting:reminder_3_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
 $string['setting:stream'] = 'Streaming enabled';
-$string['setting:stream_desc'] = 'If disabled the webcast don\'t shows a video player';
+$string['setting:stream_desc'] = 'If disabled the openwebinar don\'t shows a video player';
 $string['setting:chat'] = 'Chat enabled';
-$string['setting:chat_desc'] = 'If disabled the webcast don\'t shows a chat room';
+$string['setting:chat_desc'] = 'If disabled the openwebinar don\'t shows a chat room';
 $string['setting:filesharing'] = 'Filesharing enabled';
 $string['setting:filesharing_desc'] = 'If disabled nobody can share files in the file drop zone.';
 $string['setting:filesharing_student'] = 'Allow student filesharing';
@@ -164,15 +164,15 @@ $string['mod_setting:broadcastkey'] = 'Broadcastkey';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
 // Text
-$string['text:live_webcast'] = '<br/>The webcast is open from: <b>{$a->timeopen}</b><br> You can enter the webcast by pressing the button below';
-$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/webcast_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
+$string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->timeopen}</b><br> You can enter the openwebinar by pressing the button below';
+$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Webcast is offline</h3>This webcast was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this webcast by clicking on the button below.';
+$string['text:history'] = '<h3>Webcast is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this openwebinar by clicking on the button below.';
 $string['text:useractivity'] = 'User activity';
 
 // Buttons
-$string['btn:enter_live_webcast'] = 'Enter live webcast';
-$string['btn:enter_offline_webcast'] = 'Enter offline webcast';
+$string['btn:enter_live_openwebinar'] = 'Enter live openwebinar';
+$string['btn:enter_offline_openwebinar'] = 'Enter offline openwebinar';
 $string['btn:chattime'] = 'Report';
 $string['btn:chatlog'] = 'Chatlog';
 $string['btn:view'] = 'View';
@@ -217,9 +217,9 @@ $string['opt:stream'] = 'Show stream';
 $string['opt:userlist'] = 'Show userlist';
 $string['opt:mute_students'] = 'Mute students';
 $string['opt:mute_teachers'] = 'Mute teachers';
-$string['opt:endwebcast'] = 'Close & end the webcast';
-$string['opt:endwebcast_desc'] = 'This will end the live webcast.';
-$string['opt:leave'] = 'Leave webcast';
+$string['opt:endopenwebinar'] = 'Close & end the openwebinar';
+$string['opt:endopenwebinar_desc'] = 'This will end the live openwebinar.';
+$string['opt:leave'] = 'Leave openwebinar';
 $string['opt:header_general'] = 'General';
 
 // Js
@@ -227,7 +227,7 @@ $string['js:my_answer_saved'] = 'Your answer is saved.';
 $string['js:send'] = 'Send';
 $string['js:answer'] = 'Answer';
 $string['js:added_answer'] = '{$a->fullname} added a answer.';
-$string['js:ending_webcast'] = 'Are you sure you wan\'t to end and close the webcast?';
+$string['js:ending_openwebinar'] = 'Are you sure you wan\'t to end and close the openwebinar?';
 $string['js:muted'] = 'The messages are muted by the broadcaster!';
 $string['js:wait_on_connection'] = 'Waiting';
 $string['js:joined'] = 'Welcome to chatroom.';
@@ -236,11 +236,11 @@ $string['js:reconnected'] = 'You are reconnected.';
 $string['js:script_user'] = 'System message';
 $string['js:system_user'] = 'Chat server';
 $string['js:connecting'] = 'Connecting to the chat server, please be patient.';
-$string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the webcast?';
-$string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the webcast.';
-$string['js:dialog_ending_text'] = 'Broadcaster has closed the webcast. You will be redirect to Moodle.';
-$string['js:dialog_ending_btn'] = 'Close webcast';
-$string['js:ended'] = 'Broadcaster has closed the webcast.';
+$string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the openwebinar?';
+$string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the openwebinar.';
+$string['js:dialog_ending_text'] = 'Broadcaster has closed the openwebinar. You will be redirect to Moodle.';
+$string['js:dialog_ending_btn'] = 'Close openwebinar';
+$string['js:ended'] = 'Broadcaster has closed the openwebinar.';
 $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <p>What are the available chat commands</p>
 <b>Users:</b>
@@ -284,7 +284,7 @@ Webcast Reminder for:<br/><br/>
     </tr>
     <tr>
         <td><b>Link</b></td>
-        <td><a href="##link##">Enter webcast</a> </td>
+        <td><a href="##link##">Enter openwebinar</a> </td>
     </tr>
 </table>
 <br/>

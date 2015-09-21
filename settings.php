@@ -19,7 +19,7 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @package   mod_webcast
+ * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
@@ -27,86 +27,86 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_heading('webcast_server', '',
-        get_string('setting:heading_server', 'webcast')));
+    $settings->add(new admin_setting_heading('openwebinar_server', '',
+        get_string('setting:heading_server', 'openwebinar')));
 
     // Streaming URL
-    $settings->add(new admin_setting_configtext('webcast/streaming_server',
-        get_string('setting:streaming_server', 'webcast'),
-        get_string('setting:streaming_server_desc', 'webcast'),
+    $settings->add(new admin_setting_configtext('openwebinar/streaming_server',
+        get_string('setting:streaming_server', 'openwebinar'),
+        get_string('setting:streaming_server_desc', 'openwebinar'),
         'your_domain.com/live/', PARAM_URL));
 
     // Socket.io server
-    $settings->add(new admin_setting_configtext('webcast/chat_server',
-        get_string('setting:chat_server', 'webcast'),
-        get_string('setting:chat_server_desc', 'webcast'),
+    $settings->add(new admin_setting_configtext('openwebinar/chat_server',
+        get_string('setting:chat_server', 'openwebinar'),
+        get_string('setting:chat_server_desc', 'openwebinar'),
         '', PARAM_URL));
 
     // Communication key
-    $settings->add(new admin_setting_configtext('webcast/shared_secret',
-        get_string('setting:shared_secret', 'webcast'),
-        get_string('setting:shared_secret_desc', 'webcast'),
+    $settings->add(new admin_setting_configtext('openwebinar/shared_secret',
+        get_string('setting:shared_secret', 'openwebinar'),
+        get_string('setting:shared_secret_desc', 'openwebinar'),
         '', PARAM_RAW));
 
-    $settings->add(new admin_setting_heading('webcast_instance_defaults', '',
-        get_string('setting:heading_instance_defaults', 'webcast')));
+    $settings->add(new admin_setting_heading('openwebinar_instance_defaults', '',
+        get_string('setting:heading_instance_defaults', 'openwebinar')));
 
 
     // Notification moments defaults
-    $settings->add(new admin_setting_configduration('webcast/reminder_1',
-        get_string('setting:reminder_1', 'webcast'),
-        get_string('setting:reminder_1_desc', 'webcast'), 3600, 3600));
+    $settings->add(new admin_setting_configduration('openwebinar/reminder_1',
+        get_string('setting:reminder_1', 'openwebinar'),
+        get_string('setting:reminder_1_desc', 'openwebinar'), 3600, 3600));
 
-    $settings->add(new admin_setting_configduration('webcast/reminder_2',
-        get_string('setting:reminder_2', 'webcast'),
-        get_string('setting:reminder_2_desc', 'webcast'), 86400, 86400));
+    $settings->add(new admin_setting_configduration('openwebinar/reminder_2',
+        get_string('setting:reminder_2', 'openwebinar'),
+        get_string('setting:reminder_2_desc', 'openwebinar'), 86400, 86400));
 
-    $settings->add(new admin_setting_configduration('webcast/reminder_3',
-        get_string('setting:reminder_3', 'webcast'),
-        get_string('setting:reminder_3_desc', 'webcast'), 604800, 604800));
+    $settings->add(new admin_setting_configduration('openwebinar/reminder_3',
+        get_string('setting:reminder_3', 'openwebinar'),
+        get_string('setting:reminder_3_desc', 'openwebinar'), 604800, 604800));
 
     // switches
-    $settings->add(new admin_setting_heading('webcast_instance_features', '',
-        get_string('setting:heading_instance_features', 'webcast')));
+    $settings->add(new admin_setting_heading('openwebinar_instance_features', '',
+        get_string('setting:heading_instance_features', 'openwebinar')));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/stream',
-        get_string('setting:stream', 'webcast'),
-        get_string('setting:stream_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/stream',
+        get_string('setting:stream', 'openwebinar'),
+        get_string('setting:stream_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/chat',
-        get_string('setting:chat', 'webcast'),
-        get_string('setting:chat_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/chat',
+        get_string('setting:chat', 'openwebinar'),
+        get_string('setting:chat_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/filesharing',
-        get_string('setting:filesharing', 'webcast'),
-        get_string('setting:filesharing_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/filesharing',
+        get_string('setting:filesharing', 'openwebinar'),
+        get_string('setting:filesharing_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/filesharing_student',
-        get_string('setting:filesharing_student', 'webcast'),
-        get_string('setting:filesharing_student_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/filesharing_student',
+        get_string('setting:filesharing_student', 'openwebinar'),
+        get_string('setting:filesharing_student_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/showuserpicture',
-        get_string('setting:showuserpicture', 'webcast'),
-        get_string('setting:showuserpicture_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/showuserpicture',
+        get_string('setting:showuserpicture', 'openwebinar'),
+        get_string('setting:showuserpicture_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/userlist',
-        get_string('setting:userlist', 'webcast'),
-        get_string('setting:userlist_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/userlist',
+        get_string('setting:userlist', 'openwebinar'),
+        get_string('setting:userlist_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/ajax_timer',
-        get_string('setting:ajax_timer', 'webcast'),
-        get_string('setting:ajax_timer_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/ajax_timer',
+        get_string('setting:ajax_timer', 'openwebinar'),
+        get_string('setting:ajax_timer_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/emoticons',
-        get_string('setting:emoticons', 'webcast'),
-        get_string('setting:emoticons_desc', 'webcast'), 1));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/emoticons',
+        get_string('setting:emoticons', 'openwebinar'),
+        get_string('setting:emoticons_desc', 'openwebinar'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/debugjs',
-        get_string('setting:debugjs', 'webcast'),
-        get_string('setting:debugjs_desc', 'webcast'), 0));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/debugjs',
+        get_string('setting:debugjs', 'openwebinar'),
+        get_string('setting:debugjs_desc', 'openwebinar'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('webcast/hls',
-        get_string('setting:hls', 'webcast'),
-        get_string('setting:hls_desc', 'webcast'), 0));
+    $settings->add(new admin_setting_configcheckbox('openwebinar/hls',
+        get_string('setting:hls', 'openwebinar'),
+        get_string('setting:hls_desc', 'openwebinar'), 0));
 
 }
