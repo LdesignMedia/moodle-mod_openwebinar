@@ -13,7 +13,7 @@ M.mod_openwebinar = M.mod_openwebinar || {};
 M.mod_openwebinar.base = {
 
     /**
-     * Webcast variables
+     * Openwebinar variables
      * @type Object
      * @protected
      */

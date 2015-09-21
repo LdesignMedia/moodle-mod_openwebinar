@@ -52,7 +52,7 @@ class question {
     const QUESTION_TYPE_TRUE_FALSE = 2;
 
     /**
-     * Webcast
+     * Openwebinar
      *
      * @var object
      */

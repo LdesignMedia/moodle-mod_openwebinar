@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 class useractivity extends \table_sql {
 
     /**
-     * Webcast object
+     * Openwebinar object
      *
      * @var bool|object
      */

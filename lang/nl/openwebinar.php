@@ -23,9 +23,9 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-$string['modulename'] = 'MoodleFreak Webcast';
-$string['modulenameplural'] = 'MoodleFreak Webcast';
-$string['modulename_help'] = 'Webcast activiteit:<br/>
+$string['modulename'] = 'MoodleFreak Openwebinar';
+$string['modulenameplural'] = 'MoodleFreak Openwebinar';
+$string['modulename_help'] = 'Openwebinar activiteit:<br/>
 <b>Room</b>
 <ul>
 	<li>De chat is schaalbaar (responsive)</li>
@@ -54,7 +54,7 @@ $string['modulename_help'] = 'Webcast activiteit:<br/>
 <b>Uitzender / Presentator</b>
 <ul>
 	<li>Berichten los blokkeren per status: gast, students en leraar</li>
-	<li>Webcast afsluiten na voltooiing</li>
+	<li>Openwebinar afsluiten na voltooiing</li>
 	<li>Vragen uitzetten naar de andere gebruikers in de chatruimte</li>
 </ul>
 <b>Gebruikers</b>
@@ -91,14 +91,14 @@ $string['openwebinarname_help'] = 'De naam van de openwebinar';
 $string['openwebinar'] = 'MoodleFreak openwebinar';
 $string['task:auto_close'] = 'Sluit chatruimte wanneer deze is afgelopen en niet is afgesloten door de presentator.';
 $string['task:reminder'] = 'Versturen van herinnering';
-$string['messageprovider:reminder'] = 'Webcast herinnering melding';
+$string['messageprovider:reminder'] = 'Openwebinar herinnering melding';
 
 // ACCESS
 $string['openwebinar:history'] = 'Bekijk van chat geschiedenis';
-$string['openwebinar:view'] = 'Webcast bekijken';
+$string['openwebinar:view'] = 'Openwebinar bekijken';
 $string['openwebinar:addinstance'] = 'Toevoegen van een openwebinar';
-$string['openwebinar:manager'] = 'Webcast manager';
-$string['openwebinar:teacher'] = 'Webcast leraar';
+$string['openwebinar:manager'] = 'Openwebinar manager';
+$string['openwebinar:teacher'] = 'Openwebinar leraar';
 
 // ERRORS
 $string['error:openwebinar_notfound'] = 'Fout: de juiste openwebinar kan niet gevonden worden!';
@@ -148,14 +148,14 @@ $string['setting:hls'] = 'HLS video stream';
 $string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moeten ook streamen naar server met HLS-uitgang.<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
 
 // Mod settings
-$string['mod_setting:settings'] = 'Webcast functies';
-$string['mod_setting:timing'] = 'Webcast tijd';
+$string['mod_setting:settings'] = 'Openwebinar functies';
+$string['mod_setting:timing'] = 'Openwebinar tijd';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
 $string['mod_setting:make_a_selection'] = 'Selecteer een gebruiker';
-$string['mod_setting:broadcaster'] = 'Webcast presentator';
-$string['mod_setting:reminders'] = 'Webcast herinnering bericht';
+$string['mod_setting:broadcaster'] = 'Openwebinar presentator';
+$string['mod_setting:reminders'] = 'Openwebinar herinnering bericht';
 $string['mod_setting:duration'] = 'Duur';
 $string['mod_setting:durationhelp'] = 'Duur';
 $string['mod_setting:durationhelp_help'] = 'Duur';
@@ -166,7 +166,7 @@ $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br> U kunt nu de openwebinar openen via de knop hieronder.';
 $string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br><b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u downloaden <a class="btn" target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">hier</a><br><br>
 Zorg ervoor dat u de streaming-software installeerd: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Webcast is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de openwebinar/geschiedennis terugzien door te klikken op de onderstaande knop.';
+$string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de openwebinar/geschiedennis terugzien door te klikken op de onderstaande knop.';
 $string['text:useractivity'] = 'Gebruikers activiteit';
 
 // Buttons
@@ -204,8 +204,8 @@ $string['student'] = 'Student';
 $string['guest'] = 'Gast';
 $string['teacher'] = 'Leraar';
 $string['message_placeholder'] = 'Type een  bericht hier...';
-$string['user_activity'] = 'Webcast gebruikers activiteit';
-$string['starts_at'] = 'Webcast begint in:';
+$string['user_activity'] = 'Openwebinar gebruikers activiteit';
+$string['starts_at'] = 'Openwebinar begint in:';
 
 // user options
 $string['opt:header_broadcaster'] = 'Presentator';
@@ -263,10 +263,10 @@ $string['heading:name'] = 'Naam';
 $string['heading:value'] = 'Waarde';
 
 // Email
-$string['mail:reminder_subject'] = 'Webcast herinnering: {$a->name}';
+$string['mail:reminder_subject'] = 'Openwebinar herinnering: {$a->name}';
 $string['mail:reminder_message'] = 'Beste ##fullname##, <br/><br/>
 
-Webcast herinnering:<br/><br/>
+Openwebinar herinnering:<br/><br/>
 
 <table cellpadding="0" cellspacing="0" border="0">
     <tr>

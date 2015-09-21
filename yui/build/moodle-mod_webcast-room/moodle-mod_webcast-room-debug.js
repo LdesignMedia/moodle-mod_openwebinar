@@ -394,7 +394,7 @@ M.mod_openwebinar.room = {
     emoticons_map: {},
 
     /**
-     * Webcast variables
+     * Openwebinar variables
      * @type Object
      * @protected
      */

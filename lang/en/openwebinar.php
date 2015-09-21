@@ -23,9 +23,9 @@
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
  **/
-$string['modulename'] = 'MoodleFreak Webcast';
-$string['modulenameplural'] = 'MoodleFreak Webcast';
-$string['modulename_help'] = 'Webcast activiteit:<br/>
+$string['modulename'] = 'MoodleFreak Openwebinar';
+$string['modulenameplural'] = 'MoodleFreak Openwebinar';
+$string['modulename_help'] = 'Openwebinar activiteit:<br/>
 <b>Room</b>
 <ul>
 	<li>De chat is schaalbaar (responsive)</li>
@@ -54,7 +54,7 @@ $string['modulename_help'] = 'Webcast activiteit:<br/>
 <b>Uitzender / Presentator</b>
 <ul>
 	<li>Berichten los blokkeren per status: gast, students en leraar</li>
-	<li>Webcast afsluiten na voltooiing</li>
+	<li>Openwebinar afsluiten na voltooiing</li>
 	<li>Vragen uitzetten naar de andere gebruikers in de chatruimte</li>
 </ul>
 <b>Gebruikers</b>
@@ -84,22 +84,22 @@ $string['modulename_help'] = 'Webcast activiteit:<br/>
 </ul>';
 
 $string['modulename_link'] = 'mod/openwebinar/view';
-$string['pluginadministration'] = 'MoodleFreak Webcast administration';
-$string['pluginname'] = 'MoodleFreak Webcast';
+$string['pluginadministration'] = 'MoodleFreak Openwebinar administration';
+$string['pluginname'] = 'MoodleFreak Openwebinar';
 $string['openwebinarfieldset'] = 'Custom example fieldset';
-$string['openwebinarname'] = 'MoodleFreak Webcast';
+$string['openwebinarname'] = 'MoodleFreak Openwebinar';
 $string['openwebinarname_help'] = 'The name of the openwebinar';
-$string['openwebinar'] = 'MoodleFreak Webcast';
+$string['openwebinar'] = 'MoodleFreak Openwebinar';
 $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
 $string['task:reminder'] = 'Send reminders';
-$string['messageprovider:reminder'] = 'Webcast reminder notifications';
+$string['messageprovider:reminder'] = 'Openwebinar reminder notifications';
 
 // ACCESS
 $string['openwebinar:history'] = 'Allow viewing openwebinar history';
 $string['openwebinar:view'] = 'Allow viewing openwebinar';
 $string['openwebinar:addinstance'] = 'Add a openwebinar';
-$string['openwebinar:manager'] = 'Webcast manager';
-$string['openwebinar:teacher'] = 'Webcast teacher';
+$string['openwebinar:manager'] = 'Openwebinar manager';
+$string['openwebinar:teacher'] = 'Openwebinar teacher';
 
 // ERRORS
 $string['error:openwebinar_notfound'] = 'Error: We can\'t get the correct openwebinar!';
@@ -149,14 +149,14 @@ $string['setting:hls'] = 'HLS video stream';
 $string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
 
 // Mod settings
-$string['mod_setting:settings'] = 'Webcast features';
-$string['mod_setting:timing'] = 'Webcast time';
+$string['mod_setting:settings'] = 'Openwebinar features';
+$string['mod_setting:timing'] = 'Openwebinar time';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
 $string['mod_setting:make_a_selection'] = 'Select a user';
-$string['mod_setting:broadcaster'] = 'Webcast broadcaster';
-$string['mod_setting:reminders'] = 'Webcast reminder messages';
+$string['mod_setting:broadcaster'] = 'Openwebinar broadcaster';
+$string['mod_setting:reminders'] = 'Openwebinar reminder messages';
 $string['mod_setting:duration'] = 'Duration';
 $string['mod_setting:durationhelp'] = 'Duration';
 $string['mod_setting:durationhelp_help'] = 'Duration';
@@ -167,7 +167,7 @@ $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 $string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->timeopen}</b><br> You can enter the openwebinar by pressing the button below';
 $string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Webcast is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this openwebinar by clicking on the button below.';
+$string['text:history'] = '<h3>Openwebinar is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this openwebinar by clicking on the button below.';
 $string['text:useractivity'] = 'User activity';
 
 // Buttons
@@ -205,8 +205,8 @@ $string['student'] = 'Student';
 $string['guest'] = 'Guest';
 $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
-$string['user_activity'] = 'Webcast user activity';
-$string['starts_at'] = 'Webcast starts in:';
+$string['user_activity'] = 'Openwebinar user activity';
+$string['starts_at'] = 'Openwebinar starts in:';
 
 // user options
 $string['opt:header_broadcaster'] = 'Broadcaster';
@@ -264,10 +264,10 @@ $string['heading:name'] = 'Name';
 $string['heading:value'] = 'Value';
 
 // Email
-$string['mail:reminder_subject'] = 'Webcast reminder: {$a->name}';
+$string['mail:reminder_subject'] = 'Openwebinar reminder: {$a->name}';
 $string['mail:reminder_message'] = 'Dear ##fullname##, <br/><br/>
 
-Webcast Reminder for:<br/><br/>
+Openwebinar Reminder for:<br/><br/>
 
 <table cellpadding="0" cellspacing="0" border="0">
     <tr>

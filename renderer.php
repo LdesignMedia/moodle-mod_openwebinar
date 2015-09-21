@@ -154,7 +154,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Webcast has ended and user doesn't have access to history
+     * Openwebinar has ended and user doesn't have access to history
      *
      * @param $openwebinar
      *

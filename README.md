@@ -1,6 +1,6 @@
-Moodle online openwebinar - Activity
+Moodle openwebinar - Activity
 ========
-Plugin that allow live openwebinar with chat and file sharing on a moodle environment 
+This plugin allows you to give a live webinar inside moodle with allot of features. All services/plugins/libs that are used are open source. 
 
 Author
 ---------------
@@ -10,7 +10,7 @@ Requires at least: Moodle 2.6+
 
 Description
 ---------------
-MoodleFreak Webcast provides the functionality to give a live stream and chat in moodle. You can schedule a meeting and give your live openwebinar. There is one public chat room.
+MoodleFreak Openwebinar provides the functionality to give a live stream and chat in moodle. You can schedule a meeting and give your live openwebinar. There is one public chat room.
 Most preference of the features can be globally set in settings. Settings can be overridden on instance level to be extra customisable. 
 
 Everything we are using is open source no need for Flash media server, Adobe Connect, Gotomeeting or other paid services. You can setup this in your own environment see the how to on moodlefreak here. 
