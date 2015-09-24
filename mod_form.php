@@ -50,7 +50,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      */
     public function definition() {
 
-        global $CFG;
+        global $CFG , $USER;
         $mform = $this->_form;
 
         // Load default config
@@ -78,6 +78,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         // Open and close dates.
         $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'openwebinar'), self::$datefieldoptions);
         $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'openwebinar');
+        $mform->setDefault('timeopen', strtotime('+5 minutes'));
 
         $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'openwebinar') , array('defaultunit' => 3600 , 'optional' => false));
         $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'openwebinar');
@@ -152,7 +153,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      * add a select element for a broadcaster
      */
     protected function add_openwebinar_user_selector() {
-        global $DB;
+        global $DB , $USER;
         $array = array('' => get_string('mod_setting:make_a_selection', 'openwebinar'));
         $rs = $DB->get_recordset_sql('SELECT {user}.id , {user}.firstname ,{user}.lastname
                                         FROM {user}
@@ -164,6 +165,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $rs->close();
         $this->_form->addElement('select', 'broadcaster', get_string('mod_setting:broadcaster', 'openwebinar'), $array);
         $this->_form->addRule('broadcaster', null, 'required', null, 'client');
+        $this->_form->setDefault('broadcaster', $USER->id);
     }
 
     public function validation($data, $files) {

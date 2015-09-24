@@ -20,8 +20,9 @@ M.mod_openwebinar.base = {
     options: {
         debugjs : true,
         duration: 0,
+        from    : 0,
         timeopen: 0,
-        cmid: 0,
+        cmid    : 0,
         is_ended: false
     },
 
@@ -69,16 +70,24 @@ M.mod_openwebinar.base = {
         "use strict";
         var that = this;
         var start = new Date(this.options.timeopen * 1000);
+        // fix date to count from server time instead of local
+        var now = new Date(that.options.from * 1000);
+
+
         var timerspan = document.getElementById('pageTimer');
         var interval = setInterval(function () {
-                var ts = countdown(start, null, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
-                if ((ts.value > 0)) {
-                    clearInterval(interval);
-                    window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
-                } else {
-                    timerspan.innerHTML = ts.toHTML("strong");
-                }
-            }, 1000);
+            // +1 second
+            now.setSeconds(now.getSeconds() + 1);
+            var ts = countdown(start, now, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
+            that.log(ts.value);
+            if ((ts.value > 0)) {
+                that.log('clearInterval');
+                clearInterval(interval);
+                window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
+            } else {
+                timerspan.innerHTML = ts.toHTML("strong");
+            }
+        }, 1000);
     },
 
     /**

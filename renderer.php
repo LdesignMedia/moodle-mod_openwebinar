@@ -100,6 +100,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $opts = array();
         $opts['timeopen'] = $openwebinar->timeopen;
         $opts['cmid'] = $cm->id;
+        $opts['from'] = time();
         $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
         // add id for the countdown
