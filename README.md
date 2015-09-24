@@ -67,10 +67,11 @@ List of features
 
 Installation
 ====================
-1.  copy this plugin to the mod\openwebinar folder on the server
+1.  copy this plugin to the `mod\openwebinar` folder on the server
 2.  login as administrator
 3.  go to Site Administrator > Notification
 4.  install the plugin
+5.  you need to fill in the settings. Please keep in mind you can use a `hosted` setup or setup all dependenties [chat server / streaming server] your self.
 
 Installation broadcaster
 ====================
@@ -79,11 +80,15 @@ We used open broadcaster for this what is also a open source project. The manual
 
 Installation dependenties
 ====================
-This won't run without a Node.js socket.io / chat server. The chat server is developed by MoodleFreak and can be found on ...
+This won't run without a **Chat server**. The chat server is developed by **MoodleFreak** and can be found on [openwebinar_chatserver](https://github.com/MoodleFreak/openwebinar_chatserver)
 
-Also for live openwebinar you need a rtmp streaming server. We build this speciality for nginx-rtmp because its free to setup. Chances are high that another RTMP server will also work. 
+Also for openwebinar you need a **rtmp streaming server**. We build this speciality for [nginx-rtmp](https://github.com/arut/nginx-rtmp-module) because its free and open source. Chances are high that another RTMP server will also work. 
 
-Keep in mind streaming will cost lot of bandwidth. 
+**Note: Keep in mind streaming will cost lot of bandwidth** 
+
+Installation - nginx-rtmp for `openwebinar`
+====================
+
 
 Changelog
 ====================
