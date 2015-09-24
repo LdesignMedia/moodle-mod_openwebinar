@@ -57,9 +57,6 @@ $PAGE->add_body_class('moodlefreak-openwebinar');
 $opts = (array)$openwebinar;
 unset($opts['intro'], $opts['broadcastkey']);
 
-// Load JS base
-$PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
-
 // Permissions
 $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
@@ -107,6 +104,8 @@ switch ($status) {
         break;
 
     default:
+        // Load JS base
+        $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
         echo $renderer->view_page_not_started_openwebinar($openwebinar);
 
         if ($openwebinar->broadcaster == $USER->id) {

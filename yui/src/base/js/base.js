@@ -8,7 +8,7 @@
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio, countdown */
+/*global  M, Y, console, YUI , countdown*/
 M.mod_openwebinar = M.mod_openwebinar || {};
 M.mod_openwebinar.base = {
 
@@ -78,8 +78,7 @@ M.mod_openwebinar.base = {
                 } else {
                     timerspan.innerHTML = ts.toHTML("strong");
                 }
-            }
-            , 1000);
+            }, 1000);
     },
 
     /**
