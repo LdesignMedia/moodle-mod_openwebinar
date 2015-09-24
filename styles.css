@@ -807,3 +807,8 @@ input.openwebinar-toggle:checked + label:after {
     text-align: right;
     width: 40px;
 }
+#openwebinar-leave{
+    float: right;
+    width: 150px;
+    margin: 5px 0 0 0;
+}

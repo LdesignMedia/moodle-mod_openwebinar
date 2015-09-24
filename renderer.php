@@ -273,8 +273,10 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     /**
      * Load chat log of a user
      *
-     * @param object|false $openwebinar
+     * @param bool|stdClass $openwebinar
      * @param int $userid
+     *
+     * @throws coding_exception
      */
     public function view_user_chatlog($openwebinar = false, $userid = 0) {
         global $OUTPUT, $DB, $PAGE;

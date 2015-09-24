@@ -206,7 +206,8 @@ $string['teacher'] = 'Leraar';
 $string['message_placeholder'] = 'Type een  bericht hier...';
 $string['user_activity'] = 'Openwebinar gebruikers activiteit';
 $string['starts_at'] = 'Openwebinar begint in:';
-
+$string['starttime'] = 'starttijd';
+$string['Close'] = 'Close';
 // user options
 $string['opt:header_broadcaster'] = 'Presentator';
 $string['opt:header_exit'] = 'Beëindigd';
@@ -217,7 +218,6 @@ $string['opt:userlist'] = 'Toon gebruikerslijst';
 $string['opt:mute_students'] = 'Dempen studenten';
 $string['opt:mute_teachers'] = 'Dempen leraren';
 $string['opt:endopenwebinar'] = 'Sluit & beëindigd de openwebinar';
-$string['opt:endopenwebinar_desc'] = 'Dit zal de live openwebinar afsluiten.';
 $string['opt:leave'] = 'Verlaat de openwebinar';
 $string['opt:header_general'] = 'Algemeen';
 

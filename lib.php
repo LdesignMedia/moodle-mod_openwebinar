@@ -77,8 +77,9 @@ function openwebinar_get_coursemodule_info($coursemodule) {
 
     if (($openwebinar = $DB->get_record('openwebinar', array('id' => $coursemodule->instance))) !== false) {
         $info = new cached_cm_info();
-        $info->name = $openwebinar->name . ' - [' . date('d-m-Y H:i', $openwebinar->timeopen) . ']';
+        $info->name = $openwebinar->name . ' - ' . date('d-m-Y ', $openwebinar->timeopen) . get_string('starttime', 'openwebinar') . date(' H:i', $openwebinar->timeopen);
         $info->content = format_module_intro('openwebinar', $openwebinar, $coursemodule->id, false);
+
         return $info;
     } else {
         return null;
@@ -147,7 +148,11 @@ function openwebinar_update_instance(stdClass $openwebinar, mod_openwebinar_mod_
 
     $event = new stdClass();
 
-    if ($event->id = $DB->get_field('event', 'id', array('modulename' => 'openwebinar', 'instance' => $openwebinar->id))) {
+    if ($event->id = $DB->get_field('event', 'id', array(
+        'modulename' => 'openwebinar',
+        'instance' => $openwebinar->id
+    ))
+    ) {
 
         $event->name = $openwebinar->name;
         $event->description = format_module_intro('openwebinar', $openwebinar, $openwebinar->coursemodule);
@@ -202,7 +207,7 @@ function openwebinar_delete_instance($id) {
  * @param stdClass $course      The course record
  * @param stdClass $user        The user record
  * @param cm_info|stdClass $mod The course module info object or record
- * @param stdClass $openwebinar     The openwebinar instance record
+ * @param stdClass $openwebinar The openwebinar instance record
  *
  * @return stdClass|null
  */

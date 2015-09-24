@@ -262,10 +262,6 @@ echo $OUTPUT->header();
                                 <label for="mute_teacher"></label>
                             </div>
                         </li>
-                        <li>
-                            <p><?php echo get_string('opt:endopenwebinar_desc', 'openwebinar') ?></p>
-                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar', 'openwebinar') ?></span>
-                        </li>
                     </ul>
                 <?php else: ?>
                     <li class="header"><?php echo get_string('opt:header_exit', 'openwebinar') ?></li>
@@ -281,7 +277,11 @@ echo $OUTPUT->header();
             <div id="openwebinar-stream-holder"></div>
             <header>
                 <?php if ($openwebinar->is_ended == 0): ?>
-                    <span id="openwebinar-status" class="online"><?php echo get_string('live', 'openwebinar') ?></span>
+                    <?php if ($permissions->broadcaster): ?>
+                        <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar', 'openwebinar') ?></span>
+                    <?php else: ?>
+                        <span id="openwebinar-status" class="online"><?php echo get_string('live', 'openwebinar') ?></span>
+                    <?php endif ?>
                 <?php else: ?>
                     <span id="openwebinar-status" class="offline"><?php echo get_string('offline', 'openwebinar') ?></span>
                 <?php endif ?>
@@ -293,7 +293,8 @@ echo $OUTPUT->header();
         <section id="openwebinar-right">
             <div id="openwebinar-userlist-holder">
                 <div class="openwebinar-header">
-                    <h2><?php echo get_string('users', 'openwebinar') ?> <span id="openwebinar-usercounter">(0)</span></h2>
+                    <h2><?php echo get_string('users', 'openwebinar') ?> <span id="openwebinar-usercounter">(0)</span>
+                    </h2>
                 </div>
                 <div id="openwebinar-userlist" class="scroll">
                     <div class="scrollbar">
@@ -339,7 +340,7 @@ echo $OUTPUT->header();
                     </div>
                     <div id="openwebinar-fileoverview-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
-                            <span>Close</span>
+                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <div id="openwebinar-fileoverview" class="scroll">
@@ -361,7 +362,7 @@ echo $OUTPUT->header();
                     </div>
                     <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
-                            <span>Close</span>
+                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <?php if (!empty($form)): ?>
@@ -371,7 +372,7 @@ echo $OUTPUT->header();
                     </div>
                     <div id="openwebinar-emoticons-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
-                            <span>Close</span>
+                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <div id="emoticons-overview">

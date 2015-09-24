@@ -207,7 +207,8 @@ $string['teacher'] = 'Teacher';
 $string['message_placeholder'] = 'Type a message here....';
 $string['user_activity'] = 'Openwebinar user activity';
 $string['starts_at'] = 'Openwebinar starts in:';
-
+$string['starttime'] = 'start time';
+$string['Close'] = 'Close';
 // user options
 $string['opt:header_broadcaster'] = 'Broadcaster';
 $string['opt:header_exit'] = 'Exit';
@@ -218,7 +219,6 @@ $string['opt:userlist'] = 'Show userlist';
 $string['opt:mute_students'] = 'Mute students';
 $string['opt:mute_teachers'] = 'Mute teachers';
 $string['opt:endopenwebinar'] = 'Close & end the openwebinar';
-$string['opt:endopenwebinar_desc'] = 'This will end the live openwebinar.';
 $string['opt:leave'] = 'Leave openwebinar';
 $string['opt:header_general'] = 'General';
 

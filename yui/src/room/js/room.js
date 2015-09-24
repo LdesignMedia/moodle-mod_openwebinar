@@ -749,11 +749,10 @@ M.mod_openwebinar.room = {
                                     var response = Y.JSON.parse(o.responseText);
                                     that.log(response);
                                     if (response.status) {
-
                                         // Close the room on chat server // chat server will notice all clients
                                         that.chatobject.broadcaster_identifier = that.options.broadcaster_identifier;
-                                        that.socket.emit("ending", that.chatobject, function (response) {
-                                            that.log(response);
+                                        that.socket.emit("ending", that.chatobject, function () {
+                                            window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + this.options.cmid;
                                         });
                                     }
                                 } catch (e) {
