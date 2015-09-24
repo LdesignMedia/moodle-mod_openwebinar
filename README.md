@@ -1,22 +1,24 @@
 Moodle openwebinar - Activity
-========
+====================
 This plugin allows you to give a live webinar inside moodle with allot of features. All services/plugins/libs that are used are open source. 
 
 Author
----------------
-Luuk Verhoeven, MoodleFreak.com
+====================
+![MoodleFreak.com](http://moodlefreak.com/logo_small.png)
+
+Author: Luuk Verhoeven, [MoodleFreak.com](http://www.moodlefreak.com/)
 
 Requires at least: Moodle 2.6+
 
 Description
----------------
+====================
 MoodleFreak Openwebinar provides the functionality to give a live stream and chat in moodle. You can schedule a meeting and give your live openwebinar. There is one public chat room.
 Most preference of the features can be globally set in settings. Settings can be overridden on instance level to be extra customisable. 
 
 Everything we are using is open source no need for Flash media server, Adobe Connect, Gotomeeting or other paid services. You can setup this in your own environment see the how to on moodlefreak here. 
 
 List of features
----------------
+====================
 
 #### Room
   - Auto room scaling
@@ -64,19 +66,19 @@ List of features
   - See chatlog of 1 specific user
 
 Installation
----------------
+====================
 1.  copy this plugin to the mod\openwebinar folder on the server
 2.  login as administrator
 3.  go to Site Administrator > Notification
 4.  install the plugin
 
 Installation broadcaster
----------------
+====================
 The openwebinar it self is all webbased. But to stream a openwebinar as broadcaster you will need some software to stream a RTMP stream. 
 We used open broadcaster for this what is also a open source project. The manual to use it for this plugin can be found here.
 
 Installation dependenties
----------------
+====================
 This won't run without a Node.js socket.io / chat server. The chat server is developed by MoodleFreak and can be found on ...
 
 Also for live openwebinar you need a rtmp streaming server. We build this speciality for nginx-rtmp because its free to setup. Chances are high that another RTMP server will also work. 
@@ -84,6 +86,6 @@ Also for live openwebinar you need a rtmp streaming server. We build this specia
 Keep in mind streaming will cost lot of bandwidth. 
 
 Changelog
----------------
+====================
 
 See version control for the complete history, major changes in this versions will be list below.
