@@ -559,7 +559,6 @@ M.mod_openwebinar.room = {
             return;
         }
         try {
-            Y.log(val);
         } catch (e) {
             try {
                 console.log(val);

@@ -10,7 +10,7 @@ YUI.add('moodle-mod_openwebinar-base', function (Y, NAME) {
  * @author Luuk Verhoeven
  **/
 /*jslint browser: true, white: true, vars: true, regexp: true*/
-/*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio, countdown */
+/*global  M, Y, console, YUI , countdown*/
 M.mod_openwebinar = M.mod_openwebinar || {};
 M.mod_openwebinar.base = {
 
@@ -22,8 +22,9 @@ M.mod_openwebinar.base = {
     options: {
         debugjs : true,
         duration: 0,
+        from    : 0,
         timeopen: 0,
-        cmid: 0,
+        cmid    : 0,
         is_ended: false
     },
 
@@ -71,17 +72,34 @@ M.mod_openwebinar.base = {
         "use strict";
         var that = this;
         var start = new Date(this.options.timeopen * 1000);
+        // fix date to count from server time instead of local
+        var now = new Date(that.options.from * 1000);
+
+        // Set countdown locals
+        countdown.setLabels(
+            M.util.get_string('js:countdown_line1', 'openwebinar', {}),
+            M.util.get_string('js:countdown_line2', 'openwebinar', {}),
+            M.util.get_string('js:countdown_line3', 'openwebinar', {}),
+            ', ',
+            '',
+            function (n) {
+                return n.toString();
+            });
+
         var timerspan = document.getElementById('pageTimer');
         var interval = setInterval(function () {
-                var ts = countdown(start, null, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
-                if ((ts.value > 0)) {
-                    clearInterval(interval);
-                    window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
-                } else {
-                    timerspan.innerHTML = ts.toHTML("strong");
-                }
+            // +1 second
+            now.setSeconds(now.getSeconds() + 1);
+            var ts = countdown(start, now, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
+            that.log(ts.value);
+            if ((ts.value > 0)) {
+                that.log('clearInterval');
+                clearInterval(interval);
+                window.location = M.cfg.wwwroot + "/mod/openwebinar/view.php?id=" + that.options.cmid;
+            } else {
+                timerspan.innerHTML = ts.toHTML("strong");
             }
-            , 1000);
+        }, 1000);
     },
 
     /**
