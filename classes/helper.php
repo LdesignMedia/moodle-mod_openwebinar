@@ -408,7 +408,7 @@ class helper {
         $courseusers = self::get_active_course_users($webcast->course);
 
         // user already added
-        $webcastusers = $DB->get_records('openwebinar_presence' , array('webcast_id' => $webcast->id) ,'',  'user_id, id , available');
+        $webcastusers = $DB->get_records('openwebinar_presence' , array('openwebinar_id' => $webcast->id) ,'',  'user_id, id , available');
 
         // Make sure all users are added first
         foreach($courseusers as $cuser){
@@ -419,7 +419,7 @@ class helper {
                 $obj->available = ($cuser->id  === $user->id) ? 1: 0;
 
                 $obj->user_id = $cuser->id;
-                $obj->webcast_id = $webcast->id;
+                $obj->openwebinar_id = $webcast->id;
                 $obj->added_on = time();
                 $obj->id = $DB->insert_record('openwebinar_presence' , $obj);
 

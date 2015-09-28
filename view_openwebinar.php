@@ -170,10 +170,12 @@ if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_stu
 }
 
 // still here? we should mark it for course completion if possible
-$completion = new completion_info($COURSE);
-if ($completion->is_enabled($cm)) {
-    $completion->set_module_viewed($cm);
-    $completion->update_state($cm, COMPLETION_COMPLETE);
+if($openwebinar->is_ended === 0){
+    $completion = new completion_info($COURSE);
+    if ($completion->is_enabled($cm)) {
+        $completion->set_module_viewed($cm);
+        $completion->update_state($cm, COMPLETION_COMPLETE);
+    }
 }
 
 // Output starts here.

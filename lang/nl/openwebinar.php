@@ -180,6 +180,7 @@ $string['btn:view'] = 'Bekijken';
 $string['btn:back'] = 'Terug';
 $string['btn:addquestion'] = 'Voeg een nieuwe vraag toe';
 $string['btn:open'] = 'Opslaan';
+$string['btn:broadcast_enter'] = 'Enter openwebinar';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';

@@ -167,6 +167,7 @@ $string['btn:view'] = 'View';
 $string['btn:back'] = 'Back';
 $string['btn:addquestion'] = 'Add a new question';
 $string['btn:open'] = 'Save';
+$string['btn:broadcast_enter'] = 'Enter openwebinar';
 
 // Helper strings
 $string['dateformat'] = 'd-m-Y H:i';

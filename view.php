@@ -62,6 +62,7 @@ $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openweb
 
 /**
  * Renderer
+ *
  * @var mod_openwebinar_renderer $renderer
  */
 $renderer = $PAGE->get_renderer('mod_openwebinar');
@@ -89,7 +90,7 @@ switch ($status) {
         echo $renderer->view_page_live_openwebinar($id, $openwebinar);
 
         if ($openwebinar->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($openwebinar);
+            echo $renderer->view_page_broadcaster_help($id, $openwebinar);
         }
         break;
 
@@ -109,7 +110,7 @@ switch ($status) {
         echo $renderer->view_page_not_started_openwebinar($openwebinar);
 
         if ($openwebinar->broadcaster == $USER->id) {
-            echo $renderer->view_page_broadcaster_help($openwebinar);
+            echo $renderer->view_page_broadcaster_help($id, $openwebinar);
         }
         break;
 

@@ -56,29 +56,32 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
 
         // button
-        $output = html_writer::empty_tag('input', array('name' => 'id', 'type' => 'hidden', 'value' => $id));
-        $output .= html_writer::tag('div', html_writer::empty_tag('input', array(
-            'type' => 'submit',
-            'value' => get_string('btn:enter_live_openwebinar', 'openwebinar'),
-            'id' => 'id_submitbutton',
-        )), array('class' => 'buttons'));
+        $output = html_writer::link($url, get_string('btn:enter_live_openwebinar', 'openwebinar'), array(
+            'class' => 'btn btn-primary',
+            'target' => '_blank'
+        ));
 
         // output
-        return $this->output->container($message . html_writer::tag('form', $output, array(
-                'action' => $url->out(),
-                'method' => 'get'
-            )) . '<hr/>', 'generalbox attwidth openwebinar-center');
+        return $this->output->container($message . $output . '<hr/>', 'generalbox attwidth openwebinar-center');
     }
 
     /**
      * Show help info for broadcaster
      *
-     * @param $openwebinar
+     * @param int $id
+     * @param \stdClass $openwebinar
      *
      * @return string
      */
-    public function view_page_broadcaster_help($openwebinar) {
-        return $this->output->container(html_writer::tag('p', get_string('text:broadcaster_help', 'openwebinar', $openwebinar), array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
+    public function view_page_broadcaster_help($id = 0, stdClass $openwebinar) {
+
+        $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
+        $link = html_writer::link($url, get_string('btn:broadcast_enter', 'openwebinar'), array(
+            'class' => 'btn btn-primary',
+            'target' => '_blank'
+        ));
+
+        return $this->output->container(html_writer::tag('p', get_string('text:broadcaster_help', 'openwebinar', $openwebinar) . '<hr/>' . $link, array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
     }
 
     /**
@@ -111,7 +114,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
         // add id for the countdown
-        $html .= html_writer::tag('h3', get_string('starts_at' , 'openwebinar'), array(
+        $html .= html_writer::tag('h3', get_string('starts_at', 'openwebinar'), array(
             'class' => 'openwebinar-center'
         ));
 
@@ -143,19 +146,9 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
 
         // add link to the room
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
-
-        // extra data
-        $output = html_writer::empty_tag('input', array('name' => 'id', 'type' => 'hidden', 'value' => $id));
-        $output .= html_writer::tag('div', html_writer::empty_tag('input', array(
-            'type' => 'submit',
-            'value' => get_string('btn:enter_offline_openwebinar', 'openwebinar'),
-            'id' => 'id_submitbutton',
-        )));
-        ///
-        $content .= html_writer::tag('form', $output, array(
-            'class' => 'buttons',
-            'action' => $url->out(),
-            'method' => 'get'
+        $content .= html_writer::link($url, get_string('btn:enter_offline_openwebinar', 'openwebinar'), array(
+            'class' => 'btn btn-primary',
+            'target' => '_blank'
         ));
 
         return $this->output->container($content, 'generalbox attwidth openwebinar-center');
@@ -240,7 +233,10 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
 
         echo $OUTPUT->box_start('generalbox');
 
-        $status = $DB->get_record('openwebinar_userstatus', array('openwebinar_id' => $openwebinar->id, 'userid' => $user->id));
+        $status = $DB->get_record('openwebinar_userstatus', array(
+            'openwebinar_id' => $openwebinar->id,
+            'userid' => $user->id
+        ));
 
         if ($status) {
             // user info
