@@ -70,6 +70,9 @@ $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openweb
 // Set user online status
 \mod_openwebinar\helper::set_user_online_status($openwebinar->id);
 
+// Set user presence
+\mod_openwebinar\helper::update_user_presence($openwebinar , $USER);
+
 // Convert openwebinar data to JS
 $opts = (array)$openwebinar;
 $opts['userid'] = $USER->id;

@@ -73,6 +73,16 @@ M.mod_openwebinar.base = {
         // fix date to count from server time instead of local
         var now = new Date(that.options.from * 1000);
 
+        // Set countdown locals
+        countdown.setLabels(
+            M.util.get_string('js:countdown_line1', 'openwebinar', {}),
+            M.util.get_string('js:countdown_line2', 'openwebinar', {}),
+            M.util.get_string('js:countdown_line3', 'openwebinar', {}),
+            ', ',
+            '',
+            function (n) {
+                return n.toString();
+            });
 
         var timerspan = document.getElementById('pageTimer');
         var interval = setInterval(function () {

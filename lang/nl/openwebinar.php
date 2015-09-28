@@ -61,6 +61,8 @@ $string['modulename_help'] = 'Openwebinar activiteit:<br/>
 <ul>
 	<li>Chatruimte kan aangepast worden via het configuratiescherm</li>
 	<li>Berichten sturen in de chatruimte</li>
+	<li>Vragen beantwoorde</li>
+	<li>Stream bekijken</li>
 </ul>
 <b>Video</b>
 <ul>
@@ -172,7 +174,7 @@ $string['text:useractivity'] = 'Gebruikers activiteit';
 // Buttons
 $string['btn:enter_live_openwebinar'] = 'Open de live openwebinar';
 $string['btn:enter_offline_openwebinar'] = 'Open de offline openwebinar';
-$string['btn:chattime'] = 'Report';
+$string['btn:chattime'] = 'Rapport';
 $string['btn:chatlog'] = 'Chat geschiedenis';
 $string['btn:view'] = 'Bekijken';
 $string['btn:back'] = 'Terug';
@@ -184,9 +186,8 @@ $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Gebruikers';
 $string['browser'] = 'Browser';
 $string['ip_address'] = 'IP-adres';
-$string['starttime'] = 'Start tijd';
-$string['online_time'] = 'Tijd in chatruimte';
-$string['endtime'] = 'Eind tijd';
+$string['starttime'] = 'Gestart op';
+$string['online_time'] = 'Tijd aanwezig';
 $string['time'] = 'Tijd';
 $string['chat'] = 'Chat';
 $string['no'] = 'Nee';
@@ -206,7 +207,7 @@ $string['teacher'] = 'Leraar';
 $string['message_placeholder'] = 'Type een  bericht hier...';
 $string['user_activity'] = 'Openwebinar gebruikers activiteit';
 $string['starts_at'] = 'Openwebinar begint in:';
-$string['starttime'] = 'starttijd';
+$string['starttime'] = 'Gestart op';
 $string['Close'] = 'Close';
 // user options
 $string['opt:header_broadcaster'] = 'Presentator';
@@ -247,6 +248,9 @@ $string['js:chat_commands'] = '<h4>Fout: onbekend commando</h4>
 <li>/clear <span class="note">Wis alle berichten in uw overzicht</span></li>
 </ul>';
 $string['js:added_question'] = 'De vraag is uitgezet in de chatruimte. U ontvangt een bericht ontvangen als iemand een antwoord geeft.';
+$string['js:countdown_line1'] = ' milliseconde | seconde | minute | uur | dag | week | maand | jaar | decennium | eeuw | millennium';
+$string['js:countdown_line2'] = ' milliseconden | seconden | minuten | uur | dagen | weken | maanden | jaar | decennia | eeuwen | millennia';
+$string['js:countdown_line3'] = ' en ';
 
 // HEADING Tables
 $string['heading:picture'] = 'Foto';

@@ -1,18 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component 'mod_openwebinar', language 'en'
@@ -28,59 +14,61 @@ $string['modulenameplural'] = 'MoodleFreak Openwebinar';
 $string['modulename_help'] = 'Openwebinar activiteit:<br/>
 <b>Room</b>
 <ul>
-	<li>De chat is schaalbaar (responsive)</li>
-	<li>Live en offline modus</li>
-	<li>Herinnering emails</li>
-	<li>Online tijd in de room meten</li>
-	<li>YUI 3 javascript modulen</li>
-	<li>Activiteit completion</li>
-	<li>Niet afgesloten chats worden automatisch gesloten</li>
+	<li>The chatroom is responsive</li>
+	<li>Live and offline modus</li>
+	<li>Reminder mail</li>
+	<li>Measure the time a user is in the chat </li>
+	<li>YUI 3 javascript engine for the room</li>
+	<li>Activity completion</li>
+	<li>Not closed rooms will be ended automatic when the cron is running.</li>
 </ul>
 <b>Chat</b>
 <ul>
 	<li>Live socket chat</li>
-	<li>Chat geschiedenis word opgeslagen voor later</li>
-	<li>Emoticons zijn te gebruiken in de chat</li>
-	<li>Inladen van chat geschiedenis mogelijk</li>
-	<li>Gebruikers lijst , sorteert op type</li>
-	<li>Gebruikers lijst met browser en OS version</li>
-	<li>Geluid bij een nieuwe bericht</li>
-	<li>Ondersteuning voor de volgende chat commandos:
+	<li>Chat history will be saved</li>
+	<li>Emoticons are supported</li>
+	<li>You can load the history of the chat if you enter to late</li>
+	<li>User list , sort on usertype</li>
+	<li>User in the room will be shown in the user list</li>
+	<li>Sound when there is a new message</li>
+	<li>Support for the chat commands:
 	<ul>
-		<li>/clear Wis alle berichten uit het overzicht (lokaal)</li>
+		<li>/clear Remove the message in the chat window in your browser.</li>
 	</ul>
 	</li>
 </ul>
-<b>Uitzender / Presentator</b>
+<b>Broadcaster</b>
 <ul>
-	<li>Berichten los blokkeren per status: gast, students en leraar</li>
-	<li>Openwebinar afsluiten na voltooiing</li>
-	<li>Vragen uitzetten naar de andere gebruikers in de chatruimte</li>
+	<li>Can mute chat message by usertype</li>
+	<li>Closing a openwebinar</li>
+	<li>Create questions inside the chat</li>
 </ul>
-<b>Gebruikers</b>
+<b>Users</b>
 <ul>
-	<li>Chatruimte kan aangepast worden via het configuratiescherm</li>
-	<li>Berichten sturen in de chatruimte</li>
+	<li>Chat room can be configured by each user</li>
+	<li>Send messages</li>
+	<li>Answer questions</li>
+	<li>View the stream if there is one</li>
 </ul>
 <b>Video</b>
 <ul>
-	<li>Bekijken van live en offline video stream</li>
-	<li>Streamen via RTMP (Real Time Messaging Protocol)</li>
-	<li>Stream in HLS (ondersteunt op de meeste apparaten) </li>
-	<li>Videojs gebruikt als video component</li>
-	<li>Toevoegen van een eerder gemaakte video</li>
-	<li>Video kan in volledig scherm afgespeeld worden</li>
+	<li>View live and offline streams</li>
+	<li>Streaming with RTMP (Real Time Messaging Protocol)</li>
+	<li>Stream in HLS (supported by most of the devices) </li>
+	<li>Videojs used as video component</li>
+	<li>Add offline videos</li>
+	<li>Play video in fullscreen</li>
 </ul>
-<b>Bestanden delen</b>
+<b>File sharing</b>
 <ul>
-	<li>Delen van bestanden in een openwebinar</li>
-	<li>Los overzicht van bestanden die in de chat toegevoegd zijn</li>
+	<li>Share files in chat if you have the permission for it</li>
+	<li>A window where you can view all shared files</li>
 </ul>
-<b>Gebruikers logboek</b>
+<b>User log</b>
 <ul>
-	<li>Tijd dat een gebruiker in de openwebinar is geweest</li>
-	<li>Bekijk wie de openwebinar heeft bekeken</li>
-	<li>Bekijk de chat geschiedenis van een specifieke gebruiker.</li>
+	<li>Time a user was available in the openwebinar</li>
+	<li>See who viewed the openwebinar</li>
+	<li>You can view chat history of a user.</li>
 </ul>';
 
 $string['modulename_link'] = 'mod/openwebinar/view';
@@ -187,7 +175,6 @@ $string['browser'] = 'Browser';
 $string['ip_address'] = 'Ip address';
 $string['starttime'] = 'Start time';
 $string['online_time'] = 'Time in room';
-$string['endtime'] = 'End time';
 $string['time'] = 'Time';
 $string['chat'] = 'Chat';
 $string['no'] = 'No';
@@ -209,6 +196,7 @@ $string['user_activity'] = 'Openwebinar user activity';
 $string['starts_at'] = 'Openwebinar starts in:';
 $string['starttime'] = 'start time';
 $string['Close'] = 'Close';
+
 // user options
 $string['opt:header_broadcaster'] = 'Broadcaster';
 $string['opt:header_exit'] = 'Exit';
@@ -248,6 +236,9 @@ $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <li>/clear <span class="note">Empty all messages in your overview</span></li>
 </ul>';
 $string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
+$string['js:countdown_line1'] = ' millisecond| second| minute| hour| day| week| month| year| decade| century| millennium';
+$string['js:countdown_line2'] = ' milliseconds| seconds| minutes| hours| days| weeks| months| years| decades| centuries| millennia';
+$string['js:countdown_line3'] = ' and ';
 
 // HEADING Tables
 $string['heading:picture'] = 'Avatar';

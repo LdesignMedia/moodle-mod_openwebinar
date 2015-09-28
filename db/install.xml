@@ -108,5 +108,21 @@
                 <INDEX NAME="mdl_webc_cou_ix" UNIQUE="false" FIELDS="course"/>
             </INDEXES>
         </TABLE>
+        <TABLE NAME="openwebinar_presence" COMMENT="openwebinar_presence table retrofitted from MySQL">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="user_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="available" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="openwebinar_id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="added_on" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="mdl_openwebinar_id" UNIQUE="false" FIELDS="openwebinar_id"/>
+                <INDEX NAME="mdl_user_id" UNIQUE="false" FIELDS="user_id"/>
+            </INDEXES>
+        </TABLE>
     </TABLES>
 </XMLDB>

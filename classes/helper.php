@@ -388,4 +388,60 @@ class helper {
         return $DB->get_records_sql($sql , $params);
     }
 
+    /**
+     * Save the users presence for stats and overviews
+     *
+     * @param bool|\stdClass $webcast
+     * @param bool|\stdClass $user
+     *
+     * @return bool
+     */
+    static public function update_user_presence($webcast = false , $user = false){
+        global $DB;
+
+        // we can't update if this is the case
+        if(empty($webcast)|| $webcast->is_ended == 1 || !$user){
+            return false;
+        }
+
+        // get users that can enter this webinar
+        $courseusers = self::get_active_course_users($webcast->course);
+
+        // user already added
+        $webcastusers = $DB->get_records('openwebinar_presence' , array('webcast_id' => $webcast->id) ,'',  'user_id, id , available');
+
+        // Make sure all users are added first
+        foreach($courseusers as $cuser){
+            if(!isset($webcastusers[$cuser->id])){
+
+                $obj = new \stdClass();
+                // is this user is active
+                $obj->available = ($cuser->id  === $user->id) ? 1: 0;
+
+                $obj->user_id = $cuser->id;
+                $obj->webcast_id = $webcast->id;
+                $obj->added_on = time();
+                $obj->id = $DB->insert_record('openwebinar_presence' , $obj);
+
+                $webcastusers[$cuser->id] = $obj;
+            }
+        }
+
+        // check if I exists
+        if(!isset($webcastusers[$user->id])){
+            return false;
+        }
+
+        // check my presence is set correctly
+        if($webcastusers[$user->id]->available !== 1){
+            $obj = new \stdClass();
+            $obj->id = $webcastusers[$user->id]->id;
+            $obj->available = 1;
+            $DB->update_record('openwebinar_presence' , $obj);
+        }
+
+        return true;
+    }
+
+
 }

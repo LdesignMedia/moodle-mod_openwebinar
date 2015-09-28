@@ -91,6 +91,13 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     public function view_page_not_started_openwebinar($openwebinar) {
         global $PAGE;
         $html = '';
+        // Language strings
+        $PAGE->requires->strings_for_js(array(
+            'js:countdown_line1',
+            'js:countdown_line2',
+            'js:countdown_line3',
+        ), 'openwebinar');
+
         $PAGE->requires->js('/mod/openwebinar/javascript/countdown.js');
 
         // get cm
@@ -215,8 +222,10 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     /**
      * Load online time of the user
      *
-     * @param object|false $openwebinar
+     * @param bool|\stdClass $openwebinar
      * @param int $userid
+     *
+     * @throws coding_exception
      */
     public function view_user_chattime($openwebinar = false, $userid = 0) {
         global $OUTPUT, $DB, $PAGE, $CFG;
@@ -258,10 +267,6 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
             $table->data[] = array(
                 get_string('online_time', 'openwebinar'),
                 ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds)
-            );
-            $table->data[] = array(
-                get_string('endtime', 'openwebinar'),
-                ($status->endtime == 0) ? '-' : date('d-m-Y H:i:s', $status->endtime)
             );
 
             echo html_writer::table($table);

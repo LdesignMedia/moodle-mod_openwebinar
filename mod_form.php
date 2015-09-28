@@ -139,12 +139,11 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $mform->addElement('duration', 'reminder_3', get_string('setting:reminder_3', 'openwebinar'));
         $mform->setDefault('reminder_3', $config->reminder_3);
 
-        // Add standard grading elements.
-        $this->standard_grading_coursemodule_elements();
-
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
 
+        $mform->setDefault('completion', COMPLETION_TRACKING_AUTOMATIC);
+        $mform->setDefault('completionview' , true);
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
