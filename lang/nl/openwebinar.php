@@ -96,7 +96,7 @@ $string['task:reminder'] = 'Versturen van herinnering';
 $string['messageprovider:reminder'] = 'Openwebinar herinnering melding';
 
 // ACCESS
-$string['openwebinar:history'] = 'Bekijk van chat geschiedenis';
+$string['openwebinar:history'] = 'Bekijken van chat geschiedenis';
 $string['openwebinar:view'] = 'Openwebinar bekijken';
 $string['openwebinar:addinstance'] = 'Toevoegen van een openwebinar';
 $string['openwebinar:manager'] = 'Openwebinar manager';
@@ -134,20 +134,20 @@ $string['setting:chat_desc'] = 'Indien uitgeschakeld bevat de openwebinar geen c
 $string['setting:filesharing'] = 'Bestandsdeling ingeschakeld';
 $string['setting:filesharing_desc'] = 'Indien uitgeschakeld kan niemand bestanden delen.';
 $string['setting:filesharing_student'] = 'Studenten kunnen bestanden delen';
-$string['setting:filesharing_student_desc'] = 'Wanneer ingeschakeld kunnen student ook bestanden delen.';
+$string['setting:filesharing_student_desc'] = 'Wanneer ingeschakeld kunnen studenten ook bestanden delen.';
 $string['setting:showuserpicture'] = 'Toon profiel foto';
 $string['setting:showuserpicture_desc'] = 'Toon profiel foto van gebruikers in de chatruimte';
 $string['setting:userlist'] = 'Toon gebruikerslijst';
 $string['setting:userlist_desc'] = 'Laat de actuele gebruikers in de chatruimte zien.';
 $string['setting:ajax_timer'] = 'AJAX timer';
-$string['setting:ajax_timer_desc'] = 'Dit zal elke 60 seconden een verzoek naar de server sturen om de gebruiker zijn online tijd in de chatruimte realtime opteslaan. <br/>
+$string['setting:ajax_timer_desc'] = 'Dit zal elke 60 seconden een verzoek naar de server sturen om de online tijd van de gebruiker zijn in de chatruimte realtime op te slaan.<br/>
 Waarschuwing wanneer meer dan 25 gebruikers in de chatruimte aanwezig zijn kan dit voor een hogere serverload zorgen.';
 $string['setting:emoticons'] = 'Emoticons in chatruimte';
 $string['setting:emoticons_desc'] = 'Shortcode zal worden omgezet naar een emoticon. Ook een dialoog zal worden toegevoegd waar u een emoticon kunt selecteren.';
 $string['setting:debugjs'] = 'Debug javascript';
 $string['setting:debugjs_desc'] = 'Log javascript berichten naar de browser console.';
 $string['setting:hls'] = 'HLS video stream';
-$string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moeten ook streamen naar server met HLS-uitgang.<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
+$string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moet ook streamen naar server met HLS-uitgang.<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
 
 // Mod settings
 $string['mod_setting:settings'] = 'Openwebinar functies';
@@ -228,7 +228,7 @@ $string['js:my_answer_saved'] = 'Uw antwoord is opgeslagen.';
 $string['js:send'] = 'Verstuur';
 $string['js:answer'] = 'Antwoord';
 $string['js:added_answer'] = '{$a->fullname} heeft een antwoord toegevoegd.';
-$string['js:ending_openwebinar'] = 'Bent u er zeker van dat u de openwebinar wilt beëindigd?';
+$string['js:ending_openwebinar'] = 'Bent u zeker dat u de openwebinar wilt beëindigen?';
 $string['js:muted'] = 'Uw berichten worden gedempt door de presentator.';
 $string['js:wait_on_connection'] = 'Wachten..';
 $string['js:joined'] = 'Welkom, u bent verbonden met chat-server.';
@@ -248,7 +248,7 @@ $string['js:chat_commands'] = '<h4>Fout: onbekend commando</h4>
 <ul class="command">
 <li>/clear <span class="note">Wis alle berichten in uw overzicht</span></li>
 </ul>';
-$string['js:added_question'] = 'De vraag is uitgezet in de chatruimte. U ontvangt een bericht ontvangen als iemand een antwoord geeft.';
+$string['js:added_question'] = 'De vraag is uitgezet in de chatruimte. U ontvangt een bericht als iemand een antwoord geeft.';
 $string['js:countdown_line1'] = ' milliseconde | seconde | minute | uur | dag | week | maand | jaar | decennium | eeuw | millennium';
 $string['js:countdown_line2'] = ' milliseconden | seconden | minuten | uur | dagen | weken | maanden | jaar | decennia | eeuwen | millennia';
 $string['js:countdown_line3'] = ' en ';

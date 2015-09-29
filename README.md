@@ -1,6 +1,6 @@
 Moodle openwebinar - Activity
 ====================
-This plugin allows you to give a live webinar inside moodle with allot of features. All services/plugins/libs that are used are open source. 
+This plugin allows you to give a live webinar inside Moodle with a lot of features. All services/plugins/libs which are used are open source.
 
 Author
 ====================
@@ -8,14 +8,13 @@ Author
 
 Author: Luuk Verhoeven, [MoodleFreak.com](http://www.moodlefreak.com/)
 
-Requires at least: Moodle 2.6+
+Min. required: Moodle 2.6+
 
 Description
 ====================
-MoodleFreak Openwebinar provides the functionality to give a live stream and chat in moodle. You can schedule a meeting and give your live openwebinar. There is one public chat room.
-Most preference of the features can be globally set in settings. Settings can be overridden on instance level to be extra customisable. 
+MoodleFreak Openwebinar provides the function of live streaming and chatting in Moodle. You are able to schedule a meeting and give a live openwebinar. There is one public chat room. Most preference of the features can be generally set in settings. Settings can be overridden on instance level to be more customizable.
 
-Everything we are using is open source no need for Flash media server, Adobe Connect, Gotomeeting or other paid services. You can setup this in your own environment see the how to on moodlefreak here. 
+Everything we are using is open source. There is no need for Flash media server, Adobe Connect, Gotomeeting or other paid services. You can set this up in your own environment. For more information on Moodlefreak click here.
 
 List of features
 ====================
@@ -23,7 +22,7 @@ List of features
 #### Room
   - Auto room scaling
   - Live and offline mode 
-  - max 3 fully customisable reminder e-mail message (notify users about the openwebinar)
+  - Max. 3 completely customizable reminder e-mail messages (to notify users about the openwebinar)
   - User activity pinger to measure online time in the room
   - YUI 3 javascript module
   - Completion triggered on entering the live openwebinar
@@ -37,12 +36,12 @@ List of features
   - Users in the room list sorted by status
   - Users in room list include browser and OS version
   - New message sound
-  - Support chat commands in message box 
-    - /clear  clear all messages in your chat overview
+  - Supported chat commands in message field 
+    - `/clear` This removes all messages in your chat overview
 
 #### Broadcaster
   - Broadcaster can mute chat messages from guests, students and teachers separately
-  - Broadcaster can close / end a openwebinar
+  - Broadcaster can close/end an openwebinar
 
 #### Users
   - Chat control panel for user in the room
@@ -53,7 +52,7 @@ List of features
   - Stream RTMP (Real Time Messaging Protocol) viewer
   - Stream HLS (allow almost all devices) with fallback support
   - Modern video api videojs included for more playback support
-  - Adding offline or already given video to a openwebinar
+  - Adding offline or already given video to an openwebinar
   - Fullscreen video mode
 
 #### File sharing
@@ -61,9 +60,9 @@ List of features
   - User friendly file overview
 
 #### User activity in openwebinar overview
-  - See how long users where in the room
+  - See how long users have been in the room
   - See who visited the openwebinar
-  - See chatlog of 1 specific user
+  - See chatlog of one specific user
 
 Installation
 ====================
@@ -71,20 +70,21 @@ Installation
 2.  login as administrator
 3.  go to Site Administrator > Notification
 4.  install the plugin
-5.  you need to fill in the settings. Please keep in mind you can use a `hosted` setup or setup all dependenties [chat server / streaming server] your self.
+5.  you will need to fill out the settings. Please keep in mind you have the options to use a hosted setup or setup all dependencies yourself.
 
 Installation broadcaster
 ====================
-The openwebinar it self is all webbased. But to stream a openwebinar as broadcaster you will need some software to stream a RTMP stream. 
-We used open broadcaster for this what is also a open source project. The manual to use it for this plugin can be found here.
+The openwebinar itself is completely webbased. But to stream a openwebinar as broadcaster you will need some software to stream a RTMP stream. 
 
-Installation dependenties
+We’ve used open broadcaster for this which is also an open source project. The users manual for this plugin can be found here.
+
+Installation dependencies
 ====================
-This won't run without a **Chat server**. The chat server is developed by **MoodleFreak** and can be found on [openwebinar_chatserver](https://github.com/MoodleFreak/openwebinar_chatserver)
+The openwebinar won't run without a **Chat server**. The chat server is developed by **MoodleFreak** and can be found on [openwebinar_chatserver](https://github.com/MoodleFreak/openwebinar_chatserver)
 
-Also for openwebinar you need a **rtmp streaming server**. We build this speciality for [nginx-rtmp](https://github.com/arut/nginx-rtmp-module) because its free and open source. Chances are high that another RTMP server will also work. 
+For the openwebinar you will also need a **rtmp streaming server**. We’ve build this especially for [nginx-rtmp](https://github.com/arut/nginx-rtmp-module) because its free and open source. Chances are high that another RTMP server will also work. 
 
-**Note: Keep in mind streaming will cost lot of bandwidth** 
+**Note: Keep in mind that streaming will use a lot of bandwidth** 
 
 Installation - nginx-rtmp for `openwebinar`
 ====================
@@ -93,4 +93,4 @@ Installation - nginx-rtmp for `openwebinar`
 Changelog
 ====================
 
-See version control for the complete history, major changes in this versions will be list below.
+See version control for the complete history. Major changes in this version will be listed below.

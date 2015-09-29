@@ -85,17 +85,17 @@ $string['messageprovider:reminder'] = 'Openwebinar reminder notifications';
 // ACCESS
 $string['openwebinar:history'] = 'Allow viewing openwebinar history';
 $string['openwebinar:view'] = 'Allow viewing openwebinar';
-$string['openwebinar:addinstance'] = 'Add a openwebinar';
+$string['openwebinar:addinstance'] = 'Add an openwebinar';
 $string['openwebinar:manager'] = 'Openwebinar manager';
 $string['openwebinar:teacher'] = 'Openwebinar teacher';
 
 // ERRORS
 $string['error:openwebinar_notfound'] = 'Error: We can\'t get the correct openwebinar!';
-$string['error:file_not_exits'] = 'Error: This file doesn\'t exists or is removed!';
+$string['error:file_not_exits'] = 'Error: This file doesn\'t exist or has been removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
-$string['error:no_access'] = 'Error: missing capability to do this.';
+$string['error:no_access'] = 'Error: missing capability to fulfill task.';
 $string['error:no_result'] = 'No result(s) found';
-$string['error:answer_already_saved'] = 'Your answer is already saved!';
+$string['error:answer_already_saved'] = 'Your answer has been saved already!';
 $string['error:not_for_guests'] = 'Error: not available for Guests';
 
 // SETTINGS
@@ -115,20 +115,20 @@ $string['setting:reminder_2_desc'] = 'Notification moment before the start of th
 $string['setting:reminder_3'] = 'Reminder 3';
 $string['setting:reminder_3_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
 $string['setting:stream'] = 'Streaming enabled';
-$string['setting:stream_desc'] = 'If disabled the openwebinar don\'t shows a video player';
+$string['setting:stream_desc'] = 'If disabled the openwebinar don\'t show a video player';
 $string['setting:chat'] = 'Chat enabled';
-$string['setting:chat_desc'] = 'If disabled the openwebinar don\'t shows a chat room';
+$string['setting:chat_desc'] = 'If disabled the openwebinar don\'t show a chat room';
 $string['setting:filesharing'] = 'Filesharing enabled';
-$string['setting:filesharing_desc'] = 'If disabled nobody can share files in the file drop zone.';
-$string['setting:filesharing_student'] = 'Allow student filesharing';
-$string['setting:filesharing_student_desc'] = 'Allow students to share there files';
+$string['setting:filesharing_desc'] = 'If disabled, sharing of files in the file drop zone not possible.';
+$string['setting:filesharing_student'] = 'Allow students to share their files';
+$string['setting:filesharing_student_desc'] = 'Allow students to share their files';
 $string['setting:showuserpicture'] = 'Show user avatar';
-$string['setting:showuserpicture_desc'] = 'Show a avatar of user in the chat';
+$string['setting:showuserpicture_desc'] = 'Show an avatar of user in the chat';
 $string['setting:userlist'] = 'Show userlist';
 $string['setting:userlist_desc'] = 'Show active users to the student';
 $string['setting:ajax_timer'] = 'Ajax based timing';
-$string['setting:ajax_timer_desc'] = 'This will send every 60 seconds a request to the server to update user his onlinetime. <br/>
-Warning with more then 25 users in the room this can give a high server load.';
+$string['setting:ajax_timer_desc'] = 'Every 60 seconds a request will be send to the server to update the user’s online time. <br/>
+Warning: more than 25 users in the room can cause a high server load.';
 $string['setting:emoticons'] = 'Emoticons in chat';
 $string['setting:emoticons_desc'] = 'Shortcode will be converted to a emoticon. Also a dialog will be added where you can select a emoticon.';
 $string['setting:debugjs'] = 'Debug Javascript';
@@ -212,20 +212,20 @@ $string['opt:leave'] = 'Leave openwebinar';
 $string['opt:header_general'] = 'General';
 
 // Js
-$string['js:my_answer_saved'] = 'Your answer is saved.';
+$string['js:my_answer_saved'] = 'Your answer has been saved.';
 $string['js:send'] = 'Send';
 $string['js:answer'] = 'Answer';
-$string['js:added_answer'] = '{$a->fullname} added a answer.';
+$string['js:added_answer'] = '{$a->fullname} added an answer.';
 $string['js:ending_openwebinar'] = 'Are you sure you wan\'t to end and close the openwebinar?';
 $string['js:muted'] = 'The messages are muted by the broadcaster!';
 $string['js:wait_on_connection'] = 'Waiting';
-$string['js:joined'] = 'Welcome to chatroom.';
+$string['js:joined'] = 'Welcome to the chatroom.';
 $string['js:disconnect'] = 'You are disconnected.';
 $string['js:reconnected'] = 'You are reconnected.';
 $string['js:script_user'] = 'System message';
 $string['js:system_user'] = 'Chat server';
 $string['js:connecting'] = 'Connecting to the chat server, please be patient.';
-$string['js:warning_message_closing_window'] = 'Are you sure you want to do exit the openwebinar?';
+$string['js:warning_message_closing_window'] = 'Are you sure you want to exit the openwebinar?';
 $string['js:error_logout_or_lostconnection'] = 'Connection lost! Or your session is expired. Please reload the openwebinar.';
 $string['js:dialog_ending_text'] = 'Broadcaster has closed the openwebinar. You will be redirect to Moodle.';
 $string['js:dialog_ending_btn'] = 'Close openwebinar';
@@ -236,7 +236,7 @@ $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <ul class="command">
 <li>/clear <span class="note">Empty all messages in your overview</span></li>
 </ul>';
-$string['js:added_question'] = 'Your question is send to client(s) in the room. You will receive a notice if someone gives an answer.';
+$string['js:added_question'] = 'Your question has been send to client(s) in the room. You will receive a notice if someone gives an answer.';
 $string['js:countdown_line1'] = ' millisecond| second| minute| hour| day| week| month| year| decade| century| millennium';
 $string['js:countdown_line2'] = ' milliseconds| seconds| minutes| hours| days| weeks| months| years| decades| centuries| millennia';
 $string['js:countdown_line3'] = ' and ';
