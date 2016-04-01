@@ -25,6 +25,8 @@
  **/
 namespace mod_openwebinar\task;
 
+use mod_openwebinar\cron;
+
 class reminder extends \core\task\scheduled_task {
 
     public function get_name() {
@@ -39,7 +41,7 @@ class reminder extends \core\task\scheduled_task {
 
         mtrace('openwebinar: ' . __CLASS__);
 
-        $cron = new \mod_openwebinar\cron();
+        $cron = new cron();
         $cron->reminder();
 
         mtrace(' ');

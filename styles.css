@@ -190,6 +190,7 @@
 #openwebinar-userlist-holder ul li {
     padding: 5px 10px;
     border-bottom: 1px dashed #CCCCCC;
+    cursor:pointer;
 }
 
 #openwebinar-userlist-holder ul li img {

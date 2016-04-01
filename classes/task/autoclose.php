@@ -25,7 +25,9 @@
  **/
 namespace mod_openwebinar\task;
 
-class auto_close extends \core\task\scheduled_task {
+use mod_openwebinar\cron;
+
+class autoclose extends \core\task\scheduled_task {
 
     public function get_name() {
         return get_string('task:auto_close', 'openwebinar');
@@ -39,10 +41,9 @@ class auto_close extends \core\task\scheduled_task {
 
         mtrace('openwebinar: ' . __CLASS__);
 
-        $cron = new \mod_openwebinar\cron();
+        $cron = new cron();
         $cron->auto_close();
 
         mtrace(' ');
-        return true;
     }
 }

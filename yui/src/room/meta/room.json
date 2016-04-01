@@ -1,5 +1,5 @@
 {
-  "moodle-mod_openwebinar-base": {
+  "moodle-mod_openwebinar-room": {
     "requires": [
       "base",
       "node",

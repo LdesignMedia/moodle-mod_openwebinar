@@ -93,6 +93,7 @@ $opts['viewhistory'] = $permissions->history;
 $opts['questions'] = true; // @todo make this optional to use the question manager
 
 $opts['fullname'] = fullname($USER);
+$opts['skype'] = $USER->skype;
 $opts['debugjs'] = ($config->debugjs == 1);
 $opts['cmid'] = $cm->id;
 $opts['courseid'] = $course->id;
@@ -400,7 +401,24 @@ echo $OUTPUT->header();
             </div>
         </section>
     </div>
-    <div id="openwebinar-question-manager">
+    <div id="openwebinar-shortprofile">
+        <div class="yui3-widget-bd">
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="2" id="shortprofile-avatar"></td>
+                </tr>
+                <tr>
+                    <td><?php echo get_string('fullname' , 'openwebinar')?></td>
+                    <td><span id="shortprofile-fullname">-</span></td>
+                </tr>
+                <tr>
+                    <td><?php echo get_string('skype' , 'openwebinar')?></td>
+                    <td><span id="shortprofile-skype">-</span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="openwebinar-question-manager" style="display: none">
         <div class="yui3-widget-bd">
             <div id="all-questions">
                 <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>

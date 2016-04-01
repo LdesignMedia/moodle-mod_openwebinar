@@ -25,7 +25,7 @@
  **/
 $tasks = array(
     array(
-        'classname' => 'mod_openwebinar\task\auto_close',
+        'classname' => 'mod_openwebinar\task\autoclose',
         'blocking'  => 0,
         'minute'    => '30',
         'hour'      => '*',

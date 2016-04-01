@@ -168,14 +168,14 @@ $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br> U kunt nu de openwebinar openen via de knop hieronder.';
 $string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br><b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u downloaden <a class="btn" target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">hier</a><br><br>
 Zorg ervoor dat u de streaming-software installeerd: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de openwebinar/geschiedennis terugzien door te klikken op de onderstaande knop.';
+$string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de chatgeschiedenis terugzien door te klikken op de onderstaande knop.';
 $string['text:useractivity'] = 'Gebruikers activiteit';
 
 // Buttons
 $string['btn:enter_live_openwebinar'] = 'Open de live openwebinar';
 $string['btn:enter_offline_openwebinar'] = 'Open de offline openwebinar';
 $string['btn:chattime'] = 'Rapport';
-$string['btn:chatlog'] = 'Chat geschiedenis';
+$string['btn:chatlog'] = 'Chatgeschiedenis';
 $string['btn:view'] = 'Bekijken';
 $string['btn:back'] = 'Terug';
 $string['btn:addquestion'] = 'Voeg een nieuwe vraag toe';
@@ -295,3 +295,6 @@ Openwebinar herinnering:<br/><br/>
 Met vriendelijke groet,<br/>
 
 ##broadcaster_fullname##';
+
+$string['fullname'] = 'Volledige naam';
+$string['skype'] = 'Skype';

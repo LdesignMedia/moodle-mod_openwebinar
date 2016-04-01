@@ -283,3 +283,6 @@ Openwebinar Reminder for:<br/><br/>
 Kind regards,<br/>
 
 ##broadcaster_fullname##';
+
+$string['fullname'] = 'Fullname';
+$string['skype'] = 'Skype';

@@ -26,7 +26,7 @@
 namespace mod_openwebinar;
 defined('MOODLE_INTERNAL') || die();
 
-final class cron {
+class cron {
 
     /**
      * Room open max duration

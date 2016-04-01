@@ -405,7 +405,7 @@ M.mod_openwebinar.room = {
         timeopen              : 0,
         cmid                  : 0,
         courseid              : 0,
-        openwebinarid             : 0,
+        openwebinarid         : 0,
         filesharing           : false,
         filesharing_student   : false,
         viewhistory           : false,
@@ -421,6 +421,7 @@ M.mod_openwebinar.room = {
         streaming_server      : "",
         chat_server           : "",
         fullname              : "",
+        skype                 : "",
         ajax_path             : "",
         usertype              : "",
         userid                : 0,
@@ -509,9 +510,10 @@ M.mod_openwebinar.room = {
         cmid         : 0,
         useragent    : {},
         courseid     : 0,
-        openwebinarid    : 0,
+        openwebinarid: 0,
         userid       : 0,
         fullname     : "",
+        skype        : "",
         broadcastkey : "",
         room         : "_public",
         shared_secret: "",
@@ -1712,7 +1714,7 @@ M.mod_openwebinar.room = {
      */
     add_userlist: function () {
         "use strict";
-        var that = this;
+        var that = this, panel;
         this.log('add_userlist');
 
         // set userlist node prevent searching the dom again
@@ -1727,6 +1729,28 @@ M.mod_openwebinar.room = {
         this.socket.on("update-user-list", function (data) {
             that.update_userlist(data);
         });
+
+        // show short-profile on user click this feature is only available for broadcaster
+        Y.one('body').delegate('click', function () {
+            that.log('user_click');
+            panel = new Y.Panel({
+                width   : 500,
+                height  : 300,
+                zIndex  : 10,
+                centered: true,
+                modal   : true,
+                visible : false,
+                render  : true,
+                srcNode : '#openwebinar-shortprofile'
+            });
+            panel.show();
+            
+            // copy click user parameters
+            Y.one('#shortprofile-skype').set('text', this.one('.fullname').getData('skype'));
+            Y.one('#shortprofile-fullname').set('text', this.one('.fullname').get('text'));
+            Y.one('#shortprofile-avatar').setHTML(this.one('img').cloneNode(true));
+
+        }, '#openwebinar-userlist-holder ul li');
     },
 
     /**
@@ -1758,7 +1782,7 @@ M.mod_openwebinar.room = {
                     li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(userobject.userid) + '/f1.jpg" />';
                 }
 
-                li += '<span class="fullname">' + this.alpha_numeric(userobject.fullname) + '</span>' +
+                li += '<span class="fullname" data-skype="' + this.alpha_numeric(userobject.skype) + '">' + this.alpha_numeric(userobject.fullname) + '</span>' +
                     '<span class="browser">' + userobject.useragent.os.name + ' ' + userobject.useragent.os.version + '<br/>' +
                     userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major + '</span>';
 
