@@ -4,6 +4,9 @@ This plugin allows you to give a live webinar inside Moodle with a lot of featur
 
 Author
 ====================
+
+[![Build Status](https://travis-ci.org/MoodleFreak/moodle_mod_openwebinar.svg?branch=master)](https://travis-ci.org/MoodleFreak/moodle_mod_openwebinar/)
+
 ![MoodleFreak.com](http://moodlefreak.com/logo_small.png)
 
 Author: Luuk Verhoeven, [MoodleFreak.com](http://www.moodlefreak.com/)
