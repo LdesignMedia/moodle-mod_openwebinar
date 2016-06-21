@@ -25,8 +25,6 @@
  **/
 namespace mod_openwebinar;
 
-use mod_openwebinar\helper;
-
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 

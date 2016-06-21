@@ -25,6 +25,7 @@
  * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
+ * @var mod_openwebinar_renderer $renderer
  */
 
 require_once("../../config.php");
@@ -62,11 +63,6 @@ unset($opts['intro'], $opts['broadcastkey']);
 // Permissions.
 $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
-/**
- * Renderer
- *
- * @var mod_openwebinar_renderer $renderer
- */
 $renderer = $PAGE->get_renderer('mod_openwebinar');
 
 // Get status.
@@ -78,10 +74,6 @@ echo $OUTPUT->header();
 // Conditions to show the intro can change to look for own settings or whatever.
 echo $OUTPUT->heading(format_string($openwebinar->name), 1, 'openwebinar-center');
 
-/***
- * $completion=new completion_info($course);
- * $completion->set_module_viewed($cm);
- */
 switch ($status) {
 
     case \mod_openwebinar\helper::WEBCAST_LIVE:

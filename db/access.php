@@ -61,7 +61,7 @@ $capabilities = array(
                 'clonepermissionsfrom' => 'moodle/course:manageactivities'
         ),
 
-        // View the module
+        // View the module.
         'mod/openwebinar:view' => array(
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,
@@ -74,7 +74,7 @@ $capabilities = array(
                 )
         ),
 
-        // View the history
+        // View the history.
         'mod/openwebinar:history' => array(
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,
@@ -86,7 +86,7 @@ $capabilities = array(
                 )
         ),
 
-        // View user online status
+        // View user online status.
         'mod/openwebinar:manager' => array(
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,
@@ -95,7 +95,7 @@ $capabilities = array(
                 )
         ),
 
-        // Has teacher status in the chat
+        // Has teacher status in the chat.
         'mod/openwebinar:teacher' => array(
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,

@@ -1207,7 +1207,7 @@ M.mod_openwebinar.room = {
                     src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
                 };
             } else {
-                // Default rtmp only work on flash based players :(
+                // Default rtmp only work on flash based players :(.
                 source = {
                     type: "rtmp/mp4",
                     src : "rtmp://" + this.options.streaming_server + '/' + this.options.broadcastkey
@@ -1217,7 +1217,7 @@ M.mod_openwebinar.room = {
             this.log('Add offline video if there is one');
         }
 
-        // Set player settings
+        // Set player settings.
         this.player = videojs('room_stream', {
             'techOrder': techOrder,
             autoplay   : true,
@@ -1225,41 +1225,40 @@ M.mod_openwebinar.room = {
             sources    : [source]
         });
 
-        // events
-        // https://github.com/videojs/video.js/blob/master/docs/api/vjs.Player.md#waiting-event
-        // Fired whenever the media begins waiting
+        // Events https://github.com/videojs/video.js/blob/master/docs/api/vjs.Player.md#waiting-event.
+        // Fired whenever the media begins waiting.
         this.player.on('waiting', function () {
             that.log('player_event(waiting)');
         });
 
-        // Fired whenever the media has been paused
+        // Fired whenever the media has been paused.
         this.player.on('pause', function () {
             that.log('player_event(pause)');
         });
 
-        // Fired whenever the media begins or resumes playback
+        // Fired whenever the media begins or resumes playback.
         this.player.on('play', function () {
             that.log('player_event(play)');
         });
 
-        // Fired when the end of the media resource is reached (currentTime == duration)
+        // Fired when the end of the media resource is reached (currentTime == duration).
         this.player.on('ended', function () {
             that.log('player_event(ended)');
         });
 
-        // Fired while the user agent is downloading media data
+        // Fired while the user agent is downloading media data.
         this.player.on('progress', function () {
             that.log('player_event(progress)');
         });
 
-        // Fired while the user agent is downloading media data
-        // Looks like this is called when a stream is really started
-        // Also when time no longer gets higher we are stopped
+        // Fired while the user agent is downloading media data.
+        // Looks like this is called when a stream is really started.
+        // Also when time no longer gets higher we are stopped.
         this.player.on('loadedmetadata', function () {
             that.log('player_event(loadedmetadata)');
         });
 
-        // Fired when an error occurs
+        // Fired when an error occurs.
         this.player.on('error', function () {
             that.log('player_event(error)');
         });
@@ -1278,16 +1277,16 @@ M.mod_openwebinar.room = {
         "use strict";
         this.log('add_chat');
 
-        // add tinyscrollbar
+        // Add tinyscrollbar.
         var that = this, el = document.getElementById("openwebinar-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
         this.nodeholder.chatlist = Y.one('#openwebinar-chatlist ul');
         this.nodeholder.loadhistorybtn = Y.one('#openwebinar-loadhistory');
 
         if (!this.options.is_ended) {
-            // Add first message to the chat
+            // Add first message to the chat.
             this.chat_local_message('connecting');
-            // Join the public room
+            // Join the public room.
             this.socket.emit("join", this.chatobject, function (response) {
                 if (!response.status) {
                     that.exception(response.error);
@@ -1296,18 +1295,18 @@ M.mod_openwebinar.room = {
                 }
             });
 
-            // Socket call when getting a message
+            // Socket call when getting a message.
             this.socket.on("update-chat", function (data) {
                 that.chat_add_chatrow(data);
             });
         }
 
-        // Click on send button
+        // Click on send button.
         this.nodeholder.sendbutton.on('click', function () {
             this.chat_send_message();
         }, this);
 
-        // Check if user can view history
+        // Check if user can view history.
         if (this.options.viewhistory) {
             this.nodeholder.loadhistorybtn.show();
             this.nodeholder.loadhistorybtn.on('click', function () {
@@ -1315,7 +1314,7 @@ M.mod_openwebinar.room = {
             }, this);
         }
 
-        // show emoticon dialog
+        // Show emoticon dialog.
         if (this.options.enable_emoticons && !this.options.is_ended) {
 
             this.log('Emoticons are enabled');
@@ -1332,7 +1331,7 @@ M.mod_openwebinar.room = {
             Y.one('#openwebinar-emoticon-icon').on('click', function () {
                 this.log('click on emoticon icon');
 
-                // validate the emoticons are already build else build them first in a dialog
+                // Validate the emoticons are already build else build them first in a dialog.
                 if (!Y.one('#openwebinar-emoticon-content')) {
                     this.chat_build_emoticon_selector();
                 }
@@ -1350,7 +1349,7 @@ M.mod_openwebinar.room = {
         }
 
         // Workaround for enter key YUI event not working here..
-        // @todo need new method we making this more private
+        // TODO: need new method we making this more private.
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_openwebinar.room.chat_enter_listener(event);');
     },
 
@@ -1361,7 +1360,7 @@ M.mod_openwebinar.room = {
         "use strict";
         var name, items = '';
 
-        // build preview for all emoticons
+        // Build preview for all emoticons.
         for (name in this.emoticons) {
             if (this.emoticons.hasOwnProperty(name)) {
                 this.log(this.emoticons[name]);
@@ -1398,20 +1397,20 @@ M.mod_openwebinar.room = {
 
         this.log('chat_add_chatrow');
 
-        // Setting vars
+        // Setting vars.
         var chatline = '', date = 0, me = false, i, messagetext;
 
         if (Y.Object.hasKey(data, 'message')) {
 
             this.log(data);
 
-            // build the chatline and make sure nothing strange happens XSS!
+            // Build the chatline and make sure nothing strange happens XSS!.
             if (data.messagetype === 'default') {
 
                 me = (data.userid === this.options.userid);
                 messagetext = this.chat_parse_message(data);
 
-                // we skip the message
+                // We skip the message.
                 if (!messagetext) {
                     return '';
                 }
@@ -1425,12 +1424,12 @@ M.mod_openwebinar.room = {
                     this.audio_newmessage.play();
                 }
 
-                // Start
+                // Start.
                 chatline += '<li class="openwebinar-chatline openwebinar-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
                     '<div class="message-container">';
 
                 if (this.options.showuserpicture) {
-                    // Add avatar
+                    // Add avatar.
                     chatline += '<span class="openwebinar-avatar">' +
                         '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(data.userid) + '/f1.jpg" />' +
                         '</span>';
@@ -1444,7 +1443,7 @@ M.mod_openwebinar.room = {
 
             } else if (data.messagetype === 'system') {
 
-                // Messages generate by server
+                // Messages generate by server.
                 chatline += '<li class="openwebinar-chatline openwebinar-socketserver">' +
                     '<div class="message-container">' +
                     '<span class="openwebinar-username">' + M.util.get_string('js:system_user', 'openwebinar', {}) + '</span>' +
@@ -1457,7 +1456,7 @@ M.mod_openwebinar.room = {
 
                 date = new Date().getTime() / 1000;
 
-                // Messages generate by this script local
+                // Messages generate by this script local.
                 chatline += '<li class="openwebinar-chatline openwebinar-local">' +
                     '<div class="message-container">' +
                     '<span class="openwebinar-username noSelect">' + M.util.get_string('js:script_user', 'openwebinar', {}) + '</span>' +
@@ -1472,7 +1471,7 @@ M.mod_openwebinar.room = {
             }
         }
 
-        // Check if we using data as a multiple lines object
+        // Check if we using data as a multiple lines object.
         if (multiplelines) {
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
@@ -1488,7 +1487,7 @@ M.mod_openwebinar.room = {
             this.nodeholder.chatlist.append(chatline);
         }
 
-        // scroll to bottom
+        // Scroll to bottom.
         this.scrollbar_chatlist.update('bottom');
     },
 
@@ -1522,7 +1521,7 @@ M.mod_openwebinar.room = {
             }
 
             if (!newmessage) {
-                // we can skip the message
+                // We can skip the message.
                 this.log('Skip message');
                 return false;
             }
@@ -1559,7 +1558,7 @@ M.mod_openwebinar.room = {
             });
         }
 
-        // trigger the normal functionality
+        // Trigger the normal functionality.
         return newmessage;
     },
 
@@ -1648,7 +1647,7 @@ M.mod_openwebinar.room = {
         var minutes = "0" + date.getMinutes();
         var hourstring = date.getHours() + ':' + minutes.substr(-2);
 
-        // IF its not today show complete date
+        // IF its not today show complete date.
         if (now.toDateString() !== date.toDateString()) {
             return date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + '<br/>' + hourstring;
         }
@@ -1663,13 +1662,13 @@ M.mod_openwebinar.room = {
         "use strict";
         var message = String(this.nodeholder.message.get('value')), that = this;
 
-        // Check if the message is a command
+        // Check if the message is a command.
         if (message.charAt(0) === '/') {
             this.chat_commands(message);
             return;
         }
 
-        // Prevent html tags [this will not prevent all more security on server side and when adding the message]
+        // Prevent html tags [this will not prevent all more security on server side and when adding the message].
         var regex = new RegExp('/(<([^>]+)>)/ig');
         message = message.replace(regex, "");
 
@@ -1685,7 +1684,7 @@ M.mod_openwebinar.room = {
             }
         });
 
-        // clear
+        // Clear.
         this.chatobject.message = "";
         this.nodeholder.message.set('value', "");
     },
@@ -1717,20 +1716,20 @@ M.mod_openwebinar.room = {
         var that = this, panel;
         this.log('add_userlist');
 
-        // set userlist node prevent searching the dom again
+        // Set userlist node prevent searching the dom again.
         this.nodeholder.userlist = Y.one('#openwebinar-userlist ul');
         this.nodeholder.userlist_counter = Y.one('#openwebinar-usercounter');
 
-        // add tinyscrollbar
+        // Add tinyscrollbar.
         var el = document.getElementById("openwebinar-userlist");
         this.scrollbar_userlist = tinyscrollbar(el);
 
-        // Userlist listener
+        // Userlist listener.
         this.socket.on("update-user-list", function (data) {
             that.update_userlist(data);
         });
 
-        // show short-profile on user click this feature is only available for broadcaster
+        // Show short-profile on user click this feature is only available for broadcaster.
         Y.one('body').delegate('click', function () {
             that.log('user_click');
             panel = new Y.Panel({
@@ -1745,7 +1744,7 @@ M.mod_openwebinar.room = {
             });
             panel.show();
 
-            // copy click user parameters
+            // Copy click user parameters.
             Y.one('#shortprofile-skype').set('text', this.one('.fullname').getData('skype'));
             Y.one('#shortprofile-fullname').set('text', this.one('.fullname').get('text'));
             Y.one('#shortprofile-avatar').setHTML(this.one('img').cloneNode(true));
@@ -1765,7 +1764,7 @@ M.mod_openwebinar.room = {
             return;
         }
 
-        // Setting vars
+        // Setting vars.
         var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li;
 
         for (key in data.users) {
@@ -1806,10 +1805,10 @@ M.mod_openwebinar.room = {
 
         this.nodeholder.userlist.setHTML(htmlbroadcaster + htmlteachers + htmlstudents + htmlguests);
 
-        // Update scrollbar
+        // Update scrollbar.
         this.scrollbar_userlist.update();
 
-        // Update the counter
+        // Update the counter.
         this.nodeholder.userlist_counter.set('text', ' (' + data.count + ') ');
     },
 
@@ -1820,10 +1819,10 @@ M.mod_openwebinar.room = {
         "use strict";
         this.log('build_room');
         this.nodeholder.userlist.setHTML('');
-        // Update the counter
+        // Update the counter.
         this.nodeholder.userlist_counter.set('text', ' (0) ');
 
-        // Update scrollbar
+        // Update scrollbar.
         this.scrollbar_userlist.update();
     },
 
@@ -1863,10 +1862,8 @@ M.mod_openwebinar.room = {
                             var response = Y.JSON.parse(o.responseText);
                             that.log(response);
                             if (response.status) {
-                                // clear own file overview
-                                // Y.all('.fm-content-wrapper .fp-content').setHTML('');
-
-                                // hide the dialog
+                                // Clear own file overview.
+                                // Hide the dialog.
                                 that.nodeholder.filemanagerdialog.hide();
                                 var hash;
                                 for (var i in response.files) {
@@ -1883,7 +1880,7 @@ M.mod_openwebinar.room = {
                             }
 
                         } catch (e) {
-                            // exception
+                            // Exception.
                             that.log(e);
                         }
                     }
@@ -1939,7 +1936,7 @@ M.mod_openwebinar.room = {
                                 if (response.status) {
 
                                     filelist = '';
-                                    // clear own file overview
+                                    // Clear own file overview.
                                     for (i in response.files) {
                                         if (response.files.hasOwnProperty(i)) {
                                             obj = response.files[i];
@@ -1962,14 +1959,14 @@ M.mod_openwebinar.room = {
                                         }
                                     }
                                     that.log(filelist);
-                                    // set ul
+                                    // Set ul.
                                     that.nodeholder.fileoverview.setHTML(filelist);
                                     that.scale_room();
                                     that.scrollbar_fileoverview.update();
                                 }
 
                             } catch (e) {
-                                // exception
+                                // Exception.
                                 that.log(e);
                             }
                         }
@@ -2018,7 +2015,7 @@ M.mod_openwebinar.room = {
         this.nodeholder.questionoverview = Y.one('#all-questions ul');
         this.nodeholder.addquestionbtn = Y.one('#addquestion');
 
-        // init manager popup
+        // Init manager popup.
         this.nodeholder.questionmanager = new Y.Panel({
             width   : 600,
             height  : 400,
@@ -2030,11 +2027,11 @@ M.mod_openwebinar.room = {
             srcNode : '#openwebinar-question-manager'
         });
 
-        // add click listener
+        // Add click listener.
         Y.one('#openwebinar-viewquestion-btn').on('click', function () {
-            // Fix issue not showing
+            // Fix issue not showing.
             this.nodeholder.questionmanager.show();
-            // load the question from the DB
+            // Load the question from the DB.
             this.question_load_overview();
         }, this);
 
@@ -2050,42 +2047,42 @@ M.mod_openwebinar.room = {
             that.question_load_single(this.getData('id'));
         }, '.viewquestionbtn');
 
-        // check if we can still add questions
+        // Check if we can still add questions.
         if (!this.options.is_ended) {
 
-            // Press on add answer in chat
+            // Press on add answer in chat.
             Y.one('body').delegate('click', function () {
                 that.nodeholder.questionmanager.show();
                 that.question_load_single(this.getData('id'));
             }, '.answerquestion');
 
-            // add new question
+            // Add new question.
             if (this.nodeholder.addquestionbtn) {
-                // broadcaster or teacher can add questions
+                // Broadcaster or teacher can add questions.
 
                 this.nodeholder.addquestionbtn.on('click', function () {
                     Y.one('#all-questions').hide();
                     Y.one('#question-type-selector').show();
                 });
 
-                // step 2 back to question type selector
+                // Step 2 back to question type selector.
                 Y.all('.openwebinar-button-previous-step2').on('click', function () {
                     Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
                     Y.one('#question-type-selector').show();
                 }, this);
 
-                // show the correct question type create form
+                // Show the correct question type create form.
                 Y.one('#openwebinar-button-next-step1').on('click', function () {
                     Y.one('#question-type-selector').hide();
                     var value = Y.one('#question-type').get('value');
                     this.log(value);
                     Y.one('#question-type-' + value).show();
 
-                    //  make sure all input is cleared
+                    // Make sure all input is cleared.
                     this.question_clear_all_input();
                 }, this);
 
-                // back to question overview
+                // Back to question overview.
                 Y.one('#openwebinar-button-previous-step1').on('click', function () {
                     Y.one('#all-questions').show();
                     Y.one('#question-type-selector').hide();
@@ -2136,10 +2133,10 @@ M.mod_openwebinar.room = {
                 }, this);
 
             } else {
-                // normal student
+                // Normal student.
             }
 
-            // prevent submits on enter
+            // Prevent submits on enter.
             Y.all('#openwebinar-question-manager form').on('submit', function (e) {
                 e.preventDefault();
                 return false;
@@ -2151,11 +2148,11 @@ M.mod_openwebinar.room = {
      */
     question_clear_all_input: function () {
         "use strict";
-        // empty all input
+        // Empty all input.
         Y.all('#openwebinar-question-manager input[type="text"], #openwebinar-question-manager textarea').set('value', '');
-        // reset the borders
+        // Reset the borders.
         Y.all('#openwebinar-question-manager input[type="text"]').setStyles({'border': '1px solid red'});
-        // disable the next buttons
+        // Disable the next buttons.
         Y.all('#open-add-btn , #truefalse-add-bt').addClass('disabled');
     },
 
@@ -2216,7 +2213,7 @@ M.mod_openwebinar.room = {
     question_load_single: function (questionid) {
         "use strict";
         var that = this;
-        //@todo check user type for which api we need to call
+        // TODO: check user type for which api we need to call.
         Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
@@ -2233,16 +2230,16 @@ M.mod_openwebinar.room = {
                     try {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
-                            // hide question overview
+                            // Hide question overview.
                             Y.one('#all-questions').hide();
 
-                            // answering a question
+                            // Answering a question.
                             if (response.item.form) {
                                 Y.one('#question-answer').setHTML(response.item.form).show();
-                                // listener for a answer on the question
+                                // Listener for a answer on the question.
                                 that.question_answer();
                             } else {
-                                // We need to build total answer overview
+                                // We need to build total answer overview.
                                 Y.one('#question-answer').setHTML(response.item.answers).show();
                             }
                         }
@@ -2287,8 +2284,8 @@ M.mod_openwebinar.room = {
                             if (response.status) {
 
                                 that.nodeholder.questionmanager.hide();
-                                // back to question overview
-                                // notice the broadcaster / teacher about the answer
+                                // Back to question overview.
+                                // Notice the broadcaster / teacher about the answer.
                                 that.chatobject.message = '[answer ' + Y.JSON.stringify(response) + ']';
                                 that.socket.emit("send", that.chatobject, function (response) {
                                     if (!response.status) {
@@ -2299,7 +2296,7 @@ M.mod_openwebinar.room = {
 
                                 });
                             } else {
-                                // we have a error display this to the user
+                                // We have a error display this to the user.
                                 that.log('question_answer Error');
                                 Y.one('#question-error').setHTML(response.error).show();
                             }
@@ -2331,13 +2328,13 @@ M.mod_openwebinar.room = {
 
         if ((this.nodeholder.noticebar.get('offsetWidth') === 0 && this.nodeholder.noticebar.get('offsetHeight') === 0) ||
             this.nodeholder.noticebar.get('display') === 'none') {
-            // not visible we can show it directly
+            // Not visible we can show it directly.
             this.nodeholder.noticebar.setHTML(M.util.get_string('js:' + message, 'openwebinar', obj)).show();
             setTimeout(function () {
                 that.nodeholder.noticebar.hide();
             }, 2000);
         } else {
-            // need some kind of queue
+            // Need some kind of queue.
             setTimeout(function () {
                 that.notice_bar_message(message, obj);
             }, 4000);
@@ -2371,7 +2368,7 @@ M.mod_openwebinar.room = {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
                             that.log('question_save Success');
-                            // close the dialog and hide steps
+                            // Close the dialog and hide steps.
                             Y.all('#question-type-open, #question-type-choice, #question-type-truefalse').hide();
                             Y.one('#all-questions').show();
                             that.nodeholder.questionmanager.hide();
@@ -2407,7 +2404,7 @@ M.mod_openwebinar.room = {
         var winHeight = this.nodeholder.body.get("winHeight");
         var wh;
 
-        // set elements one time
+        // Set elements one time.
         if (this.nodeholder.userlist_viewport === null) {
             this.nodeholder.userlist_viewport = Y.one('#openwebinar-userlist .viewport');
             this.nodeholder.chatlist_viewport = Y.one('#openwebinar-chatlist .viewport');
@@ -2417,12 +2414,12 @@ M.mod_openwebinar.room = {
 
         if (this.options.stream) {
 
-            // scale video component
+            // Scale video component.
             var videowidth = winWidth - 401 - 40;
             var videoheight = Math.round((videowidth / 16) * 9);
             var maxvideoheight = (winHeight - 70 - 80);
 
-            // Make sure everything fits the screen
+            // Make sure everything fits the screen.
             if (videoheight > maxvideoheight) {
                 this.log('Video to high we set it to: ' + maxvideoheight);
                 videoheight = maxvideoheight;
@@ -2434,9 +2431,9 @@ M.mod_openwebinar.room = {
             });
         }
 
-        // scale userlist and chat
+        // Scale userlist and chat.
         if (this.options.userlist && this.options.chat) {
-            // 30% 70% - 200 for the other components
+            // 30% 70% - 200 for the other components.
             wh = winHeight - ((36 * 2) + 50 + 100);
 
             Y.one('#openwebinar-userlist .viewport').setStyles({
@@ -2461,7 +2458,7 @@ M.mod_openwebinar.room = {
 
         } else if (this.options.userlist) {
 
-            // only userlist
+            // Only userlist.
             wh = winHeight - ((36) + 50 + 100);
             Y.one('#openwebinar-userlist .viewport').setStyles({
                 height: wh
@@ -2469,7 +2466,7 @@ M.mod_openwebinar.room = {
             this.scrollbar_userlist.update('bottom');
         }
 
-        // file sharing
+        // File sharing.
         if (this.options.filesharing) {
 
             if (!this.options.is_ended) {
@@ -2493,7 +2490,7 @@ M.mod_openwebinar.room = {
             });
         }
 
-        // emoticons dialog
+        // Emoticons dialog.
         if (this.options.enable_emoticons) {
             if (!this.options.is_ended) {
                 this.nodeholder.emoticonsdialog.setStyles({
@@ -2514,7 +2511,7 @@ M.mod_openwebinar.room = {
         for (key in this.options) {
             if (this.options.hasOwnProperty(key) && options.hasOwnProperty(key)) {
 
-                // casting to prevent errors
+                // Casting to prevent errors.
                 vartype = typeof this.options[key];
                 if (vartype === "boolean") {
                     this.options[key] = Boolean(options[key]);
@@ -2525,7 +2522,7 @@ M.mod_openwebinar.room = {
                 else if (vartype === 'string') {
                     this.options[key] = String(options[key]);
                 }
-                // skip all other types
+                // Skip all other types.
             }
         }
     },

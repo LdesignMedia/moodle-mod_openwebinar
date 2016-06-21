@@ -50,9 +50,8 @@ class useractivity extends \table_sql {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    function __construct($uniqueid, $openwebinar) {
+    public function __construct($uniqueid, $openwebinar) {
 
-        global $DB;
         parent::__construct($uniqueid);
 
         // Set the openwebinar.

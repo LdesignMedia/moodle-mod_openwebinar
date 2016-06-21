@@ -24,7 +24,7 @@
  * @author    Luuk Verhoeven
  */
 defined('MOODLE_INTERNAL') || die();
-require_once $CFG->dirroot . '/mod/openwebinar/lib/uaparser/vendor/autoload.php';
+require_once($CFG->dirroot . '/mod/openwebinar/lib/uaparser/vendor/autoload.php');
 use UAParser\Parser;
 
 /**
@@ -44,6 +44,8 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      *
      * @param int $id
      *
+     * @param $openwebinar
+     *
      * @return string
      * @throws coding_exception
      */
@@ -56,13 +58,13 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
                 array('class' => 'openwebinar-message'));
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
 
-        // button
+        // Button.
         $output = html_writer::link($url, get_string('btn:enter_live_openwebinar', 'openwebinar'), array(
                 'class' => 'btn btn-primary',
                 'target' => '_blank'
         ));
 
-        // output
+        // Output.
         return $this->output->container($message . $output . '<hr/>', 'generalbox attwidth openwebinar-center');
     }
 
@@ -178,7 +180,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      * @return string
      */
     public function view_user_activity_all($openwebinar) {
-        global $OUTPUT, $PAGE, $CFG, $DB;
+        global $OUTPUT, $PAGE, $CFG;
 
         require_once($CFG->libdir . '/tablelib.php');
 
@@ -224,7 +226,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function view_user_chattime($openwebinar = false, $userid = 0) {
-        global $OUTPUT, $DB, $PAGE, $CFG;
+        global $OUTPUT, $DB, $PAGE;
         $backurl = new \moodle_url('/mod/openwebinar/user_activity.php', $PAGE->url->params());
         $btn = new single_button($backurl, get_string('btn:back', 'openwebinar'));
         $btn->class = 'openwebinar_back';
@@ -309,7 +311,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         foreach ($qr as $record) {
             $table->data[] = array(
                     date('d-m-Y H:i:s', $record->timestamp),
-                    $this->convertMessageToReadable($record->message)
+                    $this->convertmessagetoreadable($record->message)
             );
         }
 
@@ -330,7 +332,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
             $message = '[shortcode]';
         }
 
-        // @todo convert emoticons in chatlog.
+        // TODO: convert emoticons in chatlog.
         return $message;
     }
 }

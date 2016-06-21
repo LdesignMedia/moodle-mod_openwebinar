@@ -60,7 +60,8 @@ class open extends questiontypes {
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <textarea name="answer">' . $this->get_my_answer_string() . '</textarea>
-                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '" class="btn-primary"/>
+                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '"
+                     class="btn-primary"/>
                 </form>';
     }
 

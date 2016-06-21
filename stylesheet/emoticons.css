@@ -3,6 +3,7 @@
     width: 24px;
     height: 20px;
     text-indent: -10000px;
+    direction:ltr;
     overflow: hidden;
     cursor: text;
     background: url('../pix/emoticons.png') no-repeat;

@@ -124,14 +124,14 @@ $string['setting:shared_secret_desc'] = 'Een unieke sleutel die wordt gedeeld me
 $string['setting:heading_instance_defaults'] = 'Herinnering standaardwaarden (kan overschreven worden
  door iedere openwebinar onafhankelijk)';
 $string['setting:reminder_1'] = 'Herinnering 1';
-$string['setting:reminder_1_desc'] =
-        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_1_desc'] = 'Notificatie moment voor de start van de openwebinar.
+<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:reminder_2'] = 'Herinnering 2';
-$string['setting:reminder_2_desc'] =
-        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_2_desc'] = 'Notificatie moment voor de start van de openwebinar.
+<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:reminder_3'] = 'Herinnering 3';
-$string['setting:reminder_3_desc'] =
-        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_3_desc'] = 'Notificatie moment voor de start van de openwebinar.
+<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:stream'] = 'Video ingeschakeld';
 $string['setting:stream_desc'] = 'Indien uitgeschakeld bevat de openwebinar geen video-speler';
 $string['setting:chat'] = 'Chat ingeschakeld';

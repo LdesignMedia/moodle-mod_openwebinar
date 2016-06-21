@@ -34,7 +34,7 @@ M.mod_openwebinar.base = {
      */
     log: function (val) {
         "use strict";
-        // check if we can show the log
+        // Check if we can show the log.
         if (!this.options.debugjs) {
             return;
         }
@@ -56,10 +56,10 @@ M.mod_openwebinar.base = {
     init: function (options) {
         "use strict";
         this.set_options(options);
-        // log the new options
+        // Log the new options.
         this.log(this.options);
 
-        // add a count down if its not started
+        // Add a count down if its not started.
         Y.on('domready', function () {
             this.add_countdown();
         }, this);
@@ -72,10 +72,10 @@ M.mod_openwebinar.base = {
         "use strict";
         var that = this;
         var start = new Date(this.options.timeopen * 1000);
-        // fix date to count from server time instead of local
+        // Fix date to count from server time instead of local.
         var now = new Date(that.options.from * 1000);
 
-        // Set countdown locals
+        // Set countdown locals.
         countdown.setLabels(
             M.util.get_string('js:countdown_line1', 'openwebinar', {}),
             M.util.get_string('js:countdown_line2', 'openwebinar', {}),
@@ -88,7 +88,7 @@ M.mod_openwebinar.base = {
 
         var timerspan = document.getElementById('pageTimer');
         var interval = setInterval(function () {
-            // +1 second
+            // 1 second.
             now.setSeconds(now.getSeconds() + 1);
             var ts = countdown(start, now, countdown.HOURS | countdown.MINUTES | countdown.SECONDS, 6, 0);
             that.log(ts.value);
@@ -112,7 +112,7 @@ M.mod_openwebinar.base = {
         for (key in this.options) {
             if (this.options.hasOwnProperty(key) && options.hasOwnProperty(key)) {
 
-                // casting to prevent errors
+                // Casting to prevent errors.
                 vartype = typeof this.options[key];
                 if (vartype === "boolean") {
                     this.options[key] = Boolean(options[key]);
@@ -123,7 +123,7 @@ M.mod_openwebinar.base = {
                 else if (vartype === 'string') {
                     this.options[key] = String(options[key]);
                 }
-                // skip all other types
+                // Skip all other types.
             }
         }
     }

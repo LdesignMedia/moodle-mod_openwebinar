@@ -26,8 +26,6 @@
 namespace mod_openwebinar;
 
 use mod_openwebinar\event\openwebinar_ping;
-use mod_openwebinar\helper;
-use mod_openwebinar\question;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -66,7 +64,8 @@ class api {
      *
      * @var array
      */
-    protected $defaultResponse = array('error' => "", 'status' => false);
+    protected $defaultresponse = array('error' => "",
+                                       'status' => false);
 
     /**
      * Response holder
@@ -113,42 +112,42 @@ class api {
     /**
      * @return string
      */
-    protected function getSesskey() {
+    protected function get_sesskey() {
         return $this->sesskey;
     }
 
     /**
      * @param string $sesskey
      */
-    public function setSesskey($sesskey) {
+    public function set_sesskey($sesskey) {
         $this->sesskey = $sesskey;
     }
 
     /**
      * @return mixed
      */
-    protected function getExtra1() {
+    protected function get_extra1() {
         return $this->extra1;
     }
 
     /**
      * @param mixed $extra1
      */
-    public function setExtra1($extra1) {
+    public function set_extra1($extra1) {
         $this->extra1 = $extra1;
     }
 
     /**
      * @return mixed
      */
-    protected function getExtra2() {
+    protected function get_extra2() {
         return $this->extra2;
     }
 
     /**
      * @param mixed $extra2
      */
-    public function setExtra2($extra2) {
+    public function set_extra2($extra2) {
         $this->extra2 = $extra2;
     }
 
@@ -185,15 +184,13 @@ class api {
      */
     public function api_call_ping() {
 
-        global $PAGE;
-
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        // Protect updating time when openwebinar is already ended
+        // Protect updating time when openwebinar is already ended.
         if (!empty($this->openwebinar->is_ended)) {
             $this->response['status'] = false;
             $this->response['is_ended'] = true;
@@ -202,11 +199,11 @@ class api {
             return;
         }
 
-        $params = array(
+        $params = [
                 'context' => $this->context,
                 'objectid' => $this->cm->id,
-        );
-        // add new log entry
+        ];
+        // Add new log entry.
         $event = openwebinar_ping::create($params);
 
         $event->add_record_snapshot('course', $this->course);
@@ -227,10 +224,10 @@ class api {
     public function api_call_endopenwebinar() {
 
         global $DB;
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
         if (!empty($this->openwebinar->is_ended)) {
@@ -255,14 +252,15 @@ class api {
 
         global $DB;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        $this->response['messages'] =
-                $DB->get_records('openwebinar_messages', array('openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
+        $this->response['messages'] = $DB->get_records('openwebinar_messages', array(
+                'openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
+
         $this->response['status'] = true;
 
         $this->output_json();
@@ -275,10 +273,10 @@ class api {
      */
     public function api_call_broadcastinfo() {
 
-        // Input listener for json data
+        // Input listener for json data.
         $this->input_to_json();
 
-        // Load plugin config
+        // Load plugin config.
         $this->get_config();
 
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
@@ -297,10 +295,10 @@ class api {
     public function api_call_add_file() {
         global $DB, $USER;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
         $data = new \stdClass();
@@ -311,7 +309,7 @@ class api {
         $this->response['status'] = true;
         $this->response['itemid'] = $data->files_filemanager;
 
-        // get files we submit
+        // Get files we submit.
         $fs = get_file_storage();
 
         $files = $DB->get_records('files', array(
@@ -338,10 +336,10 @@ class api {
      */
     public function api_call_list_all_files() {
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
         $fs = get_file_storage();
@@ -361,13 +359,13 @@ class api {
      */
     public function api_call_chatlog() {
 
-        // Input listener for json data
+        // Input listener for json data.
         $this->input_to_json();
 
-        // Load plugin config
+        // Load plugin config.
         $this->get_config();
 
-        // validate its a valid request
+        // Validate its a valid request.
         if (!empty($this->jsondata->shared_secret) && $this->config->shared_secret == $this->jsondata->shared_secret) {
             $status = helper::save_messages($this->jsondata);
             if ($status) {
@@ -389,16 +387,16 @@ class api {
 
         global $USER;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        // class
+        // Class.
         $question = new question($this->openwebinar);
 
-        // get post data
+        // Get post data.
         $questiontype = required_param('questiontype', PARAM_ALPHA);
 
         $data = new \stdClass();
@@ -406,7 +404,7 @@ class api {
         $data->summary = optional_param('summary', '', PARAM_TEXT);
         $data->questiontype = $question->question_type_string_to_int($questiontype);
 
-        //@todo selectable for which users this question is
+        // TODO: selectable for which users this question is.
         $users = new \stdClass();
         $users->all_enrolled_users = true;
         $users->user_ids = array();
@@ -430,21 +428,17 @@ class api {
     public function api_call_get_questions() {
         global $PAGE;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        // class
+        // Class.
         $question = new question($this->openwebinar);
-        // get all questions in this openwebinar
+        // Get all questions in this openwebinar.
         $questions = $question->get_all_question();
 
-        /**
-         * @var int $id
-         * @var \mod_openwebinar\questiontypes $quest
-         */
         foreach ($questions as $id => $quest) {
             $obj = new \stdClass();
             $obj->name = $quest->get_question_text();
@@ -469,31 +463,27 @@ class api {
 
         global $PAGE;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        // get question id to query
+        // Get question id to query.
         $questionid = required_param('questionid', PARAM_INT);
 
-        // class
+        // Class.
         $question = new question($this->openwebinar);
-
-        /**
-         * @var \mod_openwebinar\questiontypes $questiontype
-         */
         $questiontype = $question->get_question_by_id($questionid);
 
         $obj = new \stdClass();
 
-        // include answers from the other for the teacher and the broadcaster
+        // Include answers from the other for the teacher and the broadcaster.
         $permissions = helper::get_permissions($PAGE->context, $this->openwebinar);
         if ($permissions->broadcaster || $permissions->teacher) {
             $obj->answers = $questiontype->render_answers($question->get_answers($questionid));
         } else {
-            // get question form
+            // Get question form.
             $obj->my_answer = $questiontype->get_my_answer();
             $obj->form = $questiontype->render();
         }
@@ -506,17 +496,17 @@ class api {
     public function api_call_add_answer() {
         global $USER;
 
-        // Valid sesskey
+        // Valid sesskey.
         $this->has_valid_sesskey();
 
         if ($USER->id <= 1) {
             throw new \Exception(get_string('error:not_for_guests', 'openwebinar'));
         }
 
-        // Set information
+        // Set information.
         $this->get_module_information();
 
-        // get question id to query
+        // Get question id to query.
         $questionid = required_param('question_id', PARAM_INT);
 
         $question = new question($this->openwebinar);
@@ -535,7 +525,7 @@ class api {
     public function api_call_task_test() {
         $task = required_param('taskname', PARAM_TEXT);
 
-        $cron = new \mod_openwebinar\cron();
+        $cron = new cron();
         if (is_callable(array($cron, $task))) {
             $cron->$task();
         } else {
@@ -577,7 +567,7 @@ class api {
 
         global $OUTPUT;
 
-        $response = array_merge($this->defaultResponse, $this->response);
+        $response = array_merge($this->defaultresponse, $this->response);
 
         echo $OUTPUT->header();
         echo json_encode($response);

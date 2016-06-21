@@ -62,10 +62,15 @@ class truefalse extends questiontypes {
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <select name="answer">
-                        <option value="yes" ' . ($answer == 'yes' ? 'selected' : '') . '>' . get_string('yes', 'openwebinar') . '</option>
-                        <option value="no" ' . ($answer == 'no' ? 'selected' : '') . '>' . get_string('no', 'openwebinar') . '</option>
+                        <option value="yes" ' . ($answer == 'yes' ? 'selected' : '') . '>' .
+                            get_string('yes', 'openwebinar') .
+                        '</option>
+                        <option value="no" ' . ($answer == 'no' ? 'selected' : '') . '>' .
+                        get_string('no', 'openwebinar') .
+                        '</option>
                     </select>
-                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '" class="btn-primary"/>
+                    <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '"
+                     class="btn-primary"/>
                 </form>';
     }
 

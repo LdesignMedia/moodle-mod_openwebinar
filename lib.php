@@ -57,7 +57,7 @@ function openwebinar_supports($feature) {
             return true;
 
         case FEATURE_BACKUP_MOODLE2:
-            return false;//@todo implement later...
+            return false;// TODO: implement later...
         default:
             return null;
     }
@@ -99,11 +99,10 @@ function openwebinar_get_coursemodule_info($coursemodule) {
  * of the new instance.
  *
  * @param stdClass $openwebinar           Submitted data from the form in mod_form.php
- * @param mod_openwebinar_mod_form $mform The form instance itself (if needed)
  *
  * @return int The id of the newly inserted openwebinar record
  */
-function openwebinar_add_instance(stdClass $openwebinar, mod_openwebinar_mod_form $mform = null) {
+function openwebinar_add_instance(stdClass $openwebinar) {
     global $DB;
 
     $openwebinar->timecreated = time();
@@ -135,11 +134,10 @@ function openwebinar_add_instance(stdClass $openwebinar, mod_openwebinar_mod_for
  * will update an existing instance with new data.
  *
  * @param stdClass $openwebinar           An object from the form in mod_form.php
- * @param mod_openwebinar_mod_form $mform The form instance itself (if needed)
  *
  * @return boolean Success/Fail
  */
-function openwebinar_update_instance(stdClass $openwebinar, mod_openwebinar_mod_form $mform = null) {
+function openwebinar_update_instance(stdClass $openwebinar) {
     global $DB;
 
     $openwebinar->timemodified = time();
@@ -193,9 +191,9 @@ function openwebinar_delete_instance($id) {
     // Remove the event.
     $DB->delete_records('event', array('modulename' => 'openwebinar', 'instance' => $openwebinar->id));
 
-    // @todo remove chatlogs
-    // @todo remove useronline status
-    // @todo remove attachments
+    // TODO: remove chatlogs.
+    // TODO: remove useronline status.
+    // TODO: remove attachments.
     return true;
 }
 
@@ -215,7 +213,7 @@ function openwebinar_delete_instance($id) {
  * @return stdClass|null
  */
 function openwebinar_user_outline($course, $user, $mod, $openwebinar) {
-
+    // TODO: we should use this feature.
     $return = new stdClass();
     $return->time = 0;
     $return->info = '';

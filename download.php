@@ -44,7 +44,7 @@ $fs = get_file_storage();
 $file = $fs->get_file_by_id($extra3);
 
 if ($file) {
-    
+
     // Make sure it belongs to a openwebinar.
     if ($file->get_component() != 'mod_openwebinar' ||
             $file->get_filearea() != 'attachments' ||

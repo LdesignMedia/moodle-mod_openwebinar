@@ -50,7 +50,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      */
     public function definition() {
 
-        global $CFG, $USER;
+        global $CFG;
         $mform = $this->_form;
 
         // Load default config.

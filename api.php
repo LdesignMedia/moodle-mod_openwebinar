@@ -53,9 +53,9 @@ $PAGE->set_url('/mod/openwebinar/api.php');
 
 // Load the class.
 $api = new \mod_openwebinar\api();
-$api->setSesskey($sesskey);
-$api->setExtra1($extra1);
-$api->setExtra2($extra2);
+$api->set_sesskey($sesskey);
+$api->set_extra1($extra1);
+$api->set_extra2($extra2);
 
 if (is_callable(array($api, $action))) {
     $api->$action();

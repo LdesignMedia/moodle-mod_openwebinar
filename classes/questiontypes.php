@@ -73,7 +73,7 @@ abstract class questiontypes {
      */
     public function __construct($questionrecord = false, $answer = false, $loadallanswers = false) {
 
-        // init postdata store
+        // Init postdata store.
         $this->postdata = new \stdClass();
 
         if ($questionrecord) {
@@ -85,7 +85,7 @@ abstract class questiontypes {
         }
         $this->questionrecord = $questionrecord;
 
-        // check if answer is given
+        // Check if answer is given.
         if ($answer) {
             $answer->answer_data = unserialize($answer->answer_data);
             $this->answer = $answer;

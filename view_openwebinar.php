@@ -22,6 +22,7 @@
  * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
+ * @var mod_openwebinar_renderer $renderer
  */
 require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
@@ -45,7 +46,7 @@ if ($id) {
 
 require_login($course, true, $cm);
 
-// get context
+// Get context.
 $context = context_module::instance($cm->id);
 
 $event = \mod_openwebinar\event\course_module_viewed::create(array(
@@ -63,24 +64,24 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-openwebinar-room');
 $PAGE->set_pagelayout('embedded');
 
-// Load plugin config
+// Load plugin config.
 $config = get_config('openwebinar');
 
-// Permissions
+// Permissions.
 $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
-// Set user online status
+// Set user online status.
 \mod_openwebinar\helper::set_user_online_status($openwebinar->id);
 
-// Set user presence
+// Set user presence.
 \mod_openwebinar\helper::update_user_presence($openwebinar, $USER);
 
-// Convert openwebinar data to JS
+// Convert openwebinar data to JS.
 $opts = (array) $openwebinar;
 $opts['userid'] = $USER->id;
 $opts['is_broadcaster'] = $permissions->broadcaster;
 
-// Set booleans  / convert int to bool
+// Set booleans  / convert int to bool.
 $opts['userlist'] = ($openwebinar->userlist == 1);
 $opts['filesharing'] = ($openwebinar->filesharing == 1);
 $opts['filesharing_student'] = ($openwebinar->filesharing_student == 1);
@@ -92,7 +93,7 @@ $opts['hls'] = ($openwebinar->hls == 1);
 $opts['ajax_timer'] = ($openwebinar->ajax_timer == 1);
 $opts['emoticons'] = ($openwebinar->emoticons == 1);
 $opts['viewhistory'] = $permissions->history;
-$opts['questions'] = true; // @todo make this optional to use the question manager
+$opts['questions'] = true; // TODO: make this optional to use the question manager.
 
 $opts['fullname'] = fullname($USER);
 $opts['skype'] = $USER->skype;
@@ -111,30 +112,30 @@ if (!$opts['is_broadcaster']) {
     unset($opts['broadcaster_identifier']);
 }
 
-// VIDEO Player
+// VIDEO Player.
 $PAGE->requires->js('/mod/openwebinar/javascript/video-js/video.js', true);
 
 if ($opts['hls']) {
-    // Only needed for fully support HLS
+    // Only needed for fully support HLS.
     $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs-media-sources.js', true);
     $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs.hls.min.js', true);
 }
-// Base videoJS to accept the rtmp stream
+// Base videoJS to accept the rtmp stream.
 $PAGE->requires->css('/mod/openwebinar/javascript/video-js/video-js.min.css');
 
-// Emoticons
+// Emoticons.
 $PAGE->requires->css('/mod/openwebinar/stylesheet/emoticons.css');
 
-// Custom scrollbar
+// Custom scrollbar.
 $PAGE->requires->js('/mod/openwebinar/javascript/tinyscrollbar.min.js', true);
 
-// Socket.io script
+// Socket.io script.
 $PAGE->requires->js('/mod/openwebinar/javascript/socket.io-1.3.5.js', true);
 
-// Room js, most of logic is here
+// Room js, most of logic is here.
 $PAGE->requires->yui_module('moodle-mod_openwebinar-room', 'M.mod_openwebinar.room.init', array($opts));
 
-// Language strings
+// Language strings.
 $PAGE->requires->strings_for_js(array(
         'js:send',
         'js:wait_on_connection',
@@ -159,11 +160,6 @@ $PAGE->requires->strings_for_js(array(
         'js:my_answer_saved',
 ), 'openwebinar');
 
-/**
- * Renderer
- *
- * @var mod_openwebinar_renderer $renderer
- */
 $renderer = $PAGE->get_renderer('mod_openwebinar');
 
 if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) && $USER->id > 1) {
@@ -327,7 +323,8 @@ echo $OUTPUT->header();
             </div>
             <div id="openwebinar-chat-holder">
                 <div class="openwebinar-header">
-                    <span id="openwebinar-loadhistory" class="openwebinar-button" style="display: none">Load previous messages</span>
+                    <span id="openwebinar-loadhistory" class="openwebinar-button" style="display: none">
+                        Load previous messages</span>
                     <h2><?php echo get_string('chat', 'openwebinar') ?></h2>
                 </div>
                 <div id="openwebinar-chatlist" class="scroll">
@@ -467,7 +464,8 @@ echo $OUTPUT->header();
                         <label for="question-open">
                             Question:
                         </label>
-                        <input name="question" type="text" id="question-open" placeholder="Enter some question for your clients..."/>
+                        <input name="question" type="text" id="question-open"
+                               placeholder="Enter some question for your clients..."/>
                         <label for="question-open-summary">
                             Summary (optional):
                         </label>
@@ -482,7 +480,8 @@ echo $OUTPUT->header();
                         <label for="question-truefalse">
                             Question:
                         </label>
-                        <input name="question" type="text" id="question-truefalse" placeholder="Enter some question for your clients..."/>
+                        <input name="question" type="text" id="question-truefalse"
+                               placeholder="Enter some question for your clients..."/>
                         <label for="question-truefalse-summary">
                             Summary (optional):
                         </label>
