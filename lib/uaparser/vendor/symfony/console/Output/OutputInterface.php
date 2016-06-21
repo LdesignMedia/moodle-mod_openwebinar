@@ -20,8 +20,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  *
  * @api
  */
-interface OutputInterface
-{
+interface OutputInterface {
     const VERBOSITY_QUIET = 0;
     const VERBOSITY_NORMAL = 1;
     const VERBOSITY_VERBOSE = 2;
@@ -36,8 +35,8 @@ interface OutputInterface
      * Writes a message to the output.
      *
      * @param string|array $messages The message as an array of lines or a single string
-     * @param bool         $newline  Whether to add a newline
-     * @param int          $type     The type of output (one of the OUTPUT constants)
+     * @param bool $newline          Whether to add a newline
+     * @param int $type              The type of output (one of the OUTPUT constants)
      *
      * @throws \InvalidArgumentException When unknown output type is given
      *
@@ -49,7 +48,7 @@ interface OutputInterface
      * Writes a message to the output and adds a newline at the end.
      *
      * @param string|array $messages The message as an array of lines of a single string
-     * @param int          $type     The type of output (one of the OUTPUT constants)
+     * @param int $type              The type of output (one of the OUTPUT constants)
      *
      * @throws \InvalidArgumentException When unknown output type is given
      *

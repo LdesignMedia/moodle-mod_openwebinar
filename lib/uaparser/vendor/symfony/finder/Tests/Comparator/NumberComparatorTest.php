@@ -13,13 +13,11 @@ namespace Symfony\Component\Finder\Tests\Comparator;
 
 use Symfony\Component\Finder\Comparator\NumberComparator;
 
-class NumberComparatorTest extends \PHPUnit_Framework_TestCase
-{
+class NumberComparatorTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider getConstructorTestData
      */
-    public function testConstructor($successes, $failures)
-    {
+    public function testConstructor($successes, $failures) {
         foreach ($successes as $s) {
             new NumberComparator($s);
         }
@@ -29,7 +27,8 @@ class NumberComparatorTest extends \PHPUnit_Framework_TestCase
                 new NumberComparator($f);
                 $this->fail('__construct() throws an \InvalidArgumentException if the test expression is not valid.');
             } catch (\Exception $e) {
-                $this->assertInstanceOf('InvalidArgumentException', $e, '__construct() throws an \InvalidArgumentException if the test expression is not valid.');
+                $this->assertInstanceOf('InvalidArgumentException', $e,
+                        '__construct() throws an \InvalidArgumentException if the test expression is not valid.');
             }
         }
     }
@@ -37,8 +36,7 @@ class NumberComparatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getTestData
      */
-    public function testTest($test, $match, $noMatch)
-    {
+    public function testTest($test, $match, $noMatch) {
         $c = new NumberComparator($test);
 
         foreach ($match as $m) {
@@ -50,58 +48,56 @@ class NumberComparatorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function getTestData()
-    {
+    public function getTestData() {
         return array(
-            array('< 1000', array('500', '999'), array('1000', '1500')),
+                array('< 1000', array('500', '999'), array('1000', '1500')),
 
-            array('< 1K', array('500', '999'), array('1000', '1500')),
-            array('<1k', array('500', '999'), array('1000', '1500')),
-            array('  < 1 K ', array('500', '999'), array('1000', '1500')),
-            array('<= 1K', array('1000'), array('1001')),
-            array('> 1K', array('1001'), array('1000')),
-            array('>= 1K', array('1000'), array('999')),
+                array('< 1K', array('500', '999'), array('1000', '1500')),
+                array('<1k', array('500', '999'), array('1000', '1500')),
+                array('  < 1 K ', array('500', '999'), array('1000', '1500')),
+                array('<= 1K', array('1000'), array('1001')),
+                array('> 1K', array('1001'), array('1000')),
+                array('>= 1K', array('1000'), array('999')),
 
-            array('< 1KI', array('500', '1023'), array('1024', '1500')),
-            array('<= 1KI', array('1024'), array('1025')),
-            array('> 1KI', array('1025'), array('1024')),
-            array('>= 1KI', array('1024'), array('1023')),
+                array('< 1KI', array('500', '1023'), array('1024', '1500')),
+                array('<= 1KI', array('1024'), array('1025')),
+                array('> 1KI', array('1025'), array('1024')),
+                array('>= 1KI', array('1024'), array('1023')),
 
-            array('1KI', array('1024'), array('1023', '1025')),
-            array('==1KI', array('1024'), array('1023', '1025')),
+                array('1KI', array('1024'), array('1023', '1025')),
+                array('==1KI', array('1024'), array('1023', '1025')),
 
-            array('==1m', array('1000000'), array('999999', '1000001')),
-            array('==1mi', array(1024 * 1024), array(1024 * 1024 - 1, 1024 * 1024 + 1)),
+                array('==1m', array('1000000'), array('999999', '1000001')),
+                array('==1mi', array(1024 * 1024), array(1024 * 1024 - 1, 1024 * 1024 + 1)),
 
-            array('==1g', array('1000000000'), array('999999999', '1000000001')),
-            array('==1gi', array(1024 * 1024 * 1024), array(1024 * 1024 * 1024 - 1, 1024 * 1024 * 1024 + 1)),
+                array('==1g', array('1000000000'), array('999999999', '1000000001')),
+                array('==1gi', array(1024 * 1024 * 1024), array(1024 * 1024 * 1024 - 1, 1024 * 1024 * 1024 + 1)),
 
-            array('!= 1000', array('500', '999'), array('1000')),
+                array('!= 1000', array('500', '999'), array('1000')),
         );
     }
 
-    public function getConstructorTestData()
-    {
+    public function getConstructorTestData() {
         return array(
-            array(
                 array(
-                    '1', '0',
-                    '3.5', '33.55', '123.456', '123456.78',
-                    '.1', '.123',
-                    '.0', '0.0',
-                    '1.', '0.', '123.',
-                    '==1', '!=1', '<1', '>1', '<=1', '>=1',
-                    '==1k', '==1ki', '==1m', '==1mi', '==1g', '==1gi',
-                    '1k', '1ki', '1m', '1mi', '1g', '1gi',
+                        array(
+                                '1', '0',
+                                '3.5', '33.55', '123.456', '123456.78',
+                                '.1', '.123',
+                                '.0', '0.0',
+                                '1.', '0.', '123.',
+                                '==1', '!=1', '<1', '>1', '<=1', '>=1',
+                                '==1k', '==1ki', '==1m', '==1mi', '==1g', '==1gi',
+                                '1k', '1ki', '1m', '1mi', '1g', '1gi',
+                        ),
+                        array(
+                                false, null, '',
+                                ' ', 'foobar',
+                                '=1', '===1',
+                                '0 . 1', '123 .45', '234. 567',
+                                '..', '.0.', '0.1.2',
+                        ),
                 ),
-                array(
-                    false, null, '',
-                    ' ', 'foobar',
-                    '=1', '===1',
-                    '0 . 1', '123 .45', '234. 567',
-                    '..', '.0.', '0.1.2',
-                ),
-            ),
         );
     }
 }

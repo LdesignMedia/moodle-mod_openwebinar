@@ -17,29 +17,25 @@ use Symfony\Component\Finder\Exception\AdapterFailureException;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class FailingAdapter extends AbstractAdapter
-{
+class FailingAdapter extends AbstractAdapter {
     /**
      * {@inheritdoc}
      */
-    public function searchInDirectory($dir)
-    {
+    public function searchInDirectory($dir) {
         throw new AdapterFailureException($this);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'failing';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return true;
     }
 }

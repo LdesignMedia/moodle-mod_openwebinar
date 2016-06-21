@@ -9,13 +9,11 @@
  */
 namespace UAParser\Result;
 
-abstract class AbstractSoftware extends AbstractClient
-{
+abstract class AbstractSoftware extends AbstractClient {
     /** @var string */
     public $family = 'Other';
 
-    public function toString()
-    {
+    public function toString() {
         return $this->family;
     }
 }

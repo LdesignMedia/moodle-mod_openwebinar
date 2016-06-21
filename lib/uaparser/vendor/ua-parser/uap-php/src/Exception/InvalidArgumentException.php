@@ -10,25 +10,22 @@ namespace UAParser\Exception;
 
 use InvalidArgumentException as BaseInvalidArgumentException;
 
-class InvalidArgumentException extends BaseInvalidArgumentException
-{
-    public static function oneOfCommandArguments()
-    {
+class InvalidArgumentException extends BaseInvalidArgumentException {
+    public static function oneOfCommandArguments() {
         return new static(
-            sprintf('One of the command arguments "%s" is required', join('", "', func_get_args()))
+                sprintf('One of the command arguments "%s" is required', join('", "', func_get_args()))
         );
     }
 
-    public static function unexpectedArgument($expectedType, $actualType, $position, $symbol)
-    {
+    public static function unexpectedArgument($expectedType, $actualType, $position, $symbol) {
         return new static(
-            sprintf(
-                'Argument %d of %s() is expected to be of type "%s", got "%s"',
-                $position,
-                $symbol,
-                $expectedType,
-                $actualType
-            )
+                sprintf(
+                        'Argument %d of %s() is expected to be of type "%s", got "%s"',
+                        $position,
+                        $symbol,
+                        $expectedType,
+                        $actualType
+                )
         );
     }
 }

@@ -16,8 +16,7 @@ use Symfony\Component\Finder\Glob as FinderGlob;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class Glob implements ValueInterface
-{
+class Glob implements ValueInterface {
     /**
      * @var string
      */
@@ -26,49 +25,43 @@ class Glob implements ValueInterface
     /**
      * @param string $pattern
      */
-    public function __construct($pattern)
-    {
+    public function __construct($pattern) {
         $this->pattern = $pattern;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function render()
-    {
+    public function render() {
         return $this->pattern;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderPattern()
-    {
+    public function renderPattern() {
         return $this->pattern;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getType()
-    {
+    public function getType() {
         return Expression::TYPE_GLOB;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isCaseSensitive()
-    {
+    public function isCaseSensitive() {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend($expr)
-    {
-        $this->pattern = $expr.$this->pattern;
+    public function prepend($expr) {
+        $this->pattern = $expr . $this->pattern;
 
         return $this;
     }
@@ -76,8 +69,7 @@ class Glob implements ValueInterface
     /**
      * {@inheritdoc}
      */
-    public function append($expr)
-    {
+    public function append($expr) {
         $this->pattern .= $expr;
 
         return $this;
@@ -88,10 +80,9 @@ class Glob implements ValueInterface
      *
      * @return bool
      */
-    public function isExpandable()
-    {
+    public function isExpandable() {
         return false !== strpos($this->pattern, '{')
-            && false !== strpos($this->pattern, '}');
+        && false !== strpos($this->pattern, '}');
     }
 
     /**
@@ -100,8 +91,7 @@ class Glob implements ValueInterface
      *
      * @return Regex
      */
-    public function toRegex($strictLeadingDot = true, $strictWildcardSlash = true)
-    {
+    public function toRegex($strictLeadingDot = true, $strictWildcardSlash = true) {
         $regex = FinderGlob::toRegex($this->pattern, $strictLeadingDot, $strictWildcardSlash, '');
 
         return new Regex($regex);

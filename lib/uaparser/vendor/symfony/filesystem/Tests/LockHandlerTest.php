@@ -4,14 +4,12 @@ namespace Symfony\Component\Filesystem\Tests;
 
 use Symfony\Component\Filesystem\LockHandler;
 
-class LockHandlerTest extends \PHPUnit_Framework_TestCase
-{
+class LockHandlerTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException Symfony\Component\Filesystem\Exception\IOException
      * @expectedExceptionMessage Failed to create "/a/b/c/d/e": mkdir(): Permission denied.
      */
-    public function testConstructWhenRepositoryDoesNotExist()
-    {
+    public function testConstructWhenRepositoryDoesNotExist() {
         new LockHandler('lock', '/a/b/c/d/e');
     }
 
@@ -19,16 +17,15 @@ class LockHandlerTest extends \PHPUnit_Framework_TestCase
      * @expectedException Symfony\Component\Filesystem\Exception\IOException
      * @expectedExceptionMessage The directory "/" is not writable.
      */
-    public function testConstructWhenRepositoryIsNotWriteable()
-    {
+    public function testConstructWhenRepositoryIsNotWriteable() {
         new LockHandler('lock', '/');
     }
 
-    public function testConstructSanitizeName()
-    {
+    public function testConstructSanitizeName() {
         $lock = new LockHandler('<?php echo "% hello word ! %" ?>');
 
-        $file = sprintf('%s/sf.-php-echo-hello-word-.4b3d9d0d27ddef3a78a64685dda3a963e478659a9e5240feaf7b4173a8f28d5f.lock', sys_get_temp_dir());
+        $file = sprintf('%s/sf.-php-echo-hello-word-.4b3d9d0d27ddef3a78a64685dda3a963e478659a9e5240feaf7b4173a8f28d5f.lock',
+                sys_get_temp_dir());
         // ensure the file does not exist before the lock
         @unlink($file);
 
@@ -39,8 +36,7 @@ class LockHandlerTest extends \PHPUnit_Framework_TestCase
         $lock->release();
     }
 
-    public function testLockRelease()
-    {
+    public function testLockRelease() {
         $name = 'symfony-test-filesystem.lock';
 
         $l1 = new LockHandler($name);
@@ -55,8 +51,7 @@ class LockHandlerTest extends \PHPUnit_Framework_TestCase
         $l2->release();
     }
 
-    public function testLockTwice()
-    {
+    public function testLockTwice() {
         $name = 'symfony-test-filesystem.lock';
 
         $lockHandler = new LockHandler($name);
@@ -67,8 +62,7 @@ class LockHandlerTest extends \PHPUnit_Framework_TestCase
         $lockHandler->release();
     }
 
-    public function testLockIsReleased()
-    {
+    public function testLockIsReleased() {
         $name = 'symfony-test-filesystem.lock';
 
         $l1 = new LockHandler($name);

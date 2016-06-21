@@ -13,18 +13,16 @@ namespace Symfony\Component\Finder\Tests\Iterator;
 
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
-class RecursiveDirectoryIteratorTest extends IteratorTestCase
-{
+class RecursiveDirectoryIteratorTest extends IteratorTestCase {
     /**
      * @dataProvider getPaths
      *
      * @param string $path
-     * @param bool   $seekable
-     * @param array  $contains
+     * @param bool $seekable
+     * @param array $contains
      * @param string $message
      */
-    public function testRewind($path, $seekable, $contains, $message = null)
-    {
+    public function testRewind($path, $seekable, $contains, $message = null) {
         try {
             $i = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
         } catch (\UnexpectedValueException $e) {
@@ -40,12 +38,11 @@ class RecursiveDirectoryIteratorTest extends IteratorTestCase
      * @dataProvider getPaths
      *
      * @param string $path
-     * @param bool   $seekable
-     * @param array  $contains
+     * @param bool $seekable
+     * @param array $contains
      * @param string $message
      */
-    public function testSeek($path, $seekable, $contains, $message = null)
-    {
+    public function testSeek($path, $seekable, $contains, $message = null) {
         try {
             $i = new RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
         } catch (\UnexpectedValueException $e) {
@@ -66,15 +63,14 @@ class RecursiveDirectoryIteratorTest extends IteratorTestCase
         $this->assertEquals($contains, $actual);
     }
 
-    public function getPaths()
-    {
+    public function getPaths() {
         $data = array();
 
         // ftp
         $contains = array(
-            'ftp://ftp.mozilla.org'.DIRECTORY_SEPARATOR.'README',
-            'ftp://ftp.mozilla.org'.DIRECTORY_SEPARATOR.'index.html',
-            'ftp://ftp.mozilla.org'.DIRECTORY_SEPARATOR.'pub',
+                'ftp://ftp.mozilla.org' . DIRECTORY_SEPARATOR . 'README',
+                'ftp://ftp.mozilla.org' . DIRECTORY_SEPARATOR . 'index.html',
+                'ftp://ftp.mozilla.org' . DIRECTORY_SEPARATOR . 'pub',
         );
         $data[] = array('ftp://ftp.mozilla.org/', false, $contains);
 

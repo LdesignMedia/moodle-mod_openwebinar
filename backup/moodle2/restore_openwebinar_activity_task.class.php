@@ -37,6 +37,7 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      */
     protected function define_my_settings() {
         // No particular settings for this activity.
+        // Todo.
     }
 
     /**
@@ -44,7 +45,7 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // We have just one structure step here.
-//        $this->add_step(new restore_openwebinar_activity_structure_step('openwebinar_structure', 'openwebinar.xml'));
+        // Todo.
     }
 
     /**
@@ -52,11 +53,7 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     static public function define_decode_contents() {
-        // $contents = array();
-
-        // $contents[] = new restore_decode_content('openwebinar', array('intro'), 'openwebinar');
-
-        // return $contents;
+        // Todo.
     }
 
     /**
@@ -64,13 +61,7 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     static public function define_decode_rules() {
-        //$rules = array();
-
-        //  $rules[] = new restore_decode_rule('openwebinarVIEWBYID', '/mod/openwebinar/view.php?id=$1', 'course_module');
-        // $rules[] = new restore_decode_rule('openwebinarINDEX', '/mod/openwebinar/index.php?id=$1', 'course');
-
-//        return $rules;
-
+        // Todo.
     }
 
     /**
@@ -80,13 +71,7 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
-//        $rules = array();
-//
-//        $rules[] = new restore_log_rule('openwebinar', 'add', 'view.php?id={course_module}', '{openwebinar}');
-//        $rules[] = new restore_log_rule('openwebinar', 'update', 'view.php?id={course_module}', '{openwebinar}');
-//        $rules[] = new restore_log_rule('openwebinar', 'view', 'view.php?id={course_module}', '{openwebinar}');
-
-//        return $rules;
+        // Todo.
     }
 
     /**
@@ -100,10 +85,6 @@ class restore_openwebinar_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     static public function define_restore_log_rules_for_course() {
-//        $rules = array();
-//
-//        $rules[] = new restore_log_rule('openwebinar', 'view all', 'index.php?id={course}', null);
-//
-//        return $rules;
+        // Todo.
     }
 }

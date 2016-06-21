@@ -95,14 +95,14 @@ $string['task:auto_close'] = 'Sluit chatruimte wanneer deze is afgelopen en niet
 $string['task:reminder'] = 'Versturen van herinnering';
 $string['messageprovider:reminder'] = 'Openwebinar herinnering melding';
 
-// ACCESS
+// ACCESS.
 $string['openwebinar:history'] = 'Bekijken van chat geschiedenis';
 $string['openwebinar:view'] = 'Openwebinar bekijken';
 $string['openwebinar:addinstance'] = 'Toevoegen van een openwebinar';
 $string['openwebinar:manager'] = 'Openwebinar manager';
 $string['openwebinar:teacher'] = 'Openwebinar leraar';
 
-// ERRORS
+// ERRORS.
 $string['error:openwebinar_notfound'] = 'Fout: de juiste openwebinar kan niet gevonden worden!';
 $string['error:file_not_exits'] = 'Fout: dit bestand bestaat niet!';
 $string['error:file_no_access'] = 'Fout: geen toegang tot dit bestand!';
@@ -111,22 +111,27 @@ $string['error:no_result'] = 'Geen resultaten gevonden';
 $string['error:answer_already_saved'] = 'Uw antwoord is al opgeslagen!';
 $string['error:not_for_guests'] = 'Fout: gasten kunnen geen gebruik maken van deze functionaliteit';
 
-// SETTINGS
+// SETTINGS.
 $string['setting:heading_server'] = 'Communicatie instellingen';
-$string['setting:heading_instance_features'] = 'Functies ingeschakeld of uitgeschakeld (kan overschreven worden door iedere openwebinar onafhankelijk)';
+$string['setting:heading_instance_features'] = 'Functies ingeschakeld of uitgeschakeld (kan overschreven worden door
+ iedere openwebinar onafhankelijk)';
 $string['setting:streaming_server'] = 'Streaming locatie';
 $string['setting:streaming_server_desc'] = 'De locatie van de streaming server';
 $string['setting:chat_server'] = 'Chat/socket link';
 $string['setting:chat_server_desc'] = 'De locatie van de chatserver';
 $string['setting:shared_secret'] = 'Gedeeld Geheim';
 $string['setting:shared_secret_desc'] = 'Een unieke sleutel die wordt gedeeld met de chat / streaming server';
-$string['setting:heading_instance_defaults'] = 'Herinnering standaardwaarden (kan overschreven worden door iedere openwebinar onafhankelijk)';
+$string['setting:heading_instance_defaults'] = 'Herinnering standaardwaarden (kan overschreven worden
+ door iedere openwebinar onafhankelijk)';
 $string['setting:reminder_1'] = 'Herinnering 1';
-$string['setting:reminder_1_desc'] = 'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_1_desc'] =
+        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:reminder_2'] = 'Herinnering 2';
-$string['setting:reminder_2_desc'] = 'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_2_desc'] =
+        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:reminder_3'] = 'Herinnering 3';
-$string['setting:reminder_3_desc'] = 'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+$string['setting:reminder_3_desc'] =
+        'Notificatie moment voor de start van de openwebinar.<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
 $string['setting:stream'] = 'Video ingeschakeld';
 $string['setting:stream_desc'] = 'Indien uitgeschakeld bevat de openwebinar geen video-speler';
 $string['setting:chat'] = 'Chat ingeschakeld';
@@ -140,16 +145,20 @@ $string['setting:showuserpicture_desc'] = 'Toon profiel foto van gebruikers in d
 $string['setting:userlist'] = 'Toon gebruikerslijst';
 $string['setting:userlist_desc'] = 'Laat de actuele gebruikers in de chatruimte zien.';
 $string['setting:ajax_timer'] = 'AJAX timer';
-$string['setting:ajax_timer_desc'] = 'Dit zal elke 60 seconden een verzoek naar de server sturen om de online tijd van de gebruiker zijn in de chatruimte realtime op te slaan.<br/>
+$string['setting:ajax_timer_desc'] = 'Dit zal elke 60 seconden een verzoek naar de server sturen om de online
+tijd van de gebruiker zijn in de chatruimte realtime op te slaan.<br/>
 Waarschuwing wanneer meer dan 25 gebruikers in de chatruimte aanwezig zijn kan dit voor een hogere serverload zorgen.';
+
 $string['setting:emoticons'] = 'Emoticons in chatruimte';
-$string['setting:emoticons_desc'] = 'Shortcode zal worden omgezet naar een emoticon. Ook een dialoog zal worden toegevoegd waar u een emoticon kunt selecteren.';
+$string['setting:emoticons_desc'] = 'Shortcode zal worden omgezet naar een emoticon.
+ Ook een dialoog zal worden toegevoegd waar u een emoticon kunt selecteren.';
 $string['setting:debugjs'] = 'Debug javascript';
 $string['setting:debugjs_desc'] = 'Log javascript berichten naar de browser console.';
 $string['setting:hls'] = 'HLS video stream';
-$string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moet ook streamen naar server met HLS-uitgang.<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
+$string['setting:hls_desc'] = 'Ondersteuning voor mobiele apparaten. Presentator moet ook streamen naar server met HLS-uitgang.
+<br/>Opmerking: HLS zorgt voor een vertraging van 30 seconde in de stream!';
 
-// Mod settings
+// Mod settings.
 $string['mod_setting:settings'] = 'Openwebinar functies';
 $string['mod_setting:timing'] = 'Openwebinar tijd';
 $string['mod_setting:timeopen'] = 'Start';
@@ -164,14 +173,22 @@ $string['mod_setting:durationhelp_help'] = 'Duur';
 $string['mod_setting:broadcastkey'] = 'Presentator sleutel';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
-// Text
-$string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br> U kunt nu de openwebinar openen via de knop hieronder.';
-$string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br><b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u downloaden <a class="btn" target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">hier</a><br><br>
-Zorg ervoor dat u de streaming-software installeerd: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U kunt nog steeds de chatgeschiedenis terugzien door te klikken op de onderstaande knop.';
+// Text.
+$string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br>
+ U kunt nu de openwebinar openen via de knop hieronder.';
+
+$string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br>
+<b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u downloaden
+<a class="btn" target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">hier</a><br><br>
+Zorg ervoor dat u de streaming-software installeerd:
+<a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
+
+
+$string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U
+ kunt nog steeds de chatgeschiedenis terugzien door te klikken op de onderstaande knop.';
 $string['text:useractivity'] = 'Gebruikers activiteit';
 
-// Buttons
+// Buttons.
 $string['btn:enter_live_openwebinar'] = 'Open de live openwebinar';
 $string['btn:enter_offline_openwebinar'] = 'Open de offline openwebinar';
 $string['btn:chattime'] = 'Rapport';
@@ -182,7 +199,7 @@ $string['btn:addquestion'] = 'Voeg een nieuwe vraag toe';
 $string['btn:open'] = 'Opslaan';
 $string['btn:broadcast_enter'] = 'Enter openwebinar';
 
-// Helper strings
+// Helper strings.
 $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Gebruikers';
 $string['browser'] = 'Browser';
@@ -210,7 +227,8 @@ $string['user_activity'] = 'Openwebinar gebruikers activiteit';
 $string['starts_at'] = 'Openwebinar begint in:';
 $string['starttime'] = 'Gestart op';
 $string['Close'] = 'Close';
-// user options
+
+// User options.
 $string['opt:header_broadcaster'] = 'Presentator';
 $string['opt:header_exit'] = 'Beëindigd';
 $string['opt:mute_guests'] = 'Dempen gasten';
@@ -223,7 +241,7 @@ $string['opt:endopenwebinar'] = 'Sluit & beëindigd de openwebinar';
 $string['opt:leave'] = 'Verlaat de openwebinar';
 $string['opt:header_general'] = 'Algemeen';
 
-// Js
+// Js.
 $string['js:my_answer_saved'] = 'Uw antwoord is opgeslagen.';
 $string['js:send'] = 'Verstuur';
 $string['js:answer'] = 'Antwoord';
@@ -249,11 +267,14 @@ $string['js:chat_commands'] = '<h4>Fout: onbekend commando</h4>
 <li>/clear <span class="note">Wis alle berichten in uw overzicht</span></li>
 </ul>';
 $string['js:added_question'] = 'De vraag is uitgezet in de chatruimte. U ontvangt een bericht als iemand een antwoord geeft.';
-$string['js:countdown_line1'] = ' milliseconde | seconde | minute | uur | dag | week | maand | jaar | decennium | eeuw | millennium';
-$string['js:countdown_line2'] = ' milliseconden | seconden | minuten | uur | dagen | weken | maanden | jaar | decennia | eeuwen | millennia';
+$string['js:countdown_line1'] = ' milliseconde | seconde | minute | uur | dag | week | maand | jaar | decennium | eeuw |
+ millennium';
+
+$string['js:countdown_line2'] = ' milliseconden | seconden | minuten | uur | dagen | weken | maanden | jaar | decennia | eeuwen |
+ millennia';
 $string['js:countdown_line3'] = ' en ';
 
-// HEADING Tables
+// HEADING Tables.
 $string['heading:picture'] = 'Foto';
 $string['heading:firstname'] = 'Voornaam';
 $string['heading:lastname'] = 'Achternaam';
@@ -267,7 +288,7 @@ $string['heading:message'] = 'Bericht';
 $string['heading:name'] = 'Naam';
 $string['heading:value'] = 'Waarde';
 
-// Email
+// Email.
 $string['mail:reminder_subject'] = 'Openwebinar herinnering: {$a->name}';
 $string['mail:reminder_message'] = 'Beste ##fullname##, <br/><br/>
 

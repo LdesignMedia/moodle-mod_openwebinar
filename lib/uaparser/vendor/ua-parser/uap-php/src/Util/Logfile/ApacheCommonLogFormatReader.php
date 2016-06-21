@@ -8,10 +8,8 @@
  */
 namespace UAParser\Util\Logfile;
 
-class ApacheCommonLogFormatReader extends AbstractReader
-{
-    protected function getRegex()
-    {
+class ApacheCommonLogFormatReader extends AbstractReader {
+    protected function getRegex() {
         return '@^
             (?:\S+)                                                 # IP
             \s+

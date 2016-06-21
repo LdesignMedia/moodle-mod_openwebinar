@@ -9,8 +9,7 @@
  */
 namespace UAParser\Result;
 
-class UserAgent extends AbstractVersionedSoftware
-{
+class UserAgent extends AbstractVersionedSoftware {
     /** @var string */
     public $major;
 
@@ -20,8 +19,7 @@ class UserAgent extends AbstractVersionedSoftware
     /** @var string */
     public $patch;
 
-    public function toVersion()
-    {
+    public function toVersion() {
         return $this->formatVersion($this->major, $this->minor, $this->patch);
     }
 }

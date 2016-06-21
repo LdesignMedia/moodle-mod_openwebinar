@@ -11,7 +11,7 @@
  **/
 $string['modulename'] = 'MoodleFreak Openwebinar';
 $string['modulenameplural'] = 'MoodleFreak Openwebinar';
-$string['modulename_help'] = 'Openwebinar activiteit:<br/>
+$string['modulename_help'] = 'Openwebinar activity:<br/>
 <b>Room</b>
 <ul>
 	<li>The chatroom is responsive</li>
@@ -82,14 +82,14 @@ $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by
 $string['task:reminder'] = 'Send reminders';
 $string['messageprovider:reminder'] = 'Openwebinar reminder notifications';
 
-// ACCESS
+// ACCESS.
 $string['openwebinar:history'] = 'Allow viewing openwebinar history';
 $string['openwebinar:view'] = 'Allow viewing openwebinar';
 $string['openwebinar:addinstance'] = 'Add an openwebinar';
 $string['openwebinar:manager'] = 'Openwebinar manager';
 $string['openwebinar:teacher'] = 'Openwebinar teacher';
 
-// ERRORS
+// ERRORS.
 $string['error:openwebinar_notfound'] = 'Error: We can\'t get the correct openwebinar!';
 $string['error:file_not_exits'] = 'Error: This file doesn\'t exist or has been removed!';
 $string['error:file_no_access'] = 'Error: No access to this file!';
@@ -98,7 +98,7 @@ $string['error:no_result'] = 'No result(s) found';
 $string['error:answer_already_saved'] = 'Your answer has been saved already!';
 $string['error:not_for_guests'] = 'Error: not available for Guests';
 
-// SETTINGS
+// SETTINGS.
 $string['setting:heading_server'] = 'Communication settings';
 $string['setting:heading_instance_features'] = 'Features enabled or disabled (can be overridden in each openwebinar activity)';
 $string['setting:streaming_server'] = 'Streaming url';
@@ -109,11 +109,14 @@ $string['setting:shared_secret'] = 'Shared secret';
 $string['setting:shared_secret_desc'] = 'A unique key that is shared with the chat/streaming server';
 $string['setting:heading_instance_defaults'] = 'Reminder default values (can be overridden in each openwebinar activity)';
 $string['setting:reminder_1'] = 'Reminder 1';
-$string['setting:reminder_1_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
+$string['setting:reminder_1_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the
+ notification';
 $string['setting:reminder_2'] = 'Reminder 2';
-$string['setting:reminder_2_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
+$string['setting:reminder_2_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the
+ notification';
 $string['setting:reminder_3'] = 'Reminder 3';
-$string['setting:reminder_3_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the notification';
+$string['setting:reminder_3_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the
+ notification';
 $string['setting:stream'] = 'Streaming enabled';
 $string['setting:stream_desc'] = 'If disabled the openwebinar don\'t show a video player';
 $string['setting:chat'] = 'Chat enabled';
@@ -130,13 +133,15 @@ $string['setting:ajax_timer'] = 'Ajax based timing';
 $string['setting:ajax_timer_desc'] = 'Every 60 seconds a request will be send to the server to update the user’s online time. <br/>
 Warning: more than 25 users in the room can cause a high server load.';
 $string['setting:emoticons'] = 'Emoticons in chat';
-$string['setting:emoticons_desc'] = 'Shortcode will be converted to a emoticon. Also a dialog will be added where you can select a emoticon.';
+$string['setting:emoticons_desc'] = 'Shortcode will be converted to a emoticon. Also a dialog will be added where you can select
+ a emoticon.';
 $string['setting:debugjs'] = 'Debug Javascript';
 $string['setting:debugjs_desc'] = 'Write js debug message to browser console. ';
 $string['setting:hls'] = 'HLS video stream';
-$string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
+$string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a
+ HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
 
-// Mod settings
+// Mod settings.
 $string['mod_setting:settings'] = 'Openwebinar features';
 $string['mod_setting:timing'] = 'Openwebinar time';
 $string['mod_setting:timeopen'] = 'Start';
@@ -151,14 +156,19 @@ $string['mod_setting:durationhelp_help'] = 'Duration';
 $string['mod_setting:broadcastkey'] = 'Broadcastkey';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 
-// Text
-$string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->timeopen}</b><br> You can enter the openwebinar by pressing the button below';
-$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br><b class="selectable">{$a->broadcastkey}</b><br><br>The broadcast guide can be found <a  target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
+// Text.
+$string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->timeopen}</b><br> You can enter the openwebinar by
+ pressing the button below';
+$string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br>
+<b class="selectable">{$a->broadcastkey}</b>
+<br><br>The broadcast guide can be found
+<a target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
 Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-$string['text:history'] = '<h3>Openwebinar is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can still view the history in this openwebinar by clicking on the button below.';
+$string['text:history'] = '<h3>Openwebinar is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can
+still view the history in this openwebinar by clicking on the button below.';
 $string['text:useractivity'] = 'User activity';
 
-// Buttons
+// Buttons.
 $string['btn:enter_live_openwebinar'] = 'Enter live openwebinar';
 $string['btn:enter_offline_openwebinar'] = 'Enter offline openwebinar';
 $string['btn:chattime'] = 'Report';
@@ -169,7 +179,7 @@ $string['btn:addquestion'] = 'Add a new question';
 $string['btn:open'] = 'Save';
 $string['btn:broadcast_enter'] = 'Enter openwebinar';
 
-// Helper strings
+// Helper strings.
 $string['dateformat'] = 'd-m-Y H:i';
 $string['users'] = 'Users';
 $string['browser'] = 'Browser';
@@ -198,7 +208,7 @@ $string['starts_at'] = 'Openwebinar starts in:';
 $string['starttime'] = 'start time';
 $string['Close'] = 'Close';
 
-// user options
+// User options.
 $string['opt:header_broadcaster'] = 'Broadcaster';
 $string['opt:header_exit'] = 'Exit';
 $string['opt:mute_guests'] = 'Mute guests';
@@ -211,7 +221,7 @@ $string['opt:endopenwebinar'] = 'Close & end the openwebinar';
 $string['opt:leave'] = 'Leave openwebinar';
 $string['opt:header_general'] = 'General';
 
-// Js
+// Js.
 $string['js:my_answer_saved'] = 'Your answer has been saved.';
 $string['js:send'] = 'Send';
 $string['js:answer'] = 'Answer';
@@ -236,12 +246,13 @@ $string['js:chat_commands'] = '<h4>Error: unknown command</h4>
 <ul class="command">
 <li>/clear <span class="note">Empty all messages in your overview</span></li>
 </ul>';
-$string['js:added_question'] = 'Your question has been send to client(s) in the room. You will receive a notice if someone gives an answer.';
+$string['js:added_question'] = 'Your question has been send to client(s) in the room. You will receive a notice if someone gives
+ an answer.';
 $string['js:countdown_line1'] = ' millisecond| second| minute| hour| day| week| month| year| decade| century| millennium';
 $string['js:countdown_line2'] = ' milliseconds| seconds| minutes| hours| days| weeks| months| years| decades| centuries| millennia';
 $string['js:countdown_line3'] = ' and ';
 
-// HEADING Tables
+// HEADING Tables.
 $string['heading:picture'] = 'Avatar';
 $string['heading:firstname'] = 'Firstname';
 $string['heading:lastname'] = 'Lastname';
@@ -255,7 +266,7 @@ $string['heading:message'] = 'Message';
 $string['heading:name'] = 'Name';
 $string['heading:value'] = 'Value';
 
-// Email
+// Email.
 $string['mail:reminder_subject'] = 'Openwebinar reminder: {$a->name}';
 $string['mail:reminder_message'] = 'Dear ##fullname##, <br/><br/>
 

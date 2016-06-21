@@ -11,8 +11,7 @@
 
 namespace Symfony\Component\Finder\Tests\Iterator;
 
-class MockSplFileInfo extends \SplFileInfo
-{
+class MockSplFileInfo extends \SplFileInfo {
     const   TYPE_DIRECTORY = 1;
     const   TYPE_FILE = 2;
     const   TYPE_UNKNOWN = 3;
@@ -23,18 +22,17 @@ class MockSplFileInfo extends \SplFileInfo
     private $relativePath = null;
     private $relativePathname = null;
 
-    public function __construct($param)
-    {
+    public function __construct($param) {
         if (is_string($param)) {
             parent::__construct($param);
         } elseif (is_array($param)) {
             $defaults = array(
-              'name' => 'file.txt',
-              'contents' => null,
-              'mode' => null,
-              'type' => null,
-              'relativePath' => null,
-              'relativePathname' => null,
+                    'name' => 'file.txt',
+                    'contents' => null,
+                    'mode' => null,
+                    'type' => null,
+                    'relativePath' => null,
+                    'relativePathname' => null,
             );
             $defaults = array_merge($defaults, $param);
             parent::__construct($defaults['name']);
@@ -48,8 +46,7 @@ class MockSplFileInfo extends \SplFileInfo
         }
     }
 
-    public function isFile()
-    {
+    public function isFile() {
         if (null === $this->type) {
             return false !== strpos($this->getFilename(), 'file');
         };
@@ -57,8 +54,7 @@ class MockSplFileInfo extends \SplFileInfo
         return self::TYPE_FILE === $this->type;
     }
 
-    public function isDir()
-    {
+    public function isDir() {
         if (null === $this->type) {
             return false !== strpos($this->getFilename(), 'directory');
         }
@@ -66,8 +62,7 @@ class MockSplFileInfo extends \SplFileInfo
         return self::TYPE_DIRECTORY === $this->type;
     }
 
-    public function isReadable()
-    {
+    public function isReadable() {
         if (null === $this->mode) {
             return preg_match('/r\+/', $this->getFilename());
         }
@@ -75,23 +70,19 @@ class MockSplFileInfo extends \SplFileInfo
         return preg_match('/r\+/', $this->mode);
     }
 
-    public function getContents()
-    {
+    public function getContents() {
         return $this->contents;
     }
 
-    public function setContents($contents)
-    {
+    public function setContents($contents) {
         $this->contents = $contents;
     }
 
-    public function setMode($mode)
-    {
+    public function setMode($mode) {
         $this->mode = $mode;
     }
 
-    public function setType($type)
-    {
+    public function setType($type) {
         if (is_string($type)) {
             switch ($type) {
                 case 'directory':
@@ -112,23 +103,19 @@ class MockSplFileInfo extends \SplFileInfo
         }
     }
 
-    public function setRelativePath($relativePath)
-    {
+    public function setRelativePath($relativePath) {
         $this->relativePath = $relativePath;
     }
 
-    public function setRelativePathname($relativePathname)
-    {
+    public function setRelativePathname($relativePathname) {
         $this->relativePathname = $relativePathname;
     }
 
-    public function getRelativePath()
-    {
+    public function getRelativePath() {
         return $this->relativePath;
     }
 
-    public function getRelativePathname()
-    {
+    public function getRelativePathname() {
         return $this->relativePathname;
     }
 }

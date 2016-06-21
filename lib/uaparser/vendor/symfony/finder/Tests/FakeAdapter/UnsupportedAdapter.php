@@ -16,29 +16,25 @@ use Symfony\Component\Finder\Adapter\AbstractAdapter;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class UnsupportedAdapter extends AbstractAdapter
-{
+class UnsupportedAdapter extends AbstractAdapter {
     /**
      * {@inheritdoc}
      */
-    public function searchInDirectory($dir)
-    {
+    public function searchInDirectory($dir) {
         return new \ArrayIterator(array());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'unsupported';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return false;
     }
 }

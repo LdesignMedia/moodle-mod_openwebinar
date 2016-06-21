@@ -16,20 +16,18 @@ namespace Symfony\Component\Finder\Iterator;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ExcludeDirectoryFilterIterator extends FilterIterator
-{
+class ExcludeDirectoryFilterIterator extends FilterIterator {
     private $patterns = array();
 
     /**
      * Constructor.
      *
-     * @param \Iterator $iterator    The Iterator to filter
-     * @param array     $directories An array of directories to exclude
+     * @param \Iterator $iterator The Iterator to filter
+     * @param array $directories  An array of directories to exclude
      */
-    public function __construct(\Iterator $iterator, array $directories)
-    {
+    public function __construct(\Iterator $iterator, array $directories) {
         foreach ($directories as $directory) {
-            $this->patterns[] = '#(^|/)'.preg_quote($directory, '#').'(/|$)#';
+            $this->patterns[] = '#(^|/)' . preg_quote($directory, '#') . '(/|$)#';
         }
 
         parent::__construct($iterator);
@@ -40,8 +38,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator
      *
      * @return bool true if the value should be kept, false otherwise
      */
-    public function accept()
-    {
+    public function accept() {
         $path = $this->isDir() ? $this->current()->getRelativePathname() : $this->current()->getRelativePath();
         $path = strtr($path, '\\', '/');
         foreach ($this->patterns as $pattern) {

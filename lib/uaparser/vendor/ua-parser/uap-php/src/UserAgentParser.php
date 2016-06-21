@@ -11,17 +11,16 @@ namespace UAParser;
 
 use UAParser\Result\UserAgent;
 
-class UserAgentParser extends AbstractParser
-{
+class UserAgentParser extends AbstractParser {
     /**
      * Attempts to see if the user agent matches a user agents regex from regexes.php
      *
      * @param string $userAgent a user agent string to test
      * @param array $jsParseBits
+     *
      * @return UserAgent
      */
-    public function parseUserAgent($userAgent, array $jsParseBits = array())
-    {
+    public function parseUserAgent($userAgent, array $jsParseBits = array()) {
         $ua = new UserAgent();
 
         if (isset($jsParseBits['js_user_agent_family']) && $jsParseBits['js_user_agent_family']) {

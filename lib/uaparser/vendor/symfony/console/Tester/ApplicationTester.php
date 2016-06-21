@@ -27,8 +27,7 @@ use Symfony\Component\Console\Output\StreamOutput;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ApplicationTester
-{
+class ApplicationTester {
     private $application;
     private $input;
     private $output;
@@ -39,8 +38,7 @@ class ApplicationTester
      *
      * @param Application $application An Application instance to test.
      */
-    public function __construct(Application $application)
-    {
+    public function __construct(Application $application) {
         $this->application = $application;
     }
 
@@ -58,8 +56,7 @@ class ApplicationTester
      *
      * @return int The command exit code
      */
-    public function run(array $input, $options = array())
-    {
+    public function run(array $input, $options = array()) {
         $this->input = new ArrayInput($input);
         if (isset($options['interactive'])) {
             $this->input->setInteractive($options['interactive']);
@@ -83,8 +80,7 @@ class ApplicationTester
      *
      * @return string The display
      */
-    public function getDisplay($normalize = false)
-    {
+    public function getDisplay($normalize = false) {
         rewind($this->output->getStream());
 
         $display = stream_get_contents($this->output->getStream());
@@ -101,8 +97,7 @@ class ApplicationTester
      *
      * @return InputInterface The current input instance
      */
-    public function getInput()
-    {
+    public function getInput() {
         return $this->input;
     }
 
@@ -111,8 +106,7 @@ class ApplicationTester
      *
      * @return OutputInterface The current output instance
      */
-    public function getOutput()
-    {
+    public function getOutput() {
         return $this->output;
     }
 
@@ -121,8 +115,7 @@ class ApplicationTester
      *
      * @return int The status code
      */
-    public function getStatusCode()
-    {
+    public function getStatusCode() {
         return $this->statusCode;
     }
 }

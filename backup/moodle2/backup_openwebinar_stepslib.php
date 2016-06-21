@@ -34,25 +34,6 @@ class backup_openwebinar_activity_structure_step extends backup_activity_structu
      * @return backup_nested_element
      */
     protected function define_structure() {
-
-        // Get know if we are including userinfo.
-        //$userinfo = $this->get_setting_value('userinfo');
-
-        // Define the root element describing the openwebinar instance.
-        //$openwebinar = new backup_nested_element('openwebinar', array('id'), array( 'name', 'intro', 'introformat', 'grade'));
-
-        // If we had more elements, we would build the tree here.
-
-        // Define data sources.
-        //$openwebinar->set_source_table('openwebinar', array('id' => backup::VAR_ACTIVITYID));
-
-        // If we were referring to other tables, we would annotate the relation
-        // with the element's annotate_ids() method.
-
-        // Define file annotations (we do not use itemid in this example).
-        //$openwebinar->annotate_files('mod_openwebinar', 'intro', null);
-
-        // Return the root element (openwebinar), wrapped into standard activity structure.
-        //return $this->prepare_activity_structure($openwebinar);
+        // Todo.
     }
 }

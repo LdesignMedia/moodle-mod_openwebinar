@@ -28,25 +28,23 @@ namespace Symfony\Component\Finder;
  *
  * Based on the Perl Text::Glob module.
  *
- * @author Fabien Potencier <fabien@symfony.com> PHP port
+ * @author     Fabien Potencier <fabien@symfony.com> PHP port
  * @author     Richard Clamp <richardc@unixbeard.net> Perl version
  * @copyright  2004-2005 Fabien Potencier <fabien@symfony.com>
  * @copyright  2002 Richard Clamp <richardc@unixbeard.net>
  */
-class Glob
-{
+class Glob {
     /**
      * Returns a regexp which is the equivalent of the glob pattern.
      *
-     * @param string $glob                The glob pattern
-     * @param bool   $strictLeadingDot
-     * @param bool   $strictWildcardSlash
-     * @param string $delimiter           Optional delimiter
+     * @param string $glob      The glob pattern
+     * @param bool $strictLeadingDot
+     * @param bool $strictWildcardSlash
+     * @param string $delimiter Optional delimiter
      *
      * @return string regex The regexp
      */
-    public static function toRegex($glob, $strictLeadingDot = true, $strictWildcardSlash = true, $delimiter = '#')
-    {
+    public static function toRegex($glob, $strictLeadingDot = true, $strictWildcardSlash = true, $delimiter = '#') {
         $firstByte = true;
         $escaping = false;
         $inCurlies = 0;
@@ -99,6 +97,6 @@ class Glob
             $escaping = false;
         }
 
-        return $delimiter.'^'.$regex.'$'.$delimiter;
+        return $delimiter . '^' . $regex . '$' . $delimiter;
     }
 }

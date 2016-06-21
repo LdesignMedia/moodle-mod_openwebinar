@@ -72,7 +72,7 @@ class helper {
 
         global $USER;
 
-        // get correct user object
+        // Get correct user object.
         if (!is_object($user)) {
             $user = $USER;
         }
@@ -81,7 +81,7 @@ class helper {
             throw new Exception(get_string('error:openwebinar_notfound', 'mod_openwebinar'));
         }
 
-        // build internal caching
+        // Build internal caching.
         static $obj = array();
         if (!empty($obj[$user->id])) {
             return $obj[$user->id];
@@ -89,19 +89,19 @@ class helper {
 
         $access = new \stdClass();
 
-        // is broadcaster
+        // Is broadcaster.
         $access->broadcaster = ($user->id == $openwebinar->broadcaster) ? true : false;
 
-        // is manager
+        // Is manager.
         $access->manager = has_capability('mod/openwebinar:manager', $context, $user);
 
-        // is teacher
+        // Is teacher.
         $access->teacher = has_capability('mod/openwebinar:teacher', $context, $user);
 
-        // view history
+        // View history.
         $access->history = has_capability('mod/openwebinar:history', $context, $user);
 
-        // reference to scope var
+        // Reference to scope var.
         $obj[$user->id] = $access;
 
         return $obj[$user->id];
@@ -118,7 +118,7 @@ class helper {
      */
     public static function get_openwebinar_status($openwebinar) {
 
-        // check 
+        // Check.
         if (empty($openwebinar)) {
             throw new Exception(get_string('error:openwebinar_notfound', 'mod_openwebinar'));
         }
@@ -126,8 +126,10 @@ class helper {
         $now = time();
         if (!empty($openwebinar->is_ended)) {
             return self::WEBCAST_BROADCASTED;
-        } elseif ($now >= $openwebinar->timeopen) {
-            return self::WEBCAST_LIVE;
+        } else {
+            if ($now >= $openwebinar->timeopen) {
+                return self::WEBCAST_LIVE;
+            }
         }
 
         return self::WEBCAST_NOT_BROADCASTED;
@@ -159,7 +161,6 @@ class helper {
         return 'guest';
     }
 
-
     /**
      * generate unique identifier GUID
      *
@@ -168,19 +169,20 @@ class helper {
     public static function generate_key() {
 
         if (function_exists('com_create_guid')) {
-            // windows based
+            // Windows based.
             return com_create_guid();
         }
 
-        // Linux
-        mt_srand((double)microtime() * 10000);
+        // Linux.
+        mt_srand((double) microtime() * 10000);
         $charid = strtoupper(md5(uniqid(rand(), true)));
 
-        return substr($charid, 0, 8) . '-' . substr($charid, 8, 4) . '-' . substr($charid, 12, 4) . '-' . substr($charid, 16, 4) . '-' . substr($charid, 20, 12);
+        return substr($charid, 0, 8) . '-' . substr($charid, 8, 4) . '-' . substr($charid, 12, 4) . '-' . substr($charid, 16, 4) .
+        '-' . substr($charid, 20, 12);
     }
 
     /**
-     * save a  messages to the database
+     * Save a messages to the database
      * this will be done by the API that is called through the socket server
      *
      * @param bool|false $data
@@ -189,22 +191,23 @@ class helper {
      */
     public static function save_messages($data = false) {
         global $DB;
-        $openwebinar = $DB->get_record('openwebinar', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*', MUST_EXIST);
+        $openwebinar = $DB->get_record('openwebinar', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*',
+                MUST_EXIST);
 
         $now = time();
         foreach ($data->messages as $message) {
 
-            $message = (object)$message;
+            $message = (object) $message;
 
             $obj = new \stdClass();
-            $obj->userid = (int)$message->userid;
+            $obj->userid = (int) $message->userid;
             $obj->fullname = $message->fullname;
             $obj->messagetype = $message->messagetype;
             $obj->usertype = $message->usertype;
             $obj->openwebinar_id = $openwebinar->id;
             $obj->course_id = $openwebinar->course;
             $obj->message = $message->message;
-            $obj->timestamp = (int)$message->timestamp;
+            $obj->timestamp = (int) $message->timestamp;
             $obj->addedon = $now;
 
             $DB->insert_record('openwebinar_messages', $obj);
@@ -223,18 +226,18 @@ class helper {
     public static function set_user_online_status($openwebinarid = 0) {
         global $DB, $USER;
 
-        //  Guest no status will be saved for unregistered users
+        // Guest no status will be saved for unregistered users.
         if ($USER->id <= 1) {
             return 0;
         }
 
         $object = new \stdClass();
 
-        // check if record already exists
+        // Check if record already exists.
         $row = $DB->get_record('openwebinar_userstatus', array('openwebinar_id' => $openwebinarid, 'userid' => $USER->id));
 
         if (!$row) {
-            // set extra data
+            // Set extra data.
             $object->openwebinar_id = $openwebinarid;
             $object->userid = $USER->id;
             $object->starttime = time();
@@ -268,12 +271,12 @@ class helper {
         global $CFG;
 
         return array(
-            'subdirs' => 0,
-            'maxfiles' => 50,
-            'maxbytes' => $CFG->maxbytes,
-            'accepted_types' => '*',
-            'context' => $context,
-            'return_types' => 2 | 1
+                'subdirs' => 0,
+                'maxfiles' => 50,
+                'maxbytes' => $CFG->maxbytes,
+                'accepted_types' => '*',
+                'context' => $context,
+                'return_types' => 2 | 1
         );
     }
 
@@ -292,15 +295,14 @@ class helper {
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
         require_course_login($course);
 
-        // get the openwebinar
+        // Get the openwebinar.
         $openwebinar = $DB->get_record('openwebinar', array('id' => $openwebinarid), '*', MUST_EXIST);
 
-        // get course module
+        // Get course module.
         $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 
-        // get context
+        // Get context.
         $context = \context_module::instance($cm->id);
-
 
         return array($course, $openwebinar, $cm, $context);
     }
@@ -321,13 +323,12 @@ class helper {
 
         $item = new \stdClass();
         $item->filename = $file->get_filename();
-        // $item->fullname = trim($item->filename, '/');
         $filesize = $file->get_filesize();
         $item->filesize = $filesize ? display_size($filesize) : '';
 
         $item->author = (string) $file->get_author();
         $item->hash = (string) $file->get_contenthash();
-        $item->id =  $file->get_id();
+        $item->id = $file->get_id();
 
         $item->mimetype = get_mimetype_description($file);
         $item->thumbnail = $OUTPUT->pix_url(file_file_icon($file, 90))->out(false);
@@ -342,9 +343,10 @@ class helper {
      *
      * @return mixed
      */
-    static public function get_openwebinar_by_broadcastkey($broadcastkey = ''){
+    static public function get_openwebinar_by_broadcastkey($broadcastkey = '') {
         global $DB;
-        return $DB->get_record('openwebinar' , array('broadcastkey' => str_replace('_public', '',$broadcastkey)) ,'*' , MUST_EXIST);
+
+        return $DB->get_record('openwebinar', array('broadcastkey' => str_replace('_public', '', $broadcastkey)), '*', MUST_EXIST);
     }
 
     /**
@@ -356,24 +358,24 @@ class helper {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    static public function get_active_course_users($courseid = 0){
+    static public function get_active_course_users($courseid = 0) {
 
         global $DB;
 
         list($instancessql, $params) = $DB->get_in_or_equal(array_keys(enrol_get_instances($courseid, false)), SQL_PARAMS_NAMED);
 
-        // Get extra fields
+        // Get extra fields.
         $extrafields = get_extra_user_fields(\context_course::instance($courseid));
         $extrafields[] = 'lastaccess';
         $dbfields = \user_picture::fields('u', $extrafields);
 
-        // Params
-        $now = round(time(), -2); // rounding helps caching in DB
+        // Params.
+        $now = round(time(), -2); // Rounding helps caching in DB.
         $params += array(
-            'enabled' => ENROL_INSTANCE_ENABLED,
-            'active' => ENROL_USER_ACTIVE,
-            'now1' => $now,
-            'now2' => $now,
+                'enabled' => ENROL_INSTANCE_ENABLED,
+                'active' => ENROL_USER_ACTIVE,
+                'now1' => $now,
+                'now2' => $now,
         );
 
         $sql = 'SELECT DISTINCT ' . $dbfields . '
@@ -385,7 +387,7 @@ class helper {
                  ue.status = :active AND e.status = :enabled AND ue.timestart < :now1
                     AND (ue.timeend = 0 OR ue.timeend > :now2)';
 
-        return $DB->get_records_sql($sql , $params);
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**
@@ -396,52 +398,52 @@ class helper {
      *
      * @return bool
      */
-    static public function update_user_presence($webcast = false , $user = false){
+    static public function update_user_presence($webcast = false, $user = false) {
         global $DB;
 
-        // we can't update if this is the case
-        if(empty($webcast)|| $webcast->is_ended == 1 || !$user){
+        // We can't update if this is the case.
+        if (empty($webcast) || $webcast->is_ended == 1 || !$user) {
             return false;
         }
 
-        // get users that can enter this webinar
+        // Get users that can enter this webinar.
         $courseusers = self::get_active_course_users($webcast->course);
 
-        // user already added
-        $webcastusers = $DB->get_records('openwebinar_presence' , array('openwebinar_id' => $webcast->id) ,'',  'user_id, id , available');
+        // User already added.
+        $webcastusers = $DB->get_records('openwebinar_presence',
+                ['openwebinar_id' => $webcast->id], '', 'user_id, id , available');
 
-        // Make sure all users are added first
-        foreach($courseusers as $cuser){
-            if(!isset($webcastusers[$cuser->id])){
+        // Make sure all users are added first.
+        foreach ($courseusers as $cuser) {
+            if (!isset($webcastusers[$cuser->id])) {
 
                 $obj = new \stdClass();
-                // is this user is active
-                $obj->available = ($cuser->id  === $user->id) ? 1: 0;
+                // Is this user is active.
+                $obj->available = ($cuser->id === $user->id) ? 1 : 0;
 
                 $obj->user_id = $cuser->id;
                 $obj->openwebinar_id = $webcast->id;
                 $obj->added_on = time();
-                $obj->id = $DB->insert_record('openwebinar_presence' , $obj);
+                $obj->id = $DB->insert_record('openwebinar_presence', $obj);
 
                 $webcastusers[$cuser->id] = $obj;
             }
         }
 
-        // check if I exists
-        if(!isset($webcastusers[$user->id])){
+        // Check if I exists.
+        if (!isset($webcastusers[$user->id])) {
             return false;
         }
 
-        // check my presence is set correctly
-        if($webcastusers[$user->id]->available !== 1){
+        // Check my presence is set correctly.
+        if ($webcastusers[$user->id]->available !== 1) {
             $obj = new \stdClass();
             $obj->id = $webcastusers[$user->id]->id;
             $obj->available = 1;
-            $DB->update_record('openwebinar_presence' , $obj);
+            $DB->update_record('openwebinar_presence', $obj);
         }
 
         return true;
     }
-
 
 }

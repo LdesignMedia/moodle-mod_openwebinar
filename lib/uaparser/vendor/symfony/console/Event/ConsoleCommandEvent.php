@@ -16,8 +16,7 @@ namespace Symfony\Component\Console\Event;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ConsoleCommandEvent extends ConsoleEvent
-{
+class ConsoleCommandEvent extends ConsoleEvent {
     /**
      * The return code for skipped commands, this will also be passed into the terminate event
      */
@@ -35,8 +34,7 @@ class ConsoleCommandEvent extends ConsoleEvent
      *
      * @return bool
      */
-    public function disableCommand()
-    {
+    public function disableCommand() {
         return $this->commandShouldRun = false;
     }
 
@@ -45,8 +43,7 @@ class ConsoleCommandEvent extends ConsoleEvent
      *
      * @return bool
      */
-    public function enableCommand()
-    {
+    public function enableCommand() {
         return $this->commandShouldRun = true;
     }
 
@@ -55,8 +52,7 @@ class ConsoleCommandEvent extends ConsoleEvent
      *
      * @return bool
      */
-    public function commandShouldRun()
-    {
+    public function commandShouldRun() {
         return $this->commandShouldRun;
     }
 }

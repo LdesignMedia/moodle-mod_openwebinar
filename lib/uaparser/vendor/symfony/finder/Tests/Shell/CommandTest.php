@@ -13,37 +13,31 @@ namespace Symfony\Component\Finder\Tests\Shell;
 
 use Symfony\Component\Finder\Shell\Command;
 
-class CommandTest extends \PHPUnit_Framework_TestCase
-{
-    public function testCreate()
-    {
+class CommandTest extends \PHPUnit_Framework_TestCase {
+    public function testCreate() {
         $this->assertInstanceOf('Symfony\Component\Finder\Shell\Command', Command::create());
     }
 
-    public function testAdd()
-    {
+    public function testAdd() {
         $cmd = Command::create()->add('--force');
         $this->assertSame('--force', $cmd->join());
     }
 
-    public function testAddAsFirst()
-    {
+    public function testAddAsFirst() {
         $cmd = Command::create()->add('--force');
 
         $cmd->addAtIndex(Command::create()->add('-F'), 0);
         $this->assertSame('-F --force', $cmd->join());
     }
 
-    public function testAddAsLast()
-    {
+    public function testAddAsLast() {
         $cmd = Command::create()->add('--force');
 
         $cmd->addAtIndex(Command::create()->add('-F'), 1);
         $this->assertSame('--force -F', $cmd->join());
     }
 
-    public function testAddInBetween()
-    {
+    public function testAddInBetween() {
         $cmd = Command::create()->add('--force');
         $cmd->addAtIndex(Command::create()->add('-F'), 0);
 
@@ -51,8 +45,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('-F -X --force', $cmd->join());
     }
 
-    public function testCount()
-    {
+    public function testCount() {
         $cmd = Command::create();
         $this->assertSame(0, $cmd->length());
 
@@ -63,16 +56,14 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(2, $cmd->length());
     }
 
-    public function testTop()
-    {
+    public function testTop() {
         $cmd = Command::create()->add('--force');
 
         $cmd->top('--run');
         $this->assertSame('--run --force', $cmd->join());
     }
 
-    public function testTopLabeled()
-    {
+    public function testTopLabeled() {
         $cmd = Command::create()->add('--force');
 
         $cmd->top('--run');
@@ -81,24 +72,21 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('--something --run --force ', $cmd->join());
     }
 
-    public function testArg()
-    {
+    public function testArg() {
         $cmd = Command::create()->add('--force');
 
         $cmd->arg('--run');
         $this->assertSame('--force \'--run\'', $cmd->join());
     }
 
-    public function testCmd()
-    {
+    public function testCmd() {
         $cmd = Command::create()->add('--force');
 
         $cmd->cmd('run');
         $this->assertSame('--force run', $cmd->join());
     }
 
-    public function testInsDuplicateLabelException()
-    {
+    public function testInsDuplicateLabelException() {
         $cmd = Command::create()->add('--force');
 
         $cmd->ins('label');
@@ -106,41 +94,38 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cmd->ins('label');
     }
 
-    public function testEnd()
-    {
+    public function testEnd() {
         $parent = Command::create();
         $cmd = Command::create($parent);
 
         $this->assertSame($parent, $cmd->end());
     }
 
-    public function testEndNoParentException()
-    {
+    public function testEndNoParentException() {
         $cmd = Command::create();
 
         $this->setExpectedException('RuntimeException');
         $cmd->end();
     }
 
-    public function testGetMissingLabelException()
-    {
+    public function testGetMissingLabelException() {
         $cmd = Command::create();
 
         $this->setExpectedException('RuntimeException');
         $cmd->get('invalid');
     }
 
-    public function testErrorHandler()
-    {
+    public function testErrorHandler() {
         $cmd = Command::create();
-        $handler = function() { return 'error-handler'; };
+        $handler = function() {
+            return 'error-handler';
+        };
         $cmd->setErrorHandler($handler);
 
         $this->assertSame($handler, $cmd->getErrorHandler());
     }
 
-    public function testExecute()
-    {
+    public function testExecute() {
         $cmd = Command::create();
         $cmd->add('php');
         $cmd->add('--version');
@@ -151,8 +136,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertRegexp('/PHP|HipHop/', $result[0]);
     }
 
-    public function testCastToString()
-    {
+    public function testCastToString() {
         $cmd = Command::create();
         $cmd->add('--force');
         $cmd->add('--run');

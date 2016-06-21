@@ -24,8 +24,7 @@ use Symfony\Component\Finder\Comparator\DateComparator;
  *
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-abstract class AbstractFindAdapter extends AbstractAdapter
-{
+abstract class AbstractFindAdapter extends AbstractAdapter {
     /**
      * @var Shell
      */
@@ -34,16 +33,14 @@ abstract class AbstractFindAdapter extends AbstractAdapter
     /**
      * Constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->shell = new Shell();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function searchInDirectory($dir)
-    {
+    public function searchInDirectory($dir) {
         // having "/../" in path make find fail
         $dir = realpath($dir);
 
@@ -92,10 +89,14 @@ abstract class AbstractFindAdapter extends AbstractAdapter
         }
 
         $command->setErrorHandler(
-            $this->ignoreUnreadableDirs
-                // If directory is unreadable and finder is set to ignore it, `stderr` is ignored.
-                ? function ($stderr) { return; }
-                : function ($stderr) { throw new AccessDeniedException($stderr); }
+                $this->ignoreUnreadableDirs
+                    // If directory is unreadable and finder is set to ignore it, `stderr` is ignored.
+                        ? function($stderr) {
+                    return;
+                }
+                        : function($stderr) {
+                    throw new AccessDeniedException($stderr);
+                }
         );
 
         $paths = $this->shell->testCommand('uniq') ? $command->add('| uniq')->execute() : array_unique($command->execute());
@@ -124,33 +125,30 @@ abstract class AbstractFindAdapter extends AbstractAdapter
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return $this->shell->testCommand('find');
     }
 
     /**
      * @param Command $command
-     * @param string  $dir
+     * @param string $dir
      *
      * @return Command
      */
-    protected function buildFindCommand(Command $command, $dir)
-    {
+    protected function buildFindCommand(Command $command, $dir) {
         return $command
-            ->ins('find')
-            ->add('find ')
-            ->arg($dir)
-            ->add('-noleaf'); // the -noleaf option is required for filesystems that don't follow the '.' and '..' conventions
+                ->ins('find')
+                ->add('find ')
+                ->arg($dir)
+                ->add('-noleaf'); // the -noleaf option is required for filesystems that don't follow the '.' and '..' conventions
     }
 
     /**
-     * @param Command  $command
+     * @param Command $command
      * @param string[] $names
-     * @param bool     $not
+     * @param bool $not
      */
-    private function buildNamesFiltering(Command $command, array $names, $not = false)
-    {
+    private function buildNamesFiltering(Command $command, array $names, $not = false) {
         if (0 === count($names)) {
             return;
         }
@@ -171,34 +169,33 @@ abstract class AbstractFindAdapter extends AbstractAdapter
             if ($expr->isRegex()) {
                 $regex = $expr->getRegex();
                 $regex->prepend($regex->hasStartFlag() ? '/' : '/[^/]*')
-                    ->setStartFlag(false)
-                    ->setStartJoker(true)
-                    ->replaceJokers('[^/]');
+                        ->setStartFlag(false)
+                        ->setStartJoker(true)
+                        ->replaceJokers('[^/]');
                 if (!$regex->hasEndFlag() || $regex->hasEndJoker()) {
                     $regex->setEndJoker(false)->append('[^/]*');
                 }
             }
 
             $command
-                ->add($i > 0 ? '-or' : null)
-                ->add($expr->isRegex()
-                    ? ($expr->isCaseSensitive() ? '-regex' : '-iregex')
-                    : ($expr->isCaseSensitive() ? '-name' : '-iname')
-                )
-                ->arg($expr->renderPattern());
+                    ->add($i > 0 ? '-or' : null)
+                    ->add($expr->isRegex()
+                            ? ($expr->isCaseSensitive() ? '-regex' : '-iregex')
+                            : ($expr->isCaseSensitive() ? '-name' : '-iname')
+                    )
+                    ->arg($expr->renderPattern());
         }
 
         $command->cmd(')');
     }
 
     /**
-     * @param Command  $command
-     * @param string   $dir
+     * @param Command $command
+     * @param string $dir
      * @param string[] $paths
-     * @param bool     $not
+     * @param bool $not
      */
-    private function buildPathsFiltering(Command $command, $dir, array $paths, $not = false)
-    {
+    private function buildPathsFiltering(Command $command, $dir, array $paths, $not = false) {
         if (0 === count($paths)) {
             return;
         }
@@ -216,59 +213,58 @@ abstract class AbstractFindAdapter extends AbstractAdapter
             // Fixes 'not search' regex problems.
             if ($expr->isRegex()) {
                 $regex = $expr->getRegex();
-                $regex->prepend($regex->hasStartFlag() ? preg_quote($dir).DIRECTORY_SEPARATOR : '.*')->setEndJoker(!$regex->hasEndFlag());
+                $regex->prepend($regex->hasStartFlag() ? preg_quote($dir) . DIRECTORY_SEPARATOR : '.*')
+                        ->setEndJoker(!$regex->hasEndFlag());
             } else {
                 $expr->prepend('*')->append('*');
             }
 
             $command
-                ->add($i > 0 ? '-or' : null)
-                ->add($expr->isRegex()
-                    ? ($expr->isCaseSensitive() ? '-regex' : '-iregex')
-                    : ($expr->isCaseSensitive() ? '-path' : '-ipath')
-                )
-                ->arg($expr->renderPattern());
+                    ->add($i > 0 ? '-or' : null)
+                    ->add($expr->isRegex()
+                            ? ($expr->isCaseSensitive() ? '-regex' : '-iregex')
+                            : ($expr->isCaseSensitive() ? '-path' : '-ipath')
+                    )
+                    ->arg($expr->renderPattern());
         }
 
         $command->cmd(')');
     }
 
     /**
-     * @param Command            $command
+     * @param Command $command
      * @param NumberComparator[] $sizes
      */
-    private function buildSizesFiltering(Command $command, array $sizes)
-    {
+    private function buildSizesFiltering(Command $command, array $sizes) {
         foreach ($sizes as $i => $size) {
             $command->add($i > 0 ? '-and' : null);
 
             switch ($size->getOperator()) {
                 case '<=':
-                    $command->add('-size -'.($size->getTarget() + 1).'c');
+                    $command->add('-size -' . ($size->getTarget() + 1) . 'c');
                     break;
                 case '>=':
-                    $command->add('-size +'.($size->getTarget() - 1).'c');
+                    $command->add('-size +' . ($size->getTarget() - 1) . 'c');
                     break;
                 case '>':
-                    $command->add('-size +'.$size->getTarget().'c');
+                    $command->add('-size +' . $size->getTarget() . 'c');
                     break;
                 case '!=':
-                    $command->add('-size -'.$size->getTarget().'c');
-                    $command->add('-size +'.$size->getTarget().'c');
+                    $command->add('-size -' . $size->getTarget() . 'c');
+                    $command->add('-size +' . $size->getTarget() . 'c');
                     break;
                 case '<':
                 default:
-                    $command->add('-size -'.$size->getTarget().'c');
+                    $command->add('-size -' . $size->getTarget() . 'c');
             }
         }
     }
 
     /**
-     * @param Command          $command
+     * @param Command $command
      * @param DateComparator[] $dates
      */
-    private function buildDatesFiltering(Command $command, array $dates)
-    {
+    private function buildDatesFiltering(Command $command, array $dates) {
         foreach ($dates as $i => $date) {
             $command->add($i > 0 ? '-and' : null);
 
@@ -277,51 +273,51 @@ abstract class AbstractFindAdapter extends AbstractAdapter
             if (0 > $mins) {
                 // mtime is in the future
                 $command->add(' -mmin -0');
+
                 // we will have no result so we don't need to continue
                 return;
             }
 
             switch ($date->getOperator()) {
                 case '<=':
-                    $command->add('-mmin +'.($mins - 1));
+                    $command->add('-mmin +' . ($mins - 1));
                     break;
                 case '>=':
-                    $command->add('-mmin -'.($mins + 1));
+                    $command->add('-mmin -' . ($mins + 1));
                     break;
                 case '>':
-                    $command->add('-mmin -'.$mins);
+                    $command->add('-mmin -' . $mins);
                     break;
                 case '!=':
-                    $command->add('-mmin +'.$mins.' -or -mmin -'.$mins);
+                    $command->add('-mmin +' . $mins . ' -or -mmin -' . $mins);
                     break;
                 case '<':
                 default:
-                    $command->add('-mmin +'.$mins);
+                    $command->add('-mmin +' . $mins);
             }
         }
     }
 
     /**
      * @param Command $command
-     * @param string  $sort
+     * @param string $sort
      *
      * @throws \InvalidArgumentException
      */
-    private function buildSorting(Command $command, $sort)
-    {
+    private function buildSorting(Command $command, $sort) {
         $this->buildFormatSorting($command, $sort);
     }
 
     /**
      * @param Command $command
-     * @param string  $sort
+     * @param string $sort
      */
     abstract protected function buildFormatSorting(Command $command, $sort);
 
     /**
      * @param Command $command
-     * @param array   $contains
-     * @param bool    $not
+     * @param array $contains
+     * @param bool $not
      */
     abstract protected function buildContentFiltering(Command $command, array $contains, $not = false);
 }

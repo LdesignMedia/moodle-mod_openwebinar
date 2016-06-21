@@ -21,29 +21,25 @@ use Symfony\Component\Finder\Expression\Expression;
  *
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class BsdFindAdapter extends AbstractFindAdapter
-{
+class BsdFindAdapter extends AbstractFindAdapter {
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'bsd_find';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return in_array($this->shell->getType(), array(Shell::TYPE_BSD, Shell::TYPE_DARWIN)) && parent::canBeUsed();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function buildFormatSorting(Command $command, $sort)
-    {
+    protected function buildFormatSorting(Command $command, $sort) {
         switch ($sort) {
             case SortableIterator::SORT_BY_NAME:
                 $command->ins('sort')->add('| sort');
@@ -66,16 +62,15 @@ class BsdFindAdapter extends AbstractFindAdapter
         }
 
         $command
-            ->add('-print0 | xargs -0 stat -f')
-            ->arg($format.'%t%N')
-            ->add('| sort | cut -f 2');
+                ->add('-print0 | xargs -0 stat -f')
+                ->arg($format . '%t%N')
+                ->add('| sort | cut -f 2');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function buildFindCommand(Command $command, $dir)
-    {
+    protected function buildFindCommand(Command $command, $dir) {
         parent::buildFindCommand($command, $dir)->addAtIndex('-E', 1);
 
         return $command;
@@ -84,20 +79,18 @@ class BsdFindAdapter extends AbstractFindAdapter
     /**
      * {@inheritdoc}
      */
-    protected function buildContentFiltering(Command $command, array $contains, $not = false)
-    {
+    protected function buildContentFiltering(Command $command, array $contains, $not = false) {
         foreach ($contains as $contain) {
             $expr = Expression::create($contain);
 
             // todo: avoid forking process for each $pattern by using multiple -e options
             $command
-                ->add('| grep -v \'^$\'')
-                ->add('| xargs -I{} grep -I')
-                ->add($expr->isCaseSensitive() ? null : '-i')
-                ->add($not ? '-L' : '-l')
-                ->add('-Ee')->arg($expr->renderPattern())
-                ->add('{}')
-            ;
+                    ->add('| grep -v \'^$\'')
+                    ->add('| xargs -I{} grep -I')
+                    ->add($expr->isCaseSensitive() ? null : '-i')
+                    ->add($not ? '-L' : '-l')
+                    ->add('-Ee')->arg($expr->renderPattern())
+                    ->add('{}');
         }
     }
 }

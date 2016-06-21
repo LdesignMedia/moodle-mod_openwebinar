@@ -18,6 +18,5 @@ namespace Symfony\Component\Yaml\Exception;
  *
  * @api
  */
-class DumpException extends RuntimeException
-{
+class DumpException extends RuntimeException {
 }

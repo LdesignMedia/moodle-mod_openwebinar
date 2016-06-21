@@ -11,45 +11,37 @@
 
 namespace Symfony\Component\Finder\Tests\Iterator;
 
-class Iterator implements \Iterator
-{
+class Iterator implements \Iterator {
     protected $values = array();
 
-    public function __construct(array $values = array())
-    {
+    public function __construct(array $values = array()) {
         foreach ($values as $value) {
             $this->attach(new \SplFileInfo($value));
         }
         $this->rewind();
     }
 
-    public function attach(\SplFileInfo $fileinfo)
-    {
+    public function attach(\SplFileInfo $fileinfo) {
         $this->values[] = $fileinfo;
     }
 
-    public function rewind()
-    {
+    public function rewind() {
         reset($this->values);
     }
 
-    public function valid()
-    {
+    public function valid() {
         return false !== $this->current();
     }
 
-    public function next()
-    {
+    public function next() {
         next($this->values);
     }
 
-    public function current()
-    {
+    public function current() {
         return current($this->values);
     }
 
-    public function key()
-    {
+    public function key() {
         return key($this->values);
     }
 }

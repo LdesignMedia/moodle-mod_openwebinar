@@ -44,7 +44,7 @@ class truefalse extends questiontypes {
      *
      * @return mixed
      */
-    function get_question_type_string() {
+    public function get_question_type_string() {
         return $this->type;
     }
 
@@ -53,16 +53,17 @@ class truefalse extends questiontypes {
      *
      * @return mixed
      */
-    function render() {
-        $answer =  $this->get_my_answer_string();
+    public function render() {
+        $answer = $this->get_my_answer_string();
+
         return $this->render_back_link() . '<h2>' . $this->get_question_text() . '</h2>
                 <p>' . $this->get_question_summary() . '</p>
                 <span id="question-error" style="display:none"></span>
                 <form id="question-submit-answer" action="" method="post">
                     <input type="hidden" name="question_id" value="' . $this->get_id() . '"/>
                     <select name="answer">
-                        <option value="yes" '.($answer == 'yes' ? 'selected' : '').'>'.get_string('yes' , 'openwebinar').'</option>
-                        <option value="no" '.($answer == 'no' ? 'selected' : '').'>'.get_string('no' , 'openwebinar').'</option>
+                        <option value="yes" ' . ($answer == 'yes' ? 'selected' : '') . '>' . get_string('yes', 'openwebinar') . '</option>
+                        <option value="no" ' . ($answer == 'no' ? 'selected' : '') . '>' . get_string('no', 'openwebinar') . '</option>
                     </select>
                     <input type="submit" id="id_submitbutton" value="' . get_string('btn:open', 'openwebinar') . '" class="btn-primary"/>
                 </form>';
@@ -80,7 +81,6 @@ class truefalse extends questiontypes {
         return !empty($answer->answer_data->answer) ? $answer->answer_data->answer : '';
     }
 
-
     /**
      * Add a validation function to your question type
      *
@@ -88,14 +88,14 @@ class truefalse extends questiontypes {
      */
     public function validation() {
         $return = array('status' => true, 'error' => '');
-        // make sure we have the data
+        // Make sure we have the data.
         $this->get_post_data();
 
-        // make sure a value is given
+        // Make sure a value is given.
         if (empty($this->postdata->answer) && ($this->postdata->answer !== 'yes' && $this->postdata->answer !== 'no')) {
             $return = array(
-                'status' => false,
-                'error' => get_string('error:empty_not_allowed', 'openwebinar')
+                    'status' => false,
+                    'error' => get_string('error:empty_not_allowed', 'openwebinar')
             );
         }
 
@@ -107,7 +107,7 @@ class truefalse extends questiontypes {
      *
      * @return int
      */
-    function get_question_type_int() {
+    public function get_question_type_int() {
         return question::QUESTION_TYPE_TRUE_FALSE;
     }
 
@@ -123,7 +123,7 @@ class truefalse extends questiontypes {
                 <p>' . $this->get_question_summary() . '</p><hr/>';
         if (!empty($answers)) {
             foreach ($answers as $answer) {
-                    $return .= '<div class="question-answer open">
+                $return .= '<div class="question-answer open">
                     <span class="fullname">' . $answer->firstname . ' ' . $answer->lastname . '</span>
                     <p class="answer">' . get_string($answer->answer_data->answer, 'openwebinar') . '</p>
                 </div>';
@@ -137,6 +137,7 @@ class truefalse extends questiontypes {
 
     /**
      * Get the post data from the user
+     *
      * @throws \coding_exception
      */
     protected function get_post_data() {

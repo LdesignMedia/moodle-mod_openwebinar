@@ -24,22 +24,22 @@
  * @author    Luuk Verhoeven
  **/
 $tasks = array(
-    array(
-        'classname' => 'mod_openwebinar\task\autoclose',
-        'blocking'  => 0,
-        'minute'    => '30',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
-    array(
-        'classname' => 'mod_openwebinar\task\reminder',
-        'blocking'  => 0,
-        'minute'    => '*',
-        'hour'      => '*',
-        'day'       => '*',
-        'dayofweek' => '*',
-        'month'     => '*'
-    ),
+        array(
+                'classname' => 'mod_openwebinar\task\autoclose',
+                'blocking' => 0,
+                'minute' => '30',
+                'hour' => '*',
+                'day' => '*',
+                'dayofweek' => '*',
+                'month' => '*'
+        ),
+        array(
+                'classname' => 'mod_openwebinar\task\reminder',
+                'blocking' => 0,
+                'minute' => '*',
+                'hour' => '*',
+                'day' => '*',
+                'dayofweek' => '*',
+                'month' => '*'
+        ),
 );

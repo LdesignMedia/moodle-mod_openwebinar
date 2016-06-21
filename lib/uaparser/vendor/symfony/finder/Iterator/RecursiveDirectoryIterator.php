@@ -19,8 +19,7 @@ use Symfony\Component\Finder\SplFileInfo;
  *
  * @author Victor Berchet <victor@suumit.com>
  */
-class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
-{
+class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator {
     /**
      * @var bool
      */
@@ -35,13 +34,12 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
      * Constructor.
      *
      * @param string $path
-     * @param int    $flags
-     * @param bool   $ignoreUnreadableDirs
+     * @param int $flags
+     * @param bool $ignoreUnreadableDirs
      *
      * @throws \RuntimeException
      */
-    public function __construct($path, $flags, $ignoreUnreadableDirs = false)
-    {
+    public function __construct($path, $flags, $ignoreUnreadableDirs = false) {
         if ($flags & (self::CURRENT_AS_PATHNAME | self::CURRENT_AS_SELF)) {
             throw new \RuntimeException('This iterator only support returning current as fileinfo.');
         }
@@ -55,8 +53,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
      *
      * @return SplFileInfo File information
      */
-    public function current()
-    {
+    public function current() {
         return new SplFileInfo(parent::current()->getPathname(), $this->getSubPath(), $this->getSubPathname());
     }
 
@@ -65,8 +62,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
      *
      * @throws AccessDeniedException
      */
-    public function getChildren()
-    {
+    public function getChildren() {
         try {
             $children = parent::getChildren();
 
@@ -89,8 +85,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * Do nothing for non rewindable stream.
      */
-    public function rewind()
-    {
+    public function rewind() {
         if (false === $this->isRewindable()) {
             return;
         }
@@ -106,8 +101,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
      *
      * @return bool true when the stream is rewindable, false otherwise
      */
-    public function isRewindable()
-    {
+    public function isRewindable() {
         if (null !== $this->rewindable) {
             return $this->rewindable;
         }

@@ -16,8 +16,7 @@ namespace Symfony\Component\Console\Input;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface InputInterface
-{
+interface InputInterface {
     /**
      * Returns the first argument from the raw parameters (not parsed).
      *
@@ -43,8 +42,8 @@ interface InputInterface
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
      *
-     * @param string|array $values  The value(s) to look for in the raw parameters (can be an array)
-     * @param mixed        $default The default value to return if no result is found
+     * @param string|array $values The value(s) to look for in the raw parameters (can be an array)
+     * @param mixed $default       The default value to return if no result is found
      *
      * @return mixed The option value
      */
@@ -120,7 +119,7 @@ interface InputInterface
     /**
      * Sets an option value by name.
      *
-     * @param string      $name  The option name
+     * @param string $name       The option name
      * @param string|bool $value The option value
      *
      * @throws \InvalidArgumentException When option given doesn't exist

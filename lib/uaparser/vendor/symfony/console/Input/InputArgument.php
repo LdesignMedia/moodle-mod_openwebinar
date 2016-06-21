@@ -18,8 +18,7 @@ namespace Symfony\Component\Console\Input;
  *
  * @api
  */
-class InputArgument
-{
+class InputArgument {
     const REQUIRED = 1;
     const OPTIONAL = 2;
     const IS_ARRAY = 4;
@@ -33,16 +32,15 @@ class InputArgument
      * Constructor.
      *
      * @param string $name        The argument name
-     * @param int    $mode        The argument mode: self::REQUIRED or self::OPTIONAL
+     * @param int $mode           The argument mode: self::REQUIRED or self::OPTIONAL
      * @param string $description A description text
-     * @param mixed  $default     The default value (for self::OPTIONAL mode only)
+     * @param mixed $default      The default value (for self::OPTIONAL mode only)
      *
      * @throws \InvalidArgumentException When argument mode is not valid
      *
      * @api
      */
-    public function __construct($name, $mode = null, $description = '', $default = null)
-    {
+    public function __construct($name, $mode = null, $description = '', $default = null) {
         if (null === $mode) {
             $mode = self::OPTIONAL;
         } elseif (!is_int($mode) || $mode > 7 || $mode < 1) {
@@ -61,8 +59,7 @@ class InputArgument
      *
      * @return string The argument name
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -71,8 +68,7 @@ class InputArgument
      *
      * @return bool true if parameter mode is self::REQUIRED, false otherwise
      */
-    public function isRequired()
-    {
+    public function isRequired() {
         return self::REQUIRED === (self::REQUIRED & $this->mode);
     }
 
@@ -81,8 +77,7 @@ class InputArgument
      *
      * @return bool true if mode is self::IS_ARRAY, false otherwise
      */
-    public function isArray()
-    {
+    public function isArray() {
         return self::IS_ARRAY === (self::IS_ARRAY & $this->mode);
     }
 
@@ -93,8 +88,7 @@ class InputArgument
      *
      * @throws \LogicException When incorrect default value is given
      */
-    public function setDefault($default = null)
-    {
+    public function setDefault($default = null) {
         if (self::REQUIRED === $this->mode && null !== $default) {
             throw new \LogicException('Cannot set a default value except for InputArgument::OPTIONAL mode.');
         }
@@ -115,8 +109,7 @@ class InputArgument
      *
      * @return mixed The default value
      */
-    public function getDefault()
-    {
+    public function getDefault() {
         return $this->default;
     }
 
@@ -125,8 +118,7 @@ class InputArgument
      *
      * @return string The description text
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return $this->description;
     }
 }

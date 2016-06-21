@@ -28,8 +28,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  *
  * @api
  */
-class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
-{
+class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface {
     /**
      * @var StreamOutput
      */
@@ -38,14 +37,14 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * Constructor.
      *
-     * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
-     * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
+     * @param int $verbosity                           The verbosity level (one of the VERBOSITY constants in OutputInterface)
+     * @param bool|null $decorated                     Whether to decorate messages (null for auto-guessing)
      * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
      *
      * @api
      */
-    public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
-    {
+    public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null,
+            OutputFormatterInterface $formatter = null) {
         parent::__construct($this->openOutputStream(), $verbosity, $decorated, $formatter);
 
         $this->stderr = new StreamOutput($this->openErrorStream(), $verbosity, $decorated, $this->getFormatter());
@@ -54,8 +53,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function setDecorated($decorated)
-    {
+    public function setDecorated($decorated) {
         parent::setDecorated($decorated);
         $this->stderr->setDecorated($decorated);
     }
@@ -63,8 +61,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function setFormatter(OutputFormatterInterface $formatter)
-    {
+    public function setFormatter(OutputFormatterInterface $formatter) {
         parent::setFormatter($formatter);
         $this->stderr->setFormatter($formatter);
     }
@@ -72,8 +69,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function setVerbosity($level)
-    {
+    public function setVerbosity($level) {
         parent::setVerbosity($level);
         $this->stderr->setVerbosity($level);
     }
@@ -81,16 +77,14 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function getErrorOutput()
-    {
+    public function getErrorOutput() {
         return $this->stderr;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setErrorOutput(OutputInterface $error)
-    {
+    public function setErrorOutput(OutputInterface $error) {
         $this->stderr = $error;
     }
 
@@ -100,8 +94,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      *
      * @return bool
      */
-    protected function hasStdoutSupport()
-    {
+    protected function hasStdoutSupport() {
         return false === $this->isRunningOS400();
     }
 
@@ -111,8 +104,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      *
      * @return bool
      */
-    protected function hasStderrSupport()
-    {
+    protected function hasStderrSupport() {
         return false === $this->isRunningOS400();
     }
 
@@ -122,16 +114,14 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      *
      * @return bool
      */
-    private function isRunningOS400()
-    {
+    private function isRunningOS400() {
         return 'OS400' === php_uname('s');
     }
 
     /**
      * @return resource
      */
-    private function openOutputStream()
-    {
+    private function openOutputStream() {
         $outputStream = $this->hasStdoutSupport() ? 'php://stdout' : 'php://output';
 
         return @fopen($outputStream, 'w') ?: fopen('php://output', 'w');
@@ -140,8 +130,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * @return resource
      */
-    private function openErrorStream()
-    {
+    private function openErrorStream() {
         $errorStream = $this->hasStderrSupport() ? 'php://stderr' : 'php://output';
 
         return fopen($errorStream, 'w');

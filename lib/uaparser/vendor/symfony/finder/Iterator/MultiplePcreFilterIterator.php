@@ -18,20 +18,18 @@ use Symfony\Component\Finder\Expression\Expression;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class MultiplePcreFilterIterator extends FilterIterator
-{
+abstract class MultiplePcreFilterIterator extends FilterIterator {
     protected $matchRegexps = array();
     protected $noMatchRegexps = array();
 
     /**
      * Constructor.
      *
-     * @param \Iterator $iterator        The Iterator to filter
-     * @param array     $matchPatterns   An array of patterns that need to match
-     * @param array     $noMatchPatterns An array of patterns that need to not match
+     * @param \Iterator $iterator    The Iterator to filter
+     * @param array $matchPatterns   An array of patterns that need to match
+     * @param array $noMatchPatterns An array of patterns that need to not match
      */
-    public function __construct(\Iterator $iterator, array $matchPatterns, array $noMatchPatterns)
-    {
+    public function __construct(\Iterator $iterator, array $matchPatterns, array $noMatchPatterns) {
         foreach ($matchPatterns as $pattern) {
             $this->matchRegexps[] = $this->toRegex($pattern);
         }
@@ -50,8 +48,7 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
      *
      * @return bool Whether the given string is a regex
      */
-    protected function isRegex($str)
-    {
+    protected function isRegex($str) {
         return Expression::create($str)->isRegex();
     }
 

@@ -50,59 +50,59 @@ defined('MOODLE_INTERNAL') || die();
 
 // Modify capabilities as needed and remove this comment.
 $capabilities = array(
-    'mod/openwebinar:addinstance' => array(
-        'riskbitmask' => RISK_XSS,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+        'mod/openwebinar:addinstance' => array(
+                'riskbitmask' => RISK_XSS,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_COURSE,
+                'archetypes' => array(
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                ),
+                'clonepermissionsfrom' => 'moodle/course:manageactivities'
         ),
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
 
-    // View the module
-    'mod/openwebinar:view' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'guest' => CAP_ALLOW,
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+        // View the module
+        'mod/openwebinar:view' => array(
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => array(
+                        'guest' => CAP_ALLOW,
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                )
+        ),
 
-    // View the history
-    'mod/openwebinar:history' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+        // View the history
+        'mod/openwebinar:history' => array(
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => array(
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                )
+        ),
 
-    // View user online status
-    'mod/openwebinar:manager' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
+        // View user online status
+        'mod/openwebinar:manager' => array(
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
 
-    // Has teacher status in the chat
-    'mod/openwebinar:teacher' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+        // Has teacher status in the chat
+        'mod/openwebinar:teacher' => array(
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => array(
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                )
+        ),
 );

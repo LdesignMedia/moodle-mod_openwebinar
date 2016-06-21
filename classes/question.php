@@ -64,7 +64,7 @@ class question {
      * @param object $openwebinar
      */
     public function __construct($openwebinar) {
-        $this->openwebinar = (object)$openwebinar;
+        $this->openwebinar = (object) $openwebinar;
     }
 
     /**
@@ -76,14 +76,14 @@ class question {
      *
      * @return bool|int
      */
-    public function create($type = question::QUESTION_TYPE_OPEN, $data, $users) {
+    public function create($type = self::QUESTION_TYPE_OPEN, $data, $users) {
 
-        global $DB , $USER;
+        global $DB, $USER;
         $obj = new \stdClass();
         $obj->openwebinar_id = $this->openwebinar->id;
         $obj->added_on = time();
         $obj->created_by = $USER->id;
-        $obj->question_type = (int)$type;
+        $obj->question_type = (int) $type;
         $obj->question_data = serialize($data);
         $obj->question_users = serialize($users);
 
@@ -141,10 +141,10 @@ class question {
      */
     public function save_answer($questionid = 0) {
 
-        // make sure questiontype is valid
+        // Make sure questiontype is valid.
         $question = $this->get_question_by_id($questionid);
         if (!$question) {
-            return array('status' => false , 'error' => 'question_not_found');
+            return array('status' => false, 'error' => 'question_not_found');
         }
 
         $status = $question->validation();
@@ -156,7 +156,6 @@ class question {
 
         return $status;
     }
-
 
     /**
      * delete a question and there answers
@@ -221,7 +220,7 @@ class question {
                 WHERE a.question_id = :question_id
                 ORDER BY id DESC';
 
-        $qr = $DB->get_recordset_sql($sql, array('question_id' => (int)$questionid));
+        $qr = $DB->get_recordset_sql($sql, array('question_id' => (int) $questionid));
 
         $results = array();
         foreach ($qr as $record) {
@@ -232,6 +231,5 @@ class question {
 
         return $results;
     }
-
 
 }

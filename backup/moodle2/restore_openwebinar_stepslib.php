@@ -31,12 +31,7 @@ class restore_openwebinar_activity_structure_step extends restore_activity_struc
      * @return array of {@link restore_path_element}
      */
     protected function define_structure() {
-
-//        $paths = array();
-//        $paths[] = new restore_path_element('openwebinar', '/activity/openwebinar');
-//
-//        // Return the paths wrapped into standard activity structure.
-//        return $this->prepare_activity_structure($paths);
+        // Todo.
     }
 
     /**
@@ -45,28 +40,7 @@ class restore_openwebinar_activity_structure_step extends restore_activity_struc
      * @param array $data parsed element data
      */
     protected function process_openwebinar($data) {
-//        global $DB;
-//
-//        $data = (object)$data;
-//        $oldid = $data->id;
-//        $data->course = $this->get_courseid();
-//
-//        if (empty($data->timecreated)) {
-//            $data->timecreated = time();
-//        }
-//
-//        if (empty($data->timemodified)) {
-//            $data->timemodified = time();
-//        }
-//
-//        if ($data->grade < 0) {
-//            // Scale found, get mapping.
-//            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
-//        }
-//
-//        // Create the openwebinar instance.
-//        $newitemid = $DB->insert_record('openwebinar', $data);
-//        $this->apply_activity_instance($newitemid);
+        // Todo.
     }
 
     /**
@@ -74,6 +48,6 @@ class restore_openwebinar_activity_structure_step extends restore_activity_struc
      */
     protected function after_execute() {
         // Add openwebinar related files, no need to match by itemname (just internally handled context).
-//        $this->add_related_files('mod_openwebinar', 'intro', null);
+        // Todo.
     }
 }

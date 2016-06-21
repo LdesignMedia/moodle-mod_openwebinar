@@ -9,8 +9,7 @@
  */
 namespace UAParser\Result;
 
-class Device extends AbstractSoftware
-{
+class Device extends AbstractSoftware {
     /** @var string */
     public $brand;
 

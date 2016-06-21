@@ -22,6 +22,7 @@
  * @package   mod_openwebinar
  * @copyright 2015 MoodleFreak.com
  * @author    Luuk Verhoeven
+ * @var mod_openwebinar_renderer $renderer
  **/
 require_once("../../config.php");
 require_once(dirname(__FILE__) . '/lib.php');
@@ -36,20 +37,22 @@ if ($id) {
     $cm = get_coursemodule_from_id('openwebinar', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $openwebinar = $DB->get_record('openwebinar', array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($n) {
-    $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    if ($n) {
+        $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
+    } else {
+        error('You must specify a course_module ID or an instance ID');
+    }
 }
 
 require_login($course, true, $cm);
 
-// get context
+// Get context.
 $context = context_module::instance($cm->id);
 
-// validate access to this part
+// Validate access to this part.
 if (!has_capability('mod/openwebinar:manager', $PAGE->cm->context)) {
     error(get_string('error:no_access', 'openwebinar'));
 }
@@ -59,11 +62,6 @@ $PAGE->set_title(format_string($openwebinar->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-openwebinar');
 
-/**
- * Renderer
- *
- * @var mod_openwebinar_renderer $renderer
- */
 $renderer = $PAGE->get_renderer('mod_openwebinar');
 
 // Output starts here.

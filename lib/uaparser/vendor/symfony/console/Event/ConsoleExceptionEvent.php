@@ -20,13 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ConsoleExceptionEvent extends ConsoleEvent
-{
+class ConsoleExceptionEvent extends ConsoleEvent {
     private $exception;
     private $exitCode;
 
-    public function __construct(Command $command, InputInterface $input, OutputInterface $output, \Exception $exception, $exitCode)
-    {
+    public function __construct(Command $command, InputInterface $input, OutputInterface $output, \Exception $exception,
+            $exitCode) {
         parent::__construct($command, $input, $output);
 
         $this->setException($exception);
@@ -38,8 +37,7 @@ class ConsoleExceptionEvent extends ConsoleEvent
      *
      * @return \Exception The thrown exception
      */
-    public function getException()
-    {
+    public function getException() {
         return $this->exception;
     }
 
@@ -50,8 +48,7 @@ class ConsoleExceptionEvent extends ConsoleEvent
      *
      * @param \Exception $exception The thrown exception
      */
-    public function setException(\Exception $exception)
-    {
+    public function setException(\Exception $exception) {
         $this->exception = $exception;
     }
 
@@ -60,8 +57,7 @@ class ConsoleExceptionEvent extends ConsoleEvent
      *
      * @return int The command exit code
      */
-    public function getExitCode()
-    {
+    public function getExitCode() {
         return $this->exitCode;
     }
 }

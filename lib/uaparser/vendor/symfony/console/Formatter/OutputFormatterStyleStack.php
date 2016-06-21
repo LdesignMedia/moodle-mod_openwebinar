@@ -14,8 +14,7 @@ namespace Symfony\Component\Console\Formatter;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class OutputFormatterStyleStack
-{
+class OutputFormatterStyleStack {
     /**
      * @var OutputFormatterStyleInterface[]
      */
@@ -31,8 +30,7 @@ class OutputFormatterStyleStack
      *
      * @param OutputFormatterStyleInterface|null $emptyStyle
      */
-    public function __construct(OutputFormatterStyleInterface $emptyStyle = null)
-    {
+    public function __construct(OutputFormatterStyleInterface $emptyStyle = null) {
         $this->emptyStyle = $emptyStyle ?: new OutputFormatterStyle();
         $this->reset();
     }
@@ -40,8 +38,7 @@ class OutputFormatterStyleStack
     /**
      * Resets stack (ie. empty internal arrays).
      */
-    public function reset()
-    {
+    public function reset() {
         $this->styles = array();
     }
 
@@ -50,8 +47,7 @@ class OutputFormatterStyleStack
      *
      * @param OutputFormatterStyleInterface $style
      */
-    public function push(OutputFormatterStyleInterface $style)
-    {
+    public function push(OutputFormatterStyleInterface $style) {
         $this->styles[] = $style;
     }
 
@@ -64,8 +60,7 @@ class OutputFormatterStyleStack
      *
      * @throws \InvalidArgumentException When style tags incorrectly nested
      */
-    public function pop(OutputFormatterStyleInterface $style = null)
-    {
+    public function pop(OutputFormatterStyleInterface $style = null) {
         if (empty($this->styles)) {
             return $this->emptyStyle;
         }
@@ -90,8 +85,7 @@ class OutputFormatterStyleStack
      *
      * @return OutputFormatterStyle
      */
-    public function getCurrent()
-    {
+    public function getCurrent() {
         if (empty($this->styles)) {
             return $this->emptyStyle;
         }
@@ -104,8 +98,7 @@ class OutputFormatterStyleStack
      *
      * @return OutputFormatterStyleStack
      */
-    public function setEmptyStyle(OutputFormatterStyleInterface $emptyStyle)
-    {
+    public function setEmptyStyle(OutputFormatterStyleInterface $emptyStyle) {
         $this->emptyStyle = $emptyStyle;
 
         return $this;
@@ -114,8 +107,7 @@ class OutputFormatterStyleStack
     /**
      * @return OutputFormatterStyleInterface
      */
-    public function getEmptyStyle()
-    {
+    public function getEmptyStyle() {
         return $this->emptyStyle;
     }
 }

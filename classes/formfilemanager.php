@@ -25,20 +25,23 @@
  **/
 namespace mod_openwebinar;
 
+use mod_openwebinar\helper;
+
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class formfilemanager extends \moodleform {
 
     /**
      * Form definition.
+     *
      * @global moodle_database $DB
      */
     protected function definition() {
-        global $DB, $CFG;
         $mform = &$this->_form;
-        $context =  $this->_customdata['context'];
-        $mform->addElement('filemanager', 'files_filemanager', get_string('attachment', 'openwebinar'), null, \mod_openwebinar\helper::get_file_options($context));
+        $context = $this->_customdata['context'];
+        $mform->addElement('filemanager', 'files_filemanager', get_string('attachment', 'openwebinar'), null,
+                helper::get_file_options($context));
     }
 
 }

@@ -21,10 +21,9 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
  * PSR-3 compliant console logger
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
- * @link http://www.php-fig.org/psr/psr-3/
+ * @link   http://www.php-fig.org/psr/psr-3/
  */
-class ConsoleLogger extends AbstractLogger
-{
+class ConsoleLogger extends AbstractLogger {
     const INFO = 'info';
     const ERROR = 'error';
 
@@ -36,36 +35,35 @@ class ConsoleLogger extends AbstractLogger
      * @var array
      */
     private $verbosityLevelMap = array(
-        LogLevel::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::ALERT => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::CRITICAL => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::ERROR => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::WARNING => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::NOTICE => OutputInterface::VERBOSITY_VERBOSE,
-        LogLevel::INFO => OutputInterface::VERBOSITY_VERY_VERBOSE,
-        LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
+            LogLevel::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
+            LogLevel::ALERT => OutputInterface::VERBOSITY_NORMAL,
+            LogLevel::CRITICAL => OutputInterface::VERBOSITY_NORMAL,
+            LogLevel::ERROR => OutputInterface::VERBOSITY_NORMAL,
+            LogLevel::WARNING => OutputInterface::VERBOSITY_NORMAL,
+            LogLevel::NOTICE => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::INFO => OutputInterface::VERBOSITY_VERY_VERBOSE,
+            LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
     );
     /**
      * @var array
      */
     private $formatLevelMap = array(
-        LogLevel::EMERGENCY => self::ERROR,
-        LogLevel::ALERT => self::ERROR,
-        LogLevel::CRITICAL => self::ERROR,
-        LogLevel::ERROR => self::ERROR,
-        LogLevel::WARNING => self::INFO,
-        LogLevel::NOTICE => self::INFO,
-        LogLevel::INFO => self::INFO,
-        LogLevel::DEBUG => self::INFO,
+            LogLevel::EMERGENCY => self::ERROR,
+            LogLevel::ALERT => self::ERROR,
+            LogLevel::CRITICAL => self::ERROR,
+            LogLevel::ERROR => self::ERROR,
+            LogLevel::WARNING => self::INFO,
+            LogLevel::NOTICE => self::INFO,
+            LogLevel::INFO => self::INFO,
+            LogLevel::DEBUG => self::INFO,
     );
 
     /**
      * @param OutputInterface $output
-     * @param array           $verbosityLevelMap
-     * @param array           $formatLevelMap
+     * @param array $verbosityLevelMap
+     * @param array $formatLevelMap
      */
-    public function __construct(OutputInterface $output, array $verbosityLevelMap = array(), array $formatLevelMap = array())
-    {
+    public function __construct(OutputInterface $output, array $verbosityLevelMap = array(), array $formatLevelMap = array()) {
         $this->output = $output;
         $this->verbosityLevelMap = $verbosityLevelMap + $this->verbosityLevelMap;
         $this->formatLevelMap = $formatLevelMap + $this->formatLevelMap;
@@ -74,8 +72,7 @@ class ConsoleLogger extends AbstractLogger
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = array())
-    {
+    public function log($level, $message, array $context = array()) {
         if (!isset($this->verbosityLevelMap[$level])) {
             throw new InvalidArgumentException(sprintf('The log level "%s" does not exist.', $level));
         }
@@ -88,7 +85,8 @@ class ConsoleLogger extends AbstractLogger
         }
 
         if ($output->getVerbosity() >= $this->verbosityLevelMap[$level]) {
-            $output->writeln(sprintf('<%1$s>[%2$s] %3$s</%1$s>', $this->formatLevelMap[$level], $level, $this->interpolate($message, $context)));
+            $output->writeln(sprintf('<%1$s>[%2$s] %3$s</%1$s>', $this->formatLevelMap[$level], $level,
+                    $this->interpolate($message, $context)));
         }
     }
 
@@ -98,12 +96,11 @@ class ConsoleLogger extends AbstractLogger
      * @author PHP Framework Interoperability Group
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      *
      * @return string
      */
-    private function interpolate($message, array $context)
-    {
+    private function interpolate($message, array $context) {
         // build a replacement array with braces around the context keys
         $replace = array();
         foreach ($context as $key => $val) {

@@ -164,7 +164,7 @@ abstract class questiontypes {
         global $DB;
         $answers = $DB->get_records('openwebinar_question_answer', array('question_id' => $questionid), 'id DESC');
 
-        //@todo recordset is possible a faster method
+        // TODO: Recordset is possible a faster method.
         foreach ($answers as &$answer) {
             $answer->answer_data = unserialize($answer->answer_data);
         }
@@ -182,15 +182,15 @@ abstract class questiontypes {
             return $this->answer;
         }
 
-        // no answers for guests
+        // No answers for guests.
         if (empty($USER) || $USER->id <= 1) {
             return false;
         }
 
-        // check if we have the answer in the DB
+        // Check if we have the answer in the DB.
         $answer = $DB->get_record('openwebinar_question_answer', array(
-            'user_id' => $USER->id,
-            'question_id' => $this->get_id()
+                'user_id' => $USER->id,
+                'question_id' => $this->get_id()
         ));
         if ($answer) {
             $answer->answer_data = unserialize($answer->answer_data);
@@ -198,7 +198,6 @@ abstract class questiontypes {
 
         return $answer;
     }
-
 
     /**
      * Return the question type
@@ -249,23 +248,23 @@ abstract class questiontypes {
         global $DB, $USER;
 
         $result = $DB->get_record('openwebinar_question_answer', array(
-            'question_id' => $this->get_id(),
-            'user_id' => $USER->id
+                'question_id' => $this->get_id(),
+                'user_id' => $USER->id
         ), 'id', IGNORE_MULTIPLE);
         if ($result && !$this->allowoverideanswer) {
             throw new \Exception(get_string('error:answer_already_saved', 'openwebinar'));
         }
 
-        // build answer record
+        // Build answer record.
         $obj = new \stdClass();
         $obj->user_id = $USER->id;
         $obj->openwebinar_id = $this->get_openwebinar_id();
         $obj->question_id = $this->get_id();
 
-        // serialize form input
+        // Serialize form input.
         $obj->answer_data = serialize($this->postdata);
 
-        // if its allowed to override previous answer
+        // If its allowed to override previous answer.
         if ($result) {
             $obj->id = $result->id;
             $DB->update_record('openwebinar_question_answer', $obj);

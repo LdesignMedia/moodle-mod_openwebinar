@@ -37,10 +37,9 @@ defined('MOODLE_INTERNAL') || die();
  * Execute openwebinar upgrade from the given old version
  *
  * @param int $oldversion
+ *
  * @return bool
  */
 function xmldb_openwebinar_upgrade($oldversion) {
-    global $DB;
-   // $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
     return true;
 }

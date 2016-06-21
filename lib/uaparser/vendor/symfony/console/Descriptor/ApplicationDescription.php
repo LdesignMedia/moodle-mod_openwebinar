@@ -19,8 +19,7 @@ use Symfony\Component\Console\Command\Command;
  *
  * @internal
  */
-class ApplicationDescription
-{
+class ApplicationDescription {
     const GLOBAL_NAMESPACE = '_global';
 
     /**
@@ -54,8 +53,7 @@ class ApplicationDescription
      * @param Application $application
      * @param string|null $namespace
      */
-    public function __construct(Application $application, $namespace = null)
-    {
+    public function __construct(Application $application, $namespace = null) {
         $this->application = $application;
         $this->namespace = $namespace;
     }
@@ -63,8 +61,7 @@ class ApplicationDescription
     /**
      * @return array
      */
-    public function getNamespaces()
-    {
+    public function getNamespaces() {
         if (null === $this->namespaces) {
             $this->inspectApplication();
         }
@@ -75,8 +72,7 @@ class ApplicationDescription
     /**
      * @return Command[]
      */
-    public function getCommands()
-    {
+    public function getCommands() {
         if (null === $this->commands) {
             $this->inspectApplication();
         }
@@ -91,8 +87,7 @@ class ApplicationDescription
      *
      * @throws \InvalidArgumentException
      */
-    public function getCommand($name)
-    {
+    public function getCommand($name) {
         if (!isset($this->commands[$name]) && !isset($this->aliases[$name])) {
             throw new \InvalidArgumentException(sprintf('Command %s does not exist.', $name));
         }
@@ -100,8 +95,7 @@ class ApplicationDescription
         return isset($this->commands[$name]) ? $this->commands[$name] : $this->aliases[$name];
     }
 
-    private function inspectApplication()
-    {
+    private function inspectApplication() {
         $this->commands = array();
         $this->namespaces = array();
 
@@ -133,8 +127,7 @@ class ApplicationDescription
      *
      * @return array
      */
-    private function sortCommands(array $commands)
-    {
+    private function sortCommands(array $commands) {
         $namespacedCommands = array();
         foreach ($commands as $name => $command) {
             $key = $this->application->extractNamespace($name, 1);

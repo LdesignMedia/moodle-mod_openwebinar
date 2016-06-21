@@ -14,8 +14,7 @@ namespace Symfony\Component\Finder\Shell;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class Command
-{
+class Command {
     /**
      * @var Command|null
      */
@@ -41,8 +40,7 @@ class Command
      *
      * @param Command|null $parent Parent command
      */
-    public function __construct(Command $parent = null)
-    {
+    public function __construct(Command $parent = null) {
         $this->parent = $parent;
     }
 
@@ -51,8 +49,7 @@ class Command
      *
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->join();
     }
 
@@ -63,8 +60,7 @@ class Command
      *
      * @return Command New Command instance
      */
-    public static function create(Command $parent = null)
-    {
+    public static function create(Command $parent = null) {
         return new self($parent);
     }
 
@@ -75,8 +71,7 @@ class Command
      *
      * @return string The escaped string
      */
-    public static function escape($input)
-    {
+    public static function escape($input) {
         return escapeshellcmd($input);
     }
 
@@ -87,8 +82,7 @@ class Command
      *
      * @return string The quoted string
      */
-    public static function quote($input)
-    {
+    public static function quote($input) {
         return escapeshellarg($input);
     }
 
@@ -99,8 +93,7 @@ class Command
      *
      * @return Command The current Command instance
      */
-    public function add($bit)
-    {
+    public function add($bit) {
         $this->bits[] = $bit;
 
         return $this;
@@ -113,8 +106,7 @@ class Command
      *
      * @return Command The current Command instance
      */
-    public function top($bit)
-    {
+    public function top($bit) {
         array_unshift($this->bits, $bit);
 
         foreach ($this->labels as $label => $index) {
@@ -131,8 +123,7 @@ class Command
      *
      * @return Command The current Command instance
      */
-    public function arg($arg)
-    {
+    public function arg($arg) {
         $this->bits[] = self::quote($arg);
 
         return $this;
@@ -145,8 +136,7 @@ class Command
      *
      * @return Command The current Command instance
      */
-    public function cmd($esc)
-    {
+    public function cmd($esc) {
         $this->bits[] = self::escape($esc);
 
         return $this;
@@ -161,8 +151,7 @@ class Command
      *
      * @throws \RuntimeException If label already exists
      */
-    public function ins($label)
-    {
+    public function ins($label) {
         if (isset($this->labels[$label])) {
             throw new \RuntimeException(sprintf('Label "%s" already exists.', $label));
         }
@@ -182,8 +171,7 @@ class Command
      *
      * @throws \RuntimeException
      */
-    public function get($label)
-    {
+    public function get($label) {
         if (!isset($this->labels[$label])) {
             throw new \RuntimeException(sprintf('Label "%s" does not exist.', $label));
         }
@@ -198,8 +186,7 @@ class Command
      *
      * @throws \RuntimeException If command has no parent
      */
-    public function end()
-    {
+    public function end() {
         if (null === $this->parent) {
             throw new \RuntimeException('Calling end on root command doesn\'t make sense.');
         }
@@ -212,8 +199,7 @@ class Command
      *
      * @return int The bits count
      */
-    public function length()
-    {
+    public function length() {
         return count($this->bits);
     }
 
@@ -222,8 +208,7 @@ class Command
      *
      * @return Command
      */
-    public function setErrorHandler(\Closure $errorHandler)
-    {
+    public function setErrorHandler(\Closure $errorHandler) {
         $this->errorHandler = $errorHandler;
 
         return $this;
@@ -232,8 +217,7 @@ class Command
     /**
      * @return \Closure|null
      */
-    public function getErrorHandler()
-    {
+    public function getErrorHandler() {
         return $this->errorHandler;
     }
 
@@ -244,12 +228,12 @@ class Command
      *
      * @throws \RuntimeException
      */
-    public function execute()
-    {
+    public function execute() {
         if (null === $errorHandler = $this->errorHandler) {
             exec($this->join(), $output);
         } else {
-            $process = proc_open($this->join(), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+            $process = proc_open($this->join(), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
+                    $pipes);
             $output = preg_split('~(\r\n|\r|\n)~', stream_get_contents($pipes[1]), -1, PREG_SPLIT_NO_EMPTY);
 
             if ($error = stream_get_contents($pipes[2])) {
@@ -267,13 +251,14 @@ class Command
      *
      * @return string
      */
-    public function join()
-    {
+    public function join() {
         return implode(' ', array_filter(
-            array_map(function ($bit) {
-                return $bit instanceof Command ? $bit->join() : ($bit ?: null);
-            }, $this->bits),
-            function ($bit) { return null !== $bit; }
+                array_map(function($bit) {
+                    return $bit instanceof Command ? $bit->join() : ($bit ?: null);
+                }, $this->bits),
+                function($bit) {
+                    return null !== $bit;
+                }
         ));
     }
 
@@ -281,12 +266,11 @@ class Command
      * Insert a string or a Command instance before the bit at given position $index (index starts from 0).
      *
      * @param string|Command $bit
-     * @param int            $index
+     * @param int $index
      *
      * @return Command The current Command instance
      */
-    public function addAtIndex($bit, $index)
-    {
+    public function addAtIndex($bit, $index) {
         array_splice($this->bits, $index, 0, $bit instanceof self ? array($bit) : $bit);
 
         return $this;

@@ -26,18 +26,17 @@ use Symfony\Component\Filesystem\Exception\IOException;
  * @author Romain Neutron <imprec@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class LockHandler
-{
+class LockHandler {
     private $file;
     private $handle;
 
     /**
-     * @param  string      $name     The lock name
+     * @param  string $name          The lock name
      * @param  string|null $lockPath The directory to store the lock. Default values will use temporary directory
+     *
      * @throws IOException If the lock directory could not be created or is not writable
      */
-    public function __construct($name, $lockPath = null)
-    {
+    public function __construct($name, $lockPath = null) {
         $lockPath = $lockPath ?: sys_get_temp_dir();
 
         if (!is_dir($lockPath)) {
@@ -55,12 +54,12 @@ class LockHandler
     /**
      * Lock the resource
      *
-     * @param  bool        $blocking wait until the lock is released
+     * @param  bool $blocking wait until the lock is released
+     *
      * @return bool        Returns true if the lock was acquired, false otherwise
      * @throws IOException If the lock file could not be created or opened
      */
-    public function lock($blocking = false)
-    {
+    public function lock($blocking = false) {
         if ($this->handle) {
             return true;
         }
@@ -100,8 +99,7 @@ class LockHandler
     /**
      * Release the resource
      */
-    public function release()
-    {
+    public function release() {
         if ($this->handle) {
             flock($this->handle, LOCK_UN | LOCK_NB);
             fclose($this->handle);

@@ -18,13 +18,11 @@ use Symfony\Component\Finder\Iterator;
  *
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class PhpAdapter extends AbstractAdapter
-{
+class PhpAdapter extends AbstractAdapter {
     /**
      * {@inheritdoc}
      */
-    public function searchInDirectory($dir)
-    {
+    public function searchInDirectory($dir) {
         $flags = \RecursiveDirectoryIterator::SKIP_DOTS;
 
         if ($this->followLinks) {
@@ -32,8 +30,8 @@ class PhpAdapter extends AbstractAdapter
         }
 
         $iterator = new \RecursiveIteratorIterator(
-            new Iterator\RecursiveDirectoryIterator($dir, $flags, $this->ignoreUnreadableDirs),
-            \RecursiveIteratorIterator::SELF_FIRST
+                new Iterator\RecursiveDirectoryIterator($dir, $flags, $this->ignoreUnreadableDirs),
+                \RecursiveIteratorIterator::SELF_FIRST
         );
 
         if ($this->minDepth > 0 || $this->maxDepth < PHP_INT_MAX) {
@@ -83,16 +81,14 @@ class PhpAdapter extends AbstractAdapter
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'php';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return true;
     }
 }

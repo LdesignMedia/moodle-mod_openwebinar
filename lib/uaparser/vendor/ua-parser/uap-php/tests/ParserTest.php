@@ -13,61 +13,54 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use UAParser\Parser;
 
-class ParserTest extends AbstractParserTest
-{
+class ParserTest extends AbstractParserTest {
     /** @var Parser */
     private $parser;
 
     /** @var Parser */
     private static $staticParser;
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass() {
         static::$staticParser = Parser::create();
     }
 
-    public function setUp()
-    {
+    public function setUp() {
         $this->parser = static::$staticParser;
     }
 
-    public static function getOsTestData()
-    {
+    public static function getOsTestData() {
         $resources = Finder::create()
-            ->files()
-            ->path('tests')
-            ->name('test_os.yaml')
-            ->path('test_resources')
-            ->name('additional_os_tests.yaml');
+                ->files()
+                ->path('tests')
+                ->name('test_os.yaml')
+                ->path('test_resources')
+                ->name('additional_os_tests.yaml');
 
         return static::createTestData($resources);
     }
 
-    public static function getUserAgentTestData()
-    {
+    public static function getUserAgentTestData() {
         $resources = Finder::create()
-            ->files()
-            ->path('tests')
-            ->name('test_ua.yaml')
-            ->path('test_resources')
-            ->name('firefox_user_agent_strings.yaml')
-            ->name('pgts_browser_list.yaml');
+                ->files()
+                ->path('tests')
+                ->name('test_ua.yaml')
+                ->path('test_resources')
+                ->name('firefox_user_agent_strings.yaml')
+                ->name('pgts_browser_list.yaml');
 
         return static::createTestData($resources);
     }
 
-    public static function getDeviceTestData()
-    {
+    public static function getDeviceTestData() {
         $resources = Finder::create()
-            ->files()
-            ->path('tests')
-            ->name('test_device.yaml');
+                ->files()
+                ->path('tests')
+                ->name('test_device.yaml');
 
         return static::createTestData($resources);
     }
 
-    public function testNoMatch()
-    {
+    public function testNoMatch() {
         $result = $this->parser->parse('unknown user agent');
 
         $this->assertSame('Other', $result->device->family);
@@ -76,18 +69,17 @@ class ParserTest extends AbstractParserTest
     }
 
     /** @dataProvider getDeviceTestData */
-    public function testDeviceParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch, $patchMinor, $brand, $model)
-    {
+    public function testDeviceParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch, $patchMinor, $brand,
+            $model) {
         $result = $this->parser->parse($userAgent, $jsUserAgent);
 
         $this->assertSame($family, $result->device->family);
-        $this->assertSame($brand,  $result->device->brand);
-        $this->assertSame($model,  $result->device->model);
+        $this->assertSame($brand, $result->device->brand);
+        $this->assertSame($model, $result->device->model);
     }
 
     /** @dataProvider getOsTestData */
-    public function testOperatingSystemParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch, $patchMinor)
-    {
+    public function testOperatingSystemParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch, $patchMinor) {
         $result = $this->parser->parse($userAgent, $jsUserAgent);
 
         $this->assertSame($family, $result->os->family);
@@ -98,8 +90,7 @@ class ParserTest extends AbstractParserTest
     }
 
     /** @dataProvider getUserAgentTestData */
-    public function testUserAgentParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch)
-    {
+    public function testUserAgentParsing($userAgent, array $jsUserAgent, $family, $major, $minor, $patch) {
         $result = $this->parser->parse($userAgent, $jsUserAgent);
 
         $this->assertSame($family, $result->ua->family);
@@ -109,17 +100,16 @@ class ParserTest extends AbstractParserTest
     }
 
     /** @group performance */
-    public function testPerformance()
-    {
+    public function testPerformance() {
         if (extension_loaded('xdebug')) {
             $this->markTestSkipped('xdebug skews performance numbers');
         }
 
         $userAgents = array(
-            'Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en; rv:1.8.1.6) Gecko/20070809 Camino/1.5.1',
-            'Mozilla/5.0 (IE 11.0; Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko',
-            'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5',
-            'Mozilla/5.0 (X11; CrOS i686 13.587.80) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.99 Safari/535.1'
+                'Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en; rv:1.8.1.6) Gecko/20070809 Camino/1.5.1',
+                'Mozilla/5.0 (IE 11.0; Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko',
+                'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5',
+                'Mozilla/5.0 (X11; CrOS i686 13.587.80) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.99 Safari/535.1'
         );
 
         $start = microtime(true) * 1000;
@@ -136,14 +126,13 @@ class ParserTest extends AbstractParserTest
         $duration = $end - $start;
         $expected = 1.5;
         $this->assertLessThan(
-            $expected,
-            $duration/ $rounds,
-            sprintf('Should not take longer on average than %dms (%d rounds, %Fms)', $expected, $rounds, $duration)
+                $expected,
+                $duration / $rounds,
+                sprintf('Should not take longer on average than %dms (%d rounds, %Fms)', $expected, $rounds, $duration)
         );
     }
 
-    public function testToString()
-    {
+    public function testToString() {
         $userAgentString = 'HbbTV/1.1.1 (;;;;;) firetv-firefox-plugin 1.1.20';
         $result = $this->parser->parse($userAgentString);
 
@@ -161,8 +150,7 @@ class ParserTest extends AbstractParserTest
         $this->assertSame($userAgentString, $result->originalUserAgent);
     }
 
-    public function testToString_2()
-    {
+    public function testToString_2() {
         $userAgentString = 'PingdomBot 1.4/Other Pingdom.com_bot_version_1.4_(http://www.pingdom.com/)';
 
         $result = $this->parser->parse($userAgentString);
@@ -181,8 +169,7 @@ class ParserTest extends AbstractParserTest
         $this->assertSame($userAgentString, $result->originalUserAgent);
     }
 
-    private static function createTestData(Finder $resources)
-    {
+    private static function createTestData(Finder $resources) {
         $resourcesDirectory = realpath(__DIR__ . '/../uap-core');
         $testData = array();
 
@@ -197,24 +184,22 @@ class ParserTest extends AbstractParserTest
         return $testData;
     }
 
-    private static function createArguments(array $testCase, SplFileInfo $resource)
-    {
+    private static function createArguments(array $testCase, SplFileInfo $resource) {
         return array(
-            $testCase['user_agent_string'],
-            isset($testCase['js_ua']) ? json_decode(str_replace("'", '"', $testCase['js_ua']), true) : array(),
-            $testCase['family'],
-            isset($testCase['major']) ? $testCase['major'] : null,
-            isset($testCase['minor']) ? $testCase['minor'] : null,
-            isset($testCase['patch']) ? $testCase['patch'] : null,
-            isset($testCase['patch_minor']) ? $testCase['patch_minor'] : null,
-            isset($testCase['brand']) ? $testCase['brand'] : null,
-            isset($testCase['model']) ? $testCase['model'] : null,
-            $resource->getFilename()
+                $testCase['user_agent_string'],
+                isset($testCase['js_ua']) ? json_decode(str_replace("'", '"', $testCase['js_ua']), true) : array(),
+                $testCase['family'],
+                isset($testCase['major']) ? $testCase['major'] : null,
+                isset($testCase['minor']) ? $testCase['minor'] : null,
+                isset($testCase['patch']) ? $testCase['patch'] : null,
+                isset($testCase['patch_minor']) ? $testCase['patch_minor'] : null,
+                isset($testCase['brand']) ? $testCase['brand'] : null,
+                isset($testCase['model']) ? $testCase['model'] : null,
+                $resource->getFilename()
         );
     }
 
-    protected function getParserClassName()
-    {
+    protected function getParserClassName() {
         return 'UAParser\Parser';
     }
 }

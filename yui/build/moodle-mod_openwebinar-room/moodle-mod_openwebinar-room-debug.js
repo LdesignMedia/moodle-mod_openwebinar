@@ -1746,7 +1746,7 @@ M.mod_openwebinar.room = {
                 srcNode : '#openwebinar-shortprofile'
             });
             panel.show();
-            
+
             // copy click user parameters
             Y.one('#shortprofile-skype').set('text', this.one('.fullname').getData('skype'));
             Y.one('#shortprofile-fullname').set('text', this.one('.fullname').get('text'));
@@ -1947,12 +1947,18 @@ M.mod_openwebinar.room = {
                                             obj = response.files[i];
                                             filelist += '<li class="openwebinar-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
-                                                '<span class="openwebinar-filename">' + that.alpha_numeric(obj.filename) + '</span>' +
-                                                '<span class="openwebinar-filesize">' + that.alpha_numeric(obj.filesize) + '</span>' +
-                                                '<span class="openwebinar-fileauthor">' + that.alpha_numeric(obj.author) + '</span>' +
+                                                '<span class="openwebinar-filename">' +
+                                                    that.alpha_numeric(obj.filename) +
+                                                '</span>' +
+                                                '<span class="openwebinar-filesize">' +
+                                                    that.alpha_numeric(obj.filesize) +
+                                                '</span>' +
+                                                '<span class="openwebinar-fileauthor">' +
+                                                    that.alpha_numeric(obj.author) +
+                                                '</span>' +
                                                 '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/openwebinar/download.php?' +
-                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.openwebinarid + '&extra1=' + that.options.courseid + '&' +
-                                                'sesskey=' + M.cfg.sesskey +
+                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.openwebinarid + '&extra1='
+                                                + that.options.courseid + '&' + 'sesskey=' + M.cfg.sesskey +
                                                 '" class="openwebinar-download openwebinar-button">Download</a>' +
                                                 '</li>';
                                         }
@@ -2028,6 +2034,7 @@ M.mod_openwebinar.room = {
 
         // add click listener
         Y.one('#openwebinar-viewquestion-btn').on('click', function () {
+            // Fix issue not showing
             this.nodeholder.questionmanager.show();
             // load the question from the DB
             this.question_load_overview();
@@ -2183,7 +2190,8 @@ M.mod_openwebinar.room = {
                                     html += '<li class="' + ((!question.manager && !question.my_answer) ? 'unanswered' : '') + '">';
                                     html += '<span class="number">#' + i + '</span>';
                                     html += '<span class="name">' + question.name + '</span>';
-                                    html += '<span class="openwebinar-button gray viewquestionbtn" data-id="' + i + '">' + M.util.get_string('btn:view', 'openwebinar', {}) + '</span>';
+                                    html += '<span class="openwebinar-button gray viewquestionbtn" data-id="' + i + '">' +
+                                        M.util.get_string('btn:view', 'openwebinar', {}) + '</span>';
                                     html += '</li>';
                                 }
                             }

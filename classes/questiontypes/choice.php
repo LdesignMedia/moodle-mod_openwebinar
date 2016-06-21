@@ -44,7 +44,7 @@ class choice extends questiontypes {
      *
      * @return mixed
      */
-    function get_question_type_string() {
+    public function get_question_type_string() {
         return $this->type;
     }
 
@@ -53,7 +53,7 @@ class choice extends questiontypes {
      *
      * @return mixed
      */
-    function render() {
+    public function render() {
         // TODO: Implement render() method.
     }
 
@@ -62,7 +62,7 @@ class choice extends questiontypes {
      *
      * @return mixed
      */
-    function validation() {
+    public function validation() {
         // TODO: Implement validation() method.
     }
 
@@ -71,7 +71,7 @@ class choice extends questiontypes {
      *
      * @return int
      */
-    function get_question_type_int() {
+    public function get_question_type_int() {
         return question::QUESTION_TYPE_MULTIPLE_CHOICE;
     }
 

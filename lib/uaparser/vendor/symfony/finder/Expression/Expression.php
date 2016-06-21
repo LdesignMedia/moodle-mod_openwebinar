@@ -14,8 +14,7 @@ namespace Symfony\Component\Finder\Expression;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class Expression implements ValueInterface
-{
+class Expression implements ValueInterface {
     const TYPE_REGEX = 1;
     const TYPE_GLOB = 2;
 
@@ -29,16 +28,14 @@ class Expression implements ValueInterface
      *
      * @return Expression
      */
-    public static function create($expr)
-    {
+    public static function create($expr) {
         return new self($expr);
     }
 
     /**
      * @param string $expr
      */
-    public function __construct($expr)
-    {
+    public function __construct($expr) {
         try {
             $this->value = Regex::create($expr);
         } catch (\InvalidArgumentException $e) {
@@ -49,48 +46,42 @@ class Expression implements ValueInterface
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->render();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function render()
-    {
+    public function render() {
         return $this->value->render();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderPattern()
-    {
+    public function renderPattern() {
         return $this->value->renderPattern();
     }
 
     /**
      * @return bool
      */
-    public function isCaseSensitive()
-    {
+    public function isCaseSensitive() {
         return $this->value->isCaseSensitive();
     }
 
     /**
      * @return int
      */
-    public function getType()
-    {
+    public function getType() {
         return $this->value->getType();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend($expr)
-    {
+    public function prepend($expr) {
         $this->value->prepend($expr);
 
         return $this;
@@ -99,8 +90,7 @@ class Expression implements ValueInterface
     /**
      * {@inheritdoc}
      */
-    public function append($expr)
-    {
+    public function append($expr) {
         $this->value->append($expr);
 
         return $this;
@@ -109,16 +99,14 @@ class Expression implements ValueInterface
     /**
      * @return bool
      */
-    public function isRegex()
-    {
+    public function isRegex() {
         return self::TYPE_REGEX === $this->value->getType();
     }
 
     /**
      * @return bool
      */
-    public function isGlob()
-    {
+    public function isGlob() {
         return self::TYPE_GLOB === $this->value->getType();
     }
 
@@ -127,8 +115,7 @@ class Expression implements ValueInterface
      *
      * @return Glob
      */
-    public function getGlob()
-    {
+    public function getGlob() {
         if (self::TYPE_GLOB !== $this->value->getType()) {
             throw new \LogicException('Regex can\'t be transformed to glob.');
         }
@@ -139,8 +126,7 @@ class Expression implements ValueInterface
     /**
      * @return Regex
      */
-    public function getRegex()
-    {
+    public function getRegex() {
         return self::TYPE_REGEX === $this->value->getType() ? $this->value : $this->value->toRegex();
     }
 }

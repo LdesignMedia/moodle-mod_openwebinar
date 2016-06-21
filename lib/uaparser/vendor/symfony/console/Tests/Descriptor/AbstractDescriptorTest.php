@@ -18,35 +18,29 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-abstract class AbstractDescriptorTest extends \PHPUnit_Framework_TestCase
-{
+abstract class AbstractDescriptorTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider getDescribeInputArgumentTestData */
-    public function testDescribeInputArgument(InputArgument $argument, $expectedDescription)
-    {
+    public function testDescribeInputArgument(InputArgument $argument, $expectedDescription) {
         $this->assertDescription($expectedDescription, $argument);
     }
 
     /** @dataProvider getDescribeInputOptionTestData */
-    public function testDescribeInputOption(InputOption $option, $expectedDescription)
-    {
+    public function testDescribeInputOption(InputOption $option, $expectedDescription) {
         $this->assertDescription($expectedDescription, $option);
     }
 
     /** @dataProvider getDescribeInputDefinitionTestData */
-    public function testDescribeInputDefinition(InputDefinition $definition, $expectedDescription)
-    {
+    public function testDescribeInputDefinition(InputDefinition $definition, $expectedDescription) {
         $this->assertDescription($expectedDescription, $definition);
     }
 
     /** @dataProvider getDescribeCommandTestData */
-    public function testDescribeCommand(Command $command, $expectedDescription)
-    {
+    public function testDescribeCommand(Command $command, $expectedDescription) {
         $this->assertDescription($expectedDescription, $command);
     }
 
     /** @dataProvider getDescribeApplicationTestData */
-    public function testDescribeApplication(Application $application, $expectedDescription)
-    {
+    public function testDescribeApplication(Application $application, $expectedDescription) {
         // Replaces the dynamic placeholders of the command help text with a static version.
         // The placeholder %command.full_name% includes the script path that is not predictable
         // and can not be tested against.
@@ -57,36 +51,31 @@ abstract class AbstractDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertDescription($expectedDescription, $application);
     }
 
-    public function getDescribeInputArgumentTestData()
-    {
+    public function getDescribeInputArgumentTestData() {
         return $this->getDescriptionTestData(ObjectsProvider::getInputArguments());
     }
 
-    public function getDescribeInputOptionTestData()
-    {
+    public function getDescribeInputOptionTestData() {
         return $this->getDescriptionTestData(ObjectsProvider::getInputOptions());
     }
 
-    public function getDescribeInputDefinitionTestData()
-    {
+    public function getDescribeInputDefinitionTestData() {
         return $this->getDescriptionTestData(ObjectsProvider::getInputDefinitions());
     }
 
-    public function getDescribeCommandTestData()
-    {
+    public function getDescribeCommandTestData() {
         return $this->getDescriptionTestData(ObjectsProvider::getCommands());
     }
 
-    public function getDescribeApplicationTestData()
-    {
+    public function getDescribeApplicationTestData() {
         return $this->getDescriptionTestData(ObjectsProvider::getApplications());
     }
 
     abstract protected function getDescriptor();
+
     abstract protected function getFormat();
 
-    private function getDescriptionTestData(array $objects)
-    {
+    private function getDescriptionTestData(array $objects) {
         $data = array();
         foreach ($objects as $name => $object) {
             $description = file_get_contents(sprintf('%s/../Fixtures/%s.%s', __DIR__, $name, $this->getFormat()));
@@ -96,8 +85,7 @@ abstract class AbstractDescriptorTest extends \PHPUnit_Framework_TestCase
         return $data;
     }
 
-    protected function assertDescription($expectedDescription, $describedObject)
-    {
+    protected function assertDescription($expectedDescription, $describedObject) {
         $output = new BufferedOutput(BufferedOutput::VERBOSITY_NORMAL, true);
         $this->getDescriptor()->describe($output, $describedObject, array('raw_output' => true));
         $this->assertEquals(trim($expectedDescription), trim(str_replace(PHP_EOL, "\n", $output->fetch())));

@@ -16,8 +16,7 @@ namespace Symfony\Component\Console\Question;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ChoiceQuestion extends Question
-{
+class ChoiceQuestion extends Question {
     private $choices;
     private $multiselect = false;
     private $prompt = ' > ';
@@ -27,11 +26,10 @@ class ChoiceQuestion extends Question
      * Constructor.
      *
      * @param string $question The question to ask to the user
-     * @param array  $choices  The list of available choices
-     * @param mixed  $default  The default answer to return
+     * @param array $choices   The list of available choices
+     * @param mixed $default   The default answer to return
      */
-    public function __construct($question, array $choices, $default = null)
-    {
+    public function __construct($question, array $choices, $default = null) {
         parent::__construct($question, $default);
 
         $this->choices = $choices;
@@ -44,8 +42,7 @@ class ChoiceQuestion extends Question
      *
      * @return array
      */
-    public function getChoices()
-    {
+    public function getChoices() {
         return $this->choices;
     }
 
@@ -58,8 +55,7 @@ class ChoiceQuestion extends Question
      *
      * @return ChoiceQuestion The current instance
      */
-    public function setMultiselect($multiselect)
-    {
+    public function setMultiselect($multiselect) {
         $this->multiselect = $multiselect;
         $this->setValidator($this->getDefaultValidator());
 
@@ -71,8 +67,7 @@ class ChoiceQuestion extends Question
      *
      * @return string
      */
-    public function getPrompt()
-    {
+    public function getPrompt() {
         return $this->prompt;
     }
 
@@ -83,8 +78,7 @@ class ChoiceQuestion extends Question
      *
      * @return ChoiceQuestion The current instance
      */
-    public function setPrompt($prompt)
-    {
+    public function setPrompt($prompt) {
         $this->prompt = $prompt;
 
         return $this;
@@ -99,8 +93,7 @@ class ChoiceQuestion extends Question
      *
      * @return ChoiceQuestion The current instance
      */
-    public function setErrorMessage($errorMessage)
-    {
+    public function setErrorMessage($errorMessage) {
         $this->errorMessage = $errorMessage;
         $this->setValidator($this->getDefaultValidator());
 
@@ -112,14 +105,13 @@ class ChoiceQuestion extends Question
      *
      * @return callable
      */
-    private function getDefaultValidator()
-    {
+    private function getDefaultValidator() {
         $choices = $this->choices;
         $errorMessage = $this->errorMessage;
         $multiselect = $this->multiselect;
         $isAssoc = $this->isAssoc($choices);
 
-        return function ($selected) use ($choices, $errorMessage, $multiselect, $isAssoc) {
+        return function($selected) use ($choices, $errorMessage, $multiselect, $isAssoc) {
             // Collapse all spaces.
             $selectedChoices = str_replace(' ', '', $selected);
 
@@ -143,7 +135,8 @@ class ChoiceQuestion extends Question
                 }
 
                 if (count($results) > 1) {
-                    throw new \InvalidArgumentException(sprintf('The provided answer is ambiguous. Value should be one of %s.', implode(' or ', $results)));
+                    throw new \InvalidArgumentException(sprintf('The provided answer is ambiguous. Value should be one of %s.',
+                            implode(' or ', $results)));
                 }
 
                 $result = array_search($value, $choices);

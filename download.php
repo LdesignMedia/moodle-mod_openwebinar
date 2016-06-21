@@ -26,26 +26,30 @@
 
 require_once("../../config.php");
 
-// Extra validation
+// Extra validation.
 $sesskey = required_param('sesskey', PARAM_ALPHANUMEXT);
 
-// Parameters for the action
+// Parameters for the action.
 $extra1 = required_param('extra1', PARAM_TEXT);
 $extra2 = required_param('extra2', PARAM_TEXT);
 $extra3 = required_param('extra3', PARAM_INT);
 
 $PAGE->set_url('/mod/openwebinar/download.php');
 
-// Get module data and validate access
+// Get module data and validate access.
 list($course, $openwebinar, $cm, $context) = \mod_openwebinar\helper::get_module_data($extra1, $extra2);
 
-// still here check if we can find the file
+// Still here check if we can find the file.
 $fs = get_file_storage();
 $file = $fs->get_file_by_id($extra3);
 
 if ($file) {
-    // Make sure it belongs to a openwebinar
-    if ($file->get_component() != 'mod_openwebinar' || $file->get_filearea() != 'attachments' || $file->get_contextid() != $context->id) {
+    
+    // Make sure it belongs to a openwebinar.
+    if ($file->get_component() != 'mod_openwebinar' ||
+            $file->get_filearea() != 'attachments' ||
+            $file->get_contextid() != $context->id
+    ) {
 
         throw new Exception(get_string('error:file_no_access', 'mod_openwebinar'));
     }

@@ -13,21 +13,18 @@ namespace Symfony\Component\Finder\Tests\Iterator;
 
 use Symfony\Component\Finder\Iterator\CustomFilterIterator;
 
-class CustomFilterIteratorTest extends IteratorTestCase
-{
+class CustomFilterIteratorTest extends IteratorTestCase {
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testWithInvalidFilter()
-    {
+    public function testWithInvalidFilter() {
         new CustomFilterIterator(new Iterator(), array('foo'));
     }
 
     /**
      * @dataProvider getAcceptData
      */
-    public function testAccept($filters, $expected)
-    {
+    public function testAccept($filters, $expected) {
         $inner = new Iterator(array('test.php', 'test.py', 'foo.php'));
 
         $iterator = new CustomFilterIterator($inner, $filters);
@@ -35,12 +32,15 @@ class CustomFilterIteratorTest extends IteratorTestCase
         $this->assertIterator($expected, $iterator);
     }
 
-    public function getAcceptData()
-    {
+    public function getAcceptData() {
         return array(
-            array(array(function (\SplFileInfo $fileinfo) { return false; }), array()),
-            array(array(function (\SplFileInfo $fileinfo) { return 0 === strpos($fileinfo, 'test'); }), array('test.php', 'test.py')),
-            array(array('is_dir'), array()),
+                array(array(function(\SplFileInfo $fileinfo) {
+                    return false;
+                }), array()),
+                array(array(function(\SplFileInfo $fileinfo) {
+                    return 0 === strpos($fileinfo, 'test');
+                }), array('test.php', 'test.py')),
+                array(array('is_dir'), array()),
         );
     }
 }

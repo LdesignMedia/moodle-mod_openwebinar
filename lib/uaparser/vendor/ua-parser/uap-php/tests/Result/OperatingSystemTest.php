@@ -11,18 +11,15 @@ namespace UAParser\Result;
 use PHPUnit_Framework_TestCase as AbstractTestCase;
 use UAParser\Result\UserAgent;
 
-class OperatingSystemTest extends AbstractTestCase
-{
+class OperatingSystemTest extends AbstractTestCase {
     /** @var UserAgent */
     private $userAgent;
 
-    public function setUp()
-    {
+    public function setUp() {
         $this->userAgent = new UserAgent();
     }
 
-    public function testBugWith0InVersion()
-    {
+    public function testBugWith0InVersion() {
         $this->userAgent->major = 0;
         $this->userAgent->minor = 0;
         $this->userAgent->patch = 0;

@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class DescriptorHelper extends Helper
-{
+class DescriptorHelper extends Helper {
     /**
      * @var DescriptorInterface[]
      */
@@ -33,14 +32,12 @@ class DescriptorHelper extends Helper
     /**
      * Constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this
-            ->register('txt', new TextDescriptor())
-            ->register('xml', new XmlDescriptor())
-            ->register('json', new JsonDescriptor())
-            ->register('md', new MarkdownDescriptor())
-        ;
+                ->register('txt', new TextDescriptor())
+                ->register('xml', new XmlDescriptor())
+                ->register('json', new JsonDescriptor())
+                ->register('md', new MarkdownDescriptor());
     }
 
     /**
@@ -51,16 +48,15 @@ class DescriptorHelper extends Helper
      * * raw_text: boolean, sets output type as raw
      *
      * @param OutputInterface $output
-     * @param object          $object
-     * @param array           $options
+     * @param object $object
+     * @param array $options
      *
      * @throws \InvalidArgumentException when the given format is not supported
      */
-    public function describe(OutputInterface $output, $object, array $options = array())
-    {
+    public function describe(OutputInterface $output, $object, array $options = array()) {
         $options = array_merge(array(
-            'raw_text' => false,
-            'format' => 'txt',
+                'raw_text' => false,
+                'format' => 'txt',
         ), $options);
 
         if (!isset($this->descriptors[$options['format']])) {
@@ -74,13 +70,12 @@ class DescriptorHelper extends Helper
     /**
      * Registers a descriptor.
      *
-     * @param string              $format
+     * @param string $format
      * @param DescriptorInterface $descriptor
      *
      * @return DescriptorHelper
      */
-    public function register($format, DescriptorInterface $descriptor)
-    {
+    public function register($format, DescriptorInterface $descriptor) {
         $this->descriptors[$format] = $descriptor;
 
         return $this;
@@ -89,8 +84,7 @@ class DescriptorHelper extends Helper
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'descriptor';
     }
 }

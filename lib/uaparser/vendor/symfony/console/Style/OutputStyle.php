@@ -20,23 +20,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-abstract class OutputStyle implements OutputInterface, StyleInterface
-{
+abstract class OutputStyle implements OutputInterface, StyleInterface {
     private $output;
 
     /**
      * @param OutputInterface $output
      */
-    public function __construct(OutputInterface $output)
-    {
+    public function __construct(OutputInterface $output) {
         $this->output = $output;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function newLine($count = 1)
-    {
+    public function newLine($count = 1) {
         $this->output->write(str_repeat(PHP_EOL, $count));
     }
 
@@ -45,72 +42,63 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
      *
      * @return ProgressBar
      */
-    public function createProgressBar($max = 0)
-    {
+    public function createProgressBar($max = 0) {
         return new ProgressBar($this->output, $max);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL)
-    {
+    public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL) {
         $this->output->write($messages, $newline, $type);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function writeln($messages, $type = self::OUTPUT_NORMAL)
-    {
+    public function writeln($messages, $type = self::OUTPUT_NORMAL) {
         $this->output->writeln($messages, $type);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setVerbosity($level)
-    {
+    public function setVerbosity($level) {
         $this->output->setVerbosity($level);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getVerbosity()
-    {
+    public function getVerbosity() {
         return $this->output->getVerbosity();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDecorated($decorated)
-    {
+    public function setDecorated($decorated) {
         $this->output->setDecorated($decorated);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isDecorated()
-    {
+    public function isDecorated() {
         return $this->output->isDecorated();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setFormatter(OutputFormatterInterface $formatter)
-    {
+    public function setFormatter(OutputFormatterInterface $formatter) {
         $this->output->setFormatter($formatter);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFormatter()
-    {
+    public function getFormatter() {
         return $this->output->getFormatter();
     }
 }

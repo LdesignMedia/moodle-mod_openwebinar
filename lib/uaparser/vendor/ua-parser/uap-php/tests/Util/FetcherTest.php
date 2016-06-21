@@ -14,31 +14,29 @@ use UAParser\Util\Fetcher;
 /**
  * @group online
  */
-class FetcherTest extends AbstractTestCase
-{
-    public function testFetchSuccess()
-    {
+class FetcherTest extends AbstractTestCase {
+    public function testFetchSuccess() {
         $fetcher = new Fetcher();
         $this->assertInternalType('string', $fetcher->fetch());
     }
 
-    public function testFetchError()
-    {
+    public function testFetchError() {
         $url = "https://raw.githubusercontent.com/ua-parser/uap-core/master/regexes.yaml";
         $fetcher = new Fetcher(
-            stream_context_create(
-                array(
-                    'ssl' => array(
-                        'verify_peer' => true,
-                        'CN_match'    => 'invalid.com',
-                    )
+                stream_context_create(
+                        array(
+                                'ssl' => array(
+                                        'verify_peer' => true,
+                                        'CN_match' => 'invalid.com',
+                                )
+                        )
                 )
-            )
         );
 
         $this->setExpectedException(
-            'UAParser\Exception\FetcherException',
-            'Could not fetch HTTP resource "'.$url.'": file_get_contents('.$url.'): failed to open stream: operation failed'
+                'UAParser\Exception\FetcherException',
+                'Could not fetch HTTP resource "' . $url . '": file_get_contents(' . $url .
+                '): failed to open stream: operation failed'
         );
 
         $fetcher->fetch();

@@ -12,8 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use UAParser\Exception\FileNotFoundException;
 
-class Converter
-{
+class Converter {
     /** @var string */
     private $destination;
 
@@ -24,8 +23,7 @@ class Converter
      * @param string $destination
      * @param Filesystem $fs
      */
-    public function __construct($destination, Filesystem $fs = null)
-    {
+    public function __construct($destination, Filesystem $fs = null) {
         $this->destination = $destination;
         $this->fs = $fs ? $fs : new Filesystem();
     }
@@ -33,10 +31,10 @@ class Converter
     /**
      * @param string $yamlFile
      * @param bool $backupBeforeOverride
+     *
      * @throws FileNotFoundException
      */
-    public function convertFile($yamlFile, $backupBeforeOverride = true)
-    {
+    public function convertFile($yamlFile, $backupBeforeOverride = true) {
         if (!$this->fs->exists($yamlFile)) {
             throw FileNotFoundException::fileNotFound($yamlFile);
         }
@@ -48,8 +46,7 @@ class Converter
      * @param string $yamlString
      * @param bool $backupBeforeOverride
      */
-    public function convertString($yamlString, $backupBeforeOverride = true)
-    {
+    public function convertString($yamlString, $backupBeforeOverride = true) {
         $this->doConvert(Yaml::parse($yamlString), $backupBeforeOverride);
     }
 
@@ -57,8 +54,7 @@ class Converter
      * @param array $regexes
      * @param bool $backupBeforeOverride
      */
-    protected function doConvert(array $regexes, $backupBeforeOverride = true)
-    {
+    protected function doConvert(array $regexes, $backupBeforeOverride = true) {
         $regexes = $this->sanitizeRegexes($regexes);
         $data = "<?php\nreturn " . preg_replace('/\s+$/m', '', var_export($regexes, true)) . ';';
 
@@ -79,8 +75,7 @@ class Converter
         $this->fs->dumpFile($regexesFile, $data);
     }
 
-    private function sanitizeRegexes(array $regexes)
-    {
+    private function sanitizeRegexes(array $regexes) {
         foreach ($regexes as $groupName => $group) {
             $regexes[$groupName] = array_map(array($this, 'sanitizeRegex'), $group);
         }
@@ -88,8 +83,7 @@ class Converter
         return $regexes;
     }
 
-    private function sanitizeRegex(array $regex)
-    {
+    private function sanitizeRegex(array $regex) {
         $regex['regex'] = str_replace('@', '\@', $regex['regex']);
 
         return $regex;

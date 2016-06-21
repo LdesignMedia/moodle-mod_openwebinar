@@ -14,6 +14,5 @@ namespace Symfony\Component\Finder\Exception;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class OperationNotPermitedException extends AdapterFailureException
-{
+class OperationNotPermitedException extends AdapterFailureException {
 }

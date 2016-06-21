@@ -23,15 +23,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class SymfonyQuestionHelper extends QuestionHelper
-{
+class SymfonyQuestionHelper extends QuestionHelper {
     /**
      * {@inheritdoc}
      */
-    public function ask(InputInterface $input, OutputInterface $output, Question $question)
-    {
+    public function ask(InputInterface $input, OutputInterface $output, Question $question) {
         $validator = $question->getValidator();
-        $question->setValidator(function ($value) use ($validator) {
+        $question->setValidator(function($value) use ($validator) {
             if (null !== $validator && is_callable($validator)) {
                 $value = $validator($value);
             }
@@ -50,8 +48,7 @@ class SymfonyQuestionHelper extends QuestionHelper
     /**
      * {@inheritdoc}
      */
-    protected function writePrompt(OutputInterface $output, Question $question)
-    {
+    protected function writePrompt(OutputInterface $output, Question $question) {
         $text = $question->getQuestion();
         $default = $question->getDefault();
 
@@ -92,8 +89,7 @@ class SymfonyQuestionHelper extends QuestionHelper
     /**
      * {@inheritdoc}
      */
-    protected function writeError(OutputInterface $output, \Exception $error)
-    {
+    protected function writeError(OutputInterface $output, \Exception $error) {
         if ($output instanceof SymfonyStyle) {
             $output->newLine();
             $output->error($error->getMessage());

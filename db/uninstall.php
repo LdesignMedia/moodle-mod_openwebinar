@@ -17,7 +17,7 @@
 /**
  * Provides code to be executed during the module uninstallation
  *
- * @see uninstall_plugin()
+ * @see       uninstall_plugin()
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *

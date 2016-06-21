@@ -17,41 +17,39 @@ use Symfony\Component\Console\Output\StreamOutput;
 /**
  * @group legacy
  */
-class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
-{
-    public function testAdvance()
-    {
+class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase {
+    public function testAdvance() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream());
         $progress->advance();
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('    1 [->--------------------------]'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('    1 [->--------------------------]'),
+                stream_get_contents($output->getStream()));
     }
 
-    public function testAdvanceWithStep()
-    {
+    public function testAdvanceWithStep() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream());
         $progress->advance(5);
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('    5 [----->----------------------]'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('    5 [----->----------------------]'),
+                stream_get_contents($output->getStream()));
     }
 
-    public function testAdvanceMultipleTimes()
-    {
+    public function testAdvanceMultipleTimes() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream());
         $progress->advance(3);
         $progress->advance(2);
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('    3 [--->------------------------]').$this->generateOutput('    5 [----->----------------------]'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('    3 [--->------------------------]') .
+                $this->generateOutput('    5 [----->----------------------]'), stream_get_contents($output->getStream()));
     }
 
-    public function testCustomizations()
-    {
+    public function testCustomizations() {
         $progress = new ProgressHelper();
         $progress->setBarWidth(10);
         $progress->setBarCharacter('_');
@@ -65,8 +63,7 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->generateOutput('  1/10 [_/        ]  10%'), stream_get_contents($output->getStream()));
     }
 
-    public function testPercent()
-    {
+    public function testPercent() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(), 50);
         $progress->display();
@@ -74,11 +71,12 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $progress->advance();
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('  0/50 [>---------------------------]   0%').$this->generateOutput('  1/50 [>---------------------------]   2%').$this->generateOutput('  2/50 [=>--------------------------]   4%'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('  0/50 [>---------------------------]   0%') .
+                $this->generateOutput('  1/50 [>---------------------------]   2%') .
+                $this->generateOutput('  2/50 [=>--------------------------]   4%'), stream_get_contents($output->getStream()));
     }
 
-    public function testOverwriteWithShorterLine()
-    {
+    public function testOverwriteWithShorterLine() {
         $progress = new ProgressHelper();
         $progress->setFormat(' %current%/%max% [%bar%] %percent%%');
         $progress->start($output = $this->getOutputStream(), 50);
@@ -91,15 +89,14 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput('  0/50 [>---------------------------]   0%').
-            $this->generateOutput('  1/50 [>---------------------------]   2%').
-            $this->generateOutput('  2/50 [=>--------------------------]     '),
-            stream_get_contents($output->getStream())
+                $this->generateOutput('  0/50 [>---------------------------]   0%') .
+                $this->generateOutput('  1/50 [>---------------------------]   2%') .
+                $this->generateOutput('  2/50 [=>--------------------------]     '),
+                stream_get_contents($output->getStream())
         );
     }
 
-    public function testSetCurrentProgress()
-    {
+    public function testSetCurrentProgress() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(), 50);
         $progress->display();
@@ -109,11 +106,11 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput('  0/50 [>---------------------------]   0%').
-            $this->generateOutput('  1/50 [>---------------------------]   2%').
-            $this->generateOutput(' 15/50 [========>-------------------]  30%').
-            $this->generateOutput(' 25/50 [==============>-------------]  50%'),
-            stream_get_contents($output->getStream())
+                $this->generateOutput('  0/50 [>---------------------------]   0%') .
+                $this->generateOutput('  1/50 [>---------------------------]   2%') .
+                $this->generateOutput(' 15/50 [========>-------------------]  30%') .
+                $this->generateOutput(' 25/50 [==============>-------------]  50%'),
+                stream_get_contents($output->getStream())
         );
     }
 
@@ -121,8 +118,7 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
      * @expectedException        \LogicException
      * @expectedExceptionMessage You must start the progress bar
      */
-    public function testSetCurrentBeforeStarting()
-    {
+    public function testSetCurrentBeforeStarting() {
         $progress = new ProgressHelper();
         $progress->setCurrent(15);
     }
@@ -131,19 +127,17 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
      * @expectedException        \LogicException
      * @expectedExceptionMessage You can't regress the progress bar
      */
-    public function testRegressProgress()
-    {
+    public function testRegressProgress() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(), 50);
         $progress->setCurrent(15);
         $progress->setCurrent(10);
     }
 
-    public function testRedrawFrequency()
-    {
+    public function testRedrawFrequency() {
         $progress = $this->getMock('Symfony\Component\Console\Helper\ProgressHelper', array('display'));
         $progress->expects($this->exactly(4))
-                 ->method('display');
+                ->method('display');
 
         $progress->setRedrawFrequency(2);
 
@@ -154,8 +148,7 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $progress->advance(1);
     }
 
-    public function testMultiByteSupport()
-    {
+    public function testMultiByteSupport() {
         if (!function_exists('mb_strlen') || (false === $encoding = mb_detect_encoding('■'))) {
             $this->markTestSkipped('The mbstring extension is needed for multi-byte support');
         }
@@ -166,11 +159,11 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $progress->advance(3);
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('    3 [■■■>------------------------]'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('    3 [■■■>------------------------]'),
+                stream_get_contents($output->getStream()));
     }
 
-    public function testClear()
-    {
+    public function testClear() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(), 50);
         $progress->setCurrent(25);
@@ -178,13 +171,12 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
 
         rewind($output->getStream());
         $this->assertEquals(
-            $this->generateOutput(' 25/50 [==============>-------------]  50%').$this->generateOutput(''),
-            stream_get_contents($output->getStream())
+                $this->generateOutput(' 25/50 [==============>-------------]  50%') . $this->generateOutput(''),
+                stream_get_contents($output->getStream())
         );
     }
 
-    public function testPercentNotHundredBeforeComplete()
-    {
+    public function testPercentNotHundredBeforeComplete() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(), 200);
         $progress->display();
@@ -192,11 +184,12 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $progress->advance();
 
         rewind($output->getStream());
-        $this->assertEquals($this->generateOutput('   0/200 [>---------------------------]   0%').$this->generateOutput(' 199/200 [===========================>]  99%').$this->generateOutput(' 200/200 [============================] 100%'), stream_get_contents($output->getStream()));
+        $this->assertEquals($this->generateOutput('   0/200 [>---------------------------]   0%') .
+                $this->generateOutput(' 199/200 [===========================>]  99%') .
+                $this->generateOutput(' 200/200 [============================] 100%'), stream_get_contents($output->getStream()));
     }
 
-    public function testNonDecoratedOutput()
-    {
+    public function testNonDecoratedOutput() {
         $progress = new ProgressHelper();
         $progress->start($output = $this->getOutputStream(false));
         $progress->advance();
@@ -205,15 +198,13 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', stream_get_contents($output->getStream()));
     }
 
-    protected function getOutputStream($decorated = true)
-    {
+    protected function getOutputStream($decorated = true) {
         return new StreamOutput(fopen('php://memory', 'r+', false), StreamOutput::VERBOSITY_NORMAL, $decorated);
     }
 
     protected $lastMessagesLength;
 
-    protected function generateOutput($expected)
-    {
+    protected function generateOutput($expected) {
         $expectedout = $expected;
 
         if ($this->lastMessagesLength !== null) {
@@ -222,6 +213,6 @@ class LegacyProgressHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->lastMessagesLength = strlen($expectedout);
 
-        return "\x0D".$expectedout;
+        return "\x0D" . $expectedout;
     }
 }

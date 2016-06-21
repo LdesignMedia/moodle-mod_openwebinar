@@ -14,24 +14,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use UAParser\Parser;
 
-class ParserCommand extends Command
-{
-    protected function configure()
-    {
+class ParserCommand extends Command {
+    protected function configure() {
         $this
-            ->setName('ua-parser:parse')
-            ->setDescription('Parses a user agent string and dumps the results.')
-            ->addArgument(
-                'user-agent',
-                null,
-                InputArgument::REQUIRED,
-                'User agent string to analyze'
-            )
-        ;
+                ->setName('ua-parser:parse')
+                ->setDescription('Parses a user agent string and dumps the results.')
+                ->addArgument(
+                        'user-agent',
+                        null,
+                        InputArgument::REQUIRED,
+                        'User agent string to analyze'
+                );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $result = Parser::create()->parse($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));

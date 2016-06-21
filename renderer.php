@@ -52,13 +52,14 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $obj = new stdClass();
         $obj->timeopen = date(get_string('dateformat', 'openwebinar'), $openwebinar->timeopen);
 
-        $message = html_writer::tag('p', get_string('text:live_openwebinar', 'openwebinar', $obj), array('class' => 'openwebinar-message'));
+        $message = html_writer::tag('p', get_string('text:live_openwebinar', 'openwebinar', $obj),
+                array('class' => 'openwebinar-message'));
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
 
         // button
         $output = html_writer::link($url, get_string('btn:enter_live_openwebinar', 'openwebinar'), array(
-            'class' => 'btn btn-primary',
-            'target' => '_blank'
+                'class' => 'btn btn-primary',
+                'target' => '_blank'
         ));
 
         // output
@@ -77,11 +78,13 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
 
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
         $link = html_writer::link($url, get_string('btn:broadcast_enter', 'openwebinar'), array(
-            'class' => 'btn btn-primary',
-            'target' => '_blank'
+                'class' => 'btn btn-primary',
+                'target' => '_blank'
         ));
 
-        return $this->output->container(html_writer::tag('p', get_string('text:broadcaster_help', 'openwebinar', $openwebinar) . '<hr/>' . $link, array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
+        return $this->output->container(html_writer::tag('p',
+                get_string('text:broadcaster_help', 'openwebinar', $openwebinar) . '<hr/>' . $link,
+                array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
     }
 
     /**
@@ -94,37 +97,37 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     public function view_page_not_started_openwebinar($openwebinar) {
         global $PAGE;
         $html = '';
-        // Language strings
+        // Language strings.
         $PAGE->requires->strings_for_js(array(
-            'js:countdown_line1',
-            'js:countdown_line2',
-            'js:countdown_line3',
+                'js:countdown_line1',
+                'js:countdown_line2',
+                'js:countdown_line3',
         ), 'openwebinar');
 
         $PAGE->requires->js('/mod/openwebinar/javascript/countdown.js');
 
-        // get cm
+        // Get cm.
         $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
 
-        // Load js for countdown
+        // Load js for countdown.
         $opts = array();
         $opts['timeopen'] = $openwebinar->timeopen;
         $opts['cmid'] = $cm->id;
         $opts['from'] = time();
         $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
-        // add id for the countdown
+        // Add id for the countdown.
         $html .= html_writer::tag('h3', get_string('starts_at', 'openwebinar'), array(
-            'class' => 'openwebinar-center'
+                'class' => 'openwebinar-center'
         ));
 
         $html .= html_writer::tag('h3', '', array(
-            'id' => 'pageTimer',
-            'class' => 'openwebinar-center'
+                'id' => 'pageTimer',
+                'class' => 'openwebinar-center'
         ));
 
-        // show a count down
-        // reload page when it starts
+        // Show a count down.
+        // Reload page when it starts.
 
         return $html . '<hr/>';
     }
@@ -144,11 +147,11 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $obj->timeopen = date(get_string('dateformat', 'openwebinar'), $openwebinar->timeopen);
         $content = html_writer::tag('p', get_string('text:history', 'openwebinar', $obj), array('class' => 'openwebinar-message'));
 
-        // add link to the room
+        // Add link to the room.
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
         $content .= html_writer::link($url, get_string('btn:enter_offline_openwebinar', 'openwebinar'), array(
-            'class' => 'btn btn-primary',
-            'target' => '_blank'
+                'class' => 'btn btn-primary',
+                'target' => '_blank'
         ));
 
         return $this->output->container($content, 'generalbox attwidth openwebinar-center');
@@ -186,23 +189,23 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
 
         $table->set_attribute('cellspacing', '0');
         $table->set_attribute('class', 'admintable generaltable');
-        $table->initialbars(true); // always initial bars
+        $table->initialbars(true); // Always initial bars.
         $table->define_columns(array(
-            'picture',
-            'firstname',
-            'lastname',
-            'email',
-            'present',
-            'action'
+                'picture',
+                'firstname',
+                'lastname',
+                'email',
+                'present',
+                'action'
         ));
 
         $table->define_headers(array(
-            get_string('heading:picture', 'openwebinar'),
-            get_string('heading:firstname', 'openwebinar'),
-            get_string('heading:lastname', 'openwebinar'),
-            get_string('heading:email', 'openwebinar'),
-            get_string('heading:present', 'openwebinar'),
-            get_string('heading:action', 'openwebinar'),
+                get_string('heading:picture', 'openwebinar'),
+                get_string('heading:firstname', 'openwebinar'),
+                get_string('heading:lastname', 'openwebinar'),
+                get_string('heading:email', 'openwebinar'),
+                get_string('heading:present', 'openwebinar'),
+                get_string('heading:action', 'openwebinar'),
         ));
 
         $table->no_sorting('action');
@@ -234,14 +237,14 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         echo $OUTPUT->box_start('generalbox');
 
         $status = $DB->get_record('openwebinar_userstatus', array(
-            'openwebinar_id' => $openwebinar->id,
-            'userid' => $user->id
+                'openwebinar_id' => $openwebinar->id,
+                'userid' => $user->id
         ));
 
         if ($status) {
-            // user info
+            // User info.
 
-            // Parse user agent for more readable format
+            // Parse user agent for more readable format.
             $parser = Parser::create();
             $browser = $parser->parse($status->useragent);
 
@@ -250,23 +253,23 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
             $table->head = array(get_string('heading:name', 'openwebinar'), get_string('heading:value', 'openwebinar'));
             $table->data = array();
             $table->data[] = array(
-                get_string('browser', 'openwebinar'),
-                $browser->toString(),
+                    get_string('browser', 'openwebinar'),
+                    $browser->toString(),
             );
             $table->data[] = array(
-                get_string('ip_address', 'openwebinar'),
-                $status->ip_address,
+                    get_string('ip_address', 'openwebinar'),
+                    $status->ip_address,
             );
             $table->data[] = array('<b>' . get_string('time', 'openwebinar') . '</b>', '');
 
             $table->data[] = array(get_string('starttime', 'openwebinar'), date('d-m-Y H:i:s', $status->starttime));
             $table->data[] = array(
-                get_string('online_time', 'openwebinar'),
-                ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds)
+                    get_string('online_time', 'openwebinar'),
+                    ($status->timer_seconds == 0) ? '-' : gmdate("H:i:s", $status->timer_seconds)
             );
 
             echo html_writer::table($table);
-            // add time table
+            // Add time table.
         }
 
         echo $OUTPUT->box_end();
@@ -299,14 +302,14 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $table->data = array();
 
         $qr = $DB->get_recordset('openwebinar_messages', array(
-            'userid' => $userid,
-            'openwebinar_id' => $openwebinar->id
+                'userid' => $userid,
+                'openwebinar_id' => $openwebinar->id
         ), 'id ASC');
 
         foreach ($qr as $record) {
             $table->data[] = array(
-                date('d-m-Y H:i:s', $record->timestamp),
-                $this->convertMessageToReadable($record->message)
+                    date('d-m-Y H:i:s', $record->timestamp),
+                    $this->convertMessageToReadable($record->message)
             );
         }
 
@@ -322,12 +325,12 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    protected function convertMessageToReadable($message = '') {
+    protected function convertmessagetoreadable($message = '') {
         if (strpos($message, '[') === 0) {
             $message = '[shortcode]';
         }
 
-        //@todo convert emoticons in chatlog
+        // @todo convert emoticons in chatlog.
         return $message;
     }
 }

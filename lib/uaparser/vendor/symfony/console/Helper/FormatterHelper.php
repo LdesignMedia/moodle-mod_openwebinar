@@ -18,8 +18,7 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class FormatterHelper extends Helper
-{
+class FormatterHelper extends Helper {
     /**
      * Formats a message within a section.
      *
@@ -29,8 +28,7 @@ class FormatterHelper extends Helper
      *
      * @return string The format section
      */
-    public function formatSection($section, $message, $style = 'info')
-    {
+    public function formatSection($section, $message, $style = 'info') {
         return sprintf('<%s>[%s]</%s> %s', $style, $section, $style, $message);
     }
 
@@ -38,13 +36,12 @@ class FormatterHelper extends Helper
      * Formats a message as a block of text.
      *
      * @param string|array $messages The message to write in the block
-     * @param string       $style    The style to apply to the whole block
-     * @param bool         $large    Whether to return a large block
+     * @param string $style          The style to apply to the whole block
+     * @param bool $large            Whether to return a large block
      *
      * @return string The formatter message
      */
-    public function formatBlock($messages, $style, $large = false)
-    {
+    public function formatBlock($messages, $style, $large = false) {
         if (!is_array($messages)) {
             $messages = array($messages);
         }
@@ -59,7 +56,7 @@ class FormatterHelper extends Helper
 
         $messages = $large ? array(str_repeat(' ', $len)) : array();
         for ($i = 0; isset($lines[$i]); ++$i) {
-            $messages[] = $lines[$i].str_repeat(' ', $len - $this->strlen($lines[$i]));
+            $messages[] = $lines[$i] . str_repeat(' ', $len - $this->strlen($lines[$i]));
         }
         if ($large) {
             $messages[] = str_repeat(' ', $len);
@@ -75,8 +72,7 @@ class FormatterHelper extends Helper
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'formatter';
     }
 }

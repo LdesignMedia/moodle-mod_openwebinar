@@ -18,8 +18,7 @@ namespace Symfony\Component\Console\Formatter;
  *
  * @api
  */
-interface OutputFormatterInterface
-{
+interface OutputFormatterInterface {
     /**
      * Sets the decorated flag.
      *
@@ -41,7 +40,7 @@ interface OutputFormatterInterface
     /**
      * Sets a new style.
      *
-     * @param string                        $name  The style name
+     * @param string $name                         The style name
      * @param OutputFormatterStyleInterface $style The style instance
      *
      * @api

@@ -27,12 +27,12 @@
  */
 
 require_once("../../config.php");
-require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(__FILE__) . '/lib.php');
 $id = required_param('id', PARAM_INT); // Course.
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 require_course_login($course);
 $params = array(
-    'context' => context_course::instance($course->id)
+        'context' => context_course::instance($course->id)
 );
 $event = \mod_openwebinar\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
@@ -45,19 +45,19 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('incourse');
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strname);
-if (! $openwebinars = get_all_instances_in_course('openwebinar', $course)) {
+if (!$openwebinars = get_all_instances_in_course('openwebinar', $course)) {
     notice(get_string('noopenwebinars', 'openwebinar'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 $usesections = course_format_uses_sections($course->format);
 $table = new html_table();
 $table->attributes['class'] = 'generaltable mod_index';
 if ($usesections) {
-    $strsectionname = get_string('sectionname', 'format_'.$course->format);
-    $table->head  = array ($strsectionname, $strname);
-    $table->align = array ('center', 'left');
+    $strsectionname = get_string('sectionname', 'format_' . $course->format);
+    $table->head = array($strsectionname, $strname);
+    $table->align = array('center', 'left');
 } else {
-    $table->head  = array ($strname);
-    $table->align = array ('left');
+    $table->head = array($strname);
+    $table->align = array('left');
 }
 $modinfo = get_fast_modinfo($course);
 $currentsection = '';
@@ -76,7 +76,7 @@ foreach ($modinfo->instances['openwebinar'] as $cm) {
     }
     $class = $cm->visible ? null : array('class' => 'dimmed');
     $row[] = html_writer::link(new moodle_url('view.php', array('id' => $cm->id)),
-        $cm->get_formatted_name(), $class);
+            $cm->get_formatted_name(), $class);
     $table->data[] = $row;
 }
 echo html_writer::table($table);

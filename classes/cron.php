@@ -33,7 +33,7 @@ class cron {
      *
      * @const MAX_DURATION
      */
-    const MAX_DURATION = 28800; // 8 hours
+    const MAX_DURATION = 28800; // 8 hours.
 
     /**
      * Debug
@@ -42,16 +42,10 @@ class cron {
      */
     protected $debug = false;
 
-    function __construct() {
-
-    }
-
     /**
-     * c
-     *
      * @return boolean
      */
-    public function isDebug() {
+    public function is_debug() {
         return $this->debug;
     }
 
@@ -60,8 +54,8 @@ class cron {
      *
      * @return cron
      */
-    public function setDebug($debug) {
-        $this->debug = (bool)$debug;
+    public function set_debug($debug) {
+        $this->debug = (bool) $debug;
 
         return $this;
     }
@@ -78,10 +72,10 @@ class cron {
         if ($openwebinars) {
             foreach ($openwebinars as $openwebinar) {
 
-                // we must end this openwebinar
+                // We must end this openwebinar.
                 if ($now > $openwebinar->timeopen + self::MAX_DURATION) {
 
-                    // set to closed
+                    // Set to closed.
                     $obj = new \stdClass();
                     $obj->id = $openwebinar->id;
                     $obj->is_ended = 1;
@@ -98,14 +92,14 @@ class cron {
      */
     public function reminder() {
         global $DB;
-        // get all openwebinar that aren't started
+        // Get all openwebinar that aren't started.
         mtrace('Check if we need send reminders');
         mtrace('Now: ' . date('d-m-Y H:i:s'));
         $sql = 'SELECT * FROM {openwebinar} WHERE timeopen > :now';
         $results = $DB->get_records_sql($sql, array('now' => time()));
         if ($results) {
             foreach ($results as $result) {
-                // check if we need to
+                // Check if we need to.
                 mtrace(PHP_EOL . $result->name);
                 mtrace('Timeopen: ' . date('d-m-Y H:i:s', $result->timeopen) . PHP_EOL);
                 $this->reminder_send_invites($result, 1);
@@ -128,7 +122,7 @@ class cron {
         $remindersend = 'reminder_' . $number . '_send';
         $remindertime = 'reminder_' . $number;
 
-        // skip there is no time set
+        // Skip there is no time set.
         if (empty($openwebinar->$remindertime)) {
             return;
         }
@@ -141,42 +135,33 @@ class cron {
             if ($sendtime <= time()) {
                 mtrace('Send: ' . $remindersend . ' / ' . $remindertime);
 
-                // get the broadcaster
+                // Get the broadcaster.
                 $broadcaster = $DB->get_record('user', array('id' => $openwebinar->broadcaster), '*', MUST_EXIST);
 
-                // get students in the course
+                // Get students in the course.
                 $students = helper::get_active_course_users($openwebinar->course);
+                $message = get_string('mail:reminder_message', 'openwebinar');
 
-                // get message
-//                $message = $DB->get_record('openwebinar_tpl', array(
-//                    'openwebinar_id' => $openwebinar->id,
-//                    'name' => 'reminder'
-//                ), '*', IGNORE_MULTIPLE);
-//                if (!$message) {
-                    // get the global message if there is no tpl
-                    $message = get_string('mail:reminder_message', 'openwebinar');
-//                }
-
-                // get url
+                // Get url.
                 $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
                 $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
 
                 foreach ($students as $student) {
 
                     $htmlmessage = str_replace(array(
-                        '##fullname##',
-                        '##starttime##',
-                        '##duration##',
-                        '##link##',
-                        '##name##',
-                        '##broadcaster_fullname##',
+                            '##fullname##',
+                            '##starttime##',
+                            '##duration##',
+                            '##link##',
+                            '##name##',
+                            '##broadcaster_fullname##',
                     ), array(
-                        fullname($student),
-                        date('d-m-Y H:i', $openwebinar->timeopen),
-                        round($openwebinar->duration / 60),
-                        $url,
-                        $openwebinar->name,
-                        fullname($broadcaster)
+                            fullname($student),
+                            date('d-m-Y H:i', $openwebinar->timeopen),
+                            round($openwebinar->duration / 60),
+                            $url,
+                            $openwebinar->name,
+                            fullname($broadcaster)
                     ), $message);
 
                     $eventdata = new \stdClass();
@@ -196,7 +181,7 @@ class cron {
                     message_send($eventdata);
                 }
 
-                // save to DB to prevent sending again
+                // Save to DB to prevent sending again.
                 $obj = new \stdClass();
                 $obj->id = $openwebinar->id;
                 $obj->$remindersend = 1;

@@ -16,8 +16,7 @@ use Symfony\Component\Finder\Adapter\AbstractAdapter;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class DummyAdapter extends AbstractAdapter
-{
+class DummyAdapter extends AbstractAdapter {
     /**
      * @var \Iterator
      */
@@ -26,32 +25,28 @@ class DummyAdapter extends AbstractAdapter
     /**
      * @param \Iterator $iterator
      */
-    public function __construct(\Iterator $iterator)
-    {
+    public function __construct(\Iterator $iterator) {
         $this->iterator = $iterator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function searchInDirectory($dir)
-    {
+    public function searchInDirectory($dir) {
         return $this->iterator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
+    public function getName() {
         return 'yes';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function canBeUsed()
-    {
+    protected function canBeUsed() {
         return true;
     }
 }

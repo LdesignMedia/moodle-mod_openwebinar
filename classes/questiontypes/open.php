@@ -83,14 +83,14 @@ class open extends questiontypes {
      */
     public function validation() {
         $return = array('status' => true, 'error' => '');
-        // make sure we have the data
+        // Make sure we have the data.
         $this->get_post_data();
 
-        // make sure a value is given
+        // Make sure a value is given.
         if (empty($this->postdata->answer)) {
             $return = array(
-                'status' => false,
-                'error' => get_string('error:empty_not_allowed', 'openwebinar')
+                    'status' => false,
+                    'error' => get_string('error:empty_not_allowed', 'openwebinar')
             );
         }
 
@@ -105,7 +105,6 @@ class open extends questiontypes {
     protected function get_post_data() {
         $this->postdata->answer = optional_param('answer', '', PARAM_TEXT);
     }
-
 
     /**
      * Return the question type int

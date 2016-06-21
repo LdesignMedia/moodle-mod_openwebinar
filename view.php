@@ -37,12 +37,14 @@ if ($id) {
     $cm = get_coursemodule_from_id('openwebinar', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $openwebinar = $DB->get_record('openwebinar', array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($n) {
-    $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    if ($n) {
+        $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
+    } else {
+        error('You must specify a course_module ID or an instance ID');
+    }
 }
 
 require_login($course, true, $cm);
@@ -53,11 +55,11 @@ $PAGE->set_title(format_string($openwebinar->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-openwebinar');
 
-// Convert openwebinar data to JS
-$opts = (array)$openwebinar;
+// Convert openwebinar data to JS.
+$opts = (array) $openwebinar;
 unset($opts['intro'], $opts['broadcastkey']);
 
-// Permissions
+// Permissions.
 $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openwebinar);
 
 /**
@@ -67,20 +69,16 @@ $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openweb
  */
 $renderer = $PAGE->get_renderer('mod_openwebinar');
 
-// Get status
+// Get status.
 $status = \mod_openwebinar\helper::get_openwebinar_status($openwebinar);
 
 // Output starts here.
 echo $OUTPUT->header();
 
 // Conditions to show the intro can change to look for own settings or whatever.
-// if ($openwebinar->intro) {
-// echo $OUTPUT->box(format_module_intro('openwebinar', $openwebinar, $cm->id), 'generalbox mod_introbox', 'openwebinarintro');
-//}
-
 echo $OUTPUT->heading(format_string($openwebinar->name), 1, 'openwebinar-center');
 
-/**
+/***
  * $completion=new completion_info($course);
  * $completion->set_module_viewed($cm);
  */
@@ -105,7 +103,7 @@ switch ($status) {
         break;
 
     default:
-        // Load JS base
+        // Load JS base.
         $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
         echo $renderer->view_page_not_started_openwebinar($openwebinar);
 

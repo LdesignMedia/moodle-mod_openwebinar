@@ -11,8 +11,7 @@ namespace UAParser;
 
 use UAParser\Result\Client;
 
-class Parser extends AbstractParser
-{
+class Parser extends AbstractParser {
     /** @var DeviceParser */
     private $deviceParser;
 
@@ -27,8 +26,7 @@ class Parser extends AbstractParser
      *
      * @param array $regexes
      */
-    public function __construct(array $regexes)
-    {
+    public function __construct(array $regexes) {
         parent::__construct($regexes);
         $this->deviceParser = new DeviceParser($this->regexes);
         $this->operatingSystemParser = new OperatingSystemParser($this->regexes);
@@ -40,10 +38,10 @@ class Parser extends AbstractParser
      *
      * @param string $userAgent a user agent string to test, defaults to an empty string
      * @param array $jsParseBits
+     *
      * @return Client
      */
-    public function parse($userAgent, array $jsParseBits = array())
-    {
+    public function parse($userAgent, array $jsParseBits = array()) {
         $client = new Client($userAgent);
 
         $client->ua = $this->userAgentParser->parseUserAgent($userAgent, $jsParseBits);

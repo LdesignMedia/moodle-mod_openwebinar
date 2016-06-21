@@ -14,13 +14,11 @@ namespace Symfony\Component\Finder\Tests\Iterator;
 use Symfony\Component\Finder\Iterator\SizeRangeFilterIterator;
 use Symfony\Component\Finder\Comparator\NumberComparator;
 
-class SizeRangeFilterIteratorTest extends RealIteratorTestCase
-{
+class SizeRangeFilterIteratorTest extends RealIteratorTestCase {
     /**
      * @dataProvider getAcceptData
      */
-    public function testAccept($size, $expected)
-    {
+    public function testAccept($size, $expected) {
         $inner = new InnerSizeIterator(self::$files);
 
         $iterator = new SizeRangeFilterIterator($inner, $size);
@@ -28,41 +26,36 @@ class SizeRangeFilterIteratorTest extends RealIteratorTestCase
         $this->assertIterator($expected, $iterator);
     }
 
-    public function getAcceptData()
-    {
+    public function getAcceptData() {
         $lessThan1KGreaterThan05K = array(
-            '.foo',
-            '.git',
-            'foo',
-            'test.php',
-            'toto',
+                '.foo',
+                '.git',
+                'foo',
+                'test.php',
+                'toto',
         );
 
         return array(
-            array(array(new NumberComparator('< 1K'), new NumberComparator('> 0.5K')), $this->toAbsolute($lessThan1KGreaterThan05K)),
+                array(array(new NumberComparator('< 1K'), new NumberComparator('> 0.5K')),
+                      $this->toAbsolute($lessThan1KGreaterThan05K)),
         );
     }
 }
 
-class InnerSizeIterator extends \ArrayIterator
-{
-    public function current()
-    {
+class InnerSizeIterator extends \ArrayIterator {
+    public function current() {
         return new \SplFileInfo(parent::current());
     }
 
-    public function getFilename()
-    {
+    public function getFilename() {
         return parent::current();
     }
 
-    public function isFile()
-    {
+    public function isFile() {
         return $this->current()->isFile();
     }
 
-    public function getSize()
-    {
+    public function getSize() {
         return $this->current()->getSize();
     }
 }

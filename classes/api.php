@@ -75,7 +75,6 @@ class api {
      */
     protected $response = array();
 
-
     /**
      * Container
      *
@@ -110,7 +109,6 @@ class api {
      * @var bool|object
      */
     protected $context = false;
-
 
     /**
      * @return string
@@ -154,7 +152,6 @@ class api {
         $this->extra2 = $extra2;
     }
 
-
     /**
      * public __construct
      */
@@ -177,7 +174,7 @@ class api {
      * Input json data convert directly to php object
      */
     protected function input_to_json() {
-        $this->jsondata = (object)json_decode(file_get_contents('php://input'), true);
+        $this->jsondata = (object) json_decode(file_get_contents('php://input'), true);
     }
 
     /**
@@ -206,8 +203,8 @@ class api {
         }
 
         $params = array(
-            'context' => $this->context,
-            'objectid' => $this->cm->id,
+                'context' => $this->context,
+                'objectid' => $this->cm->id,
         );
         // add new log entry
         $event = openwebinar_ping::create($params);
@@ -264,7 +261,8 @@ class api {
         // Set information
         $this->get_module_information();
 
-        $this->response['messages'] = $DB->get_records('openwebinar_messages', array('openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
+        $this->response['messages'] =
+                $DB->get_records('openwebinar_messages', array('openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
         $this->response['status'] = true;
 
         $this->output_json();
@@ -307,7 +305,8 @@ class api {
 
         $data = new \stdClass();
         $data->files_filemanager = required_param('files_filemanager', PARAM_INT);
-        $data = file_postupdate_standard_filemanager($data, 'files', helper::get_file_options($this->context), $this->context, 'mod_openwebinar', 'attachments', $data->files_filemanager);
+        $data = file_postupdate_standard_filemanager($data, 'files', helper::get_file_options($this->context), $this->context,
+                'mod_openwebinar', 'attachments', $data->files_filemanager);
 
         $this->response['status'] = true;
         $this->response['itemid'] = $data->files_filemanager;
@@ -316,11 +315,11 @@ class api {
         $fs = get_file_storage();
 
         $files = $DB->get_records('files', array(
-            'contextid' => $this->context->id,
-            'userid' => $USER->id,
-            'itemid' => $data->files_filemanager,
-            'component' => 'mod_openwebinar',
-            'filearea' => 'attachments'
+                'contextid' => $this->context->id,
+                'userid' => $USER->id,
+                'itemid' => $data->files_filemanager,
+                'component' => 'mod_openwebinar',
+                'filearea' => 'attachments'
         ));
         foreach ($files as $file) {
 
@@ -356,7 +355,6 @@ class api {
         $this->response['status'] = true;
         $this->output_json();
     }
-
 
     /**
      * Save the chatlog from the chat server
@@ -540,7 +538,7 @@ class api {
         $cron = new \mod_openwebinar\cron();
         if (is_callable(array($cron, $task))) {
             $cron->$task();
-        } else{
+        } else {
             echo 'NOT_EXISTS';
         }
         die();

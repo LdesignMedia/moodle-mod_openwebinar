@@ -13,8 +13,7 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Symfony\Component\Filesystem\Filesystem;
 use UAParser\Util\Converter;
 
-class ConverterTest extends AbstractTestCase
-{
+class ConverterTest extends AbstractTestCase {
     /** @var Filesystem|MockObject */
     private $fs;
 
@@ -30,13 +29,12 @@ class ConverterTest extends AbstractTestCase
     /** @var string */
     private $php;
 
-    public function setUp()
-    {
+    public function setUp() {
         $this->fs = $this
-            ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->getMock();
+                ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+                ->disableOriginalConstructor()
+                ->disableOriginalClone()
+                ->getMock();
         $this->converter = new Converter(sys_get_temp_dir(), $this->fs);
         $yaml = <<<EOS
 group:
@@ -61,101 +59,96 @@ EOS;
         touch($this->phpFile);
     }
 
-    public function tearDown()
-    {
+    public function tearDown() {
         @unlink($this->yamlFile);
         @unlink($this->phpFile);
     }
 
-    public function testExceptionIsThrownIfFileDoesNotExist()
-    {
+    public function testExceptionIsThrownIfFileDoesNotExist() {
         $this->fs
-            ->expects($this->once())
-            ->method('exists')
-            ->with('path/to/file')
-            ->will($this->returnValue(false));
+                ->expects($this->once())
+                ->method('exists')
+                ->with('path/to/file')
+                ->will($this->returnValue(false));
 
         $this->setExpectedException(
-            'UAParser\Exception\FileNotFoundException',
-            'File "path/to/file" does not exist'
+                'UAParser\Exception\FileNotFoundException',
+                'File "path/to/file" does not exist'
         );
         $this->converter->convertFile('path/to/file');
     }
 
-    public function testFileIsBackedUpIfExists()
-    {
+    public function testFileIsBackedUpIfExists() {
         $this->fs
-            ->expects($this->at(0))
-            ->method('exists')
-            ->with($this->yamlFile)
-            ->will($this->returnValue(true));
+                ->expects($this->at(0))
+                ->method('exists')
+                ->with($this->yamlFile)
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->at(1))
-            ->method('exists')
-            ->with($this->phpFile)
-            ->will($this->returnValue(true));
+                ->expects($this->at(1))
+                ->method('exists')
+                ->with($this->phpFile)
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->once())
-            ->method('copy')
-            ->with(
-                $this->phpFile,
-                $this->matchesRegularExpression('@/regexes-.{128}\.php@')
-            )
-            ->will($this->returnValue(true));
+                ->expects($this->once())
+                ->method('copy')
+                ->with(
+                        $this->phpFile,
+                        $this->matchesRegularExpression('@/regexes-.{128}\.php@')
+                )
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->once())
-            ->method('dumpFile')
-            ->with($this->phpFile, $this->php);
+                ->expects($this->once())
+                ->method('dumpFile')
+                ->with($this->phpFile, $this->php);
 
         $this->converter->convertFile($this->yamlFile);
     }
 
-    public function testFileIsNotBackedUpIfHashesDoNotMatch()
-    {
+    public function testFileIsNotBackedUpIfHashesDoNotMatch() {
         file_put_contents($this->phpFile, $this->php);
 
         $this->fs
-            ->expects($this->at(0))
-            ->method('exists')
-            ->with($this->yamlFile)
-            ->will($this->returnValue(true));
+                ->expects($this->at(0))
+                ->method('exists')
+                ->with($this->yamlFile)
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->at(1))
-            ->method('exists')
-            ->with($this->phpFile)
-            ->will($this->returnValue(true));
+                ->expects($this->at(1))
+                ->method('exists')
+                ->with($this->phpFile)
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->never())
-            ->method('copy');
+                ->expects($this->never())
+                ->method('copy');
 
         $this->fs
-            ->expects($this->never())
-            ->method('dumpFile');
+                ->expects($this->never())
+                ->method('dumpFile');
 
         $this->converter->convertFile($this->yamlFile);
     }
 
-    public function testFileIsNotBackedUp()
-    {
+    public function testFileIsNotBackedUp() {
         $this->fs
-            ->expects($this->once())
-            ->method('exists')
-            ->with($this->yamlFile)
-            ->will($this->returnValue(true));
+                ->expects($this->once())
+                ->method('exists')
+                ->with($this->yamlFile)
+                ->will($this->returnValue(true));
 
         $this->fs
-            ->expects($this->never())
-            ->method('copy');
+                ->expects($this->never())
+                ->method('copy');
 
         $this->fs
-            ->expects($this->once())
-            ->method('dumpFile')
-            ->with($this->phpFile, $this->php);
+                ->expects($this->once())
+                ->method('dumpFile')
+                ->with($this->phpFile, $this->php);
 
         $this->converter->convertFile($this->yamlFile, false);
     }

@@ -80,7 +80,8 @@ function openwebinar_get_coursemodule_info($coursemodule) {
 
     if (($openwebinar = $DB->get_record('openwebinar', array('id' => $coursemodule->instance))) !== false) {
         $info = new cached_cm_info();
-        $info->name = $openwebinar->name . ' - ' . date('d-m-Y ', $openwebinar->timeopen) . get_string('starttime', 'openwebinar') . date(' H:i', $openwebinar->timeopen);
+        $info->name = $openwebinar->name . ' - ' . date('d-m-Y ', $openwebinar->timeopen) . get_string('starttime', 'openwebinar') .
+                date(' H:i', $openwebinar->timeopen);
         $info->content = format_module_intro('openwebinar', $openwebinar, $coursemodule->id, false);
 
         return $info;
@@ -88,7 +89,6 @@ function openwebinar_get_coursemodule_info($coursemodule) {
         return null;
     }
 }
-
 
 /**
  * Saves a new instance of the openwebinar into the database
@@ -152,8 +152,8 @@ function openwebinar_update_instance(stdClass $openwebinar, mod_openwebinar_mod_
     $event = new stdClass();
 
     if ($event->id = $DB->get_field('event', 'id', array(
-        'modulename' => 'openwebinar',
-        'instance' => $openwebinar->id
+            'modulename' => 'openwebinar',
+            'instance' => $openwebinar->id
     ))
     ) {
 
@@ -190,7 +190,7 @@ function openwebinar_delete_instance($id) {
     // Delete any dependent records here.
     $DB->delete_records('openwebinar', array('id' => $openwebinar->id));
 
-    // remove the event
+    // Remove the event.
     $DB->delete_records('event', array('modulename' => 'openwebinar', 'instance' => $openwebinar->id));
 
     // @todo remove chatlogs
@@ -344,13 +344,16 @@ function openwebinar_extend_settings_navigation($settings, $openwebinarnode) {
     $i = array_search('modedit', $keys);
     if ($i === false and array_key_exists(0, $keys)) {
         $beforekey = $keys[0];
-    } else if (array_key_exists($i + 1, $keys)) {
-        $beforekey = $keys[$i + 1];
+    } else {
+        if (array_key_exists($i + 1, $keys)) {
+            $beforekey = $keys[$i + 1];
+        }
     }
 
     if (has_capability('mod/openwebinar:manager', $PAGE->cm->context)) {
         $url = new moodle_url('/mod/openwebinar/user_activity.php', array('id' => $PAGE->cm->id));
-        $node = navigation_node::create(get_string('user_activity', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null, 'mod_openwebinar_user_activity', new pix_icon('i/preview', ''));
+        $node = navigation_node::create(get_string('user_activity', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null,
+                'mod_openwebinar_user_activity', new pix_icon('i/preview', ''));
         $openwebinarnode->add_node($node, $beforekey);
     }
 

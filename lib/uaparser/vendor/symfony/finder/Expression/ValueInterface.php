@@ -14,8 +14,7 @@ namespace Symfony\Component\Finder\Expression;
 /**
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-interface ValueInterface
-{
+interface ValueInterface {
     /**
      * Renders string representation of expression.
      *

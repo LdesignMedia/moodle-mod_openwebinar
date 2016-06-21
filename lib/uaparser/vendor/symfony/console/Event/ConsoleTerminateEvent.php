@@ -20,8 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Francesco Levorato <git@flevour.net>
  */
-class ConsoleTerminateEvent extends ConsoleEvent
-{
+class ConsoleTerminateEvent extends ConsoleEvent {
     /**
      * The exit code of the command.
      *
@@ -29,8 +28,7 @@ class ConsoleTerminateEvent extends ConsoleEvent
      */
     private $exitCode;
 
-    public function __construct(Command $command, InputInterface $input, OutputInterface $output, $exitCode)
-    {
+    public function __construct(Command $command, InputInterface $input, OutputInterface $output, $exitCode) {
         parent::__construct($command, $input, $output);
 
         $this->setExitCode($exitCode);
@@ -41,8 +39,7 @@ class ConsoleTerminateEvent extends ConsoleEvent
      *
      * @param int $exitCode The command exit code
      */
-    public function setExitCode($exitCode)
-    {
+    public function setExitCode($exitCode) {
         $this->exitCode = (int) $exitCode;
     }
 
@@ -51,8 +48,7 @@ class ConsoleTerminateEvent extends ConsoleEvent
      *
      * @return int The command exit code
      */
-    public function getExitCode()
-    {
+    public function getExitCode() {
         return $this->exitCode;
     }
 }

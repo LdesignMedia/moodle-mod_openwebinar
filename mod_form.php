@@ -50,10 +50,10 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      */
     public function definition() {
 
-        global $CFG , $USER;
+        global $CFG, $USER;
         $mform = $this->_form;
 
-        // Load default config
+        // Load default config.
         $config = get_config('openwebinar');
 
         // Adding the "general" fieldset, where all the common settings are showed.
@@ -71,16 +71,18 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $mform->addHelpButton('name', 'openwebinarname', 'openwebinar');
 
         // Adding the standard "intro" and "introformat" fields.
-        $this->add_intro_editor();
+        $this->standard_intro_elements();
 
         $mform->addElement('header', 'timing', get_string('mod_setting:timing', 'openwebinar'));
 
         // Open and close dates.
-        $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'openwebinar'), self::$datefieldoptions);
+        $mform->addElement('date_time_selector', 'timeopen', get_string('mod_setting:timeopen', 'openwebinar'),
+                self::$datefieldoptions);
         $mform->addHelpButton('timeopen', 'mod_setting:timeopenhelp', 'openwebinar');
         $mform->setDefault('timeopen', strtotime('+5 minutes'));
 
-        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'openwebinar') , array('defaultunit' => 3600 , 'optional' => false));
+        $mform->addElement('duration', 'duration', get_string('mod_setting:duration', 'openwebinar'),
+                array('defaultunit' => 3600, 'optional' => false));
         $mform->addHelpButton('duration', 'mod_setting:durationhelp', 'openwebinar');
         $mform->setDefault('duration', 3600);
 
@@ -110,7 +112,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $mform->addElement('header', 'broadcasterheader', get_string('mod_setting:broadcaster', 'openwebinar'));
         $this->add_openwebinar_user_selector();
 
-        // add broadcastkey
+        // Add broadcastkey.
         if (empty($this->current->instance)) {
 
             $key = \mod_openwebinar\helper::generate_key();
@@ -118,9 +120,10 @@ class mod_openwebinar_mod_form extends moodleform_mod {
             $obj = new stdClass();
             $obj->broadcastkey = $key;
 
-            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'), get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'),
+                    get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
 
-            // add value to the form
+            // Add value to the form.
             $mform->addElement('hidden', 'broadcastkey');
             $mform->setType('broadcastkey', PARAM_TEXT);
             $mform->setDefault('broadcastkey', $key);
@@ -128,7 +131,8 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         } else {
             $obj = new stdClass();
             $obj->broadcastkey = $this->current->broadcastkey;
-            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'), get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
+            $mform->addElement('static', 'html_broadcastkey', get_string('mod_setting:broadcastkey', 'openwebinar'),
+                    get_string('mod_setting:broadcastkey_desc', 'openwebinar', $obj));
         }
 
         $mform->addElement('header', 'reminders', get_string('mod_setting:reminders', 'openwebinar'));
@@ -143,7 +147,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
 
         $mform->setDefault('completion', COMPLETION_TRACKING_AUTOMATIC);
-        $mform->setDefault('completionview' , true);
+        $mform->setDefault('completionview', true);
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
@@ -152,7 +156,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      * add a select element for a broadcaster
      */
     protected function add_openwebinar_user_selector() {
-        global $DB , $USER;
+        global $DB, $USER;
         $array = array('' => get_string('mod_setting:make_a_selection', 'openwebinar'));
         $rs = $DB->get_recordset_sql('SELECT {user}.id , {user}.firstname ,{user}.lastname
                                         FROM {user}
@@ -169,11 +173,6 @@ class mod_openwebinar_mod_form extends moodleform_mod {
 
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-
-        // Make sure that time is yet to come
-//        if(time() > $data['timeopen']){
-//            $errors['timeopen'] = get_string('error:time_passed' , 'openwebinar');
-//        }
 
         return $errors;
     }

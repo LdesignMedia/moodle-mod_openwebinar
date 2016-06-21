@@ -25,8 +25,7 @@ use Symfony\Component\Process\PhpExecutableFinder;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Martin Hasoň <martin.hason@gmail.com>
  */
-class Shell
-{
+class Shell {
     private $application;
     private $history;
     private $output;
@@ -41,19 +40,17 @@ class Shell
      *
      * @param Application $application An application instance
      */
-    public function __construct(Application $application)
-    {
+    public function __construct(Application $application) {
         $this->hasReadline = function_exists('readline');
         $this->application = $application;
-        $this->history = getenv('HOME').'/.history_'.$application->getName();
+        $this->history = getenv('HOME') . '/.history_' . $application->getName();
         $this->output = new ConsoleOutput();
     }
 
     /**
      * Runs the shell.
      */
-    public function run()
-    {
+    public function run() {
         $this->application->setAutoExit(false);
         $this->application->setCatchExceptions(true);
 
@@ -95,15 +92,14 @@ EOF
                 $pb = new ProcessBuilder();
 
                 $process = $pb
-                    ->add($php)
-                    ->add($_SERVER['argv'][0])
-                    ->add($command)
-                    ->inheritEnvironmentVariables(true)
-                    ->getProcess()
-                ;
+                        ->add($php)
+                        ->add($_SERVER['argv'][0])
+                        ->add($command)
+                        ->inheritEnvironmentVariables(true)
+                        ->getProcess();
 
                 $output = $this->output;
-                $process->run(function ($type, $data) use ($output) {
+                $process->run(function($type, $data) use ($output) {
                     $output->writeln($data);
                 });
 
@@ -123,8 +119,7 @@ EOF
      *
      * @return string The header string
      */
-    protected function getHeader()
-    {
+    protected function getHeader() {
         return <<<EOF
 
 Welcome to the <info>{$this->application->getName()}</info> shell (<comment>{$this->application->getVersion()}</comment>).
@@ -142,19 +137,16 @@ EOF;
      *
      * @return string The prompt
      */
-    protected function getPrompt()
-    {
+    protected function getPrompt() {
         // using the formatter here is required when using readline
-        return $this->output->getFormatter()->format($this->application->getName().' > ');
+        return $this->output->getFormatter()->format($this->application->getName() . ' > ');
     }
 
-    protected function getOutput()
-    {
+    protected function getOutput() {
         return $this->output;
     }
 
-    protected function getApplication()
-    {
+    protected function getApplication() {
         return $this->application;
     }
 
@@ -165,8 +157,7 @@ EOF;
      *
      * @return bool|array A list of guessed strings or true
      */
-    private function autocompleter($text)
-    {
+    private function autocompleter($text) {
         $info = readline_info();
         $text = substr($info['line_buffer'], 0, $info['end']);
 
@@ -188,7 +179,7 @@ EOF;
 
         $list = array('--help');
         foreach ($command->getDefinition()->getOptions() as $option) {
-            $list[] = '--'.$option->getName();
+            $list[] = '--' . $option->getName();
         }
 
         return $list;
@@ -199,8 +190,7 @@ EOF;
      *
      * @return string The single line from standard input
      */
-    private function readline()
-    {
+    private function readline() {
         if ($this->hasReadline) {
             $line = readline($this->getPrompt());
         } else {
@@ -212,13 +202,11 @@ EOF;
         return $line;
     }
 
-    public function getProcessIsolation()
-    {
+    public function getProcessIsolation() {
         return $this->processIsolation;
     }
 
-    public function setProcessIsolation($processIsolation)
-    {
+    public function setProcessIsolation($processIsolation) {
         $this->processIsolation = (bool) $processIsolation;
 
         if ($this->processIsolation && !class_exists('Symfony\\Component\\Process\\Process')) {

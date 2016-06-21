@@ -26,5 +26,4 @@
 require_once("../../config.php");
 // Course module ID.
 $id = required_param('id', PARAM_INT);
-//
 redirect('/mod/openwebinar/view.php?id=' . $id);

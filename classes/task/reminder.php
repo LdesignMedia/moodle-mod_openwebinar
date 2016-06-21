@@ -45,6 +45,7 @@ class reminder extends \core\task\scheduled_task {
         $cron->reminder();
 
         mtrace(' ');
+
         return true;
     }
 }

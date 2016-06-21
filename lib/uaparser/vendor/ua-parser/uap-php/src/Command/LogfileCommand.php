@@ -22,49 +22,45 @@ use UAParser\Parser;
 use UAParser\Result\Client;
 use UAParser\Util\Logfile\AbstractReader;
 
-class LogfileCommand extends Command
-{
-    protected function configure()
-    {
+class LogfileCommand extends Command {
+    protected function configure() {
         $this
-            ->setName('ua-parser:log')
-            ->setDescription('Parses the supplied webserver log file.')
-            ->addArgument(
-                'output',
-                InputArgument::REQUIRED,
-                'Path to output log file'
-            )
-            ->addOption(
-                'log-file',
-                'f',
-                InputOption::VALUE_REQUIRED,
-                'Path to a webserver log file'
-            )
-            ->addOption(
-                'log-dir',
-                'd',
-                InputOption::VALUE_REQUIRED,
-                'Path to webserver log directory'
-            )
-            ->addOption(
-                'include',
-                'i',
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-                'Include glob expressions for log files in the log directory',
-                array('*.log', '*.log*.gz', '*.log*.bz2')
-            )
-            ->addOption(
-                'exclude',
-                'e',
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-                'Exclude glob expressions for log files in the log directory',
-                array('*error*')
-            )
-        ;
+                ->setName('ua-parser:log')
+                ->setDescription('Parses the supplied webserver log file.')
+                ->addArgument(
+                        'output',
+                        InputArgument::REQUIRED,
+                        'Path to output log file'
+                )
+                ->addOption(
+                        'log-file',
+                        'f',
+                        InputOption::VALUE_REQUIRED,
+                        'Path to a webserver log file'
+                )
+                ->addOption(
+                        'log-dir',
+                        'd',
+                        InputOption::VALUE_REQUIRED,
+                        'Path to webserver log directory'
+                )
+                ->addOption(
+                        'include',
+                        'i',
+                        InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
+                        'Include glob expressions for log files in the log directory',
+                        array('*.log', '*.log*.gz', '*.log*.bz2')
+                )
+                ->addOption(
+                        'exclude',
+                        'e',
+                        InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
+                        'Exclude glob expressions for log files in the log directory',
+                        array('*error*')
+                );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         if (!$input->getOption('log-file') && !$input->getOption('log-dir')) {
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
@@ -111,8 +107,8 @@ class LogfileCommand extends Command
                 $result = $this->getResult($client);
                 if ($result !== '.') {
                     $undefinedClients[] = json_encode(
-                        array($client->toString(), $userAgentString),
-                        JSON_UNESCAPED_SLASHES
+                            array($client->toString(), $userAgentString),
+                            JSON_UNESCAPED_SLASHES
                     );
                 }
 
@@ -128,8 +124,7 @@ class LogfileCommand extends Command
         $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, $undefinedClients));
     }
 
-    private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false)
-    {
+    private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false) {
         if (($count % 70) === 0 || $end) {
             $formatString = '%s  %' . strlen($totalCount) . 'd / %-' . strlen($totalCount) . 'd (%3d%%)';
             $result = $end ? str_repeat(' ', 70 - ($count % 70)) : $result;
@@ -141,8 +136,7 @@ class LogfileCommand extends Command
         return $count + 1;
     }
 
-    private function getResult(Client $client)
-    {
+    private function getResult(Client $client) {
         if ($client->device->family === 'Spider') {
             return '.';
         } elseif ($client->ua->family === 'Other') {
@@ -158,8 +152,7 @@ class LogfileCommand extends Command
         return '.';
     }
 
-    private function getFiles(InputInterface $input)
-    {
+    private function getFiles(InputInterface $input) {
         $finder = Finder::create();
 
         if ($input->getOption('log-file')) {
@@ -169,7 +162,7 @@ class LogfileCommand extends Command
 
         if ($input->getOption('log-dir')) {
             $dirFinder = Finder::create()
-                ->in($input->getOption('log-dir'));
+                    ->in($input->getOption('log-dir'));
             array_map(array($dirFinder, 'name'), $input->getOption('include'));
             array_map(array($dirFinder, 'notName'), $input->getOption('exclude'));
 
@@ -179,13 +172,11 @@ class LogfileCommand extends Command
         return $finder;
     }
 
-    private function filter(array $lines)
-    {
+    private function filter(array $lines) {
         return array_values(array_unique($lines));
     }
 
-    private function getPath(SplFileInfo $file)
-    {
+    private function getPath(SplFileInfo $file) {
         switch ($file->getExtension()) {
             case 'gz':
                 $path = 'compress.zlib://' . $file->getPathname();

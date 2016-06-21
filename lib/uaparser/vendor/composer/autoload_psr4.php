@@ -6,9 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'UAParser\\' => array($vendorDir . '/ua-parser/uap-php/src'),
-    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
-    'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
-    'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
-    'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+        'UAParser\\' => array($vendorDir . '/ua-parser/uap-php/src'),
+        'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+        'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
+        'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
+        'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
 );

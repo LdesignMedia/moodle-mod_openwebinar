@@ -55,17 +55,17 @@ class useractivity extends \table_sql {
         global $DB;
         parent::__construct($uniqueid);
 
-        // Set the openwebinar
+        // Set the openwebinar.
         $this->openwebinar = $openwebinar;
 
-        // Get extra fields
+        // Get extra fields.
         $extrafields = get_extra_user_fields(\context_course::instance($openwebinar->course));
         $extrafields[] = 'lastaccess';
         $dbfields = \user_picture::fields('u', $extrafields);
 
-        // Params
+        // Params.
         $params = array(
-            'openwebinar_id' => $openwebinar->id
+                'openwebinar_id' => $openwebinar->id
         );
 
         $this->sql = new \stdClass();
@@ -76,7 +76,7 @@ class useractivity extends \table_sql {
 
         $this->sql->params = $params;
 
-        // Set count sql
+        // Set count sql.
         $this->countsql = 'SELECT COUNT(*) FROM ' . $this->sql->from . ' WHERE ' . $this->sql->where;
         $this->countparams = $params;
     }
@@ -92,26 +92,26 @@ class useractivity extends \table_sql {
 
         global $PAGE;
 
-        if(empty($row->available)){
+        if (empty($row->available)) {
             return '';
         }
 
         $chattime = new \moodle_url('/mod/openwebinar/user_activity.php', array(
-            'user_id' => $row->id,
-            'id' => $PAGE->cm->id,
-            'action' => 'user_chattime',
+                'user_id' => $row->id,
+                'id' => $PAGE->cm->id,
+                'action' => 'user_chattime',
         ));
 
         $chatlog = new \moodle_url('/mod/openwebinar/user_activity.php', array(
-            'user_id' => $row->id,
-            'id' => $PAGE->cm->id,
-            'action' => 'user_chatlog',
+                'user_id' => $row->id,
+                'id' => $PAGE->cm->id,
+                'action' => 'user_chatlog',
         ));
 
         return \html_writer::link($chattime, get_string('btn:chattime', 'openwebinar'), array(
-            'class' => 'btn',
+                'class' => 'btn',
         )) . ' ' . \html_writer::link($chatlog, get_string('btn:chatlog', 'openwebinar'), array(
-            'class' => 'btn',
+                'class' => 'btn',
         ));
     }
 

@@ -28,38 +28,37 @@ if (!defined('AJAX_SCRIPT')) {
 }
 define('NO_DEBUG_DISPLAY', true);
 
-// Strange issue
+// Strange issue.
 if (!defined('FILE_REFERENCE')) {
     define('FILE_REFERENCE', 4);
 }
 
 require_once("../../config.php");
 
-// Action we are performing
+// Action we are performing.
 $action = optional_param('action', false, PARAM_ALPHANUMEXT);
-$action = 'api_call_'  . $action;
+$action = 'api_call_' . $action;
 
-
-// Extra validation
+// Extra validation.
 $sesskey = optional_param('sesskey', false, PARAM_RAW);
 
-// Parameters for the action
+// Parameters for the action.
 $extra1 = optional_param('extra1', false, PARAM_TEXT);
 $extra2 = optional_param('extra2', false, PARAM_TEXT);
 
-// Load plugin config
+// Load plugin config.
 $config = get_config('openwebinar');
 
 $PAGE->set_url('/mod/openwebinar/api.php');
 
-// Load the class
+// Load the class.
 $api = new \mod_openwebinar\api();
 $api->setSesskey($sesskey);
 $api->setExtra1($extra1);
 $api->setExtra2($extra2);
 
-if(is_callable(array($api , $action))){
+if (is_callable(array($api, $action))) {
     $api->$action();
-}else {
-    throw new Exception("not_callable:"  . $action);
+} else {
+    throw new Exception("not_callable:" . $action);
 }

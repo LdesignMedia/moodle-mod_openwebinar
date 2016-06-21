@@ -64,5 +64,4 @@ class openwebinar_ping extends \core\event\base {
         return new \moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $this->contextinstanceid));
     }
 
-
 }

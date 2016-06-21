@@ -16,8 +16,7 @@ namespace Symfony\Component\Finder\Iterator;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class SortableIterator implements \IteratorAggregate
-{
+class SortableIterator implements \IteratorAggregate {
     const SORT_BY_NAME = 1;
     const SORT_BY_TYPE = 2;
     const SORT_BY_ACCESSED_TIME = 3;
@@ -35,16 +34,15 @@ class SortableIterator implements \IteratorAggregate
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(\Traversable $iterator, $sort)
-    {
+    public function __construct(\Traversable $iterator, $sort) {
         $this->iterator = $iterator;
 
         if (self::SORT_BY_NAME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function($a, $b) {
                 return strcmp($a->getRealpath(), $b->getRealpath());
             };
         } elseif (self::SORT_BY_TYPE === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function($a, $b) {
                 if ($a->isDir() && $b->isFile()) {
                     return -1;
                 } elseif ($a->isFile() && $b->isDir()) {
@@ -54,15 +52,15 @@ class SortableIterator implements \IteratorAggregate
                 return strcmp($a->getRealpath(), $b->getRealpath());
             };
         } elseif (self::SORT_BY_ACCESSED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function($a, $b) {
                 return ($a->getATime() - $b->getATime());
             };
         } elseif (self::SORT_BY_CHANGED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function($a, $b) {
                 return ($a->getCTime() - $b->getCTime());
             };
         } elseif (self::SORT_BY_MODIFIED_TIME === $sort) {
-            $this->sort = function ($a, $b) {
+            $this->sort = function($a, $b) {
                 return ($a->getMTime() - $b->getMTime());
             };
         } elseif (is_callable($sort)) {
@@ -72,8 +70,7 @@ class SortableIterator implements \IteratorAggregate
         }
     }
 
-    public function getIterator()
-    {
+    public function getIterator() {
         $array = iterator_to_array($this->iterator, true);
         uasort($array, $this->sort);
 

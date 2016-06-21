@@ -43,7 +43,7 @@ class backup_openwebinar_activity_task extends backup_activity_task {
      * Defines a backup step to store the instance data in the openwebinar.xml file
      */
     protected function define_my_steps() {
-//        $this->add_step(new backup_openwebinar_activity_structure_step('openwebinar_structure', 'openwebinar.xml'));
+        // Todo.
     }
 
     /**
@@ -54,18 +54,7 @@ class backup_openwebinar_activity_task extends backup_activity_task {
      * @return string the content with the URLs encoded
      */
     static public function encode_content_links($content) {
-        global $CFG;
-
-//        $base = preg_quote($CFG->wwwroot, '/');
-//
-//        // Link to the list of openwebinars.
-//        $search = '/('.$base.'\/mod\/openwebinar\/index.php\?id\=)([0-9]+)/';
-//        $content = preg_replace($search, '$@openwebinarINDEX*$2@$', $content);
-//
-//        // Link to openwebinar view by moduleid.
-//        $search = '/('.$base.'\/mod\/openwebinar\/view.php\?id\=)([0-9]+)/';
-//        $content = preg_replace($search, '$@openwebinarVIEWBYID*$2@$', $content);
-
+        // Todo.
         return $content;
     }
 }

@@ -33,12 +33,14 @@ if ($id) {
     $cm = get_coursemodule_from_id('openwebinar', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $openwebinar = $DB->get_record('openwebinar', array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($n) {
-    $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    if ($n) {
+        $openwebinar = $DB->get_record('openwebinar', array('id' => $n), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $openwebinar->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $course->id, false, MUST_EXIST);
+    } else {
+        error('You must specify a course_module ID or an instance ID');
+    }
 }
 
 require_login($course, true, $cm);
@@ -47,8 +49,8 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 $event = \mod_openwebinar\event\course_module_viewed::create(array(
-    'objectid' => $PAGE->cm->instance,
-    'context' => $PAGE->context,
+        'objectid' => $PAGE->cm->instance,
+        'context' => $PAGE->context,
 ));
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $openwebinar);
@@ -71,10 +73,10 @@ $permissions = \mod_openwebinar\helper::get_permissions($PAGE->context, $openweb
 \mod_openwebinar\helper::set_user_online_status($openwebinar->id);
 
 // Set user presence
-\mod_openwebinar\helper::update_user_presence($openwebinar , $USER);
+\mod_openwebinar\helper::update_user_presence($openwebinar, $USER);
 
 // Convert openwebinar data to JS
-$opts = (array)$openwebinar;
+$opts = (array) $openwebinar;
 $opts['userid'] = $USER->id;
 $opts['is_broadcaster'] = $permissions->broadcaster;
 
@@ -134,27 +136,27 @@ $PAGE->requires->yui_module('moodle-mod_openwebinar-room', 'M.mod_openwebinar.ro
 
 // Language strings
 $PAGE->requires->strings_for_js(array(
-    'js:send',
-    'js:wait_on_connection',
-    'js:joined',
-    'js:connecting',
-    'js:disconnect',
-    'js:reconnected',
-    'js:script_user',
-    'js:system_user',
-    'js:warning_message_closing_window',
-    'js:error_logout_or_lostconnection',
-    'js:ending_openwebinar',
-    'js:dialog_ending_text',
-    'js:dialog_ending_btn',
-    'js:ended',
-    'js:chat_commands',
-    'js:added_question',
-    'btn:view',
-    'js:muted',
-    'js:answer',
-    'js:added_answer',
-    'js:my_answer_saved',
+        'js:send',
+        'js:wait_on_connection',
+        'js:joined',
+        'js:connecting',
+        'js:disconnect',
+        'js:reconnected',
+        'js:script_user',
+        'js:system_user',
+        'js:warning_message_closing_window',
+        'js:error_logout_or_lostconnection',
+        'js:ending_openwebinar',
+        'js:dialog_ending_text',
+        'js:dialog_ending_btn',
+        'js:ended',
+        'js:chat_commands',
+        'js:added_question',
+        'btn:view',
+        'js:muted',
+        'js:answer',
+        'js:added_answer',
+        'js:my_answer_saved',
 ), 'openwebinar');
 
 /**
@@ -167,11 +169,13 @@ $renderer = $PAGE->get_renderer('mod_openwebinar');
 if (($opts['filesharing'] && $permissions->broadcaster || $opts['filesharing_student']) && $USER->id > 1) {
     $form = new \mod_openwebinar\formfilemanager("", array('context' => $context));
     $data = new stdClass();
-    file_prepare_standard_filemanager($data, 'files', \mod_openwebinar\helper::get_file_options($context), $context, 'mod_openwebinar', 'attachments');
+    file_prepare_standard_filemanager($data, 'files', \mod_openwebinar\helper::get_file_options($context), $context,
+            'mod_openwebinar', 'attachments');
 }
 
-// still here? we should mark it for course completion if possible
-if($openwebinar->is_ended === 0){
+// Still here? we should mark it for course completion if possible.
+if ($openwebinar->is_ended === 0) {
+
     $completion = new completion_info($COURSE);
     if ($completion->is_enabled($cm)) {
         $completion->set_module_viewed($cm);
@@ -273,7 +277,8 @@ echo $OUTPUT->header();
                     <li class="header"><?php echo get_string('opt:header_exit', 'openwebinar') ?></li>
                     <ul>
                         <li>
-                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:leave', 'openwebinar') ?></span>
+                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:leave',
+                                        'openwebinar') ?></span>
                         </li>
                     </ul>
                 <?php endif ?>
@@ -284,7 +289,8 @@ echo $OUTPUT->header();
             <header>
                 <?php if ($openwebinar->is_ended == 0): ?>
                     <?php if ($permissions->broadcaster): ?>
-                        <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar', 'openwebinar') ?></span>
+                        <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar',
+                                    'openwebinar') ?></span>
                     <?php else: ?>
                         <span id="openwebinar-status" class="online"><?php echo get_string('live', 'openwebinar') ?></span>
                     <?php endif ?>
@@ -366,14 +372,15 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog" style="display: none">
+                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog yui3-widget-loading">
                         <header>
                             <span><?php echo get_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <?php if (!empty($form)): ?>
                             <?php echo $form->render() ?>
-                            <span id="add-file-btn" class="openwebinar-button"><?php echo get_string('addfile', 'openwebinar') ?></span>
+                            <span id="add-file-btn" class="openwebinar-button"><?php echo get_string('addfile',
+                                        'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
                     <div id="openwebinar-emoticons-dialog" class="openwebinar-dialog" style="display: none">
@@ -391,38 +398,41 @@ echo $OUTPUT->header();
                             <span id="openwebinar-fileoverview-btn"><?php echo get_string('fileoverview', 'openwebinar') ?></span>
                         <?php endif ?>
                         <?php if ($opts['questions']): ?>
-                            <span id="openwebinar-viewquestion-btn"><?php echo get_string('question_overview', 'openwebinar') ?></span>
+                            <span id="openwebinar-viewquestion-btn"><?php echo get_string('question_overview',
+                                        'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
                     <span id="openwebinar-emoticon-icon"></span>
-                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder', 'openwebinar') ?>" name="message" id="openwebinar-message"/>
+                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder',
+                            'openwebinar') ?>" name="message" id="openwebinar-message"/>
                     <span id="openwebinar-send"><?php echo get_string('js:wait_on_connection', 'openwebinar') ?></span>
                 </div>
             </div>
         </section>
     </div>
-    <div id="openwebinar-shortprofile">
+    <div id="openwebinar-shortprofile" class="yui3-widget-loading">
         <div class="yui3-widget-bd">
             <table class="table table-bordered">
                 <tr>
                     <td colspan="2" id="shortprofile-avatar"></td>
                 </tr>
                 <tr>
-                    <td><?php echo get_string('fullname' , 'openwebinar')?></td>
+                    <td><?php echo get_string('fullname', 'openwebinar') ?></td>
                     <td><span id="shortprofile-fullname">-</span></td>
                 </tr>
                 <tr>
-                    <td><?php echo get_string('skype' , 'openwebinar')?></td>
+                    <td><?php echo get_string('skype', 'openwebinar') ?></td>
                     <td><span id="shortprofile-skype">-</span></td>
                 </tr>
             </table>
         </div>
     </div>
-    <div id="openwebinar-question-manager" style="display: none">
+    <div id="openwebinar-question-manager" class="yui3-widget-loading">
         <div class="yui3-widget-bd">
             <div id="all-questions">
                 <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
-                    <span class="openwebinar-button" id="addquestion"><?php echo get_string('btn:addquestion', 'openwebinar') ?></span>
+                    <span class="openwebinar-button" id="addquestion"><?php echo get_string('btn:addquestion',
+                                'openwebinar') ?></span>
                 <?php endif ?>
                 <div class="overview">
                     <ul>
@@ -453,7 +463,6 @@ echo $OUTPUT->header();
                     <span class="openwebinar-button previous  openwebinar-button-previous-step2">Previous</span>
                     <span class="openwebinar-button next disabled" id="open-add-btn">Create</span>
                     <h3>Create your open question</h3>
-
                     <form>
                         <label for="question-open">
                             Question:
@@ -469,7 +478,6 @@ echo $OUTPUT->header();
                     <span class="openwebinar-button previous openwebinar-button-previous-step2">Previous</span>
                     <span class="openwebinar-button next disabled" id="truefalse-add-btn">Create</span>
                     <h3>Create your true or false question</h3>
-
                     <form>
                         <label for="question-truefalse">
                             Question:

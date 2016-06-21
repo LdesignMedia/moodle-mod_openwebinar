@@ -14,8 +14,7 @@ namespace Symfony\Component\Console\Helper;
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class TableCell
-{
+class TableCell {
     /**
      * @var string
      */
@@ -25,21 +24,21 @@ class TableCell
      * @var array
      */
     private $options = array(
-        'rowspan' => 1,
-        'colspan' => 1,
+            'rowspan' => 1,
+            'colspan' => 1,
     );
 
     /**
      * @param string $value
-     * @param array  $options
+     * @param array $options
      */
-    public function __construct($value = '', array $options = array())
-    {
+    public function __construct($value = '', array $options = array()) {
         $this->value = $value;
 
         // check option names
         if ($diff = array_diff(array_keys($options), array_keys($this->options))) {
-            throw new \InvalidArgumentException(sprintf('The TableCell does not support the following options: \'%s\'.', implode('\', \'', $diff)));
+            throw new \InvalidArgumentException(sprintf('The TableCell does not support the following options: \'%s\'.',
+                    implode('\', \'', $diff)));
         }
 
         $this->options = array_merge($this->options, $options);
@@ -50,8 +49,7 @@ class TableCell
      *
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->value;
     }
 
@@ -60,8 +58,7 @@ class TableCell
      *
      * @return int
      */
-    public function getColspan()
-    {
+    public function getColspan() {
         return (int) $this->options['colspan'];
     }
 
@@ -70,8 +67,7 @@ class TableCell
      *
      * @return int
      */
-    public function getRowspan()
-    {
+    public function getRowspan() {
         return (int) $this->options['rowspan'];
     }
 }
