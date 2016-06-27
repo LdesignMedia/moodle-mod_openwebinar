@@ -739,7 +739,8 @@ M.mod_openwebinar.room = {
             this.add_chat();
         } else {
             // remove chat components
-            Y.all('#openwebinar-chat-holder .openwebinar-header, #openwebinar-message , #openwebinar-send , #openwebinar-emoticon-icon').hide();
+            Y.all('#openwebinar-chat-holder .openwebinar-header,' +
+                ' #openwebinar-message , #openwebinar-send , #openwebinar-emoticon-icon').hide();
         }
 
         // add file sharing
@@ -1041,7 +1042,8 @@ M.mod_openwebinar.room = {
         this.chat_local_message('ended');
         var that = this, dialog = new Y.Panel({
             contentBox : Y.Node.create('<div id="dialog" />'),
-            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' + M.util.get_string('js:dialog_ending_text', 'openwebinar', {}) + '</div>',
+            bodyContent: '<div class="message"><i class="icon-bubble"></i> ' +
+            M.util.get_string('js:dialog_ending_text', 'openwebinar', {}) + '</div>',
             width      : 410,
             zIndex     : 6,
             modal      : true, // modal behavior
@@ -1449,7 +1451,9 @@ M.mod_openwebinar.room = {
         for (name in this.emoticons) {
             if (this.emoticons.hasOwnProperty(name)) {
                 this.log(this.emoticons[name]);
-                items += '<span class="emoticon emoticon-' + name + '" title="' + this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] + '</span>';
+                items += '<span class="emoticon emoticon-' + name + '" title="' +
+                    this.emoticons[name].codes.join(',') + '">' + this.emoticons[name].codes[0] +
+                    '</span>';
             }
         }
         var content = Y.Node.create('<div id="openwebinar-emoticon-content">' + items + '</div>');
@@ -1516,7 +1520,8 @@ M.mod_openwebinar.room = {
                 }
 
                 // Start.
-                chatline += '<li class="openwebinar-chatline openwebinar-' + this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
+                chatline += '<li class="openwebinar-chatline openwebinar-' +
+                    this.alpha_numeric(data.usertype) + ' ' + (me ? 'me' : '') + '">' +
                     '<div class="message-container">';
 
                 if (this.options.showuserpicture) {
@@ -1526,8 +1531,10 @@ M.mod_openwebinar.room = {
                         '</span>';
                 }
 
-                chatline += '<span class="openwebinar-username" data-userid="' + Number(data.userid) + '">' + this.alpha_numeric(data.fullname) + '</span>' +
-                    '<span class="openwebinar-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                chatline += '<span class="openwebinar-username" data-userid="' + Number(data.userid) +
+                    '">' + this.alpha_numeric(data.fullname) + '</span>' +
+                    '<span class="openwebinar-timestamp">' +
+                    this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
                     '<span class="openwebinar-message">' + messagetext + '</span>' +
                     '</div>' +
                     '</li>';
@@ -1537,9 +1544,12 @@ M.mod_openwebinar.room = {
                 // Messages generate by server.
                 chatline += '<li class="openwebinar-chatline openwebinar-socketserver">' +
                     '<div class="message-container">' +
-                    '<span class="openwebinar-username">' + M.util.get_string('js:system_user', 'openwebinar', {}) + '</span>' +
-                    '<span class="openwebinar-timestamp">' + this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
-                    '<span class="openwebinar-message">' + M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-username">' +
+                    M.util.get_string('js:system_user', 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-timestamp">' +
+                    this.timestamp_to_humanreadable(data.timestamp) + '</span>' +
+                    '<span class="openwebinar-message">' +
+                    M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
                     '</div>' +
                     '</li>';
 
@@ -1550,9 +1560,12 @@ M.mod_openwebinar.room = {
                 // Messages generate by this script local.
                 chatline += '<li class="openwebinar-chatline openwebinar-local">' +
                     '<div class="message-container">' +
-                    '<span class="openwebinar-username noSelect">' + M.util.get_string('js:script_user', 'openwebinar', {}) + '</span>' +
-                    '<span class="openwebinar-timestamp noSelect">' + this.timestamp_to_humanreadable(date) + '</span>' +
-                    '<span class="openwebinar-message noSelect">' + M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-username noSelect">' +
+                    M.util.get_string('js:script_user', 'openwebinar', {}) + '</span>' +
+                    '<span class="openwebinar-timestamp noSelect">' +
+                    this.timestamp_to_humanreadable(date) + '</span>' +
+                    '<span class="openwebinar-message noSelect">' +
+                    M.util.get_string('js:' + data.message, 'openwebinar', {}) + '</span>' +
                     '</div>' +
                     '</li>';
             }
@@ -1710,7 +1723,9 @@ M.mod_openwebinar.room = {
             this.log(obj);
             message += '<div class="openwebinar-question">' +
                 '<span class="text">' + obj.text + '</span>' +
-                '<span class="openwebinar-button answerquestion" data-id="' + obj.question_id + '">' + M.util.get_string('js:answer', 'openwebinar', {}) + '</span>' +
+                '<span class="openwebinar-button answerquestion" data-id="' +
+                obj.question_id + '">'+ M.util.get_string('js:answer', 'openwebinar', {}) +
+                '</span>' +
                 '</div>';
 
         } catch (e) {
@@ -1955,15 +1970,22 @@ M.mod_openwebinar.room = {
 
                 this.log(userobject);
 
-                li = '<li id="userlist-user-' + Number(userobject.userid) + '" class="openwebinar-' + this.alpha_numeric(userobject.usertype) + ' noSelect">';
+                li = '<li id="userlist-user-' + Number(userobject.userid) +
+                    '" class="openwebinar-' + this.alpha_numeric(userobject.usertype) +
+                    ' noSelect">';
 
                 if (this.options.showuserpicture) {
-                    li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(userobject.userid) + '/f1.jpg" />';
+                    li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' +
+                        Number(userobject.userid) + '/f1.jpg" />';
                 }
 
-                li += '<span class="fullname" data-id="' + Number(userobject.userid) + '" data-skype="' + this.alpha_numeric(userobject.skype) + '">' + this.alpha_numeric(userobject.fullname) + '</span>' +
-                    '<span class="browser">' + userobject.useragent.os.name + ' ' + userobject.useragent.os.version + '<br/>' +
-                    userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major + '</span>';
+                li += '<span class="fullname" data-id="' + Number(userobject.userid) +
+                    '" data-skype="' + this.alpha_numeric(userobject.skype) + '">' +
+                    this.alpha_numeric(userobject.fullname) + '</span>' +
+                    '<span class="browser">' + userobject.useragent.os.name + ' ' +
+                    userobject.useragent.os.version + '<br/>' +
+                    userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major +
+                    '</span>';
 
                 li += '</li>';
 
@@ -2011,7 +2033,7 @@ M.mod_openwebinar.room = {
      */
     add_fileshare: function () {
         "use strict";
-        var filelist = '', i, obj, that = this;
+        var filelist = '', obj, that = this;
 
         this.nodeholder.filemanagerdialog = Y.one("#openwebinar-filemanager-dialog");
         this.nodeholder.fileoverviewdialog = Y.one("#openwebinar-fileoverview-dialog");
@@ -2117,7 +2139,7 @@ M.mod_openwebinar.room = {
 
                                     filelist = '';
                                     // Clear own file overview.
-                                    for (i in response.files) {
+                                    for (var i in response.files) {
                                         if (response.files.hasOwnProperty(i)) {
                                             obj = response.files[i];
                                             filelist += '<li class="openwebinar-file">' +
@@ -2131,10 +2153,14 @@ M.mod_openwebinar.room = {
                                                 '<span class="openwebinar-fileauthor">' +
                                                 that.alpha_numeric(obj.author) +
                                                 '</span>' +
-                                                '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/openwebinar/download.php?' +
-                                                'extra3=' + Number(obj.id) + '&extra2=' + that.options.openwebinarid + '&extra1='
-                                                + that.options.courseid + '&' + 'sesskey=' + M.cfg.sesskey +
-                                                '" class="openwebinar-download openwebinar-button">Download</a>' +
+                                                '<a target="_blank" href="' + M.cfg.wwwroot +
+                                                '/mod/openwebinar/download.php?' +
+                                                'extra3=' + Number(obj.id) + '&extra2=' +
+                                                that.options.openwebinarid + '&extra1='+
+                                                that.options.courseid + '&' + 'sesskey=' +
+                                                M.cfg.sesskey +
+                                                '" class="openwebinar-download openwebinar-button">' +
+                                                'Download</a>' +
                                                 '</li>';
                                         }
                                     }
@@ -2325,7 +2351,6 @@ M.mod_openwebinar.room = {
             // Prevent submits on enter.
             Y.all('#openwebinar-question-manager form').on('submit', function (e) {
                 e.preventDefault();
-                return false;
             });
         }
     },
@@ -2347,7 +2372,7 @@ M.mod_openwebinar.room = {
      */
     question_load_overview: function () {
         "use strict";
-        var that = this, html = '', i, question;
+        var that = this, html = '', question;
         Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
@@ -2364,7 +2389,7 @@ M.mod_openwebinar.room = {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
                             html = '';
-                            for (i in response.questions) {
+                            for (var i in response.questions) {
                                 if (response.questions.hasOwnProperty(i)) {
 
                                     question = response.questions[i];
