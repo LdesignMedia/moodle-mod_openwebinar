@@ -17,7 +17,8 @@ YUI.add('moodle-mod_openwebinar-room', function (Y, NAME) {
  * @type {{}|*}
  */
 M.mod_openwebinar = M.mod_openwebinar || {};
-// @todo Don't allow this to be public accessible
+
+// TODO: Don't allow this to be public accessible.
 M.mod_openwebinar.room = {
 
     /**
@@ -435,6 +436,14 @@ M.mod_openwebinar.room = {
     },
 
     /**
+     * Userid when click on popup
+     *
+     * @type int
+     * @protected
+     */
+    last_clicked_userid: null,
+
+    /**
      * A reference to the scrollview used in this module
      * @type tinyscrollbar
      * @protected
@@ -449,6 +458,13 @@ M.mod_openwebinar.room = {
     scrollview_chatlist: null,
 
     /**
+     * A reference to the scrollview used in this module
+     * @type tinyscrollbar
+     * @protected
+     */
+    scrollview_chatlist_pm: null,
+
+    /**
      * A reference to the scrollbar for file overview
      * @type tinyscrollbar
      * @protected
@@ -461,6 +477,13 @@ M.mod_openwebinar.room = {
      * @protected
      */
     scrollbar_chatlist: null,
+
+    /**
+     * A reference to the scrollbar for PM chatlist
+     * @type tinyscrollbar
+     * @protected
+     */
+    scrollbar_chatlist_pm: null,
 
     /**
      * Socket
@@ -529,25 +552,29 @@ M.mod_openwebinar.room = {
      * @protected
      */
     nodeholder: {
-        chatlist          : null,
-        userlist          : null,
-        topmenu           : null,
-        leftsidemenu      : null,
-        loadhistorybtn    : null,
-        userlist_counter  : null,
-        sendbutton        : null,
-        body              : null,
-        userlist_viewport : null,
-        chatlist_viewport : null,
-        filemanagerdialog : null,
-        fileoverviewdialog: null,
-        fileoverview      : null,
-        emoticonsdialog   : null,
-        questionmanager   : null,
-        addquestionbtn    : null,
-        questionoverview  : null,
-        noticebar         : null,
-        message           : null
+        chatlist            : null,
+        chatlist_pm         : null,
+        userlist            : null,
+        topmenu             : null,
+        leftsidemenu        : null,
+        loadhistorybtn      : null,
+        userlist_counter    : null,
+        sendbutton          : null,
+        sendbutton_pm       : null,
+        body                : null,
+        userlist_viewport   : null,
+        chatlist_viewport   : null,
+        chatlist_pm_viewport: null,
+        filemanagerdialog   : null,
+        fileoverviewdialog  : null,
+        fileoverview        : null,
+        emoticonsdialog     : null,
+        questionmanager     : null,
+        addquestionbtn      : null,
+        questionoverview    : null,
+        noticebar           : null,
+        message             : null,
+        message_pm          : null
     },
     /**
      * Internal logging
@@ -931,31 +958,36 @@ M.mod_openwebinar.room = {
             }
         }
 
-        // add hostname
+        // Add hostname.
         this.chatobject.hostname = window.location.hostname;
-        // add user agent
+
+        // Add user agent.
         this.chatobject.useragent = navigator.userAgent;
         this.log('connect_to_socket');
 
-        // Nodes
+        // Nodes.
         this.nodeholder.sendbutton = Y.one('#openwebinar-send');
         this.nodeholder.message = Y.one('#openwebinar-message');
 
-        // skip if its ended
+        // Nodes
+        this.nodeholder.sendbutton_pm = Y.one('#openwebinar-send-pm');
+        this.nodeholder.message_pm = Y.one('#openwebinar-message-pm');
+
+        // Skip if its ended.
         if (this.options.is_ended) {
             return;
         }
 
-        // Connect
+        // Connect.
         this.socket = io.connect(this.options.chat_server);
         this.socket.on('connect', function () {
 
             if (that.socket_is_connected === false) {
 
-                // we are reconnected
+                // We are reconnected.
                 that.chat_local_message('reconnected');
 
-                // Join the public room again
+                // Join the public room again.
                 this.emit("join", that.chatobject, function (response) {
                     if (!response.status) {
                         that.exception(response.error);
@@ -963,32 +995,39 @@ M.mod_openwebinar.room = {
                         that.chat_local_message('joined');
                     }
                 });
+
+                // Add private message listener.
+                this.add_incoming_private_message();
             }
 
             that.log('isConnected');
             that.socket_is_connected = true;
 
-            // enable chat input
+            // Enable public chat input.
             that.nodeholder.message.removeAttribute('disabled');
             that.nodeholder.sendbutton.set('text', M.util.get_string('js:send', 'openwebinar', {}));
+
+            // Enable PM chat.
+            that.nodeholder.message_pm.removeAttribute('disabled');
+            that.nodeholder.sendbutton_pm.set('text', M.util.get_string('js:send', 'openwebinar', {}));
         });
 
-        // connection failed
+        // Connection failed.
         this.socket.on('reconnect_failed', function () {
             that.socket_connection_failed('reconnect_failed');
         });
 
-        // broadcaster ending openwebinar called
+        // Broadcaster ending openwebinar called.
         this.socket.on('openwebinar-ended', function () {
             that.chat_ended();
         });
 
-        // disconnect
+        // Disconnect.
         this.socket.on('disconnect', function () {
             that.socket_connection_failed('disconnect');
         });
 
-        // generic error
+        // Generic error.
         this.socket.on('error', function () {
             that.log('Socket.io reported a generic error');
         });
@@ -1036,9 +1075,13 @@ M.mod_openwebinar.room = {
         this.log(message);
         this.socket_is_connected = false;
 
-        // disable chat input
+        // Disable chat input.
         this.nodeholder.message.setAttribute('disabled', 'disabled');
         this.nodeholder.sendbutton.set('text', M.util.get_string('js:wait_on_connection', 'openwebinar', {}));
+
+        // Disable pm input
+        this.nodeholder.message_pm.setAttribute('disabled', 'disabled');
+        this.nodeholder.sendbutton_pm.set('text', M.util.get_string('js:wait_on_connection', 'openwebinar', {}));
 
         this.chat_local_message(message);
 
@@ -1128,6 +1171,27 @@ M.mod_openwebinar.room = {
             } else {
                 that.files_uploaded_hashes[args.hash] = true;
             }
+        });
+    },
+
+    /**
+     * Notice user about new incoming messages
+     */
+    add_incoming_private_message: function () {
+        "use strict";
+        var that = this;
+        // Incoming private messages.
+        this.socket.on("new-incoming-private-message", function (data) {
+            that.log('INCOMING from: ' + data.fullname);
+            that.log('ID: ' + data.userid);
+            // add a blinking bar below
+            if (!Y.one('#incoming-' + data.userid)) {
+                var string = '<li id="incoming-' + Number(data.userid) + '" data-id="' + Number(data.userid) + '">' +
+                    '<b>' + data.fullname + '</b><span>' + M.util.get_string('js:new_incoming_message', 'openwebinar', {}) +
+                    '</span></li>';
+                Y.one('#incoming-bar').append(string);
+            }
+
         });
     },
 
@@ -1282,7 +1346,17 @@ M.mod_openwebinar.room = {
         // Add tinyscrollbar.
         var that = this, el = document.getElementById("openwebinar-chatlist");
         this.scrollbar_chatlist = tinyscrollbar(el);
+
+        // Add pm scrollers.
+        this.nodeholder.chatlist_pm_viewport = Y.one('#openwebinar-chatlist-pm .viewport');
+        this.nodeholder.chatlist_pm_viewport.setStyles({
+            height: 300
+        });
+        this.scrollbar_chatlist_pm = tinyscrollbar(el);
+
         this.nodeholder.chatlist = Y.one('#openwebinar-chatlist ul');
+        this.nodeholder.chatlist_pm = Y.one('#openwebinar-chatlist-pm ul');
+
         this.nodeholder.loadhistorybtn = Y.one('#openwebinar-loadhistory');
 
         if (!this.options.is_ended) {
@@ -1299,6 +1373,8 @@ M.mod_openwebinar.room = {
 
             // Socket call when getting a message.
             this.socket.on("update-chat", function (data) {
+                that.log("update-chat");
+                that.log(data);
                 that.chat_add_chatrow(data);
             });
         }
@@ -1306,6 +1382,10 @@ M.mod_openwebinar.room = {
         // Click on send button.
         this.nodeholder.sendbutton.on('click', function () {
             this.chat_send_message();
+        }, this);
+
+        this.nodeholder.sendbutton_pm.on('click', function () {
+            this.chat_send_message_pm();
         }, this);
 
         // Check if user can view history.
@@ -1353,6 +1433,9 @@ M.mod_openwebinar.room = {
         // Workaround for enter key YUI event not working here..
         // TODO: need new method we making this more private.
         this.nodeholder.message.setAttribute('onkeypress', 'return M.mod_openwebinar.room.chat_enter_listener(event);');
+        this.nodeholder.message_pm.setAttribute('onkeypress', 'return M.mod_openwebinar.room.chat_enter_listener(event);');
+
+
     },
 
     /**
@@ -1374,14 +1457,20 @@ M.mod_openwebinar.room = {
     },
     /**
      * Check if enter is pressed send the message
-     * @param e
+     * @param event
      * @returns {boolean}
      */
-    chat_enter_listener         : function (e) {
+    chat_enter_listener         : function (event) {
         "use strict";
         var that = this;
-        if (e.keyCode === 13) {
-            that.chat_send_message();
+        if (event.keyCode === 13) {
+            that.log('Enter pressed: ' + event.target.id);
+            if (event.target.id === 'openwebinar-message-pm') {
+                that.chat_send_message_pm();
+            } else {
+                that.chat_send_message();
+            }
+
             return false;
         }
     },
@@ -1482,15 +1571,28 @@ M.mod_openwebinar.room = {
             }
         }
 
-        // Inserts the content as the firstChild of the node.
-        if (direction === 'prepend') {
-            this.nodeholder.chatlist.prepend(chatline);
-        } else {
-            this.nodeholder.chatlist.append(chatline);
-        }
+        if (data.ispm === undefined) {
+            // Inserts the content as the firstChild of the node.
+            if (direction === 'prepend') {
+                this.nodeholder.chatlist.prepend(chatline);
+            } else {
+                this.nodeholder.chatlist.append(chatline);
+            }
 
-        // Scroll to bottom.
-        this.scrollbar_chatlist.update('bottom');
+            // Scroll to bottom.
+            this.scrollbar_chatlist.update('bottom');
+        } else {
+            this.log('private message');
+
+            if (direction === 'prepend') {
+                this.nodeholder.chatlist_pm.prepend(chatline);
+            } else {
+                this.nodeholder.chatlist_pm.append(chatline);
+            }
+
+            // Scroll to bottom.
+            this.scrollbar_chatlist_pm.update('bottom');
+        }
     },
 
     /**
@@ -1630,7 +1732,10 @@ M.mod_openwebinar.room = {
         try {
             var obj = Y.JSON.parse(args.slice(1));
             if (this.options.userid === Number(obj.created_by)) {
-                this.notice_bar_message('added_answer', data);
+
+                if (!this.options.is_ended) {
+                    this.notice_bar_message('added_answer', data);
+                }
             }
         } catch (e) {
             this.log(e);
@@ -1692,6 +1797,52 @@ M.mod_openwebinar.room = {
     },
 
     /**
+     * Send a message to chat server
+     */
+    chat_send_message_pm: function () {
+        "use strict";
+        var message = String(this.nodeholder.message_pm.get('value')), that = this;
+
+        this.log('chat_send_message_pm');
+
+        // Check if the message is a command.
+        if (message.charAt(0) === '/') {
+            this.chat_send_message_pm(message);
+            return;
+        }
+
+        // Prevent html tags [this will not prevent all more security on server side and when adding the message].
+        var regex = new RegExp('/(<([^>]+)>)/ig');
+        message = message.replace(regex, "");
+
+        this.log('Send: ' + message);
+        if (message.length === 0) {
+            return;
+        }
+
+        var chatobject = Y.clone(this.chatobject, true);
+        chatobject.message = message;
+        chatobject.ispm = true;
+        chatobject.pm_userid = Number(this.last_clicked_userid);
+
+        this.socket.emit("send", chatobject, function () {
+
+            that.log('ID: ' + that.last_clicked_userid);
+            // Notice the user about this.
+            that.socket.emit("send-notice-user", that.chatobject, that.last_clicked_userid, function (response) {
+                if (response.status) {
+                    that.log('Notice send');
+                } else {
+                    that.log(response.error);
+                }
+            });
+        });
+
+        // Clear.
+        this.nodeholder.message_pm.set('value', "");
+    },
+
+    /**
      * Set a exception
      * @param {string} errorstring
      */
@@ -1715,7 +1866,7 @@ M.mod_openwebinar.room = {
      */
     add_userlist: function () {
         "use strict";
-        var that = this, panel;
+        var that = this, panel, el = document.getElementById("openwebinar-chatlist-pm");
         this.log('add_userlist');
 
         // Set userlist node prevent searching the dom again.
@@ -1723,7 +1874,6 @@ M.mod_openwebinar.room = {
         this.nodeholder.userlist_counter = Y.one('#openwebinar-usercounter');
 
         // Add tinyscrollbar.
-        var el = document.getElementById("openwebinar-userlist");
         this.scrollbar_userlist = tinyscrollbar(el);
 
         // Userlist listener.
@@ -1731,25 +1881,53 @@ M.mod_openwebinar.room = {
             that.update_userlist(data);
         });
 
+        // Init panel.
+        panel = new Y.Panel({
+            width   : 520,
+            height  : 600,
+            zIndex  : 10,
+            centered: true,
+            modal   : true,
+            visible : false,
+            render  : true,
+            srcNode : '#openwebinar-shortprofile'
+        });
+
         // Show short-profile on user click this feature is only available for broadcaster.
         Y.one('body').delegate('click', function () {
-            that.log('user_click');
-            panel = new Y.Panel({
-                width   : 500,
-                height  : 300,
-                zIndex  : 10,
-                centered: true,
-                modal   : true,
-                visible : false,
-                render  : true,
-                srcNode : '#openwebinar-shortprofile'
-            });
+
+            // Set userid.
+            that.last_clicked_userid = Number(this.one('.fullname').getData('id'));
+
+            if (that.last_clicked_userid === that.chatobject.userid) {
+                // Can't open your own profile.
+                return;
+            }
+
+            // Clear previous messages.
+            that.nodeholder.chatlist_pm.setHTML('');
+
+            // Load the most recent messages from the server and socket.
+            that.log('Open shortprofile: ' + this.one('.fullname').get('text'));
+
             panel.show();
 
             // Copy click user parameters.
             Y.one('#shortprofile-skype').set('text', this.one('.fullname').getData('skype'));
             Y.one('#shortprofile-fullname').set('text', this.one('.fullname').get('text'));
-            Y.one('#shortprofile-avatar').setHTML(this.one('img').cloneNode(true));
+            Y.one('#shortprofile-avatar').setHTML(this.one('img').cloneNode(true).setStyles({'width': '60px'}));
+
+            // Connect to this room.
+            var chatobject = Y.clone(that.chatobject, true);
+            chatobject.pm_userid = Number(that.last_clicked_userid);
+
+            // Connect to userid.
+            that.socket.emit("join", chatobject, function (response) {
+                that.log(response);
+            });
+
+            // On reopening reload previous messages from the socket server.
+            that.scrollbar_chatlist_pm.update('bottom');
 
         }, '#openwebinar-userlist-holder ul li');
     },
@@ -1783,7 +1961,7 @@ M.mod_openwebinar.room = {
                     li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(userobject.userid) + '/f1.jpg" />';
                 }
 
-                li += '<span class="fullname" data-skype="' + this.alpha_numeric(userobject.skype) + '">' + this.alpha_numeric(userobject.fullname) + '</span>' +
+                li += '<span class="fullname" data-id="' + Number(userobject.userid) + '" data-skype="' + this.alpha_numeric(userobject.skype) + '">' + this.alpha_numeric(userobject.fullname) + '</span>' +
                     '<span class="browser">' + userobject.useragent.os.name + ' ' + userobject.useragent.os.version + '<br/>' +
                     userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major + '</span>';
 
@@ -1945,13 +2123,13 @@ M.mod_openwebinar.room = {
                                             filelist += '<li class="openwebinar-file">' +
                                                 '<img src="' + obj.thumbnail + '" alt="" />' +
                                                 '<span class="openwebinar-filename">' +
-                                                    that.alpha_numeric(obj.filename) +
+                                                that.alpha_numeric(obj.filename) +
                                                 '</span>' +
                                                 '<span class="openwebinar-filesize">' +
-                                                    that.alpha_numeric(obj.filesize) +
+                                                that.alpha_numeric(obj.filesize) +
                                                 '</span>' +
                                                 '<span class="openwebinar-fileauthor">' +
-                                                    that.alpha_numeric(obj.author) +
+                                                that.alpha_numeric(obj.author) +
                                                 '</span>' +
                                                 '<a target="_blank" href="' + M.cfg.wwwroot + '/mod/openwebinar/download.php?' +
                                                 'extra3=' + Number(obj.id) + '&extra2=' + that.options.openwebinarid + '&extra1='
@@ -2014,6 +2192,8 @@ M.mod_openwebinar.room = {
         "use strict";
         var that = this;
 
+        this.log('add_question_manager');
+
         this.nodeholder.questionoverview = Y.one('#all-questions ul');
         this.nodeholder.addquestionbtn = Y.one('#addquestion');
 
@@ -2031,6 +2211,8 @@ M.mod_openwebinar.room = {
 
         // Add click listener.
         Y.one('#openwebinar-viewquestion-btn').on('click', function () {
+            this.log('openwebinar-viewquestion-btn');
+
             // Fix issue not showing.
             this.nodeholder.questionmanager.show();
             // Load the question from the DB.
@@ -2049,14 +2231,16 @@ M.mod_openwebinar.room = {
             that.question_load_single(this.getData('id'));
         }, '.viewquestionbtn');
 
+        // Press on add answer in chat.
+        Y.one('body').delegate('click', function () {
+            that.log('Load answer');
+
+            that.nodeholder.questionmanager.show();
+            that.question_load_single(this.getData('id'));
+        }, '.answerquestion');
+
         // Check if we can still add questions.
         if (!this.options.is_ended) {
-
-            // Press on add answer in chat.
-            Y.one('body').delegate('click', function () {
-                that.nodeholder.questionmanager.show();
-                that.question_load_single(this.getData('id'));
-            }, '.answerquestion');
 
             // Add new question.
             if (this.nodeholder.addquestionbtn) {

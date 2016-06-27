@@ -9,6 +9,7 @@ YUI.add('moodle-mod_openwebinar-base', function (Y, NAME) {
  * @copyright 2015 MoodleFreak.com
  * @author Luuk Verhoeven
  **/
+
 /*jslint browser: true, white: true, vars: true, regexp: true*/
 /*global  M, Y, console, YUI , countdown*/
 M.mod_openwebinar = M.mod_openwebinar || {};

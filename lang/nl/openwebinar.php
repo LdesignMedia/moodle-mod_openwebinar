@@ -242,6 +242,7 @@ $string['opt:leave'] = 'Verlaat de openwebinar';
 $string['opt:header_general'] = 'Algemeen';
 
 // Js.
+$string['js:new_incoming_message'] = 'Nieuw bericht.';
 $string['js:my_answer_saved'] = 'Uw antwoord is opgeslagen.';
 $string['js:send'] = 'Verstuur';
 $string['js:answer'] = 'Antwoord';

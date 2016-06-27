@@ -311,7 +311,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         foreach ($qr as $record) {
             $table->data[] = array(
                     date('d-m-Y H:i:s', $record->timestamp),
-                    $this->convertmessagetoreadable($record->message)
+                    $this->convertmessagetoreadable($record->message, $openwebinar)
             );
         }
 
@@ -324,12 +324,57 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      * Internal parsing message text for log overview
      *
      * @param string $message
+     * @param stdClass $openwebinar
      *
      * @return string
      */
-    protected function convertmessagetoreadable($message = '') {
+    public function convertmessagetoreadable($message = '', stdClass $openwebinar) {
+        global $DB;
+
         if (strpos($message, '[') === 0) {
-            $message = '[shortcode]';
+
+            $re = "/\\[([\\w\\-_]+)([^\\]]*)?\\](?:(.+?)?\\[\\/\\1\\])?/";
+            preg_match_all($re, $message, $matches);
+
+            // Convert shortcode.
+            if (!empty($matches[1][0])) {
+                $args = !empty($matches[2][0]) ? json_decode($matches[2][0]) : false;
+                switch ($matches[1][0]) {
+
+                    case 'answer' :
+                        $answer = $DB->get_field('openwebinar_question_answer', 'answer_data',
+                                ['id' => $args->answerid]);
+                        $question = $DB->get_field('openwebinar_question', 'question_data',
+                                ['id' => $args->questionid]);
+
+                        if ($answer) {
+                            $message = '';
+                            $answer = unserialize($answer);
+                            $question = unserialize($question);
+                            $message .= \html_writer::tag('h4', $question->question, []);
+                            $message .= \html_writer::tag('p', $question->summary, []);
+                            $message .= \html_writer::tag('b', $answer->answer, []);
+                        }
+
+                        break;
+                    case 'file' :
+                        $message = '';
+                        $message .= \html_writer::tag('h4', $args->filename, []);
+                        $message .= html_writer::link(new moodle_url('/mod/openwebinar/download.php', [
+                                'extra3' => $args->id,
+                                'extra2' => $openwebinar->id,
+                                'extra1' => $openwebinar->course,
+                                'sesskey' => sesskey(),
+                        ]), '<img src="'
+                                . $args->thumbnail . '" />');
+                        break;
+                    case 'question' :
+                        $message = '[question]';
+                        break;
+                    default:
+                        $message = '[shortcode unable_to_convert]';
+                }
+            }
         }
 
         // TODO: convert emoticons in chatlog.

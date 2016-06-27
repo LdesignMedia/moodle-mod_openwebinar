@@ -149,9 +149,10 @@ class question {
 
         $status = $question->validation();
         if ($status['status']) {
-            $question->save_user_input();
+            $status['answerid'] = $question->save_user_input();
             $status['created_by'] = $question->get_created_by();
             $status['added_on'] = time();
+            $status['questionid'] = $questionid;
         }
 
         return $status;

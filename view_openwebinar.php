@@ -138,6 +138,7 @@ $PAGE->requires->yui_module('moodle-mod_openwebinar-room', 'M.mod_openwebinar.ro
 // Language strings.
 $PAGE->requires->strings_for_js(array(
         'js:send',
+        'js:new_incoming_message',
         'js:wait_on_connection',
         'js:joined',
         'js:connecting',
@@ -188,24 +189,29 @@ echo $OUTPUT->header();
             <div id="openwebinar-topbar-left">
                 <div id="openwebinar-menu">
                     <span class="arrow">&#x25BA;</span>
-                    <?php echo get_string('menu', 'openwebinar') ?>
+                    <?php print_string('menu', 'openwebinar') ?>
                 </div>
             </div>
+            <ul id="incoming-bar">
+                <ul>
+                    <!-- Holder -->
+                </ul>
+            </ul>
             <div id="openwebinar-topbar-right">
                 <?php if ($opts['showuserpicture']): ?>
                     <img src="<?php echo $CFG->wwwroot ?>/user/pix.php?file=/<?php echo $USER->id ?>/f1.jpg"/>
                 <?php endif ?>
                 <span class="fullname"><?php echo fullname($USER) ?> </span>
-                <span class="usertype"><?php echo get_string($opts['usertype'], 'openwebinar') ?></span>
+                <span class="usertype"><?php print_string($opts['usertype'], 'openwebinar') ?></span>
             </div>
         </section>
         <section id="openwebinar-left-menu" style="display: none">
             <ul>
-                <li class="header"><?php echo get_string('opt:header_general', 'openwebinar') ?></li>
+                <li class="header"><?php print_string('opt:header_general', 'openwebinar') ?></li>
                 <ul>
                     <li>
                         <div class="question">
-                            <?php echo get_string('opt:stream', 'openwebinar') ?>
+                            <?php print_string('opt:stream', 'openwebinar') ?>
                         </div>
                         <div class="switch">
                             <input id="stream" class="openwebinar-toggle" type="checkbox" checked>
@@ -215,7 +221,7 @@ echo $OUTPUT->header();
                     <?php if ($opts['userlist'] && !$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:userlist', 'openwebinar') ?>
+                                <?php print_string('opt:userlist', 'openwebinar') ?>
                             </div>
                             <div class="switch">
                                 <input id="userlist" class="openwebinar-toggle" type="checkbox" checked>
@@ -226,7 +232,7 @@ echo $OUTPUT->header();
                     <?php if (!$opts['is_ended']): ?>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:chat_sound', 'openwebinar') ?>
+                                <?php print_string('opt:chat_sound', 'openwebinar') ?>
                             </div>
                             <div class="switch">
                                 <input id="sound" class="openwebinar-toggle" type="checkbox" checked>
@@ -236,14 +242,14 @@ echo $OUTPUT->header();
                     <?php endif; ?>
                 </ul>
                 <?php if ($permissions->broadcaster && !$opts['is_ended']): ?>
-                    <li class="header"><?php echo get_string('opt:header_broadcaster', 'openwebinar') ?></li>
+                    <li class="header"><?php print_string('opt:header_broadcaster', 'openwebinar') ?></li>
                     <ul>
                         <li class="text">
-                            <?php echo get_string('text:broadcaster_help', 'openwebinar', $openwebinar) ?>
+                            <?php print_string('text:broadcaster_help', 'openwebinar', $openwebinar) ?>
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_guests', 'openwebinar') ?>
+                                <?php print_string('opt:mute_guests', 'openwebinar') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_guest" class="openwebinar-toggle" type="checkbox" checked>
@@ -252,7 +258,7 @@ echo $OUTPUT->header();
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_students', 'openwebinar') ?>
+                                <?php print_string('opt:mute_students', 'openwebinar') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_student" class="openwebinar-toggle" type="checkbox">
@@ -261,7 +267,7 @@ echo $OUTPUT->header();
                         </li>
                         <li>
                             <div class="question">
-                                <?php echo get_string('opt:mute_teachers', 'openwebinar') ?>
+                                <?php print_string('opt:mute_teachers', 'openwebinar') ?>
                             </div>
                             <div class="switch">
                                 <input id="mute_teacher" class="openwebinar-toggle" type="checkbox">
@@ -270,10 +276,10 @@ echo $OUTPUT->header();
                         </li>
                     </ul>
                 <?php else: ?>
-                    <li class="header"><?php echo get_string('opt:header_exit', 'openwebinar') ?></li>
+                    <li class="header"><?php print_string('opt:header_exit', 'openwebinar') ?></li>
                     <ul>
                         <li>
-                            <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:leave',
+                            <span class="openwebinar-button red" id="openwebinar-leave"><?php print_string('opt:leave',
                                         'openwebinar') ?></span>
                         </li>
                     </ul>
@@ -285,13 +291,13 @@ echo $OUTPUT->header();
             <header>
                 <?php if ($openwebinar->is_ended == 0): ?>
                     <?php if ($permissions->broadcaster): ?>
-                        <span class="openwebinar-button red" id="openwebinar-leave"><?php echo get_string('opt:endopenwebinar',
+                        <span class="openwebinar-button red" id="openwebinar-leave"><?php print_string('opt:endopenwebinar',
                                     'openwebinar') ?></span>
                     <?php else: ?>
-                        <span id="openwebinar-status" class="online"><?php echo get_string('live', 'openwebinar') ?></span>
+                        <span id="openwebinar-status" class="online"><?php print_string('live', 'openwebinar') ?></span>
                     <?php endif ?>
                 <?php else: ?>
-                    <span id="openwebinar-status" class="offline"><?php echo get_string('offline', 'openwebinar') ?></span>
+                    <span id="openwebinar-status" class="offline"><?php print_string('offline', 'openwebinar') ?></span>
                 <?php endif ?>
                 <h1><?php echo format_string($openwebinar->name) ?>
                     <small><?php echo format_string($course->fullname) ?></small>
@@ -301,7 +307,7 @@ echo $OUTPUT->header();
         <section id="openwebinar-right">
             <div id="openwebinar-userlist-holder">
                 <div class="openwebinar-header">
-                    <h2><?php echo get_string('users', 'openwebinar') ?> <span id="openwebinar-usercounter">(0)</span>
+                    <h2><?php print_string('users', 'openwebinar') ?> <span id="openwebinar-usercounter">(0)</span>
                     </h2>
                 </div>
                 <div id="openwebinar-userlist" class="scroll">
@@ -325,9 +331,9 @@ echo $OUTPUT->header();
                 <div class="openwebinar-header">
                     <span id="openwebinar-loadhistory" class="openwebinar-button" style="display: none">
                         Load previous messages</span>
-                    <h2><?php echo get_string('chat', 'openwebinar') ?></h2>
+                    <h2><?php print_string('chat', 'openwebinar') ?></h2>
                 </div>
-                <div id="openwebinar-chatlist" class="scroll">
+                <div id="openwebinar-chatlist" class="scroll openwebinar-chatlist">
                     <div class="scrollbar">
                         <div class="track">
                             <div class="thumb">
@@ -349,7 +355,7 @@ echo $OUTPUT->header();
                     </div>
                     <div id="openwebinar-fileoverview-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
-                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
+                            <span><?php print_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <div id="openwebinar-fileoverview" class="scroll">
@@ -369,20 +375,20 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog yui3-widget-loading">
+                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog"  style="display: none">
                         <header>
-                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
+                            <span><?php print_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <?php if (!empty($form)): ?>
                             <?php echo $form->render() ?>
-                            <span id="add-file-btn" class="openwebinar-button"><?php echo get_string('addfile',
+                            <span id="add-file-btn" class="openwebinar-button"><?php print_string('addfile',
                                         'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
                     <div id="openwebinar-emoticons-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
-                            <span><?php echo get_string('Close', 'openwebinar') ?></span>
+                            <span><?php print_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <div id="emoticons-overview">
@@ -391,18 +397,19 @@ echo $OUTPUT->header();
                     </div>
                     <div id="openwebinar-toolbar">
                         <?php if ($opts['filesharing']): ?>
-                            <span id="openwebinar-filemanager-btn"><?php echo get_string('filemanager', 'openwebinar') ?></span>
-                            <span id="openwebinar-fileoverview-btn"><?php echo get_string('fileoverview', 'openwebinar') ?></span>
+                            <span id="openwebinar-filemanager-btn"><?php print_string('filemanager', 'openwebinar') ?></span>
+                            <span id="openwebinar-fileoverview-btn"><?php print_string('fileoverview', 'openwebinar') ?></span>
                         <?php endif ?>
                         <?php if ($opts['questions']): ?>
-                            <span id="openwebinar-viewquestion-btn"><?php echo get_string('question_overview',
+                            <span id="openwebinar-viewquestion-btn"><?php print_string('question_overview',
                                         'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
                     <span id="openwebinar-emoticon-icon"></span>
-                    <input autocomplete="off" type="text" disabled placeholder="<?php echo get_string('message_placeholder',
-                            'openwebinar') ?>" name="message" id="openwebinar-message"/>
-                    <span id="openwebinar-send"><?php echo get_string('js:wait_on_connection', 'openwebinar') ?></span>
+                    <input autocomplete="off" type="text" disabled placeholder="<?php print_string('message_placeholder',
+                            'openwebinar') ?>" name="message" class="openwebinar-message-input" id="openwebinar-message" />
+                    <span id="openwebinar-send" class="openwebinar-send-btn">
+                        <?php print_string('js:wait_on_connection', 'openwebinar') ?></span>
                 </div>
             </div>
         </section>
@@ -411,24 +418,44 @@ echo $OUTPUT->header();
         <div class="yui3-widget-bd">
             <table class="table table-bordered">
                 <tr>
-                    <td colspan="2" id="shortprofile-avatar"></td>
+                    <td colspan="2" id="shortprofile-avatar" style="text-align: center"></td>
                 </tr>
                 <tr>
-                    <td><?php echo get_string('fullname', 'openwebinar') ?></td>
+                    <td><?php print_string('fullname', 'openwebinar') ?></td>
                     <td><span id="shortprofile-fullname">-</span></td>
                 </tr>
                 <tr>
-                    <td><?php echo get_string('skype', 'openwebinar') ?></td>
+                    <td><?php print_string('skype', 'openwebinar') ?></td>
                     <td><span id="shortprofile-skype">-</span></td>
                 </tr>
             </table>
+            <div id="openwebinar-chatlist-pm" class="scroll openwebinar-chatlist">
+                <div class="scrollbar">
+                    <div class="track">
+                        <div class="thumb">
+                            <div class="end"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewport">
+                    <div class="overview">
+                        <ul>
+                            <!-- Holder -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <input autocomplete="off" type="text" disabled placeholder="<?php print_string('message_placeholder',
+                    'openwebinar') ?>" name="message-pm" class="openwebinar-message-input" id="openwebinar-message-pm" />
+            <span id="openwebinar-send-pm" class="openwebinar-send-btn">
+                <?php print_string('js:wait_on_connection', 'openwebinar') ?></span>
         </div>
     </div>
     <div id="openwebinar-question-manager" class="yui3-widget-loading">
         <div class="yui3-widget-bd">
             <div id="all-questions">
                 <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
-                    <span class="openwebinar-button" id="addquestion"><?php echo get_string('btn:addquestion',
+                    <span class="openwebinar-button" id="addquestion"><?php print_string('btn:addquestion',
                                 'openwebinar') ?></span>
                 <?php endif ?>
                 <div class="overview">

@@ -259,7 +259,9 @@ class api {
         $this->get_module_information();
 
         $this->response['messages'] = $DB->get_records('openwebinar_messages', array(
-                'openwebinar_id' => $this->openwebinar->id), 'timestamp ASC');
+                'openwebinar_id' => $this->openwebinar->id,
+                'roomtype' => '_public'),
+                'timestamp ASC');
 
         $this->response['status'] = true;
 

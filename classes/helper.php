@@ -191,7 +191,8 @@ class helper {
      */
     public static function save_messages($data = false) {
         global $DB;
-        $openwebinar = $DB->get_record('openwebinar', array('broadcastkey' => str_replace('_public', '', $data->broadcastkey)), '*',
+
+        $openwebinar = $DB->get_record('openwebinar', array('broadcastkey' => substr($data->broadcastkey, 0, 36)), '*',
                 MUST_EXIST);
 
         $now = time();
@@ -209,6 +210,14 @@ class helper {
             $obj->message = $message->message;
             $obj->timestamp = (int) $message->timestamp;
             $obj->addedon = $now;
+
+            // Personal messages.
+            if (stristr($data->broadcastkey, '_pm_')) {
+                // Cleanup.
+                // TODO: could be improved.
+                $string = str_replace(substr($data->broadcastkey, 0, 47), '', $data->broadcastkey);
+                $obj->roomtype = $string;
+            }
 
             $DB->insert_record('openwebinar_messages', $obj);
         }

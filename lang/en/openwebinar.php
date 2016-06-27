@@ -236,6 +236,7 @@ $string['opt:leave'] = 'Leave openwebinar';
 $string['opt:header_general'] = 'General';
 
 // Js.
+$string['js:new_incoming_message'] = 'New message';
 $string['js:my_answer_saved'] = 'Your answer has been saved.';
 $string['js:send'] = 'Send';
 $string['js:answer'] = 'Answer';

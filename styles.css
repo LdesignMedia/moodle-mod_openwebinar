@@ -240,21 +240,21 @@
     float: right;
 }
 
-#openwebinar-chatlist ul {
+.openwebinar-chatlist ul {
     list-style: none;
     margin: 0;
     padding: 0;
     width: 380px;
 }
 
-#openwebinar-chatlist ul li {
+.openwebinar-chatlist ul li {
     width: 100%;
     margin: 10px 0 0 0;
     padding: 0;
     overflow: hidden;
 }
 
-#openwebinar-chatlist .message-container {
+.openwebinar-chatlist .message-container {
     float: right;
     clear: both;
     width: 353px;
@@ -264,7 +264,7 @@
     border: 1px solid #EFF0F4;
 }
 
-#openwebinar-chatlist .openwebinar-socketserver .message-container, #openwebinar-chatlist .openwebinar-local .message-container {
+.openwebinar-chatlist .openwebinar-socketserver .message-container, .openwebinar-chatlist .openwebinar-local .message-container {
     background: #F1F1F1;
 }
 
@@ -283,7 +283,7 @@
     line-height: 10px;
 }
 
-#openwebinar-chatlist .openwebinar-message {
+.openwebinar-chatlist .openwebinar-message {
     word-wrap: break-word;
     display: block;
     width: 100%;
@@ -324,12 +324,12 @@
     padding-bottom: 5px;
 }
 
-#openwebinar-chatlist ul li .openwebinar-avatar {
+.openwebinar-chatlist ul li .openwebinar-avatar {
     float: left;
     margin-right: 5px;
 }
 
-#openwebinar-chatlist ul li .openwebinar-avatar img {
+.openwebinar-chatlist ul li .openwebinar-avatar img {
     width: 20px;
     height: 20px;
 }
@@ -344,7 +344,7 @@
     width: 400px;
 }
 
-#openwebinar-message {
+input[type="text"].openwebinar-message-input {
     background: #fff;
     margin: 0 10px;
     border-radius: 3px;
@@ -358,7 +358,11 @@
     border: 1px solid #CCCCCC;
 }
 
-#openwebinar-send {
+#openwebinar-message-pm {
+    float: left;
+}
+
+.openwebinar-send-btn {
     border-radius: 3px;
     display: block;
     cursor: pointer;
@@ -412,7 +416,7 @@
 }
 
 #openwebinar-topbar-left {
-    position: absolute;
+    float: left;
     color: #fff;
     height: 50px;
     line-height: 50px;
@@ -815,4 +819,30 @@ input.openwebinar-toggle:checked + label:after {
 
 .yui3-widget-loading {
     display: none;
+}
+
+#incoming-bar {
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+#incoming-bar li{
+    float: left;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 5px;
+    list-style: none;
+    animation: blinker 4s linear infinite;
+    background: #faeb19;
+}
+#incoming-bar li b{
+    display: block;
+}
+#incoming-bar li span{
+    display: block;
+}
+
+@keyframes blinker {
+    50% { opacity: 0.0; }
 }
