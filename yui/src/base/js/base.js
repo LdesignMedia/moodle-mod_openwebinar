@@ -16,7 +16,6 @@ M.mod_openwebinar.base = {
     /**
      * Openwebinar variables
      * @type Object
-     * @protected
      */
     options: {
         debugjs : true,
