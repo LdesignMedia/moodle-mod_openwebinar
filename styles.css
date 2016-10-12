@@ -290,6 +290,7 @@
     float: left;
     clear: both;
     margin: 5px 0;
+    text-align: left;
 }
 
 .openwebinar-file img {
@@ -821,13 +822,22 @@ input.openwebinar-toggle:checked + label:after {
     display: none;
 }
 
+#incoming-bar img {
+    width: 16px;
+    float: left;
+}
+
 #incoming-bar {
     float: left;
     margin: 0;
     padding: 0;
 }
-#incoming-bar li{
+
+#incoming-bar li {
     float: left;
+    width: 145px;
+    height: 40px;
+    overflow: hidden;
     text-align: center;
     cursor: pointer;
     margin: 0 5px;
@@ -836,13 +846,25 @@ input.openwebinar-toggle:checked + label:after {
     animation: blinker 4s linear infinite;
     background: #faeb19;
 }
-#incoming-bar li b{
+
+#incoming-bar li b {
     display: block;
 }
-#incoming-bar li span{
+
+#incoming-bar li span {
     display: block;
 }
 
 @keyframes blinker {
-    50% { opacity: 0.0; }
+    50% {
+        opacity: 0.0;
+    }
+}
+
+#openwebinar-shortprofile .yui3-widget-buttons .yui3-button {
+    margin: 0;
+}
+
+#openwebinar-shortprofile .yui3-widget-buttons {
+    padding: 1px;
 }

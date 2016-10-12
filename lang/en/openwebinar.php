@@ -266,7 +266,7 @@ $string['js:added_question'] = 'Your question has been send to client(s) in the 
 $string['js:countdown_line1'] = ' millisecond| second| minute| hour| day| week| month| year| decade| century| millennium';
 $string['js:countdown_line2'] = ' milliseconds| seconds| minutes| hours| days| weeks| months| years| decades| centuries| millennia';
 $string['js:countdown_line3'] = ' and ';
-
+$string['js:new_incoming_message'] = 'New message';
 // HEADING Tables.
 $string['heading:picture'] = 'Avatar';
 $string['heading:firstname'] = 'Firstname';

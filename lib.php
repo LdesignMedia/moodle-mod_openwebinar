@@ -98,7 +98,7 @@ function openwebinar_get_coursemodule_info($coursemodule) {
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param stdClass $openwebinar           Submitted data from the form in mod_form.php
+ * @param stdClass $openwebinar Submitted data from the form in mod_form.php
  *
  * @return int The id of the newly inserted openwebinar record
  */
@@ -133,7 +133,7 @@ function openwebinar_add_instance(stdClass $openwebinar) {
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param stdClass $openwebinar           An object from the form in mod_form.php
+ * @param stdClass $openwebinar An object from the form in mod_form.php
  *
  * @return boolean Success/Fail
  */
@@ -332,7 +332,7 @@ function openwebinar_pluginfile($course, $cm, $context, $filearea, array $args, 
  *
  * @return void
  */
-function openwebinar_extend_settings_navigation($settings, $openwebinarnode) {
+function openwebinar_extend_settings_navigation(settings_navigation $settings, navigation_node $openwebinarnode) {
     global $PAGE, $CFG;
 
     // We want to add these new nodes after the Edit settings node, and before the
@@ -356,6 +356,6 @@ function openwebinar_extend_settings_navigation($settings, $openwebinarnode) {
     }
 
     // Included here as we only ever want to include this file if we really need to.
-    require_once($CFG->libdir . '/questionlib.php');
-    question_extend_settings_navigation($openwebinarnode, $PAGE->cm->context)->trim_if_empty();
+    //require_once($CFG->libdir . '/questionlib.php');
+    //question_extend_settings_navigation($openwebinarnode, $PAGE->cm->context)->trim_if_empty();
 }

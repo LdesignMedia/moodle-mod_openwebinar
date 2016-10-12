@@ -48,13 +48,17 @@ if ($id) {
     }
 }
 
-require_login($course, true, $cm);
+// Get context.
+$context = context_module::instance($cm->id);
 
 // Print the page header.
 $PAGE->set_url('/mod/openwebinar/view.php', array('id' => $cm->id));
+$PAGE->set_context($context);
 $PAGE->set_title(format_string($openwebinar->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-openwebinar');
+
+require_login($course, true, $cm);
 
 // Convert openwebinar data to JS.
 $opts = (array) $openwebinar;

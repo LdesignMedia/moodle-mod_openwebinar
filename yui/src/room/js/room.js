@@ -7,7 +7,6 @@
  * @copyright 2015 MoodleFreak.com
  * @author Luuk Verhoeven
  **/
-/*jslint browser: true, white: true, vars: true, regexp: true*/
 /*global  M, Y, videojs, console, io, tinyscrollbar, alert, YUI, confirm, Audio */
 
 /**
@@ -438,7 +437,7 @@ M.mod_openwebinar.room = {
      * @type int
      * @protected
      */
-    last_clicked_userid: null,
+    userid_from_open_pm_dialog: null,
 
     /**
      * A reference to the scrollview used in this module
@@ -481,6 +480,11 @@ M.mod_openwebinar.room = {
      * @protected
      */
     scrollbar_chatlist_pm: null,
+
+    /**
+     * @type Object
+     */
+    pm_buffer: {},
 
     /**
      * Socket
@@ -994,9 +998,6 @@ M.mod_openwebinar.room = {
                         that.chat_local_message('joined');
                     }
                 });
-
-                // Add private message listener.
-                this.add_incoming_private_message();
             }
 
             that.log('isConnected');
@@ -1009,6 +1010,9 @@ M.mod_openwebinar.room = {
             // Enable PM chat.
             that.nodeholder.message_pm.removeAttribute('disabled');
             that.nodeholder.sendbutton_pm.set('text', M.util.get_string('js:send', 'openwebinar', {}));
+
+            // Add private message listener.
+            that.add_incoming_private_message();
         });
 
         // Connection failed.
@@ -1176,22 +1180,36 @@ M.mod_openwebinar.room = {
 
     /**
      * Notice user about new incoming messages
+     * @todo maybe we can remove this function in future, there should already be a incoming message
      */
     add_incoming_private_message: function () {
         "use strict";
         var that = this;
         // Incoming private messages.
+        that.log('start PM listener.');
+
         this.socket.on("new-incoming-private-message", function (data) {
             that.log('INCOMING from: ' + data.fullname);
             that.log('ID: ' + data.userid);
+            that.log(data);
+
+            // Save messages in a buffer.
+            if (that.pm_buffer[data.userid] === undefined) {
+                that.pm_buffer[data.userid] = [];
+            }
+            data.messagetype = 'default';
+            that.pm_buffer[data.userid].push(data);
+
+            that.log(that.pm_buffer);
+
             // Add a blinking bar below.
-            if (!Y.one('#incoming-' + data.userid)) {
-                var string = '<li id="incoming-' + Number(data.userid) + '" data-id="' + Number(data.userid) + '">' +
-                    '<b>' + data.fullname + '</b><span>' + M.util.get_string('js:new_incoming_message', 'openwebinar', {}) +
+            if (!Y.one('#incoming-' + data.userid) && that.userid_from_open_pm_dialog !== data.userid) {
+                var string = '<li id="incoming-' + Number(data.userid) + '">' +
+                    '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' + Number(data.userid) + '/f1.jpg" />' +
+                    '<b class="fullname" data-id="' + Number(data.userid) + '" data-skype="' + that.alpha_numeric(data.skype) + '">' + data.fullname + '</b><span>' + M.util.get_string('js:new_incoming_message', 'openwebinar', {}) +
                     '</span></li>';
                 Y.one('#incoming-bar').append(string);
             }
-
         });
     },
 
@@ -1344,7 +1362,7 @@ M.mod_openwebinar.room = {
         this.log('add_chat');
 
         // Add tinyscrollbar.
-        var that = this, el = document.getElementById("openwebinar-chatlist");
+        var that = this, el = document.getElementById("openwebinar-chatlist"), el2 = document.getElementById("openwebinar-chatlist-pm");
         this.scrollbar_chatlist = tinyscrollbar(el);
 
         // Add pm scrollers.
@@ -1352,7 +1370,7 @@ M.mod_openwebinar.room = {
         this.nodeholder.chatlist_pm_viewport.setStyles({
             height: 300
         });
-        this.scrollbar_chatlist_pm = tinyscrollbar(el);
+        this.scrollbar_chatlist_pm = tinyscrollbar(el2);
 
         this.nodeholder.chatlist = Y.one('#openwebinar-chatlist ul');
         this.nodeholder.chatlist_pm = Y.one('#openwebinar-chatlist-pm ul');
@@ -1583,6 +1601,7 @@ M.mod_openwebinar.room = {
         }
 
         if (data.ispm === undefined) {
+            this.log('public message');
             // Inserts the content as the firstChild of the node.
             if (direction === 'prepend') {
                 this.nodeholder.chatlist.prepend(chatline);
@@ -1594,12 +1613,15 @@ M.mod_openwebinar.room = {
             this.scrollbar_chatlist.update('bottom');
         } else {
             this.log('private message');
+            this.log(chatline);
 
             if (direction === 'prepend') {
                 this.nodeholder.chatlist_pm.prepend(chatline);
             } else {
                 this.nodeholder.chatlist_pm.append(chatline);
             }
+
+            this.log('scrollbar scroll down.');
 
             // Scroll to bottom.
             this.scrollbar_chatlist_pm.update('bottom');
@@ -1836,13 +1858,27 @@ M.mod_openwebinar.room = {
         var chatobject = Y.clone(this.chatobject, true);
         chatobject.message = message;
         chatobject.ispm = true;
-        chatobject.pm_userid = Number(this.last_clicked_userid);
+        chatobject.pm_userid = Number(this.userid_from_open_pm_dialog);
+        chatobject.messagetype = 'default';
+        chatobject.timestamp = Math.round(new Date().getTime() / 1000);
+
+        // Save own messages
+        if (this.pm_buffer[this.userid_from_open_pm_dialog] === undefined) {
+            this.pm_buffer[this.userid_from_open_pm_dialog] = [];
+        }
+        this.pm_buffer[this.userid_from_open_pm_dialog].push(chatobject);
 
         this.socket.emit("send", chatobject, function () {
 
-            that.log('ID: ' + that.last_clicked_userid);
+            that.log('ID: ' + that.userid_from_open_pm_dialog);
+
+            // Notice.
+            var chatobj = Y.clone(that.chatobject, true);
+            chatobj.message = message;
+            chatobj.ispm = true;
+
             // Notice the user about this.
-            that.socket.emit("send-notice-user", that.chatobject, that.last_clicked_userid, function (response) {
+            that.socket.emit("send-notice-user", chatobj, that.userid_from_open_pm_dialog, function (response) {
                 if (response.status) {
                     that.log('Notice send');
                 } else {
@@ -1896,23 +1932,34 @@ M.mod_openwebinar.room = {
 
         // Init panel.
         panel = new Y.Panel({
-            width   : 520,
+            width   : 400,
             height  : 600,
             zIndex  : 10,
             centered: true,
             modal   : true,
             visible : false,
             render  : true,
-            srcNode : '#openwebinar-shortprofile'
+            srcNode : '#openwebinar-shortprofile',
+            buttons : [{
+                value  : "X",
+                section: "header",
+                action : function (e) {
+                    that.userid_from_open_pm_dialog = null;
+                    e.preventDefault();
+                    panel.hide();
+                }
+            }]
         });
+        that.log(panel);
 
         // Show short-profile on user click this feature is only available for broadcaster.
         Y.one('body').delegate('click', function () {
+            var userid = Number(this.one('.fullname').getData('id'));
 
             // Set userid.
-            that.last_clicked_userid = Number(this.one('.fullname').getData('id'));
+            that.userid_from_open_pm_dialog = userid;
 
-            if (that.last_clicked_userid === that.chatobject.userid) {
+            if (that.userid_from_open_pm_dialog === that.chatobject.userid) {
                 // Can't open your own profile.
                 return;
             }
@@ -1923,6 +1970,12 @@ M.mod_openwebinar.room = {
             // Load the most recent messages from the server and socket.
             that.log('Open shortprofile: ' + this.one('.fullname').get('text'));
 
+            // Remove blinking incoming message if there is any.
+            if (Y.one('#incoming-' + userid)) {
+                Y.one('#incoming-' + userid).remove();
+            }
+
+            // Show shortprofile.
             panel.show();
 
             // Copy click user parameters.
@@ -1930,20 +1983,43 @@ M.mod_openwebinar.room = {
             Y.one('#shortprofile-fullname').set('text', this.one('.fullname').get('text'));
             Y.one('#shortprofile-avatar').setHTML(this.one('img').cloneNode(true).setStyles({'width': '60px'}));
 
-            // Connect to this room.
-            var chatobject = Y.clone(that.chatobject, true);
-            chatobject.pm_userid = Number(that.last_clicked_userid);
-
-            // Connect to userid.
-            that.socket.emit("join", chatobject, function (response) {
-                that.log(response);
-            });
+            // Make a connection between users.
+            that.connect_to_pm_user(that.userid_from_open_pm_dialog);
 
             // On reopening reload previous messages from the socket server.
             that.scrollbar_chatlist_pm.update('bottom');
 
-        }, '#openwebinar-userlist-holder ul li');
+        }, '#openwebinar-userlist-holder ul li, #incoming-bar li');
     },
+
+    /**
+     * Connect to a user
+     * @param {int} userid_connect_to
+     */
+    connect_to_pm_user: function (userid_connect_to) {
+        "use strict";
+        var that = this;
+
+        // Connect to this room.
+        var chatobject = Y.clone(that.chatobject, true);
+        chatobject.pm_userid = Number(userid_connect_to);
+
+        // Connect to userid.
+        that.socket.emit("join", chatobject, function (response) {
+            that.log(response);
+        });
+
+        // Load history.
+        if (that.pm_buffer[userid_connect_to] !== undefined) {
+            that.log('add history');
+            for (var i in that.pm_buffer[userid_connect_to]) {
+                that.chat_add_chatrow(that.pm_buffer[userid_connect_to][i]);
+            }
+        } else {
+            that.log('no history');
+        }
+    },
+
 
     /**
      * Update userlist

@@ -44,10 +44,19 @@ if ($id) {
     }
 }
 
-require_login($course, true, $cm);
-
 // Get context.
 $context = context_module::instance($cm->id);
+
+// Print the page header.
+$PAGE->set_context($context);
+$PAGE->set_url('/mod/openwebinar/view_openwebinar.php', array('id' => $cm->id));
+
+require_login($course, true, $cm);
+
+$PAGE->set_title(format_string($openwebinar->name));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->add_body_class('moodlefreak-openwebinar-room');
+$PAGE->set_pagelayout('embedded');
 
 $event = \mod_openwebinar\event\course_module_viewed::create(array(
         'objectid' => $PAGE->cm->instance,
@@ -57,12 +66,6 @@ $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $openwebinar);
 $event->trigger();
 
-// Print the page header.
-$PAGE->set_url('/mod/openwebinar/view_openwebinar.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($openwebinar->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->add_body_class('moodlefreak-openwebinar-room');
-$PAGE->set_pagelayout('embedded');
 
 // Load plugin config.
 $config = get_config('openwebinar');
@@ -193,9 +196,6 @@ echo $OUTPUT->header();
                 </div>
             </div>
             <ul id="incoming-bar">
-                <ul>
-                    <!-- Holder -->
-                </ul>
             </ul>
             <div id="openwebinar-topbar-right">
                 <?php if ($opts['showuserpicture']): ?>
