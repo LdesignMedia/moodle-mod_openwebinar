@@ -108,4 +108,9 @@ if ($ADMIN->fulltree) {
             get_string('setting:hls', 'openwebinar'),
             get_string('setting:hls_desc', 'openwebinar'), 0));
 
+    $settings->add(new admin_setting_configcheckbox('openwebinar/show_skype_popup',
+            get_string('setting:show_skype_popup', 'openwebinar'),
+            get_string('setting:show_skype_popup', 'openwebinar'), 1));
+
+
 }

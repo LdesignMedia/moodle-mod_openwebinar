@@ -60,8 +60,13 @@ $PAGE->add_body_class('moodlefreak-openwebinar');
 
 require_login($course, true, $cm);
 
+// Load plugin config.
+$config = get_config('openwebinar');
+
 // Convert openwebinar data to JS.
 $opts = (array) $openwebinar;
+$opts['skype'] = $USER->skype;
+$opts['show_skype_dialog'] = ($config->show_skype_popup == 1);
 unset($opts['intro'], $opts['broadcastkey']);
 
 // Permissions.
@@ -71,6 +76,9 @@ $renderer = $PAGE->get_renderer('mod_openwebinar');
 
 // Get status.
 $status = \mod_openwebinar\helper::get_openwebinar_status($openwebinar);
+
+// Load JS base.
+$PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
 // Output starts here.
 echo $OUTPUT->header();
@@ -99,8 +107,6 @@ switch ($status) {
         break;
 
     default:
-        // Load JS base.
-        $PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
         echo $renderer->view_page_not_started_openwebinar($openwebinar);
 
         if ($openwebinar->broadcaster == $USER->id) {

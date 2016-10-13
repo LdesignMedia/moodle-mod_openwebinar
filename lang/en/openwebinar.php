@@ -155,6 +155,8 @@ $string['setting:hls'] = 'HLS video stream';
 $string['setting:hls_desc'] = 'This will add support for mobile devices. Broadcaster also need to stream to server that sends a
  HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
 
+$string['setting:show_skype_popup'] = 'Show skype profile dialog';
+
 // Mod settings.
 $string['mod_setting:settings'] = 'Openwebinar features';
 $string['mod_setting:timing'] = 'Openwebinar time';

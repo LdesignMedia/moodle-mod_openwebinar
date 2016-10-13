@@ -868,3 +868,7 @@ input.openwebinar-toggle:checked + label:after {
 #openwebinar-shortprofile .yui3-widget-buttons {
     padding: 1px;
 }
+
+.yui3-panel .yui3-widget-bd .icon-warn{
+    margin-left: 20px;
+}
