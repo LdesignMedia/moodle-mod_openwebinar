@@ -95,7 +95,7 @@ class cron {
         // Get all openwebinar that aren't started.
         mtrace('Check if we need send reminders');
         mtrace('Now: ' . date('d-m-Y H:i:s'));
-        $sql = 'SELECT * FROM {openwebinar} WHERE timeopen > :now';
+        $sql = 'SELECT * FROM {openwebinar} WHERE is_ended = 0';
         $results = $DB->get_records_sql($sql, array('now' => time()));
         if ($results) {
             foreach ($results as $result) {
@@ -165,7 +165,7 @@ class cron {
                     ), $message);
 
                     $eventdata = new \stdClass();
-                    $eventdata->userfrom = $broadcaster;
+                    $eventdata->userfrom = \core_user::get_noreply_user();
                     $eventdata->userto = $student;
                     $eventdata->subject = get_string('mail:reminder_subject', 'openwebinar', $openwebinar);
                     $eventdata->smallmessage = html_to_text($htmlmessage);
