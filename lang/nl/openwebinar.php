@@ -1,18 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component 'mod_openwebinar', language 'nl'
@@ -59,7 +45,7 @@ $string['modulename_help'] = 'Openwebinar activiteit:<br/>
 </ul>
 <b>Gebruikers</b>
 <ul>
-	<li>Chatruimte kan aangepast worden via het configuratiescherm</li>
+	<li>Chatruimte kan aangepast worden via de instellingen</li>
 	<li>Berichten sturen in de chatruimte</li>
 	<li>Vragen beantwoorde</li>
 	<li>Stream bekijken</li>
@@ -125,13 +111,16 @@ $string['setting:heading_instance_defaults'] = 'Herinnering standaardwaarden (ka
  door iedere openwebinar onafhankelijk)';
 $string['setting:reminder_1'] = 'Herinnering 1';
 $string['setting:reminder_1_desc'] = 'Notificatie moment voor de start van de openwebinar.
-<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+<br> Instellen op 0 om dit notificatie moment uit te schakelen.';
 $string['setting:reminder_2'] = 'Herinnering 2';
 $string['setting:reminder_2_desc'] = 'Notificatie moment voor de start van de openwebinar.
-<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+<br> Instellen op 0 om dit notificatie moment uit te schakelen.';
 $string['setting:reminder_3'] = 'Herinnering 3';
 $string['setting:reminder_3_desc'] = 'Notificatie moment voor de start van de openwebinar.
-<br> Instellen op 0 om dit noficatie moment uit te schakelen.';
+<br> Instellen op 0 om dit notificatie moment uit te schakelen.';
+$string['setting:reminder_4'] = 'Herinnering 4';
+$string['setting:reminder_4_desc'] = 'Notificatie moment voor de start van de openwebinar.
+<br> Instellen op 0 om dit notificatie moment uit te schakelen.';
 $string['setting:stream'] = 'Video ingeschakeld';
 $string['setting:stream_desc'] = 'Indien uitgeschakeld bevat de openwebinar geen video-speler';
 $string['setting:chat'] = 'Chat ingeschakeld';
@@ -178,9 +167,7 @@ $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->t
  U kunt nu de openwebinar openen via de knop hieronder.';
 
 $string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br>
-<b class="selectable">{$a->broadcastkey}</b><br><br>De handleiding kunt u downloaden
-<a class="btn" target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">hier</a><br><br>
-Zorg ervoor dat u de streaming-software installeerd:
+<b class="selectable">{$a->broadcastkey}</b><br><br>Zorg ervoor dat u de streaming-software installeert:<br>
 <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
 
 
@@ -210,7 +197,7 @@ $string['time'] = 'Tijd';
 $string['chat'] = 'Chat';
 $string['no'] = 'Nee';
 $string['yes'] = 'Ja';
-$string['menu'] = 'Configuratiescherm';
+$string['menu'] = 'Instellingen';
 $string['live'] = 'Live';
 $string['addfile'] = 'Bestand toevoegen';
 $string['attachment'] = 'Bijlagen';
@@ -231,12 +218,12 @@ $string['Close'] = 'Close';
 // User options.
 $string['opt:header_broadcaster'] = 'Presentator';
 $string['opt:header_exit'] = 'Beëindigd';
-$string['opt:mute_guests'] = 'Dempen gasten';
+$string['opt:mute_guests'] = 'Demp chat gasten';
 $string['opt:chat_sound'] = 'Chat geluid';
 $string['opt:stream'] = 'Toon stream';
 $string['opt:userlist'] = 'Toon gebruikerslijst';
-$string['opt:mute_students'] = 'Dempen studenten';
-$string['opt:mute_teachers'] = 'Dempen leraren';
+$string['opt:mute_students'] = 'Demp chat studenten';
+$string['opt:mute_teachers'] = 'Demp chat leraren';
 $string['opt:endopenwebinar'] = 'Sluit & beëindigd de openwebinar';
 $string['opt:leave'] = 'Verlaat de openwebinar';
 $string['opt:header_general'] = 'Algemeen';
@@ -245,7 +232,7 @@ $string['opt:header_general'] = 'Algemeen';
 $string['js:new_incoming_message'] = 'Nieuw bericht.';
 $string['js:my_answer_saved'] = 'Uw antwoord is opgeslagen.';
 $string['js:send'] = 'Verstuur';
-$string['js:answer'] = 'Antwoord';
+$string['js:answer'] = 'Klik hier om de vraag te beantwoorden';
 $string['js:added_answer'] = '{$a->fullname} heeft een antwoord toegevoegd.';
 $string['js:ending_openwebinar'] = 'Bent u zeker dat u de openwebinar wilt beëindigen?';
 $string['js:muted'] = 'Uw berichten worden gedempt door de presentator.';
@@ -320,3 +307,4 @@ Met vriendelijke groet,<br/>
 
 $string['fullname'] = 'Volledige naam';
 $string['skype'] = 'Skype';
+$string['load_history'] = 'Eerdere berichten ophalen';

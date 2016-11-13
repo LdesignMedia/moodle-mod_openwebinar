@@ -131,6 +131,9 @@ $string['setting:reminder_2_desc'] = 'Notification moment before the start of th
 $string['setting:reminder_3'] = 'Reminder 3';
 $string['setting:reminder_3_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the
  notification';
+$string['setting:reminder_4'] = 'Reminder 4';
+$string['setting:reminder_4_desc'] = 'Notification moment before the start of the openwebinar.<br> Set to 0 to disable the
+ notification';
 $string['setting:stream'] = 'Streaming enabled';
 $string['setting:stream_desc'] = 'If disabled the openwebinar don\'t show a video player';
 $string['setting:chat'] = 'Chat enabled';
@@ -177,9 +180,8 @@ $string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->t
  pressing the button below';
 $string['text:broadcaster_help'] = '<h3>You are the broadcaster</h3><br>Broadcastkey:<br>
 <b class="selectable">{$a->broadcastkey}</b>
-<br><br>The broadcast guide can be found
-<a target="_blank" href="http://moodlefreak.com/docs/openwebinar_broadcast_guide_2015_08_20.pdf">here</a>.<br><br>
-Make sure you install the streaming software: <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
+<br><br>
+Make sure you install the streaming software: <br/><a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
 $string['text:history'] = '<h3>Openwebinar is offline</h3>This openwebinar was given on <b>{$a->timeopen}</b>. <br/><br/>You can
 still view the history in this openwebinar by clicking on the button below.';
 $string['text:useractivity'] = 'User activity';
@@ -314,3 +316,4 @@ Kind regards,<br/>
 
 $string['fullname'] = 'Fullname';
 $string['skype'] = 'Skype';
+$string['load_history'] = 'Load previous messages';

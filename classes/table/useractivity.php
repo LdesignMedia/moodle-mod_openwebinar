@@ -68,7 +68,7 @@ class useractivity extends \table_sql {
         );
 
         $this->sql = new \stdClass();
-        $this->sql->fields = 'DISTINCT ' . $dbfields . ', p.available';
+        $this->sql->fields = 'DISTINCT ' . $dbfields . ', p.available as present';
         $this->sql->from = '{user} u
                             JOIN {openwebinar_presence} p ON (p.user_id = u.id)';
         $this->sql->where = 'u.deleted = 0 AND p.openwebinar_id = :openwebinar_id';
@@ -135,6 +135,6 @@ class useractivity extends \table_sql {
      * @return string
      */
     protected function col_present($row) {
-        return (!empty($row->available)) ? get_string('yes', 'openwebinar') : get_string('no', 'openwebinar');
+        return (!empty($row->present)) ? get_string('yes', 'openwebinar') : get_string('no', 'openwebinar');
     }
 }

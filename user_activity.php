@@ -54,7 +54,7 @@ $context = context_module::instance($cm->id);
 
 // Validate access to this part.
 if (!has_capability('mod/openwebinar:manager', $PAGE->cm->context)) {
-    error(get_string('error:no_access', 'openwebinar'));
+    print_error(get_string('error:no_access', 'openwebinar'));
 }
 
 $PAGE->set_url('/mod/openwebinar/user_activity.php', array('id' => $cm->id));

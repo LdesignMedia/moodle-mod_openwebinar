@@ -64,6 +64,10 @@ if ($ADMIN->fulltree) {
             get_string('setting:reminder_3', 'openwebinar'),
             get_string('setting:reminder_3_desc', 'openwebinar'), 604800, 604800));
 
+    $settings->add(new admin_setting_configduration('openwebinar/reminder_4',
+            get_string('setting:reminder_4', 'openwebinar'),
+            get_string('setting:reminder_4_desc', 'openwebinar'), 604800 * 2, 604800 * 2));
+
     // Switches.
     $settings->add(new admin_setting_heading('openwebinar_instance_features', '',
             get_string('setting:heading_instance_features', 'openwebinar')));
@@ -111,6 +115,5 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('openwebinar/show_skype_popup',
             get_string('setting:show_skype_popup', 'openwebinar'),
             get_string('setting:show_skype_popup', 'openwebinar'), 1));
-
 
 }

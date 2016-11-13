@@ -190,8 +190,7 @@ echo $OUTPUT->header();
     <div id="openwebinar-holder" class="noSelect">
         <section id="openwebinar-topbar">
             <div id="openwebinar-topbar-left">
-                <div id="openwebinar-menu">
-                    <span class="arrow">&#x25BA;</span>
+                <div id="openwebinar-menu">&nbsp;
                     <?php print_string('menu', 'openwebinar') ?>
                 </div>
             </div>
@@ -265,6 +264,7 @@ echo $OUTPUT->header();
                                 <label for="mute_student"></label>
                             </div>
                         </li>
+                        <!--
                         <li>
                             <div class="question">
                                 <?php print_string('opt:mute_teachers', 'openwebinar') ?>
@@ -274,6 +274,7 @@ echo $OUTPUT->header();
                                 <label for="mute_teacher"></label>
                             </div>
                         </li>
+                        -->
                     </ul>
                 <?php else: ?>
                     <li class="header"><?php print_string('opt:header_exit', 'openwebinar') ?></li>
@@ -330,7 +331,7 @@ echo $OUTPUT->header();
             <div id="openwebinar-chat-holder">
                 <div class="openwebinar-header">
                     <span id="openwebinar-loadhistory" class="openwebinar-button" style="display: none">
-                        Load previous messages</span>
+                      <?php print_string('load_history', 'openwebinar') ?></span>
                     <h2><?php print_string('chat', 'openwebinar') ?></h2>
                 </div>
                 <div id="openwebinar-chatlist" class="scroll openwebinar-chatlist">
