@@ -679,7 +679,7 @@ M.mod_openwebinar.room = {
                     );
                     a.get('node').show();
                     a.on('end', function () {
-                        Y.one("#openwebinar-topbar-left .arrow").setHTML('&#x25C4;');
+                        Y.one("#openwebinar-menu").setHTML('&nbsp; Sluiten');
                     });
                     a.run();
                 });
@@ -703,7 +703,7 @@ M.mod_openwebinar.room = {
 
                     a.on('end', function () {
                         a.get('node').hide();
-                        Y.one("#openwebinar-topbar-left .arrow").setHTML('&#x25BA;');
+                        Y.one("#openwebinar-menu").setHTML('&nbsp; Instellingen');
                     });
                     a.run();
                 });
@@ -1917,7 +1917,8 @@ M.mod_openwebinar.room = {
      */
     add_userlist: function () {
         "use strict";
-        var that = this, panel, el = document.getElementById("openwebinar-chatlist-pm");
+        var that = this, panel, pmlist = document.getElementById("openwebinar-chatlist-pm") ,
+            userlist = document.getElementById("openwebinar-userlist");
         this.log('add_userlist');
 
         // Set userlist node prevent searching the dom again.
@@ -1925,7 +1926,8 @@ M.mod_openwebinar.room = {
         this.nodeholder.userlist_counter = Y.one('#openwebinar-usercounter');
 
         // Add tinyscrollbar.
-        this.scrollbar_userlist = tinyscrollbar(el);
+        this.scrollbar_userlist = tinyscrollbar(userlist);
+        this.scrollbar_chatlist_pm = tinyscrollbar(pmlist);
 
         // Userlist listener.
         this.socket.on("update-user-list", function (data) {
