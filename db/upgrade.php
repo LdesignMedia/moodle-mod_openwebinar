@@ -41,5 +41,32 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_openwebinar_upgrade($oldversion) {
+    global $CFG, $DB;
+
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2016111300) {
+
+        // Define field reminder_4 to be added to openwebinar.
+        $table = new xmldb_table('openwebinar');
+        $field = new xmldb_field('reminder_4', XMLDB_TYPE_INTEGER, '9', null, XMLDB_NOTNULL, null, '0', 'reminder_3');
+
+        // Conditionally launch add field reminder_4.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('reminder_4_send', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'reminder_3_send');
+
+        // Conditionally launch add field reminder_4_send.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Openwebinar savepoint reached.
+        upgrade_mod_savepoint(true, 2016111300, 'openwebinar');
+    }
+
+
     return true;
 }

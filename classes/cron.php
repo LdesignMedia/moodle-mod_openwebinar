@@ -105,6 +105,7 @@ class cron {
                 $this->reminder_send_invites($result, 1);
                 $this->reminder_send_invites($result, 2);
                 $this->reminder_send_invites($result, 3);
+                $this->reminder_send_invites($result, 4);
                 mtrace(' ');
             }
         }

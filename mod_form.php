@@ -142,6 +142,8 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $mform->setDefault('reminder_2', $config->reminder_2);
         $mform->addElement('duration', 'reminder_3', get_string('setting:reminder_3', 'openwebinar'));
         $mform->setDefault('reminder_3', $config->reminder_3);
+        $mform->addElement('duration', 'reminder_4', get_string('setting:reminder_4', 'openwebinar'));
+        $mform->setDefault('reminder_4', $config->reminder_4);
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
