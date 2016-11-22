@@ -1916,8 +1916,8 @@ M.mod_openwebinar.room = {
      */
     add_userlist: function () {
         "use strict";
-        var that = this, panel, pmlist = document.getElementById("openwebinar-chatlist-pm") ,
-            userlist = document.getElementById("openwebinar-userlist");
+        var that = this, panel, pmlist = document.getElementById("openwebinar-chatlist-pm"),
+            userlist                   = document.getElementById("openwebinar-userlist");
         this.log('add_userlist');
 
         // Set userlist node prevent searching the dom again.
@@ -2302,8 +2302,8 @@ M.mod_openwebinar.room = {
 
         // Init manager popup.
         this.nodeholder.questionmanager = new Y.Panel({
-            width   : 600,
-            height  : 400,
+            width   : '600px',
+            height  : '400px',
             zIndex  : 10,
             centered: true,
             modal   : true,

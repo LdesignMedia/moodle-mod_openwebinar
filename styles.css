@@ -645,6 +645,12 @@ input[type="text"].openwebinar-message-input {
 
 #all-questions {
     width: 560px !important;
+    height:350px !important;
+}
+
+.yui3-widget-bd{
+    height: auto !important;
+    overflow: hidden;
 }
 
 #openwebinar-question-manager #all-questions li.unanswered {
