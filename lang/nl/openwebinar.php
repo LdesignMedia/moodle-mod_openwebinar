@@ -277,32 +277,35 @@ $string['heading:name'] = 'Naam';
 $string['heading:value'] = 'Waarde';
 
 // Email.
-$string['mail:reminder_subject'] = 'Openwebinar herinnering: {$a->name}';
-$string['mail:reminder_message'] = 'Beste ##fullname##, <br/><br/>
+$string['mail:reminder_subject'] = 'Webinar livestream: {$a->name}';
+$string['mail:reminder_message'] = 'Beste ##firstname##, <br/><br/>
 
-Openwebinar herinnering:<br/><br/>
+Herinnering voor onderstaande webinar livestream:<br/><br/>
 
-<table cellpadding="0" cellspacing="0" border="0">
+<table cellpadding="5" cellspacing="5" border="0">
     <tr>
-        <td style="width: 200px"><b>Activiteit:</b></td>
+        <td style="width: 200px"><b>Onderwerp:</b></td>
         <td>##name##</td>
     </tr>
     <tr>
-        <td><b>Startdatum:</b></td>
+        <td><b>Omschrijving:</b></td>
+        <td>##description##</td>
+    </tr>
+    <tr>
+        <td><b>Datum en tijd:</b></td>
         <td>##starttime##</td>
     </tr>
     <tr>
         <td><b>Geschatte duur:</b></td>
-        <td>##duration## Minutes</td>
+        <td>##duration## minuten</td>
     </tr>
     <tr>
-        <td><b>Link</b></td>
-        <td><a href="##link##">Bekijk de openwebinar</a> </td>
+        <td><b>Link:</b></td>
+        <td><a href="##link##">Bekijk de webinar</a> </td>
     </tr>
 </table>
 <br/>
 Met vriendelijke groet,<br/>
-
 ##broadcaster_fullname##';
 
 $string['fullname'] = 'Volledige naam';

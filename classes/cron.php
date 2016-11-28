@@ -99,13 +99,14 @@ class cron {
         $results = $DB->get_records_sql($sql, array('now' => time()));
         if ($results) {
             foreach ($results as $result) {
+                $file = $this->get_ical_file($result);
                 // Check if we need to.
                 mtrace(PHP_EOL . $result->name);
                 mtrace('Timeopen: ' . date('d-m-Y H:i:s', $result->timeopen) . PHP_EOL);
-                $this->reminder_send_invites($result, 1);
-                $this->reminder_send_invites($result, 2);
-                $this->reminder_send_invites($result, 3);
-                $this->reminder_send_invites($result, 4);
+                $this->reminder_send_invites($result, 1, $file);
+                $this->reminder_send_invites($result, 2, $file);
+                $this->reminder_send_invites($result, 3, $file);
+                $this->reminder_send_invites($result, 4, $file);
                 mtrace(' ');
             }
         }
@@ -117,7 +118,7 @@ class cron {
      * @param bool|false $openwebinar
      * @param int $number
      */
-    protected function reminder_send_invites($openwebinar = false, $number = 0) {
+    protected function reminder_send_invites($openwebinar = false, $number = 0, \stored_file $file) {
 
         global $DB;
         $remindersend = 'reminder_' . $number . '_send';
@@ -134,6 +135,18 @@ class cron {
             mtrace('Step ' . $number . ' send on: ' . date('d-m-Y H:i:s', $sendtime));
 
             if ($sendtime <= time()) {
+
+                // This message needed to be send within 2 hours of the original reminder moment.
+                if (time() - $sendtime > (3600 * 2)) {
+                    mtrace('We skip sending to late');
+                    $obj = new \stdClass();
+                    $obj->id = $openwebinar->id;
+                    $obj->$remindersend = 1;
+                    $DB->update_record('openwebinar', $obj);
+
+                    return;
+                }
+
                 mtrace('Send: ' . $remindersend . ' / ' . $remindertime);
 
                 // Get the broadcaster.
@@ -146,11 +159,12 @@ class cron {
                 // Get url.
                 $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
                 $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
-
                 foreach ($students as $student) {
 
                     $htmlmessage = str_replace(array(
                             '##fullname##',
+                            '##firstname##',
+                            '##description##',
                             '##starttime##',
                             '##duration##',
                             '##link##',
@@ -158,6 +172,8 @@ class cron {
                             '##broadcaster_fullname##',
                     ), array(
                             fullname($student),
+                            $student->firstname,
+                            (!empty($openwebinar->intro) ? $openwebinar->intro : '-'),
                             date('d-m-Y H:i', $openwebinar->timeopen),
                             round($openwebinar->duration / 60),
                             $url,
@@ -167,18 +183,19 @@ class cron {
 
                     $eventdata = new \stdClass();
                     $eventdata->userfrom = \core_user::get_noreply_user();
-                    $eventdata->userto = $student;
+                    $eventdata->userto = \core_user::get_user($student->id);;
                     $eventdata->subject = get_string('mail:reminder_subject', 'openwebinar', $openwebinar);
                     $eventdata->smallmessage = html_to_text($htmlmessage);
                     $eventdata->fullmessage = html_to_text($htmlmessage);
                     $eventdata->fullmessagehtml = $htmlmessage;
                     $eventdata->fullmessageformat = FORMAT_HTML;
-
                     $eventdata->name = 'reminder';
                     $eventdata->component = 'mod_openwebinar';
                     $eventdata->notification = 1;
                     $eventdata->contexturl = $url->out();
                     $eventdata->contexturlname = $openwebinar->name;
+                    $eventdata->attachment = $file;
+                    $eventdata->attachname = 'cal.ics';
                     message_send($eventdata);
                 }
 
@@ -192,6 +209,80 @@ class cron {
                 mtrace('....');
             }
         }
+    }
+
+    /**
+     * get_ical_file
+     *
+     * @param $openwebinar
+     *
+     * @return \stored_file
+     */
+    protected function get_ical_file(\stdClass $openwebinar) {
+        global $DB;
+
+        $broadcaster = $DB->get_record('user', array('id' => $openwebinar->broadcaster), '*', MUST_EXIST);
+
+        $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false,
+                MUST_EXIST);
+        $fs = get_file_storage();
+        $context = \context_module::instance($cm->id);
+
+        // Remove previous.
+        $files = $fs->get_area_files($context->id, 'mod_openwebinar', 'cal', $openwebinar->id, "", false);
+        foreach ($files as $file) {
+            try {
+                $file->delete();
+            } catch (\Exception $exception) {
+
+            }
+        }
+
+        $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
+        $file = $fs->create_file_from_string([
+                'contextid' => $context->id,
+                'component' => 'mod_openwebinar',
+                'filearea' => 'cal',
+                'filepath' => '/',
+                'filename' => 'cal.ics',
+                'itemid' => $openwebinar->id
+        ], 'BEGIN:VCALENDAR
+VERSION:2.0
+ORGANIZER:MAILTO:' . $broadcaster->email . '
+PRODID:-//moodlefreack.com/iCal MoodleFreak
+X-WR-CALNAME:Test
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:Europe/Berlin
+TZURL:http://tzurl.org/zoneinfo-outlook/Europe/Berlin
+X-LIC-LOCATION:Europe/Berlin
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:20161128T163615Z
+DTSTART;TZID="Europe/Berlin":' . date('Ymd', $openwebinar->timeopen) . 'T' . date("Hi", $openwebinar->timeopen) . '00
+DTEND;TZID="Europe/Berlin":' . date('Ymd', $openwebinar->timeopen + $openwebinar->duration) . 'T' .
+                date("Hi", $openwebinar->timeopen + $openwebinar->duration) . '00
+SUMMARY:' . $openwebinar->name . '
+URL:' . $url->out(true) . '
+DESCRIPTION:' . preg_replace('/\s+/', ' ', trim(html_to_text($openwebinar->intro, 0))) . '
+END:VEVENT
+END:VCALENDAR');
+
+        return $file;
     }
 
 }

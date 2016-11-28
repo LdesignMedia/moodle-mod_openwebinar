@@ -78,7 +78,7 @@ $renderer = $PAGE->get_renderer('mod_openwebinar');
 $status = \mod_openwebinar\helper::get_openwebinar_status($openwebinar);
 
 // Load JS base.
-$PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
+//$PAGE->requires->yui_module('moodle-mod_openwebinar-base', 'M.mod_openwebinar.base.init', array($opts));
 
 // Output starts here.
 echo $OUTPUT->header();
