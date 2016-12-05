@@ -96,7 +96,7 @@ class cron {
         mtrace('Check if we need send reminders');
         mtrace('Now: ' . date('d-m-Y H:i:s'));
         $sql = 'SELECT * FROM {openwebinar} WHERE is_ended = 0';
-        $results = $DB->get_records_sql($sql, array('now' => time()));
+        $results = $DB->get_records_sql($sql);
         if ($results) {
             foreach ($results as $result) {
                 $file = $this->get_ical_file($result);
@@ -283,6 +283,73 @@ END:VEVENT
 END:VCALENDAR');
 
         return $file;
+    }
+
+    /**
+     * Send feedback mail to users that visit the webinar
+     */
+    public function feedback() {
+        global $DB;
+        $sql = 'SELECT * FROM {openwebinar} 
+                WHERE is_ended = 1
+                AND feedback_id > 0
+                AND feedback_send = 0';
+        $results = $DB->get_records_sql($sql);
+
+        foreach ($results as $openwebinar) {
+
+            $feedback = $DB->get_record('feedback', ['id' => $openwebinar->feedback_id]);
+
+            // Url to feedback
+            $cm = get_coursemodule_from_instance('feedback', $feedback->id, $feedback->course, false,
+                    MUST_EXIST);
+
+            $url = new \moodle_url('/mod/feedback/complete.php', array('id' => $cm->id,
+                                                                       'gopage' => 0));
+
+            // Get the broadcaster.
+            $broadcaster = $DB->get_record('user', array('id' => $openwebinar->broadcaster), '*', MUST_EXIST);
+
+            // Get all users that visit the webinar.
+            $users = $DB->get_records('openwebinar_presence', [
+                    'openwebinar_id' => $openwebinar->id,
+                    'available' => 1
+            ]);
+
+            foreach ($users as $user) {
+
+                $user = \core_user::get_user($user->user_id);
+
+                $obj = new \stdClass();
+                $obj->name = $openwebinar->name;
+                $obj->firstname = $user->firstname;
+                $obj->fullname = fullname($user);
+                $obj->broadcaster_fullname = fullname($broadcaster);
+                $obj->link = \html_writer::link($url, $url);
+                $message = get_string('mail:feedback_message', 'openwebinar', $obj);
+
+                $eventdata = new \stdClass();
+                $eventdata->userfrom = \core_user::get_noreply_user();
+                $eventdata->userto = $user;;
+                $eventdata->subject = get_string('mail:feedback_subject', 'openwebinar', $obj);
+                $eventdata->smallmessage = html_to_text($message);
+                $eventdata->fullmessage = html_to_text($message);
+                $eventdata->fullmessagehtml = $message;
+                $eventdata->fullmessageformat = FORMAT_HTML;
+                $eventdata->name = 'feedback';
+                $eventdata->component = 'mod_openwebinar';
+                $eventdata->notification = 1;
+                $eventdata->contexturl = $url->out();
+                $eventdata->contexturlname = $openwebinar->name;
+                message_send($eventdata);
+            }
+
+            // sended..
+            $obj = new \stdClass();
+            $obj->id = $openwebinar->id;
+            $obj->feedback_send = 1;
+            $DB->update_record('openwebinar', $obj);
+        }
     }
 
 }

@@ -25,5 +25,6 @@
  **/
 
 $messageproviders = array(
-        'reminder' => array()
+        'reminder' => array(),
+        'feedback' => array(),
 );

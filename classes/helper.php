@@ -455,4 +455,17 @@ class helper {
         return true;
     }
 
+    /**
+     * get_feedbacks_by_courseid
+     *
+     * @param int $courseid
+     *
+     * @return array
+     */
+    public static function get_feedbacks_by_courseid($courseid = 0) {
+        global $DB;
+        $array = $DB->get_records_menu('feedback', ['course' => $courseid] , '' , 'id , name');
+        return [0 => get_string('mod_setting:make_a_selection' , 'openwebinar')] + $array;
+    }
+
 }

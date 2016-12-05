@@ -79,6 +79,7 @@ $string['openwebinarname_help'] = 'De naam van de openwebinar';
 $string['openwebinar'] = 'MoodleFreak openwebinar';
 $string['task:auto_close'] = 'Sluit chatruimte wanneer deze is afgelopen en niet is afgesloten door de presentator.';
 $string['task:reminder'] = 'Versturen van herinnering';
+$string['task:feedback'] = 'Versturen van feedback e-mail';
 $string['messageprovider:reminder'] = 'Openwebinar herinnering melding';
 
 // ACCESS.
@@ -153,7 +154,7 @@ $string['mod_setting:timing'] = 'Openwebinar tijd';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
-$string['mod_setting:make_a_selection'] = 'Selecteer een gebruiker';
+$string['mod_setting:make_a_selection'] = 'Selecteer een optie';
 $string['mod_setting:broadcaster'] = 'Openwebinar presentator';
 $string['mod_setting:reminders'] = 'Openwebinar herinnering bericht';
 $string['mod_setting:duration'] = 'Duur';
@@ -161,6 +162,8 @@ $string['mod_setting:durationhelp'] = 'Duur';
 $string['mod_setting:durationhelp_help'] = 'Duur';
 $string['mod_setting:broadcastkey'] = 'Presentator sleutel';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
+$string['mod_setting:feedback'] = 'Feedback';
+$string['mod_setting:feedback_field'] = 'Feedback / evaluatie';
 
 // Text.
 $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br>
@@ -311,3 +314,12 @@ Met vriendelijke groet,<br/>
 $string['fullname'] = 'Volledige naam';
 $string['skype'] = 'Skype';
 $string['load_history'] = 'Eerdere berichten ophalen';
+
+$string['mail:feedback_subject'] = 'Openwebinar feedback: {$a->name}';
+$string['mail:feedback_message'] = 'Beste {$a->firstname}, <br/><br/>
+<b>Webinar evaluatie voor: {$a->name}</b><br/>
+Wij zouden het waarderen als je 5 minuten van je kostbare tijd kan geven om jouw feedback met ons te delen.<br/><br/>
+{$a->link}<br/><br/>
+
+Met vriendelijke groet,<br/>
+{$a->broadcaster_fullname}';

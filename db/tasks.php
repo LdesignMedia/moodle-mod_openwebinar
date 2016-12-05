@@ -42,4 +42,13 @@ $tasks = array(
                 'dayofweek' => '*',
                 'month' => '*'
         ),
+        array(
+                'classname' => 'mod_openwebinar\task\feedback',
+                'blocking' => 0,
+                'minute' => '*',
+                'hour' => '*',
+                'day' => '*',
+                'dayofweek' => '*',
+                'month' => '*'
+        ),
 );

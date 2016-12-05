@@ -67,6 +67,30 @@ function xmldb_openwebinar_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016111300, 'openwebinar');
     }
 
+    if ($oldversion < 2016120501) {
+
+        // Define field feedback_id to be added to openwebinar.
+        $table = new xmldb_table('openwebinar');
+        $field = new xmldb_field('feedback_id', XMLDB_TYPE_INTEGER, '11',
+                null, null, null, '0', 'is_ended');
+
+        // Conditionally launch add field feedback_id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field feedback_send to be added to openwebinar.
+        $table = new xmldb_table('openwebinar');
+        $field = new xmldb_field('feedback_send', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'feedback_id');
+
+        // Conditionally launch add field feedback_send.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Openwebinar savepoint reached.
+        upgrade_mod_savepoint(true, 2016120501, 'openwebinar');
+    }
 
     return true;
 }

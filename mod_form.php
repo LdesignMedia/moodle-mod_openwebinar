@@ -50,7 +50,7 @@ class mod_openwebinar_mod_form extends moodleform_mod {
      */
     public function definition() {
 
-        global $CFG;
+        global $CFG , $COURSE;
         $mform = $this->_form;
 
         // Load default config.
@@ -144,6 +144,14 @@ class mod_openwebinar_mod_form extends moodleform_mod {
         $mform->setDefault('reminder_3', $config->reminder_3);
         $mform->addElement('duration', 'reminder_4', get_string('setting:reminder_4', 'openwebinar'));
         $mform->setDefault('reminder_4', $config->reminder_4);
+
+        // Feedback selector.
+        $array = \mod_openwebinar\helper::get_feedbacks_by_courseid($COURSE->id);
+        if(!empty($array)){
+
+            $mform->addElement('header', 'feedback', get_string('mod_setting:feedback', 'openwebinar'));
+            $mform->addElement('select', 'feedback_id', get_string('mod_setting:feedback_field', 'openwebinar'), $array);
+        }
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

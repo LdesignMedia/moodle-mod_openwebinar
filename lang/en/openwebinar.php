@@ -94,6 +94,7 @@ $string['openwebinarname_help'] = 'The name of the openwebinar';
 $string['openwebinar'] = 'MoodleFreak Openwebinar';
 $string['task:auto_close'] = 'Auto close rooms if they expired and not closed by broadcaster.';
 $string['task:reminder'] = 'Send reminders';
+$string['task:feedback'] = 'Send feedback mail';
 $string['messageprovider:reminder'] = 'Openwebinar reminder notifications';
 
 // ACCESS.
@@ -166,7 +167,7 @@ $string['mod_setting:timing'] = 'Openwebinar time';
 $string['mod_setting:timeopen'] = 'Start';
 $string['mod_setting:timeopenhelp'] = 'Start';
 $string['mod_setting:timeopenhelp_help'] = 'Start';
-$string['mod_setting:make_a_selection'] = 'Select a user';
+$string['mod_setting:make_a_selection'] = 'Select a selection';
 $string['mod_setting:broadcaster'] = 'Openwebinar broadcaster';
 $string['mod_setting:reminders'] = 'Openwebinar reminder messages';
 $string['mod_setting:duration'] = 'Duration';
@@ -174,6 +175,8 @@ $string['mod_setting:durationhelp'] = 'Duration';
 $string['mod_setting:durationhelp_help'] = 'Duration';
 $string['mod_setting:broadcastkey'] = 'Broadcastkey';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
+$string['mod_setting:feedback'] = 'Feedback';
+$string['mod_setting:feedback_field'] = 'Feedback';
 
 // Text.
 $string['text:live_openwebinar'] = '<br/>The openwebinar is open from: <b>{$a->timeopen}</b><br> You can enter the openwebinar by
@@ -317,3 +320,12 @@ Kind regards,<br/>
 $string['fullname'] = 'Fullname';
 $string['skype'] = 'Skype';
 $string['load_history'] = 'Load previous messages';
+
+$string['mail:feedback_subject'] = 'Openwebinar feedback: {$a->name}';
+$string['mail:feedback_message'] = 'Dear {$a->firstname}, <br/><br/>
+<b>Webinar feedback request for: {$a->name}</b><br/>
+We\'d really appreciate if you could fill in a short feedback.<br/><br/>
+{$a->link}<br/><br/>
+
+Kind regards,<br/>
+{$a->broadcaster_fullname}';
