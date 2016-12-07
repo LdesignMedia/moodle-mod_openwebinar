@@ -161,6 +161,9 @@ class cron {
                 $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
                 foreach ($students as $student) {
 
+                    // Fix issue when mails not in correct language
+                    force_current_language($student->lang);
+
                     $htmlmessage = str_replace(array(
                             '##fullname##',
                             '##firstname##',
@@ -319,6 +322,9 @@ END:VCALENDAR');
             foreach ($users as $user) {
 
                 $user = \core_user::get_user($user->user_id);
+
+                // Fix issue when mails not in correct language
+                force_current_language($user->lang);
 
                 $obj = new \stdClass();
                 $obj->name = $openwebinar->name;

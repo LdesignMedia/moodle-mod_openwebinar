@@ -376,6 +376,7 @@ class helper {
         // Get extra fields.
         $extrafields = get_extra_user_fields(\context_course::instance($courseid));
         $extrafields[] = 'lastaccess';
+        $extrafields[] = 'lang';
         $dbfields = \user_picture::fields('u', $extrafields);
 
         // Params.
