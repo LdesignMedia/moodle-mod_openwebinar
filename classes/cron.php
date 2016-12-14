@@ -154,7 +154,6 @@ class cron {
 
                 // Get students in the course.
                 $students = helper::get_active_course_users($openwebinar->course);
-                $message = get_string('mail:reminder_message', 'openwebinar');
 
                 // Get url.
                 $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
@@ -164,6 +163,7 @@ class cron {
                     // Fix issue when mails not in correct language
                     force_current_language($student->lang);
 
+                    $message = get_string('mail:reminder_message', 'openwebinar');
                     $htmlmessage = str_replace(array(
                             '##fullname##',
                             '##firstname##',
