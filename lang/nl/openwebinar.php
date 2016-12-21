@@ -306,7 +306,8 @@ Herinnering voor onderstaande webinar livestream:<br/><br/>
         <td><b>Link:</b></td>
         <td><a href="##link##">Bekijk de webinar</a> </td>
     </tr>
-</table>
+</table><br/>
+<p>Let op! Webinars kunt u alleen bijwonen op een vaste computer.</p>
 <br/>
 Met vriendelijke groet,<br/>
 ##broadcaster_fullname##';
