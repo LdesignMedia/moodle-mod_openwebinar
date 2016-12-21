@@ -315,11 +315,14 @@ $string['fullname'] = 'Volledige naam';
 $string['skype'] = 'Skype';
 $string['load_history'] = 'Eerdere berichten ophalen';
 
-$string['mail:feedback_subject'] = 'Openwebinar feedback: {$a->name}';
-$string['mail:feedback_message'] = 'Beste {$a->firstname}, <br/><br/>
-<b>Webinar evaluatie voor: {$a->name}</b><br/>
-Wij zouden het waarderen als je 5 minuten van je kostbare tijd kan geven om jouw feedback met ons te delen.<br/><br/>
-{$a->link}<br/><br/>
-
+$string['mail:feedback_subject'] = 'Webinar evaluatie: {$a->name}';
+$string['mail:feedback_message'] = 'Beste {$a->firstname}, <br/>
+<br/>
+Graag evalueren wij onderstaande webinar:<br/> 
+{$a->name}<br/>
+<br/>
+Het kost u 2 minuten en helpt ons de webinars te verbeteren.<br/>
+{$a->link}<br/>
+<br/>
 Met vriendelijke groet,<br/>
 {$a->broadcaster_fullname}';
