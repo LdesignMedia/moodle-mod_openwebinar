@@ -1529,12 +1529,13 @@ M.mod_openwebinar.room = {
                 }
 
                 // Play sound on new message.
-                if (this.options.enable_chat_sound &&
-                    this.options.userid !== data.userid &&
+                if (this.options.userid !== data.userid &&
                     this.audio_newmessage && !multiplelines
                 ) {
-                    this.log('Bleep sound..');
-                    this.audio_newmessage.play();
+                    if(this.options.enable_chat_sound){
+                        this.log('Bleep sound..');
+                        this.audio_newmessage.play();
+                    }
                 }
 
                 // Start.
