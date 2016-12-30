@@ -1530,7 +1530,7 @@ M.mod_openwebinar.room = {
                 if (this.options.userid !== data.userid &&
                     this.audio_newmessage && !multiplelines
                 ) {
-                    if(this.options.enable_chat_sound){
+                    if (this.options.enable_chat_sound) {
                         this.log('Bleep sound..');
                         this.audio_newmessage.play();
                     }
@@ -2023,6 +2023,57 @@ M.mod_openwebinar.room = {
         }
     },
 
+    /**
+     * Update userlist without removing previous users.
+     * @param {object} data
+     */
+    update_userlist_student: function (data) {
+
+        // Setting vars.
+        var html = '', key, userobject, li;
+
+        for (key in data.users) {
+            if (data.users.hasOwnProperty(key)) {
+
+                userobject = data.users[key];
+                var $user = Y.one('#userlist-user-' + Number(userobject.userid));
+                console.log($user);
+                if($user){
+                    // User already in the list.
+                    continue;
+                }
+
+                li = '<li id="userlist-user-' + Number(userobject.userid) +
+                    '" class="openwebinar-' + this.alpha_numeric(userobject.usertype) +
+                    ' noSelect">';
+
+                if (this.options.showuserpicture) {
+                    li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' +
+                        Number(userobject.userid) + '/f1.jpg" />';
+                }
+
+                li += '<span class="fullname" data-id="' + Number(userobject.userid) +
+                    '" data-skype="' + this.alpha_numeric(userobject.skype) + '">' +
+                    this.alpha_numeric(userobject.fullname) + '</span>' +
+                    '<span class="browser">' + userobject.useragent.os.name + ' ' +
+                    userobject.useragent.os.version + '<br/>' +
+                    userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major +
+                    '</span>';
+
+                li += '</li>';
+
+                html += li;
+            }
+        }
+
+        this.nodeholder.userlist.append(html);
+
+        // Update scrollbar.
+        this.scrollbar_userlist.update();
+
+        // Update the counter.
+        this.nodeholder.userlist_counter.set('text', ' (' + this.nodeholder.userlist.all('li').size() + ') ');
+    },
 
     /**
      * Update userlist
@@ -2030,15 +2081,24 @@ M.mod_openwebinar.room = {
      */
     update_userlist: function (data) {
         "use strict";
+        // Setting vars.
+        var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li, totalUsersAdded;
+
         this.log(data);
 
         if (!data.status) {
             return;
         }
 
-        // Setting vars.
-        var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li;
+        totalUsersAdded = this.nodeholder.userlist.all('li').size();
 
+        if (!this.options.is_broadcaster && totalUsersAdded > 0) {
+            this.log('update_userlist_student');
+            this.update_userlist_student(data);
+            return;
+        }
+
+        this.log('update_userlist');
         for (key in data.users) {
 
             if (data.users.hasOwnProperty(key)) {
@@ -2096,7 +2156,7 @@ M.mod_openwebinar.room = {
      */
     reset_userlist: function () {
         "use strict";
-        this.log('build_room');
+        this.log('build_room - reset_userlist');
         this.nodeholder.userlist.setHTML('');
         // Update the counter.
         this.nodeholder.userlist_counter.set('text', ' (0) ');
