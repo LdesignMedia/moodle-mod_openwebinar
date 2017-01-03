@@ -66,7 +66,6 @@ $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $openwebinar);
 $event->trigger();
 
-
 // Load plugin config.
 $config = get_config('openwebinar');
 
@@ -376,15 +375,15 @@ echo $OUTPUT->header();
                             </div>
                         </div>
                     </div>
-                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog"  style="display: none">
+                    <div id="openwebinar-filemanager-dialog" class="openwebinar-dialog" style="display: none">
                         <header>
                             <span><?php print_string('Close', 'openwebinar') ?></span>
                             <span class="openwebinar-close-sign">X</span>
                         </header>
                         <?php if (!empty($form)): ?>
                             <?php echo $form->render() ?>
-                            <span id="add-file-btn" class="openwebinar-button"><?php print_string('addfile',
-                                        'openwebinar') ?></span>
+                            <span id="add-file-btn" class="openwebinar-button">
+                                <?php print_string('addfile', 'openwebinar') ?></span>
                         <?php endif ?>
                     </div>
                     <div id="openwebinar-emoticons-dialog" class="openwebinar-dialog" style="display: none">
@@ -408,7 +407,7 @@ echo $OUTPUT->header();
                     </div>
                     <span id="openwebinar-emoticon-icon"></span>
                     <input autocomplete="off" type="text" disabled placeholder="<?php print_string('message_placeholder',
-                            'openwebinar') ?>" name="message" class="openwebinar-message-input" id="openwebinar-message" />
+                            'openwebinar') ?>" name="message" class="openwebinar-message-input" id="openwebinar-message"/>
                     <span id="openwebinar-send" class="openwebinar-send-btn">
                         <?php print_string('js:wait_on_connection', 'openwebinar') ?></span>
                 </div>
@@ -447,7 +446,7 @@ echo $OUTPUT->header();
                 </div>
             </div>
             <input autocomplete="off" type="text" disabled placeholder="<?php print_string('message_placeholder',
-                    'openwebinar') ?>" name="message-pm" class="openwebinar-message-input" id="openwebinar-message-pm" />
+                    'openwebinar') ?>" name="message-pm" class="openwebinar-message-input" id="openwebinar-message-pm"/>
             <span id="openwebinar-send-pm" class="openwebinar-send-btn">
                 <?php print_string('js:wait_on_connection', 'openwebinar') ?></span>
         </div>
@@ -456,8 +455,22 @@ echo $OUTPUT->header();
         <div class="yui3-widget-bd">
             <div id="all-questions">
                 <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
-                    <span class="openwebinar-button" id="addquestion"><?php print_string('btn:addquestion',
-                                'openwebinar') ?></span>
+                    <ul class="nav nav-pills">
+                        <li class="active">
+                            <a href="#">
+                              <span id="addquestion">
+                                    <?php print_string('btn:addquestion', 'openwebinar') ?>
+                              </span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="#">
+                             <span id="selectquestiontemplate">
+                                <?php print_string('btn:select_template_question', 'openwebinar') ?>
+                             </span>
+                            </a>
+                        </li>
+                    </ul>
                 <?php endif ?>
                 <div class="overview">
                     <ul>
@@ -470,56 +483,71 @@ echo $OUTPUT->header();
             </div>
             <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
                 <div id="question-type-selector" style="display: none">
-                    <span id="openwebinar-button-previous-step1" class="openwebinar-button previous">Previous</span>
-                    <span id="openwebinar-button-next-step1" class="openwebinar-button next">Next</span>
-                    <h3>Select a question type</h3>
+                    <span id="openwebinar-button-previous-step1" class="openwebinar-button previous">
+                        <?php print_string('room:previous', 'openwebinar') ?>
+                    </span>
+                    <span id="openwebinar-button-next-step1" class="openwebinar-button next">
+                        <?php print_string('room:next', 'openwebinar') ?>
+                    </span>
+                    <h3><?php print_string('room:select_question_type', 'openwebinar') ?></h3>
                     <label for="question-type">
-                        Question type
+                        <?php print_string('room:question_type', 'openwebinar') ?>
                     </label>
                     <select name="question-type" id="question-type">
-                        <option value="open">Open</option>
-                        <option value="truefalse">True / False</option>
+                        <option value="open"><?php print_string('room:question_open', 'openwebinar') ?></option>
+                        <option value="truefalse"><?php print_string('room:question_true_false', 'openwebinar') ?></option>
                         <!-- @todo building this option
                         <option value="choice">Choice</option>
                         -->
                     </select>
                 </div>
                 <div id="question-type-open" style="display: none">
-                    <span class="openwebinar-button previous  openwebinar-button-previous-step2">Previous</span>
-                    <span class="openwebinar-button next disabled" id="open-add-btn">Create</span>
-                    <h3>Create your open question</h3>
+                    <span class="openwebinar-button previous  openwebinar-button-previous-step2">
+                        <?php print_string('room:previous', 'openwebinar') ?>
+                    </span>
+                    <span class="openwebinar-button next disabled" id="open-add-btn">
+                        <?php print_string('room:create', 'openwebinar') ?>
+                    </span>
+                    <h3><?php print_string('room:create_open', 'openwebinar') ?></h3>
                     <form>
                         <label for="question-open">
-                            Question:
+                            <?php print_string('room:question', 'openwebinar') ?>:
                         </label>
                         <input name="question" type="text" id="question-open"
                                placeholder="Enter some question for your clients..."/>
                         <label for="question-open-summary">
-                            Summary (optional):
+                            <?php print_string('room:summary', 'openwebinar') ?>
                         </label>
                         <textarea name="summary" id="question-open-summary"></textarea>
                     </form>
                 </div>
                 <div id="question-type-truefalse" style="display: none">
-                    <span class="openwebinar-button previous openwebinar-button-previous-step2">Previous</span>
-                    <span class="openwebinar-button next disabled" id="truefalse-add-btn">Create</span>
-                    <h3>Create your true or false question</h3>
+                    <span class="openwebinar-button previous openwebinar-button-previous-step2">
+                        <?php print_string('room:previous', 'openwebinar') ?>
+                    </span>
+                    <span class="openwebinar-button next disabled" id="truefalse-add-btn">
+                        <?php print_string('room:create', 'openwebinar') ?>
+                    </span>
+                    <h3><?php print_string('room:create_true_false', 'openwebinar') ?></h3>
                     <form>
                         <label for="question-truefalse">
-                            Question:
+                            <?php print_string('room:question', 'openwebinar') ?>:
                         </label>
                         <input name="question" type="text" id="question-truefalse"
                                placeholder="Enter some question for your clients..."/>
                         <label for="question-truefalse-summary">
-                            Summary (optional):
+                            <?php print_string('room:summary', 'openwebinar') ?>
                         </label>
                         <textarea name="summary" id="question-truefalse-summary"></textarea>
                     </form>
                 </div>
                 <div id="question-type-choice" style="display: none">
-                    <span class="openwebinar-button previous openwebinar-button-previous-step2">Previous</span>
-                    <span class="openwebinar-button next disabled">Create</span>
-                    @TODO
+                    <span class="openwebinar-button previous openwebinar-button-previous-step2">
+                         <?php print_string('room:previous', 'openwebinar') ?>
+                    </span>
+                    <span class="openwebinar-button next disabled">
+                        <?php print_string('room:create', 'openwebinar') ?>
+                    </span>
                 </div>
             <?php endif ?>
         </div>

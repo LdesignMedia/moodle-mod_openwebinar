@@ -626,13 +626,13 @@ input[type="text"].openwebinar-message-input {
     overflow-x: hidden;
 }
 
-#all-questions ul {
+#all-questions .overview ul {
     margin: 10px 0 0 0;
     padding: 0;
     overflow: hidden;
 }
 
-#all-questions li {
+#all-questions .overview li {
     display: block;
     list-style: none;
     height: 50px;

@@ -2357,7 +2357,7 @@ M.mod_openwebinar.room = {
 
         this.log('add_question_manager');
 
-        this.nodeholder.questionoverview = Y.one('#all-questions ul');
+        this.nodeholder.questionoverview = Y.one('#all-questions .overview > ul');
         this.nodeholder.addquestionbtn = Y.one('#addquestion');
 
         // Init manager popup.

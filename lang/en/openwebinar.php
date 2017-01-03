@@ -199,6 +199,8 @@ $string['btn:back'] = 'Back';
 $string['btn:addquestion'] = 'Add a new question';
 $string['btn:open'] = 'Save';
 $string['btn:broadcast_enter'] = 'Enter openwebinar';
+$string['btn:offline_questions'] = 'Make questions templates';
+$string['btn:select_template_question'] = 'Select template question';
 
 // Helper strings.
 $string['dateformat'] = 'd-m-Y H:i';
@@ -329,3 +331,25 @@ We\'d really appreciate if you could fill in a short feedback.<br/><br/>
 
 Kind regards,<br/>
 {$a->broadcaster_fullname}';
+
+$string['room:question'] = 'Question';
+$string['room:summary'] = 'Summary (optional):';
+$string['room:previous'] = 'Previous';
+$string['room:next'] = 'Next';
+$string['room:create'] = 'Create';
+$string['room:create_true_false'] = 'Create your true or false question';
+$string['room:create_open'] = 'Create your open question';
+$string['room:select_question_type'] = 'Select a question type';
+$string['room:question_type'] = 'Question type';
+$string['room:question_open'] = 'Open question';
+$string['room:question_true_false'] = 'True / False question';
+$string['text:question_table'] = 'Question template overview';
+$string['btn:delete'] = 'Delete';
+$string['btn:edit'] = 'Edit';
+
+$string['heading:question_type'] = 'Question type';
+$string['heading:question_summary'] = 'Summary';
+$string['heading:question_name'] = 'Name';
+$string['type:open'] = 'Open';
+$string['type:true_false'] = 'True / false';
+$string['offline_questions'] = 'Offline questions';

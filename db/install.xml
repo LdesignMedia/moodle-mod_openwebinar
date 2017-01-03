@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/openwebinar/db" VERSION="20161113" COMMENT="XMLDB file for Moodle mod/openwebinar"
+<XMLDB PATH="mod/openwebinar/db" VERSION="20170103" COMMENT="XMLDB file for Moodle mod/openwebinar"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
-        >
+>
     <TABLES>
         <TABLE NAME="openwebinar_messages" COMMENT="openwebinar_messages table retrofitted from MySQL">
             <FIELDS>
@@ -33,6 +33,7 @@
                 <FIELD NAME="question_type" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="question_data" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="question_users" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="group" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="active" SEQUENCE="false"/>
                 <FIELD NAME="added_on" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
             </FIELDS>
             <KEYS>

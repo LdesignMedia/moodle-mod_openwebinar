@@ -353,6 +353,12 @@ function openwebinar_extend_settings_navigation(settings_navigation $settings, n
         $node = navigation_node::create(get_string('user_activity', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null,
                 'mod_openwebinar_user_activity', new pix_icon('i/preview', ''));
         $openwebinarnode->add_node($node, $beforekey);
+
+        $url = new moodle_url('/mod/openwebinar/offline_questions.php', array('id' => $PAGE->cm->id));
+        $node = navigation_node::create(get_string('offline_questions', 'openwebinar'), $url,
+                navigation_node::TYPE_SETTING, null,
+                'mod_openwebinar_offline_questions', new pix_icon('i/edit', ''));
+        $openwebinarnode->add_node($node, $beforekey);
     }
 
     // Included here as we only ever want to include this file if we really need to.

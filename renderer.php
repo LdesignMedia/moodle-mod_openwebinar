@@ -79,13 +79,19 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
     public function view_page_broadcaster_help($id = 0, stdClass $openwebinar) {
 
         $url = new moodle_url('/mod/openwebinar/view_openwebinar.php', array('id' => $id));
-        $link = html_writer::link($url, get_string('btn:broadcast_enter', 'openwebinar'), array(
+        $enterroom = html_writer::link($url, get_string('btn:broadcast_enter', 'openwebinar'), array(
                 'class' => 'btn btn-primary',
                 'target' => '_blank'
         ));
 
+        $url = new moodle_url('/mod/openwebinar/offline_questions.php', array('id' => $id));
+        $offlinequestions = html_writer::link($url, get_string('btn:offline_questions', 'openwebinar'), array(
+                'class' => 'btn',
+                'target' => '_blank'
+        ));
+
         return $this->output->container(html_writer::tag('p',
-                get_string('text:broadcaster_help', 'openwebinar', $openwebinar) . '<hr/>' . $link,
+                get_string('text:broadcaster_help', 'openwebinar', $openwebinar) . '<hr/>' . $enterroom . $offlinequestions,
                 array('class' => 'openwebinar-message')), 'generalbox attwidth openwebinar-center');
     }
 
@@ -212,6 +218,47 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
 
         $table->no_sorting('action');
         $table->sortable(true, 'name', SORT_DESC);
+        $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
+        $table->collapsible(false);
+        $table->out(self::DEFAULT_TABLE_ROW_COUNT, true);
+    }
+
+    /**
+     * get overview of all question templates
+     *
+     * @param $openwebinar
+     *
+     * @return string
+     */
+    public function question_table(\stdClass $openwebinar) {
+        global $OUTPUT, $PAGE, $CFG;
+
+        require_once($CFG->libdir . '/tablelib.php');
+
+        $table = new \mod_openwebinar\table\questions('outstation-list-table', $openwebinar);
+        echo $OUTPUT->heading(get_string('text:question_table', 'openwebinar'));
+
+        echo '<hr/>';
+
+        $table->set_attribute('cellspacing', '0');
+        $table->set_attribute('class', 'admintable generaltable');
+        $table->initialbars(true); // Always initial bars.
+        $table->define_columns(array(
+                'question_name',
+                'question_summary',
+                'question_type',
+                'action'
+        ));
+
+        $table->define_headers(array(
+                get_string('heading:question_name', 'openwebinar'),
+                get_string('heading:question_summary', 'openwebinar'),
+                get_string('heading:question_type', 'openwebinar'),
+                get_string('heading:action', 'openwebinar'),
+        ));
+
+        $table->no_sorting('action');
+        $table->sortable(true, 'question_name', SORT_DESC);
         $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
         $table->collapsible(false);
         $table->out(self::DEFAULT_TABLE_ROW_COUNT, true);

@@ -187,7 +187,9 @@ $string['btn:view'] = 'Bekijken';
 $string['btn:back'] = 'Terug';
 $string['btn:addquestion'] = 'Voeg een nieuwe vraag toe';
 $string['btn:open'] = 'Opslaan';
-$string['btn:broadcast_enter'] = 'Enter openwebinar';
+$string['btn:broadcast_enter'] = 'Enter webinar';
+$string['btn:offline_questions'] = 'Vragen templates';
+$string['btn:select_template_question'] = 'Selecteer een aangemaakte vraag';
 
 // Helper strings.
 $string['dateformat'] = 'd-m-Y H:i';
@@ -327,3 +329,25 @@ Het kost u 2 minuten en helpt ons de webinars te verbeteren.<br/>
 <br/>
 Met vriendelijke groet,<br/>
 {$a->broadcaster_fullname}';
+
+$string['room:question'] = 'Vraag';
+$string['room:summary'] = 'Omschrijving (optioneel):';
+$string['room:previous'] = 'Vorige';
+$string['room:next'] = 'Volgende';
+$string['room:create'] = 'Aanmaken';
+$string['room:create_true_false'] = 'Maak een nieuwe ja of nee vraag.';
+$string['room:create_open'] = 'Maak een nieuwe open vraag.';
+$string['room:select_question_type'] = 'Selecteer een vraag type';
+$string['room:question_type'] = 'Vraag type';
+$string['room:question_open'] = 'Open vraag';
+$string['room:question_true_false'] = 'Ja / nee vraag';
+$string['text:question_table'] = 'Vragen templates overzicht';
+$string['btn:delete'] = 'Verwijderen';
+$string['btn:edit'] = 'Bewerk';
+
+$string['heading:question_type'] = 'Vraagtype';
+$string['heading:question_summary'] = 'Omschrijving';
+$string['heading:question_name'] = 'Naam';
+$string['type:open'] = 'Open';
+$string['type:true_false'] = 'Ja / Nee';
+$string['offline_questions'] = 'Vragen templates';

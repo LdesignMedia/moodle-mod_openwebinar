@@ -92,5 +92,20 @@ function xmldb_openwebinar_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016120501, 'openwebinar');
     }
 
+    if ($oldversion < 2017010300) {
+
+        // Define field group to be added to openwebinar_question.
+        $table = new xmldb_table('openwebinar_question');
+        $field = new xmldb_field('group', XMLDB_TYPE_CHAR, '20', null, null, null, 'active', 'question_users');
+
+        // Conditionally launch add field group.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Openwebinar savepoint reached.
+        upgrade_mod_savepoint(true, 2017010300, 'openwebinar');
+    }
+
     return true;
 }
