@@ -45,6 +45,7 @@ $sesskey = optional_param('sesskey', false, PARAM_RAW);
 // Parameters for the action.
 $extra1 = optional_param('extra1', false, PARAM_TEXT);
 $extra2 = optional_param('extra2', false, PARAM_TEXT);
+$extra3 = optional_param('extra3', false, PARAM_TEXT);
 
 // Load plugin config.
 $config = get_config('openwebinar');
@@ -56,6 +57,7 @@ $api = new \mod_openwebinar\api();
 $api->set_sesskey($sesskey);
 $api->set_extra1($extra1);
 $api->set_extra2($extra2);
+$api->set_extra3($extra3);
 
 if (is_callable(array($api, $action))) {
     $api->$action();

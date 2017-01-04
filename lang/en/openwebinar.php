@@ -360,3 +360,4 @@ $string['form:question'] = 'Question';
 $string['form:summary'] = 'Summary';
 $string['form:question_type'] = 'Type';
 $string['form:save'] = 'Save';
+$string['room:select'] = 'Select';

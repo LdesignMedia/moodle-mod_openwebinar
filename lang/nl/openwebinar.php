@@ -358,3 +358,4 @@ $string['form:question'] = 'Vraag';
 $string['form:summary'] = 'Omschrijving';
 $string['form:question_type'] = 'Type';
 $string['form:save'] = 'Opslaan';
+$string['room:select'] = 'Selecteren';

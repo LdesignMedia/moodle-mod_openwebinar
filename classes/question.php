@@ -170,13 +170,34 @@ class question {
     }
 
     /**
-     * Get all questions from this openwebinar
+     * Get all active questions from this openwebinar
      *
      * @return bool|array
      */
     public function get_all_question() {
         global $DB;
-        $questions = $DB->get_records('openwebinar_question', array('openwebinar_id' => $this->openwebinar->id), 'added_on ASC');
+        $questions = $DB->get_records('openwebinar_question', array('openwebinar_id' => $this->openwebinar->id , 'grouptype' => 'active'),
+        'added_on ASC');
+
+        if ($questions) {
+            foreach ($questions as $id => $question) {
+                $class = '\mod_openwebinar\questiontypes\\' . $this->question_type_int_to_string($question->question_type);
+                $questions[$id] = new $class($question, false, true);
+            }
+        }
+
+        return $questions;
+    }
+
+    /**
+     * Get all template questions from this openwebinar
+     *
+     * @return bool|array
+     */
+    public function get_all_template_question() {
+        global $DB;
+        $questions = $DB->get_records('openwebinar_question', array('openwebinar_id' => $this->openwebinar->id , 'grouptype' => 'template'),
+        'added_on ASC');
 
         if ($questions) {
             foreach ($questions as $id => $question) {

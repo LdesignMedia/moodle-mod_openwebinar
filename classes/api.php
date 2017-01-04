@@ -53,6 +53,13 @@ class api {
     protected $extra2 = false;
 
     /**
+     * Some extra value
+     *
+     * @var mixed
+     */
+    protected $extra3 = false;
+
+    /**
      * plugin object
      *
      * @var mixed
@@ -149,6 +156,21 @@ class api {
      */
     public function set_extra2($extra2) {
         $this->extra2 = $extra2;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    protected function get_extra3() {
+        return $this->extra3;
+    }
+
+    /**
+     * @param mixed $extra3
+     */
+    public function set_extra3($extra3) {
+        $this->extra3 = $extra3;
     }
 
     /**
@@ -383,6 +405,33 @@ class api {
     }
 
     /**
+     * Use a question template
+     */
+    public function api_call_select_question_template() {
+        global $USER;
+
+        // Valid sesskey.
+        $this->has_valid_sesskey();
+
+        // Set information.
+        $this->get_module_information();
+
+        // Class.
+        $question = new question($this->openwebinar);
+        $question = $question->get_question_by_id($this->extra3);
+
+        if ($question) {
+            $this->response['status'] = true;
+            $this->response['question_id'] = $question->get_id();
+            $this->response['text'] = $question->get_question_text();
+            $this->response['type'] = $question->get_question_type_int();
+            $this->response['user_id'] = $USER->id;
+        }
+
+        $this->output_json();
+    }
+
+    /**
      * Add new question to the openwebinar
      */
     public function api_call_add_question() {
@@ -447,6 +496,37 @@ class api {
             $obj->id = $quest->get_id();
             $obj->answers = $quest->get_answers_count();
             $obj->my_answer = $quest->get_my_answer();
+            $this->response['questions'][$id] = $obj;
+        }
+        $this->response['status'] = true;
+
+        $permissions = helper::get_permissions($PAGE->context, $this->openwebinar);
+        $this->response['manager'] = ($permissions->broadcaster || $permissions->teacher) ? true : false;
+        $this->output_json();
+    }
+
+    /**
+     * Get all questions templates from the DB
+     */
+    public function api_call_get_questions_templates() {
+        global $PAGE;
+
+        // Valid sesskey.
+        $this->has_valid_sesskey();
+
+        // Set information.
+        $this->get_module_information();
+
+        // Class.
+        $question = new question($this->openwebinar);
+
+        // Get all questions in this openwebinar.
+        $questions = $question->get_all_template_question();
+
+        foreach ($questions as $id => $quest) {
+            $obj = new \stdClass();
+            $obj->name = $quest->get_question_text();
+            $obj->id = $quest->get_id();
             $this->response['questions'][$id] = $obj;
         }
         $this->response['status'] = true;

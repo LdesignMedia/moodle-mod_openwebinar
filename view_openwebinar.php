@@ -482,8 +482,24 @@ echo $OUTPUT->header();
                 <!-- Holder -->
             </div>
             <?php if (($permissions->broadcaster || $permissions->teacher) && $openwebinar->is_ended == 0): ?>
+                <div id="question-template-selector" style="display: none">
+                    <span class="openwebinar-button-previous-step1 openwebinar-button previous">
+                        <?php print_string('room:previous', 'openwebinar') ?>
+                    </span>
+                    <span class="openwebinar-button next" id="insert-template">
+                        <?php print_string('room:select', 'openwebinar') ?>
+                    </span>
+                    <form>
+                        <label for="question-template">
+                            <?php print_string('room:question', 'openwebinar') ?>:
+                        </label>
+                        <select name="question-template" id="question-template">
+                            <!-- Will be added by YUI -->
+                        </select>
+                    </form>
+                </div>
                 <div id="question-type-selector" style="display: none">
-                    <span id="openwebinar-button-previous-step1" class="openwebinar-button previous">
+                    <span class="openwebinar-button-previous-step1 openwebinar-button previous">
                         <?php print_string('room:previous', 'openwebinar') ?>
                     </span>
                     <span id="openwebinar-button-next-step1" class="openwebinar-button next">
@@ -514,7 +530,7 @@ echo $OUTPUT->header();
                             <?php print_string('room:question', 'openwebinar') ?>:
                         </label>
                         <input name="question" type="text" id="question-open"
-                               placeholder="Enter some question for your clients..."/>
+                               placeholder=""/>
                         <label for="question-open-summary">
                             <?php print_string('room:summary', 'openwebinar') ?>
                         </label>
@@ -534,7 +550,7 @@ echo $OUTPUT->header();
                             <?php print_string('room:question', 'openwebinar') ?>:
                         </label>
                         <input name="question" type="text" id="question-truefalse"
-                               placeholder="Enter some question for your clients..."/>
+                               placeholder=""/>
                         <label for="question-truefalse-summary">
                             <?php print_string('room:summary', 'openwebinar') ?>
                         </label>

@@ -27,13 +27,13 @@ class addquestion extends \moodleform {
         $mform->addElement('header', 'header1', get_string('form:addquestion', 'openwebinar'));
 
         $mform->addElement('text', 'question', get_string('form:question', 'openwebinar'),
-                array('size' => '48',));
+                array('style' => 'width:80%',));
         $mform->setType('question', PARAM_TEXT);
 
         $mform->addElement('textarea', 'summary', get_string('form:summary', 'openwebinar'),
                 [
                         'rows' => 10,
-                        'cols' => 100
+                        'style' => 'width:80%'
                 ]
         );
         $mform->setType('summary', PARAM_TEXT);
