@@ -33,7 +33,7 @@
                 <FIELD NAME="question_type" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="question_data" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="question_users" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="group" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="active" SEQUENCE="false"/>
+                <FIELD NAME="grouptype" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="active" SEQUENCE="false"/>
                 <FIELD NAME="added_on" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
             </FIELDS>
             <KEYS>

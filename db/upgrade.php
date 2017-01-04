@@ -96,7 +96,7 @@ function xmldb_openwebinar_upgrade($oldversion) {
 
         // Define field group to be added to openwebinar_question.
         $table = new xmldb_table('openwebinar_question');
-        $field = new xmldb_field('group', XMLDB_TYPE_CHAR, '20', null, null, null, 'active', 'question_users');
+        $field = new xmldb_field('grouptype', XMLDB_TYPE_CHAR, '20', null, null, null, 'active', 'question_users');
 
         // Conditionally launch add field group.
         if (!$dbman->field_exists($table, $field)) {

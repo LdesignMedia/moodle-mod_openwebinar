@@ -353,3 +353,10 @@ $string['heading:question_name'] = 'Name';
 $string['type:open'] = 'Open';
 $string['type:true_false'] = 'True / false';
 $string['offline_questions'] = 'Offline questions';
+$string['btn:new'] = 'New question template';
+
+$string['form:addquestion'] = 'Add / edit question template';
+$string['form:question'] = 'Question';
+$string['form:summary'] = 'Summary';
+$string['form:question_type'] = 'Type';
+$string['form:save'] = 'Save';

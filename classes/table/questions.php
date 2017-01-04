@@ -67,7 +67,7 @@ class questions extends \table_sql {
         $this->sql = new \stdClass();
         $this->sql->fields = 'q.* , q.question_data as question_name, q.question_data as question_summary';
         $this->sql->from = '{openwebinar_question} q';
-        $this->sql->where = 'q.openwebinar_id = :openwebinar_id';
+        $this->sql->where = 'q.openwebinar_id = :openwebinar_id AND q.grouptype = "template"';
         $this->sql->params = $params;
 
         // Set count sql.
@@ -149,7 +149,7 @@ class questions extends \table_sql {
                 'action' => 'edit',
         ));
 
-        $delete = new \moodle_url('/mod/openwebinar/user_activity.php', array(
+        $delete = new \moodle_url('/mod/openwebinar/offline_questions.php', array(
                 'id' => $PAGE->cm->id,
                 'questionid' => $row->id,
                 'action' => 'delete',

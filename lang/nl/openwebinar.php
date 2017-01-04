@@ -351,3 +351,10 @@ $string['heading:question_name'] = 'Naam';
 $string['type:open'] = 'Open';
 $string['type:true_false'] = 'Ja / Nee';
 $string['offline_questions'] = 'Vragen templates';
+$string['btn:new'] = 'Nieuwe vraag template aanmaken';
+
+$string['form:addquestion'] = 'Bewerk vragen template';
+$string['form:question'] = 'Vraag';
+$string['form:summary'] = 'Omschrijving';
+$string['form:question_type'] = 'Type';
+$string['form:save'] = 'Opslaan';
