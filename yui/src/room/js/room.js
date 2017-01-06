@@ -2410,10 +2410,12 @@ M.mod_openwebinar.room = {
                         if (response.status) {
                             that.log('question_save Success');
                             // Close the dialog and hide steps.
-                            Y.one('#question-template-selector').hide();
+                            if (Y.one('#question-template-selector')) {
+                                Y.one('#question-template-selector').hide();
+                            }
+
                             Y.one('#all-questions').hide();
                             that.nodeholder.questionmanager.hide();
-
 
                             that.chat_local_message('added_question');
 
@@ -2479,7 +2481,9 @@ M.mod_openwebinar.room = {
         // Back button on question detail.
         Y.one('body').delegate('click', function () {
             Y.one('#question-answer').hide();
-            Y.one('#question-template-selector').hide();
+            if (Y.one('#question-template-selector')) {
+                Y.one('#question-template-selector').hide();
+            }
             Y.one('#all-questions').show();
             that.question_load_overview();
         }, '.openwebinar-back-to-questionoverview');
@@ -2619,6 +2623,10 @@ M.mod_openwebinar.room = {
     question_load_overview: function () {
         "use strict";
         var that = this, html = '', question;
+
+        Y.one('#question-answer').hide();
+        Y.one('#all-questions').show();
+
         Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
@@ -2688,7 +2696,10 @@ M.mod_openwebinar.room = {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
                             // Hide question overview.
-                            Y.one('#question-template-selector').hide();
+                            if (Y.one('#question-template-selector')) {
+                                Y.one('#question-template-selector').hide();
+                            }
+
                             Y.one('#all-questions').hide();
 
                             // Answering a question.

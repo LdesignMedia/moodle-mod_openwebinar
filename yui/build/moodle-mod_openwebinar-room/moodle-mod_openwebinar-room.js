@@ -555,29 +555,31 @@ M.mod_openwebinar.room = {
      * @protected
      */
     nodeholder: {
-        chatlist            : null,
-        chatlist_pm         : null,
-        userlist            : null,
-        topmenu             : null,
-        leftsidemenu        : null,
-        loadhistorybtn      : null,
-        userlist_counter    : null,
-        sendbutton          : null,
-        sendbutton_pm       : null,
-        body                : null,
-        userlist_viewport   : null,
-        chatlist_viewport   : null,
-        chatlist_pm_viewport: null,
-        filemanagerdialog   : null,
-        fileoverviewdialog  : null,
-        fileoverview        : null,
-        emoticonsdialog     : null,
-        questionmanager     : null,
-        addquestionbtn      : null,
-        questionoverview    : null,
-        noticebar           : null,
-        message             : null,
-        message_pm          : null
+        chatlist                 : null,
+        chatlist_pm              : null,
+        userlist                 : null,
+        topmenu                  : null,
+        leftsidemenu             : null,
+        loadhistorybtn           : null,
+        userlist_counter         : null,
+        sendbutton               : null,
+        sendbutton_pm            : null,
+        body                     : null,
+        userlist_viewport        : null,
+        chatlist_viewport        : null,
+        chatlist_pm_viewport     : null,
+        filemanagerdialog        : null,
+        fileoverviewdialog       : null,
+        fileoverview             : null,
+        emoticonsdialog          : null,
+        questionmanager          : null,
+        addquestionbtn           : null,
+        selectquestiontemplatebtn: null,
+        inserttemplatebtn        : null,
+        questionoverview         : null,
+        noticebar                : null,
+        message                  : null,
+        message_pm               : null
     },
     /**
      * Internal logging
@@ -1531,7 +1533,7 @@ M.mod_openwebinar.room = {
                 if (this.options.userid !== data.userid &&
                     this.audio_newmessage && !multiplelines
                 ) {
-                    if(this.options.enable_chat_sound){
+                    if (this.options.enable_chat_sound) {
                         this.log('Bleep sound..');
                         this.audio_newmessage.play();
                     }
@@ -2024,6 +2026,57 @@ M.mod_openwebinar.room = {
         }
     },
 
+    /**
+     * Update userlist without removing previous users.
+     * @param {object} data
+     */
+    update_userlist_student: function (data) {
+
+        // Setting vars.
+        var html = '', key, userobject, li;
+
+        for (key in data.users) {
+            if (data.users.hasOwnProperty(key)) {
+
+                userobject = data.users[key];
+                var $user = Y.one('#userlist-user-' + Number(userobject.userid));
+                console.log($user);
+                if ($user) {
+                    // User already in the list.
+                    continue;
+                }
+
+                li = '<li id="userlist-user-' + Number(userobject.userid) +
+                    '" class="openwebinar-' + this.alpha_numeric(userobject.usertype) +
+                    ' noSelect">';
+
+                if (this.options.showuserpicture) {
+                    li += '<img src="' + M.cfg.wwwroot + '/user/pix.php?file=/' +
+                        Number(userobject.userid) + '/f1.jpg" />';
+                }
+
+                li += '<span class="fullname" data-id="' + Number(userobject.userid) +
+                    '" data-skype="' + this.alpha_numeric(userobject.skype) + '">' +
+                    this.alpha_numeric(userobject.fullname) + '</span>' +
+                    '<span class="browser">' + userobject.useragent.os.name + ' ' +
+                    userobject.useragent.os.version + '<br/>' +
+                    userobject.useragent.browser.name + ' ' + userobject.useragent.browser.major +
+                    '</span>';
+
+                li += '</li>';
+
+                html += li;
+            }
+        }
+
+        this.nodeholder.userlist.append(html);
+
+        // Update scrollbar.
+        this.scrollbar_userlist.update();
+
+        // Update the counter.
+        this.nodeholder.userlist_counter.set('text', ' (' + this.nodeholder.userlist.all('li').size() + ') ');
+    },
 
     /**
      * Update userlist
@@ -2031,15 +2084,24 @@ M.mod_openwebinar.room = {
      */
     update_userlist: function (data) {
         "use strict";
+        // Setting vars.
+        var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li, totalUsersAdded;
+
         this.log(data);
 
         if (!data.status) {
             return;
         }
 
-        // Setting vars.
-        var htmlbroadcaster = '', htmlteachers = '', htmlstudents = '', htmlguests = '', key, userobject, li;
+        totalUsersAdded = this.nodeholder.userlist.all('li').size();
 
+        if (!this.options.is_broadcaster && totalUsersAdded > 0) {
+            this.log('update_userlist_student');
+            this.update_userlist_student(data);
+            return;
+        }
+
+        this.log('update_userlist');
         for (key in data.users) {
 
             if (data.users.hasOwnProperty(key)) {
@@ -2097,7 +2159,7 @@ M.mod_openwebinar.room = {
      */
     reset_userlist: function () {
         "use strict";
-        this.log('build_room');
+        this.log('build_room - reset_userlist');
         this.nodeholder.userlist.setHTML('');
         // Update the counter.
         this.nodeholder.userlist_counter.set('text', ' (0) ');
@@ -2286,6 +2348,98 @@ M.mod_openwebinar.room = {
     },
 
     /**
+     * Load question templates
+     */
+    load_question_templates: function () {
+        "use strict";
+        var that = this;
+        // TODO: check user type for which api we need to call.
+        Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
+            method: 'POST',
+
+            data: {
+                'sesskey': M.cfg.sesskey,
+                'action' : "get_questions_templates",
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.openwebinarid,
+            },
+            on  : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            var options = '';
+                            for (var i in response.questions) {
+                                if (response.questions.hasOwnProperty(i)) {
+                                    var question = response.questions[i];
+                                    options += '<option value="' + question.id + '">' + question.name + '</option>';
+                                }
+                            }
+                            Y.one('#question-template').setHTML(options);
+                        }
+                    } catch (exc) {
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+    },
+
+    insert_question_template: function () {
+        "use strict"
+
+        var that = this;
+        Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
+            method: 'POST',
+            data  : {
+                'sesskey': M.cfg.sesskey,
+                'action' : "select_question_template",
+                'extra1' : that.options.courseid,
+                'extra2' : that.options.openwebinarid,
+                'extra3' : Y.one('#question-template option:checked').get('value')
+            },
+            on    : {
+                success: function (id, o) {
+                    that.log(o.response);
+                    try {
+                        var response = Y.JSON.parse(o.response);
+                        if (response.status) {
+                            that.log('question_save Success');
+                            // Close the dialog and hide steps.
+                            if (Y.one('#question-template-selector')) {
+                                Y.one('#question-template-selector').hide();
+                            }
+
+                            Y.one('#all-questions').hide();
+                            that.nodeholder.questionmanager.hide();
+
+                            that.chat_local_message('added_question');
+
+                            that.chatobject.message = '[question ' + Y.JSON.stringify(response) + ']';
+                            that.socket.emit("send", that.chatobject, function (response) {
+                                if (!response.status) {
+                                    that.exception(response.error);
+                                }
+                            });
+                        }
+                    } catch (exc) {
+                        that.log('question_save Exception');
+                        that.log(exc);
+                    }
+                },
+                failure: function (x, o) {
+                    that.log('failure');
+                    that.log(o);
+                }
+            }
+        });
+    },
+    /**
      * Add a question manager that allows the broadcaster to:
      * - Send questions to there clients
      * - Crud question
@@ -2298,8 +2452,10 @@ M.mod_openwebinar.room = {
 
         this.log('add_question_manager');
 
-        this.nodeholder.questionoverview = Y.one('#all-questions ul');
+        this.nodeholder.questionoverview = Y.one('#all-questions .overview > ul');
         this.nodeholder.addquestionbtn = Y.one('#addquestion');
+        this.nodeholder.selectquestiontemplatebtn = Y.one('#selectquestiontemplate');
+        this.nodeholder.inserttemplatebtn = Y.one('#insert-template');
 
         // Init manager popup.
         this.nodeholder.questionmanager = new Y.Panel({
@@ -2326,6 +2482,9 @@ M.mod_openwebinar.room = {
         // Back button on question detail.
         Y.one('body').delegate('click', function () {
             Y.one('#question-answer').hide();
+            if (Y.one('#question-template-selector')) {
+                Y.one('#question-template-selector').hide();
+            }
             Y.one('#all-questions').show();
             that.question_load_overview();
         }, '.openwebinar-back-to-questionoverview');
@@ -2348,7 +2507,20 @@ M.mod_openwebinar.room = {
 
             // Add new question.
             if (this.nodeholder.addquestionbtn) {
+
                 // Broadcaster or teacher can add questions.
+                this.nodeholder.selectquestiontemplatebtn.on('click', function () {
+                    Y.one('#all-questions').hide();
+                    Y.one('#question-template-selector').show();
+
+                    // Load templates.
+                    that.load_question_templates();
+                });
+
+                this.nodeholder.inserttemplatebtn.on('click', function () {
+                    // Use selected template as question.
+                    that.insert_question_template();
+                });
 
                 this.nodeholder.addquestionbtn.on('click', function () {
                     Y.one('#all-questions').hide();
@@ -2373,8 +2545,9 @@ M.mod_openwebinar.room = {
                 }, this);
 
                 // Back to question overview.
-                Y.one('#openwebinar-button-previous-step1').on('click', function () {
+                Y.all('.openwebinar-button-previous-step1').on('click', function () {
                     Y.one('#all-questions').show();
+                    Y.one('#question-template-selector').hide();
                     Y.one('#question-type-selector').hide();
                 }, this);
 
@@ -2451,6 +2624,10 @@ M.mod_openwebinar.room = {
     question_load_overview: function () {
         "use strict";
         var that = this, html = '', question;
+
+        Y.one('#question-answer').hide();
+        Y.one('#all-questions').show();
+
         Y.io(M.cfg.wwwroot + "/mod/openwebinar/api.php", {
             method: 'POST',
 
@@ -2520,6 +2697,10 @@ M.mod_openwebinar.room = {
                         var response = Y.JSON.parse(o.response);
                         if (response.status) {
                             // Hide question overview.
+                            if (Y.one('#question-template-selector')) {
+                                Y.one('#question-template-selector').hide();
+                            }
+
                             Y.one('#all-questions').hide();
 
                             // Answering a question.
