@@ -418,7 +418,13 @@ class api {
 
         // Class.
         $question = new question($this->openwebinar);
-        $question = $question->get_question_by_id($this->extra3);
+
+        // This is a template question we need to make a clone of it.
+        $newid = $question->clone_question($this->extra3);
+
+        // Get the new question.
+        $question = $question->get_question_by_id($newid);
+
 
         if ($question) {
             $this->response['status'] = true;

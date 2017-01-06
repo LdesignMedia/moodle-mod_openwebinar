@@ -254,4 +254,20 @@ class question {
         return $results;
     }
 
+    /**
+     * Clone a question from a template to use it.
+     *
+     * @param $extra3
+     *
+     * @return bool|int
+     */
+    public function clone_question($extra3) {
+        global $DB;
+
+        $row = $DB->get_record('openwebinar_question' , ['id' => $extra3] , '*', MUST_EXIST );
+        unset($row->id);
+        $row->grouptype = 'active';
+        return $DB->insert_record('openwebinar_question'  , $row);
+    }
+
 }
