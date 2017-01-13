@@ -179,8 +179,8 @@ $string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd 
 $string['text:useractivity'] = 'Gebruikers activiteit';
 
 // Buttons.
-$string['btn:enter_live_openwebinar'] = 'Open de live openwebinar';
-$string['btn:enter_offline_openwebinar'] = 'Open de offline openwebinar';
+$string['btn:enter_live_openwebinar'] = 'Open de live webinar';
+$string['btn:enter_offline_openwebinar'] = 'Open de offline webinar';
 $string['btn:chattime'] = 'Rapport';
 $string['btn:chatlog'] = 'Chatgeschiedenis';
 $string['btn:view'] = 'Bekijken';
@@ -325,7 +325,7 @@ Graag evalueren wij onderstaande webinar:<br/>
 {$a->name}<br/>
 <br/>
 Het kost u 2 minuten en helpt ons de webinars te verbeteren.<br/>
-{$a->link}<br/>
+<a href="{$a->url}">Klik hier</a><br/>
 <br/>
 Met vriendelijke groet,<br/>
 {$a->broadcaster_fullname}';
@@ -359,3 +359,5 @@ $string['form:summary'] = 'Omschrijving';
 $string['form:question_type'] = 'Type';
 $string['form:save'] = 'Opslaan';
 $string['room:select'] = 'Selecteren';
+
+$string['error:invalid'] = 'Ongeldig';

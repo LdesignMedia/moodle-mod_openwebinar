@@ -157,7 +157,14 @@ class cron {
 
                 // Get url.
                 $cm = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false, MUST_EXIST);
-                $url = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
+                $urlwebinar = new \moodle_url('/mod/openwebinar/view.php', array('id' => $cm->id));
+
+                // Direct login or redirect link
+                $urllogin = new \moodle_url('/mod/openwebinar/login.php', [
+                        'id' => $cm->id,
+                        'url' => base64_encode($urlwebinar->out(false))
+                ]);
+
                 foreach ($students as $student) {
 
                     // Fix issue when mails not in correct language
@@ -179,7 +186,7 @@ class cron {
                             (!empty($openwebinar->intro) ? $openwebinar->intro : '-'),
                             date('d-m-Y H:i', $openwebinar->timeopen),
                             round($openwebinar->duration / 60),
-                            $url,
+                            $urllogin->out(false),
                             $openwebinar->name,
                             fullname($broadcaster)
                     ), $message);
@@ -195,7 +202,7 @@ class cron {
                     $eventdata->name = 'reminder';
                     $eventdata->component = 'mod_openwebinar';
                     $eventdata->notification = 1;
-                    $eventdata->contexturl = $url->out();
+                    $eventdata->contexturl = $urlwebinar->out();
                     $eventdata->contexturlname = $openwebinar->name;
                     $eventdata->attachment = $file;
                     $eventdata->attachname = 'cal.ics';
@@ -307,8 +314,20 @@ END:VCALENDAR');
             $cm = get_coursemodule_from_instance('feedback', $feedback->id, $feedback->course, false,
                     MUST_EXIST);
 
-            $url = new \moodle_url('/mod/feedback/complete.php', array('id' => $cm->id,
-                                                                       'gopage' => 0));
+            $cmopenwebinar = get_coursemodule_from_instance('openwebinar', $openwebinar->id, $openwebinar->course, false,
+                    MUST_EXIST);
+
+            // Feedback link
+            $url = new \moodle_url('/mod/feedback/complete.php', array(
+                    'id' => $cm->id,
+                    'gopage' => 0
+            ));
+
+            // Direct login or redirect link
+            $urllogin = new \moodle_url('/mod/openwebinar/login.php', [
+                    'id' => $cmopenwebinar->id,
+                    'url' => base64_encode($url->out(false))
+            ]);
 
             // Get the broadcaster.
             $broadcaster = $DB->get_record('user', array('id' => $openwebinar->broadcaster), '*', MUST_EXIST);
@@ -331,7 +350,7 @@ END:VCALENDAR');
                 $obj->firstname = $user->firstname;
                 $obj->fullname = fullname($user);
                 $obj->broadcaster_fullname = fullname($broadcaster);
-                $obj->link = \html_writer::link($url, $url);
+                $obj->url = $urllogin->out(false);
                 $message = get_string('mail:feedback_message', 'openwebinar', $obj);
 
                 $eventdata = new \stdClass();
