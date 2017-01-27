@@ -630,9 +630,12 @@ M.mod_openwebinar.room = {
         // Build room components when the dom is completely loaded.
         Y.on('domready', function () {
             this.log('domready');
-            this.build_room();
+            setTimeout(function () {
+                that.build_room();
 
-            Y.one('#openwebinar-loading').hide();
+                Y.one('#openwebinar-loading').hide();
+            }, 3000);
+
         }, this);
     },
 
@@ -972,7 +975,7 @@ M.mod_openwebinar.room = {
         } else {
             this.chatobject.hostname = window.location.hostname;
         }
- 
+
         // Add user agent.
         this.chatobject.useragent = navigator.userAgent;
         this.log('connect_to_socket');
@@ -1352,8 +1355,19 @@ M.mod_openwebinar.room = {
         });
 
         // Fired when an error occurs.
-        this.player.on('error', function () {
+        this.player.on('error', function (e) {
             that.log('player_event(error)');
+            e.stopImmediatePropagation();
+            var error = this.player().error();
+            that.log(error.code + '| |' + error.message);
+
+            if (error.code == 4) {
+                this.player().dispose();
+                Y.one('#openwebinar-stream-holder').setHTML('<div class="alert alert-danger">Fout: flashplayer is niet' +
+                    ' beschikbaar in uw browser!</div>');
+            }
+
+            that.log(error);
         });
 
         this.player.on('loadstart', function () {
