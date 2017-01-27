@@ -164,6 +164,8 @@ $string['mod_setting:broadcastkey'] = 'Presentator sleutel';
 $string['mod_setting:broadcastkey_desc'] = '<b>{$a->broadcastkey}</b>';
 $string['mod_setting:feedback'] = 'Feedback';
 $string['mod_setting:feedback_field'] = 'Feedback / evaluatie';
+$string['setting:multi_domain_hostname'] = 'Hoofddomein hostnaam';
+$string['setting:multi_domain_hostname_desc'] = 'Alleen gebruiken wanneer meeerdere domeinen toegang hebben tot de webinar.';
 
 // Text.
 $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->timeopen}</b><br>
@@ -172,7 +174,6 @@ $string['text:live_openwebinar'] = '<br/>De openwebinar is open vanaf: <b>{$a->t
 $string['text:broadcaster_help'] = '<h3>U bent de presentator van deze openwebinar</h3><br>Presentator sleutel:<br>
 <b class="selectable">{$a->broadcastkey}</b><br><br>Zorg ervoor dat u de streaming-software installeert:<br>
 <a href="https://obsproject.com/" target="_blank">Open Broadcaster Software</a>';
-
 
 $string['text:history'] = '<h3>Openwebinar is offline</h3>Deze openwebinar werd gegeven op <b>{$a->timeopen}</b>. <br/><br/>U
  kunt nog steeds de chatgeschiedenis terugzien door te klikken op de onderstaande knop.';

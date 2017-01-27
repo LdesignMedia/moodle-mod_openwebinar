@@ -105,6 +105,7 @@ $opts['courseid'] = $course->id;
 $opts['openwebinarid'] = $openwebinar->id;
 $opts['streaming_server'] = $config->streaming_server;
 $opts['chat_server'] = $config->chat_server;
+$opts['multi_domain_hostname'] = $config->multi_domain_hostname;
 $opts['shared_secret'] = $config->shared_secret;
 $opts['usertype'] = \mod_openwebinar\helper::get_usertype($USER, $permissions);
 $opts['ajax_path'] = $CFG->wwwroot . '/mod/openwebinar/api.php';

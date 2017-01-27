@@ -42,6 +42,11 @@ if ($ADMIN->fulltree) {
             get_string('setting:chat_server_desc', 'openwebinar'),
             '', PARAM_URL));
 
+    $settings->add(new admin_setting_configtext('openwebinar/multi_domain_hostname',
+            get_string('setting:multi_domain_hostname', 'openwebinar'),
+            get_string('setting:multi_domain_hostname_desc', 'openwebinar'),
+            '', PARAM_URL));
+
     // Communication key.
     $settings->add(new admin_setting_configtext('openwebinar/shared_secret',
             get_string('setting:shared_secret', 'openwebinar'),

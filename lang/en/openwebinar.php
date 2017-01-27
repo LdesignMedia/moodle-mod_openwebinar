@@ -160,6 +160,10 @@ $string['setting:hls_desc'] = 'This will add support for mobile devices. Broadca
  HLS output. <br/>Warning HLS gives a extra delay of 30 seconds to your stream.';
 
 $string['setting:show_skype_popup'] = 'Show skype profile dialog';
+$string['setting:multi_domain_hostname'] = 'Multi domain master hostname';
+$string['setting:multi_domain_hostname_desc'] = 'When you are using more domain names to access the webinar you need to give the
+ master hostname here. Leave empty in most cases is more secure.';
+
 
 // Mod settings.
 $string['mod_setting:settings'] = 'Openwebinar features';

@@ -430,7 +430,8 @@ M.mod_openwebinar.room = {
         ajax_timer            : false,
         enable_emoticons      : true,
         questions             : true,
-        hls                   : false
+        hls                   : false,
+        multi_domain_hostname : "",
     },
 
     /**
@@ -965,8 +966,13 @@ M.mod_openwebinar.room = {
         }
 
         // Add hostname.
-        this.chatobject.hostname = window.location.hostname;
-
+        // This gives problems when using multidomain
+        if (this.options.multi_domain_hostname !== "") {
+            this.chatobject.hostname = this.options.multi_domain_hostname;
+        } else {
+            this.chatobject.hostname = window.location.hostname;
+        }
+ 
         // Add user agent.
         this.chatobject.useragent = navigator.userAgent;
         this.log('connect_to_socket');
