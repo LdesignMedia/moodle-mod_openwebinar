@@ -352,10 +352,11 @@ $string['btn:delete'] = 'Delete';
 $string['btn:edit'] = 'Edit';
 
 $string['heading:question_type'] = 'Question type';
-$string['heading:question_summary'] = 'Summary';
+$string['heading:question_comment'] = 'Comment';
 $string['heading:question_name'] = 'Name';
 $string['type:open'] = 'Open';
 $string['type:true_false'] = 'True / false';
+$string['type:multiple_choice'] = 'Multiple choice';
 $string['offline_questions'] = 'Offline questions';
 $string['btn:new'] = 'New question template';
 
@@ -365,5 +366,6 @@ $string['form:summary'] = 'Summary';
 $string['form:question_type'] = 'Type';
 $string['form:save'] = 'Save';
 $string['room:select'] = 'Select';
-
+$string['form:comment'] = 'Comment (not visible for students)';
+$string['form:answers_options'] = 'Answer options (Note: each answer need to start on a newline)';
 $string['error:invalid'] = 'Invalid';

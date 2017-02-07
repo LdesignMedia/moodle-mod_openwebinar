@@ -2481,7 +2481,7 @@ M.mod_openwebinar.room = {
         // Init manager popup.
         this.nodeholder.questionmanager = new Y.Panel({
             width   : '600px',
-            height  : '400px',
+            height  : '500px',
             zIndex  : 10,
             centered: true,
             modal   : true,

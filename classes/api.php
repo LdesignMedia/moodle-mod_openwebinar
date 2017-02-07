@@ -531,7 +531,7 @@ class api {
 
         foreach ($questions as $id => $quest) {
             $obj = new \stdClass();
-            $obj->name = $quest->get_question_text();
+            $obj->name = $quest->get_question_text() . ' | ' . $quest->get_question_comment();
             $obj->id = $quest->get_id();
             $this->response['questions'][$id] = $obj;
         }

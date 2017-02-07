@@ -103,6 +103,30 @@ abstract class questiontypes {
     }
 
     /**
+     * Get the question text
+     *
+     * @return array
+     */
+    public function get_question_answer_options() {
+
+        $list = [];
+        $options =  !empty($this->questionrecord->question_data->answers_options) ?
+                $this->questionrecord->question_data->answers_options : '';
+
+        if(!empty($options)){
+            $options = explode(PHP_EOL , $options);
+            foreach($options as $i => $string){
+                if(empty($string)){
+                    continue;
+                }
+                $list[$i] = ucfirst(trim($string));
+            }
+        }
+
+        return $list;
+    }
+
+    /**
      * Get the user_id from the creator of the question
      *
      * @return int
@@ -118,6 +142,15 @@ abstract class questiontypes {
      */
     public function get_question_summary() {
         return !empty($this->questionrecord->question_data->summary) ? $this->questionrecord->question_data->summary : '';
+    }
+
+    /**
+     * The question comment
+     *
+     * @return string
+     */
+    public function get_question_comment() {
+        return !empty($this->questionrecord->question_data->comment) ? $this->questionrecord->question_data->comment : '';
     }
 
     /**

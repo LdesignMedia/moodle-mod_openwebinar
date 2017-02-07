@@ -68,7 +68,8 @@ switch ($action) {
             $data->question = $question->question_data->question;
             $data->summary = $question->question_data->summary;
             $data->question_type = $question->question_type;
-
+            $data->answers_options = $question->question_data->answers_options;
+            $data->comment = $question->question_data->comment;
             $form->set_data($data);
         }
 
@@ -86,6 +87,8 @@ switch ($action) {
             $questionrow = new stdClass();
             $questionrow->question = $data->question;
             $questionrow->summary = $data->summary;
+            $questionrow->comment = $data->comment;
+            $questionrow->answers_options = $data->answers_options;
             $data->question_data = serialize($questionrow);
 
             // Serializing user data.

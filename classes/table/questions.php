@@ -87,6 +87,9 @@ class questions extends \table_sql {
 
             case question::QUESTION_TYPE_TRUE_FALSE:
                 return  get_string('type:true_false' , 'openwebinar');
+
+            case question::QUESTION_TYPE_MULTIPLE_CHOICE:
+                return  get_string('type:multiple_choice' , 'openwebinar');
         }
         return '';
     }
@@ -121,15 +124,15 @@ class questions extends \table_sql {
     }
 
     /**
-     * Render summary
+     * Render comment
      *
      * @param $row
      *
      * @return mixed
      */
-    protected function col_question_summary($row){
+    protected function col_question_comment($row){
         $data = $this->get_unserialize_data($row);
-        return $data->summary;
+        return !empty($data->comment) ? $data->comment : '';
     }
 
     /**

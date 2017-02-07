@@ -26,6 +26,18 @@ class addquestion extends \moodleform {
         $mform = &$this->_form;
         $mform->addElement('header', 'header1', get_string('form:addquestion', 'openwebinar'));
 
+        $mform->addElement('select', 'question_type', get_string('form:question_type', 'openwebinar'),
+                [
+                        question::QUESTION_TYPE_OPEN => get_string('type:open', 'openwebinar'),
+                        question::QUESTION_TYPE_TRUE_FALSE => get_string('type:true_false', 'openwebinar'),
+                        question::QUESTION_TYPE_MULTIPLE_CHOICE => get_string('type:multiple_choice', 'openwebinar'),
+                ]
+        );
+
+        $mform->addElement('text', 'comment', get_string('form:comment', 'openwebinar'),
+                array('style' => 'width:80%',));
+        $mform->setType('comment', PARAM_TEXT);
+
         $mform->addElement('text', 'question', get_string('form:question', 'openwebinar'),
                 array('style' => 'width:80%',));
         $mform->setType('question', PARAM_TEXT);
@@ -38,15 +50,21 @@ class addquestion extends \moodleform {
         );
         $mform->setType('summary', PARAM_TEXT);
 
-        $mform->addElement('select', 'question_type', get_string('form:question_type', 'openwebinar'),
+
+        // Answer options.
+        $mform->addElement('textarea', 'answers_options', get_string('form:answers_options', 'openwebinar'),
                 [
-                        question::QUESTION_TYPE_OPEN => get_string('type:open', 'openwebinar'),
-                        question::QUESTION_TYPE_TRUE_FALSE => get_string('type:true_false', 'openwebinar'),
+                        'rows' => 10,
+                        'style' => 'width:80%'
                 ]
         );
+        $mform->setType('answers', PARAM_TEXT);
 
+        // Rules.
         $mform->addRule('question', null, 'required', null, 'client');
         $mform->addRule('question_type', null, 'required', null, 'client');
+
+        $mform->disabledIf('answers_options', 'question_type' , 'neq' ,   question::QUESTION_TYPE_MULTIPLE_CHOICE);
 
         $this->add_action_buttons(true, get_string('form:save', 'openwebinar'));
     }

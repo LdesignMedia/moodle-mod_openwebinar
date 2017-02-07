@@ -25,7 +25,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/openwebinar/lib/uaparser/vendor/autoload.php');
-use UAParser\Parser;
+require_once($CFG->dirroot . '/mod/openwebinar/classes/questiontypes/choice.php');
 
 /**
  * The renderer for the openwebinar module.
@@ -245,14 +245,14 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $table->initialbars(true); // Always initial bars.
         $table->define_columns(array(
                 'question_name',
-                'question_summary',
+                'question_comment',
                 'question_type',
                 'action'
         ));
 
         $table->define_headers(array(
                 get_string('heading:question_name', 'openwebinar'),
-                get_string('heading:question_summary', 'openwebinar'),
+                get_string('heading:question_comment', 'openwebinar'),
                 get_string('heading:question_type', 'openwebinar'),
                 get_string('heading:action', 'openwebinar'),
         ));
@@ -391,16 +391,25 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
                     case 'answer' :
                         $answer = $DB->get_field('openwebinar_question_answer', 'answer_data',
                                 ['id' => $args->answerid]);
-                        $question = $DB->get_field('openwebinar_question', 'question_data',
-                                ['id' => $args->questionid]);
+                        $questionrecord = $DB->get_record('openwebinar_question',  ['id' => $args->questionid]);
 
                         if ($answer) {
                             $message = '';
                             $answer = unserialize($answer);
-                            $question = unserialize($question);
+                            $question = unserialize($questionrecord->question_data);
                             $message .= \html_writer::tag('h4', $question->question, []);
                             $message .= \html_writer::tag('p', $question->summary, []);
-                            $message .= \html_writer::tag('b', $answer->answer, []);
+
+                            if(is_array($answer->answer)){
+                                $question = new \mod_openwebinar\questiontypes\choice($questionrecord);
+                                $options = $question->get_question_answer_options();
+                                foreach($answer->answer as $k => $v){
+                                    $message .= \html_writer::tag('b', $options[$k], []) . '<br>';
+                                }
+
+                            }else{
+                                $message .= \html_writer::tag('b', $answer->answer, []);
+                            }
                         }
 
                         break;

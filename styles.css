@@ -624,6 +624,7 @@ input[type="text"].openwebinar-message-input {
     padding: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
+    height: 448px !important;
 }
 
 #all-questions .overview ul {
@@ -877,4 +878,7 @@ input.openwebinar-toggle:checked + label:after {
 
 .yui3-panel .yui3-widget-bd .icon-warn{
     margin-left: 20px;
+}
+#question-answer{
+    overflow: hidden;
 }

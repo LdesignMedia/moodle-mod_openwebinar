@@ -347,18 +347,21 @@ $string['btn:delete'] = 'Verwijderen';
 $string['btn:edit'] = 'Bewerk';
 
 $string['heading:question_type'] = 'Vraagtype';
-$string['heading:question_summary'] = 'Omschrijving';
+$string['heading:question_comment'] = 'Opmerking';
 $string['heading:question_name'] = 'Naam';
-$string['type:open'] = 'Open';
-$string['type:true_false'] = 'Ja / Nee';
+$string['type:open'] = 'Openvraag';
+$string['type:true_false'] = 'Ja / Nee vraag';
+$string['type:multiple_choice'] = 'Meerkeuzevraag';
+
 $string['offline_questions'] = 'Vragen templates';
 $string['btn:new'] = 'Nieuwe vraag template aanmaken';
 
 $string['form:addquestion'] = 'Bewerk vragen template';
-$string['form:question'] = 'Vraag';
-$string['form:summary'] = 'Omschrijving';
+$string['form:question'] = 'De Vraag';
+$string['form:summary'] = 'Vraag omschrijving';
 $string['form:question_type'] = 'Type';
 $string['form:save'] = 'Opslaan';
 $string['room:select'] = 'Selecteren';
-
+$string['form:comment'] = 'Opmerking (niet zichtbaar voor deelnemers)';
+$string['form:answers_options'] = 'Antwoord mogelijkheden (let op! Dat 1 antwoord op een regel staat.)';
 $string['error:invalid'] = 'Ongeldig';
