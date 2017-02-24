@@ -161,9 +161,9 @@ class choice extends questiontypes {
 
             // Show stats first.
             foreach ($answeroptions as $key => $option) {
-                $percentage = ($totals[$key] > 0) ? (($answerstotal * 100) / $totals[$key]) : 0;
+                $percentage = ($totals[$key] > 0) ? round($totals[$key] / $answerstotal * 100) : 0;
                 $return .= '<div class="progress progress-info">
-                              <b style="position:absolute;left:20px">' . $option . '  ' . $percentage. '%</b>
+                              <b style="position:absolute;left:20px">' . $option . '  ' . $percentage . '% </b>
                               <div class="bar" style="width: ' . $percentage . '%"></div>
                             </div>';
             }
