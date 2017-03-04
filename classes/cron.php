@@ -120,7 +120,7 @@ class cron {
      */
     protected function reminder_send_invites($openwebinar = false, $number = 0, \stored_file $file) {
 
-        global $DB;
+        global $DB , $CFG;
         $remindersend = 'reminder_' . $number . '_send';
         $remindertime = 'reminder_' . $number;
 
@@ -180,6 +180,7 @@ class cron {
                             '##link##',
                             '##name##',
                             '##broadcaster_fullname##',
+                            '##wwwroot##',
                     ), array(
                             fullname($student),
                             $student->firstname,
@@ -188,7 +189,8 @@ class cron {
                             round($openwebinar->duration / 60),
                             $urllogin->out(false),
                             $openwebinar->name,
-                            fullname($broadcaster)
+                            fullname($broadcaster).
+                            $CFG->wwwroot
                     ), $message);
 
                     $eventdata = new \stdClass();
