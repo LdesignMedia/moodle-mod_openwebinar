@@ -189,7 +189,7 @@ class cron {
                             round($openwebinar->duration / 60),
                             $urllogin->out(false),
                             $openwebinar->name,
-                            fullname($broadcaster).
+                            fullname($broadcaster),
                             $CFG->wwwroot
                     ), $message);
 

@@ -310,7 +310,7 @@ Herinnering voor onderstaande webinar livestream:<br/><br/>
         <td><a href="##link##">Bekijk de webinar</a> </td>
     </tr>
 </table><br/>
-Hoe neem ik deel aan de webinar?<br/>
+Hoe neem ik deel aan de webinar?<br/><br/>
 1. Test <a href="##wwwroot##/blocks/dtestcase/test?blockid=1">HIER</a> of je computer voldoet aan de specificaties.<br/>
 2. Klik <a href="##link##">HIER</a> om in te loggen en deel te nemen.<br/><br/>
 <p>Let op! Webinars kunt u alleen bijwonen op een vaste computer.</p>
