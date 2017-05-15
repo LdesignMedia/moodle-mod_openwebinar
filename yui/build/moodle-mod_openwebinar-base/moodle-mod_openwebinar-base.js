@@ -14,6 +14,7 @@ YUI.add('moodle-mod_openwebinar-base', function (Y, NAME) {
 /*global  M, Y, console, YUI , countdown*/
 M.mod_openwebinar = M.mod_openwebinar || {};
 M.mod_openwebinar.base = {
+    
     /**
      * Timer holder
      */

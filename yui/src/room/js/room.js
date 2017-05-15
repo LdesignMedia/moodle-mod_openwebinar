@@ -548,6 +548,7 @@ M.mod_openwebinar.room = {
         message      : "",
         usertype     : "guest"
     },
+
     /**
      * Node containers
      * @type Object
