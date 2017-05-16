@@ -58,12 +58,16 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->add_body_class('moodlefreak-openwebinar-room');
 $PAGE->set_pagelayout('embedded');
 
+// Completion.
+$completion = new completion_info($course);
+$completion->set_module_viewed($cm);
+
 $event = \mod_openwebinar\event\course_module_viewed::create(array(
-        'objectid' => $PAGE->cm->instance,
-        'context' => $PAGE->context,
+        'objectid' => $cm->instance,
+        'context' => $context,
 ));
 $event->add_record_snapshot('course', $PAGE->course);
-$event->add_record_snapshot($PAGE->cm->modname, $openwebinar);
+$event->add_record_snapshot($cm->modname, $openwebinar);
 $event->trigger();
 
 // Load plugin config.
