@@ -550,7 +550,7 @@ M.mod_openwebinar.room = {
         message      : "",
         usertype     : "guest"
     },
-    
+
     /**
      * Node containers
      * @type Object
@@ -1362,13 +1362,16 @@ M.mod_openwebinar.room = {
             var error = this.player().error();
             that.log(error.code + '| |' + error.message);
 
-            if (error.code == 4) {
+            if (error.code == 4 && !that.options.is_ended) {
                 this.player().dispose();
-                Y.one('#openwebinar-stream-holder').setHTML('<div class="alert alert-danger">Fout: flashplayer is niet' +
-                    ' beschikbaar in uw browser!</div>');
+                Y.one('#openwebinar-stream-holder').setHTML('<div class="alert alert-danger">Error videoplayer : ' + error.message +
+                    '</div>' +
+                    '<div class="alert">Schakel Flash in ' +
+                    '<a href="https://get.adobe.com/flashplayer/" target="_blank">Klik hier om Flash in te schakelen</a>' +
+                    '</div>');
             }
 
-            that.log(error);
+            that.log(error.description);
         });
 
         this.player.on('loadstart', function () {
@@ -3041,4 +3044,4 @@ M.mod_openwebinar.room = {
     }
 };
 
-}, '@VERSION@', {"requires": ["base", "node", "io", "anim", "panel", "json-stringify", "json-parse"]});
+}, '@VERSION@');
