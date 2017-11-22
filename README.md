@@ -92,7 +92,104 @@ For the openwebinar you will also need a **rtmp streaming server**. We’ve buil
 
 Installation - nginx-rtmp for `openwebinar`
 ====================
-@todo
+## Debian
+https://wiki.debian.org/DhyanNataraj/RtmpVideoStreamingViaNginx
+
+Files or folders that doesn't exists must be created!
+
+```
+Error debuild - try
+dpkg-buildpackage -uc -us
+```
+
+## Ubuntu - not working on debian
+```bash
+
+apt-get -y update; \
+apt-get -y install software-properties-common dpkg-dev git; \
+add-apt-repository -y ppa:nginx/stable; \
+sed -i '/^#.* deb-src /s/^#//' /etc/apt/sources.list.d/nginx-ubuntu-stable-xenial.list; \
+apt-get -y update; \
+apt-get -y source nginx; \
+cd $(find . -maxdepth 1 -type d -name "nginx*") && \
+ls -ahl && \
+git clone https://github.com/arut/nginx-rtmp-module.git && \
+sed -i "s|common_configure_flags := \\\|common_configure_flags := \\\--add-module=$(cd  nginx-rtmp-module && pwd) \\\|" debian/rules && \
+cat debian/rules && echo "^^" && \
+apt-get -y build-dep nginx && \
+dpkg-buildpackage -b && \
+cd .. && ls -ahl && \
+dpkg --install $(find . -maxdepth 1 -type f -name "nginx-common*") && \
+dpkg --install $(find . -maxdepth 1 -type f -name "libnginx*") && \
+dpkg --install $(find . -maxdepth 1 -type f -name "nginx-full*"); \
+apt-get -y remove software-properties-common dpkg-dev git; \
+apt-get -y install aptitude; \
+aptitude -y markauto $(apt-cache showsrc nginx | sed -e '/Build-Depends/!d;s/Build-Depends: \|,\|([^)]*),*\|\[[^]]*\]//g'); \
+apt-get -y autoremove; \
+apt-get -y remove aptitude; \
+apt-get -y autoremove; \
+rm -rf ./*nginx*
+```
+
+```apacheconfig
+#https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+worker_processes  1;
+
+events {
+    worker_connections  65536;
+}
+
+http {
+    include             mime.types;
+    default_type        application/octet-stream;
+    access_log          off;
+    keepalive_timeout   65;
+
+
+    #ADMIN controll/stats
+    server {
+
+        listen          8080;
+
+        location /hls {
+                # Serve HLS fragments
+
+                types {
+                        application/vnd.apple.mpegurl m3u8;
+                        video/mp2t ts;
+                }
+                root /tmp;
+                add_header Cache-Control no-cache;
+                add_header Access-Control-Allow-Origin *;
+       }
+    }
+}
+
+#START THE RTMP PART
+rtmp {
+        server {
+                listen 1935;
+                chunk_size 4096;
+                log_format new '$remote_addr $msec  $command "$app" "$name" "$args" $bytes_received $bytes_sent "$pageurl" "$flashver" ($session_readable_time)';
+                access_log logs/rtmp_access.log new;
+
+                application live {
+                        live on;
+                        publish_notify on;
+                        record off;
+                }
+                application hls {
+                       live on;
+                       hls on;
+                       #hls_playlist_length 8s;
+                       #hls_fragment 2s;
+                       hls_path /tmp/hls;
+               }
+        }
+}
+
+```
+
 
 Changelog
 ====================
