@@ -368,3 +368,7 @@ $string['room:select'] = 'Selecteren';
 $string['form:comment'] = 'Opmerking (niet zichtbaar voor deelnemers)';
 $string['form:answers_options'] = 'Antwoord mogelijkheden (let op! Dat 1 antwoord op een regel staat.)';
 $string['error:invalid'] = 'Ongeldig';
+$string['user_mail'] = 'E-mail gebruikers';
+$string['text:usermail'] = 'E-mail gebruikers';
+$string['btn:email'] = 'E-mail';
+$string['btn:email_all'] = 'E-mail iedereen';

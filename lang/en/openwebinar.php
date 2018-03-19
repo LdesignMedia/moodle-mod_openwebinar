@@ -369,3 +369,7 @@ $string['room:select'] = 'Select';
 $string['form:comment'] = 'Comment (not visible for students)';
 $string['form:answers_options'] = 'Answer options (Note: each answer need to start on a newline)';
 $string['error:invalid'] = 'Invalid';
+$string['user_mail'] = 'E-mail users';
+$string['text:usermail'] = 'E-mail users';
+$string['btn:email'] = 'E-mail';
+$string['btn:email_all'] = 'E-mail everyone';

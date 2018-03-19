@@ -143,7 +143,14 @@ function openwebinar_update_instance(stdClass $openwebinar) {
     $openwebinar->timemodified = time();
     $openwebinar->id = $openwebinar->instance;
 
-    // You may have to add extra stuff in here.
+    $original_webinar = $DB->get_record('openwebinar', ['id' => $openwebinar->id]);
+
+    // We should also check if we need to re-enable notification moment.
+    if ($original_webinar->timeopen != $openwebinar->timeopen) {
+
+        // The time is modified we should update.
+        openwebinar_notification_senders($openwebinar, $original_webinar);
+    }
 
     $result = $DB->update_record('openwebinar', $openwebinar);
 
@@ -165,6 +172,41 @@ function openwebinar_update_instance(stdClass $openwebinar) {
     }
 
     return $result;
+}
+
+/**
+ * Update notification moment
+ * when the time is
+ *
+ * @param stdClass $openwebinar
+ * @param stdClass $original_webinar
+ */
+function openwebinar_notification_senders(stdClass & $openwebinar, stdClass $original_webinar) {
+
+    $checks = [
+            'reminder_1_send',
+            'reminder_2_send',
+            'reminder_3_send',
+            'reminder_4_send',
+    ];
+
+    $now = time();
+    foreach ($checks as $check) {
+
+        // Check status.
+        if ($original_webinar->$check == 1) {
+
+            // This is marked as send we need if we should update the moment.
+            $seconds = str_replace('_send', '', $check);
+
+            $time_send = $openwebinar->timeopen - ((int) $openwebinar->$seconds);
+            if ($time_send > $now) {
+
+                // Should re-enable this notification.
+                $openwebinar->$check = 0;
+            }
+        }
+    }
 }
 
 /**
@@ -352,6 +394,11 @@ function openwebinar_extend_settings_navigation(settings_navigation $settings, n
         $url = new moodle_url('/mod/openwebinar/user_activity.php', array('id' => $PAGE->cm->id));
         $node = navigation_node::create(get_string('user_activity', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null,
                 'mod_openwebinar_user_activity', new pix_icon('i/preview', ''));
+        $openwebinarnode->add_node($node, $beforekey);
+
+        $url = new moodle_url('/mod/openwebinar/user_mail.php', array('id' => $PAGE->cm->id));
+        $node = navigation_node::create(get_string('user_mail', 'openwebinar'), $url, navigation_node::TYPE_SETTING, null,
+                'mod_openwebinar_user_mail', new pix_icon('i/email', ''));
         $openwebinarnode->add_node($node, $beforekey);
 
         $url = new moodle_url('/mod/openwebinar/offline_questions.php', array('id' => $PAGE->cm->id));

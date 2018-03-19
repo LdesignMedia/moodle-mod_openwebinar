@@ -185,7 +185,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    public function view_user_activity_all($openwebinar) {
+    public function view_user_activity_all(\stdClass $openwebinar) {
         global $OUTPUT, $PAGE, $CFG;
 
         require_once($CFG->libdir . '/tablelib.php');
@@ -221,6 +221,45 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
         $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
         $table->collapsible(false);
         $table->out(self::DEFAULT_TABLE_ROW_COUNT, true);
+    }
+
+    /**
+     * @param stdClass $openwebinar
+     *
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    public function view_mail_users(\stdClass $openwebinar) {
+        global $OUTPUT, $PAGE, $CFG;
+
+        require_once($CFG->libdir . '/tablelib.php');
+
+        $table = new \mod_openwebinar\table\usermail('outstation-list-table', $openwebinar);
+
+        $table->set_attribute('cellspacing', '0');
+        $table->set_attribute('class', 'admintable generaltable');
+        $table->initialbars(true); // Always initial bars.
+        $table->define_columns(array(
+                'picture',
+                'firstname',
+                'lastname',
+                'email',
+                'action'
+        ));
+
+        $table->define_headers(array(
+                get_string('heading:picture', 'openwebinar'),
+                get_string('heading:firstname', 'openwebinar'),
+                get_string('heading:lastname', 'openwebinar'),
+                get_string('heading:email', 'openwebinar'),
+                get_string('heading:action', 'openwebinar'),
+        ));
+
+        $table->no_sorting('action');
+        $table->sortable(true, 'name', SORT_DESC);
+        $table->define_baseurl(new moodle_url($PAGE->url, $PAGE->url->params()));
+        $table->collapsible(false);
+        $table->out(1000, true);
     }
 
     /**
@@ -391,7 +430,7 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
                     case 'answer' :
                         $answer = $DB->get_field('openwebinar_question_answer', 'answer_data',
                                 ['id' => $args->answerid]);
-                        $questionrecord = $DB->get_record('openwebinar_question',  ['id' => $args->questionid]);
+                        $questionrecord = $DB->get_record('openwebinar_question', ['id' => $args->questionid]);
 
                         if ($answer) {
                             $message = '';
@@ -400,14 +439,14 @@ class mod_openwebinar_renderer extends plugin_renderer_base {
                             $message .= \html_writer::tag('h4', $question->question, []);
                             $message .= \html_writer::tag('p', $question->summary, []);
 
-                            if(is_array($answer->answer)){
+                            if (is_array($answer->answer)) {
                                 $question = new \mod_openwebinar\questiontypes\choice($questionrecord);
                                 $options = $question->get_question_answer_options();
-                                foreach($answer->answer as $k => $v){
+                                foreach ($answer->answer as $k => $v) {
                                     $message .= \html_writer::tag('b', $options[$k], []) . '<br>';
                                 }
 
-                            }else{
+                            } else {
                                 $message .= \html_writer::tag('b', $answer->answer, []);
                             }
                         }

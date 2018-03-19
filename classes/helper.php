@@ -367,7 +367,7 @@ class helper {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    static public function get_active_course_users($courseid = 0) {
+     public static function get_active_course_users($courseid = 0) {
 
         global $DB;
 

@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  * some custom formatters for various columns, in order
  * to make the main outstations list nicer
  */
-class useractivity extends \table_sql {
+class usermail extends \table_sql {
 
     /**
      * Openwebinar object
@@ -47,6 +47,8 @@ class useractivity extends \table_sql {
      * @param string $uniqueid
      * @param $openwebinar
      *
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function __construct($uniqueid, $openwebinar) {
 
@@ -55,21 +57,35 @@ class useractivity extends \table_sql {
         // Set the openwebinar.
         $this->openwebinar = $openwebinar;
 
+        global $DB;
+        list($instancessql, $params) = $DB->get_in_or_equal(array_keys(enrol_get_instances($openwebinar->course, false)), SQL_PARAMS_NAMED);
+
         // Get extra fields.
         $extrafields = get_extra_user_fields(\context_course::instance($openwebinar->course));
         $extrafields[] = 'lastaccess';
+        $extrafields[] = 'lang';
         $dbfields = \user_picture::fields('u', $extrafields);
 
         // Params.
-        $params = array(
-                'openwebinar_id' => $openwebinar->id
+        $now = round(time(), -2); // Rounding helps caching in DB.
+        $params += array(
+                'enabled' => ENROL_INSTANCE_ENABLED,
+                'active' => ENROL_USER_ACTIVE,
+                'now1' => $now,
+                'now2' => $now,
         );
 
         $this->sql = new \stdClass();
-        $this->sql->fields = 'DISTINCT ' . $dbfields . ', p.available as present';
+        $this->sql->fields = 'DISTINCT ' . $dbfields . '';
         $this->sql->from = '{user} u
-                            JOIN {openwebinar_presence} p ON (p.user_id = u.id)';
-        $this->sql->where = 'u.deleted = 0 AND p.openwebinar_id = :openwebinar_id';
+                            JOIN {user_enrolments} ue ON (ue.userid = u.id  AND ue.enrolid ' . $instancessql . ')
+                            JOIN {enrol} e ON (e.id = ue.enrolid)
+                            LEFT JOIN {groups_members} gm ON u.id = gm.userid';
+
+        $this->sql->where = 'ue.status = :active 
+                            AND e.status = :enabled 
+                            AND ue.timestart < :now1
+                            AND (ue.timeend = 0 OR ue.timeend > :now2)';
 
         $this->sql->params = $params;
 
@@ -91,25 +107,14 @@ class useractivity extends \table_sql {
 
         global $PAGE;
 
-        if (empty($row->available)) {
-            return '';
-        }
 
-        $chattime = new \moodle_url('/mod/openwebinar/user_activity.php', array(
+        $url = new \moodle_url('/mod/openwebinar/user_mail.php', array(
                 'user_id' => $row->id,
                 'id' => $PAGE->cm->id,
-                'action' => 'user_chattime',
+                'action' => 'email_single',
         ));
 
-        $chatlog = new \moodle_url('/mod/openwebinar/user_activity.php', array(
-                'user_id' => $row->id,
-                'id' => $PAGE->cm->id,
-                'action' => 'user_chatlog',
-        ));
-
-        return \html_writer::link($chattime, get_string('btn:chattime', 'openwebinar'), array(
-                'class' => 'btn',
-        )) . ' ' . \html_writer::link($chatlog, get_string('btn:chatlog', 'openwebinar'), array(
+        return \html_writer::link($url, get_string('btn:email', 'openwebinar'), array(
                 'class' => 'btn',
         ));
     }
