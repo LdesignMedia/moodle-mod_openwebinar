@@ -137,7 +137,7 @@ $PAGE->requires->css('/mod/openwebinar/stylesheet/emoticons.css');
 $PAGE->requires->js('/mod/openwebinar/javascript/tinyscrollbar.min.js', true);
 
 // Socket.io script.
-$PAGE->requires->js('/mod/openwebinar/javascript/socket.io-1.3.5.js', true);
+$PAGE->requires->js('/mod/openwebinar/javascript/socket.io-2.1.1.js', true);
 
 // Room js, most of logic is here.
 $PAGE->requires->yui_module('moodle-mod_openwebinar-room', 'M.mod_openwebinar.room.init', array($opts));
