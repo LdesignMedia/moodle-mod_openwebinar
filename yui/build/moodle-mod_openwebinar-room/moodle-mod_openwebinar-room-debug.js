@@ -430,7 +430,6 @@ M.mod_openwebinar.room = {
         ajax_timer            : false,
         enable_emoticons      : true,
         questions             : true,
-        hls                   : false,
         multi_domain_hostname : "",
     },
 
@@ -607,14 +606,11 @@ M.mod_openwebinar.room = {
 
     /**
      * Init the room.
-     * 
+     *
      * @param {Object} options
      */
     init: function (options) {
         "use strict";
-
-        this.log('Webinar version - 23-11-2019');
-
         var that = this;
         // Make sure videojs is loaded.
         if (!videojs) {
@@ -626,6 +622,8 @@ M.mod_openwebinar.room = {
 
         // Set the filtered options.
         this.set_options(options);
+
+        this.log('Webinar version - 23-11-2019');
 
         // Log the new options.
         this.log(this.options);
@@ -1291,14 +1289,10 @@ M.mod_openwebinar.room = {
 
         var video = Y.Node.create('<video\n' +
             '    id="room_stream"\n' +
-            '    class="video-js"\n' +
+            '    class="video-js" autoplay\n' +
             '    controls\n' +
             '    preload="auto"\n' +
-            '    poster="//vjs.zencdn.net/v/oceans.png"\n' +
             '    data-setup=\'{}\'>\n' +
-            '  <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>\n' +
-            '  <source src="//vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>\n' +
-            '  <source src="//vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>\n' +
             '  <p class="vjs-no-js">\n' +
             '    To view this video please enable JavaScript, and consider upgrading to a\n' +
             '    web browser that\n' +
@@ -1314,9 +1308,8 @@ M.mod_openwebinar.room = {
         if (!this.options.is_ended) {
                 source = {
                     type: "application/x-mpegURL",
-                    src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
+                    src : "http://" + this.options.streaming_server + ':8080/hls/' + this.options.broadcastkey + '.m3u8'
                 };
-
         } else {
             this.log('Add offline video if there is one');
         }
