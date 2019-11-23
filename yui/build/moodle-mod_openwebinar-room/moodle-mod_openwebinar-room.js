@@ -1303,11 +1303,10 @@ M.mod_openwebinar.room = {
 
         video.appendTo('#openwebinar-stream-holder');
 
-        // Note: HLS has about a 30 second delay.
         if (!this.options.is_ended) {
                 source = {
                     type: "application/x-mpegURL",
-                    src : "http://" + this.options.streaming_server + ':8080/hls/' + this.options.broadcastkey + '.m3u8'
+                    src : "https://" + this.options.streaming_server + ':8080/hls/' + this.options.broadcastkey + '.m3u8'
                 };
         } else {
             this.log('Add offline video if there is one');
