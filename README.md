@@ -131,37 +131,47 @@ apt-get -y autoremove; \
 rm -rf ./*nginx*
 ```
 
-```apacheconfig
-#https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+```txt
 worker_processes  1;
 
 events {
-    worker_connections  65536;
+    worker_connections  600000;
 }
 
 http {
-    include             mime.types;
-    default_type        application/octet-stream;
-    access_log          off;
-    keepalive_timeout   65;
+    sendfile off;
+    tcp_nopush on;
+    directio 512;
+    default_type application/octet-stream;
 
-
-    #ADMIN controll/stats
     server {
+        listen 8080;
 
-        listen          8080;
+        location / {
+            # Disable cache
+            add_header 'Cache-Control' 'no-cache';
 
-        location /hls {
-                # Serve HLS fragments
+            # CORS setup
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Expose-Headers' 'Content-Length';
 
-                types {
-                        application/vnd.apple.mpegurl m3u8;
-                        video/mp2t ts;
-                }
-                root /tmp;
-                add_header Cache-Control no-cache;
-                add_header Access-Control-Allow-Origin *;
-       }
+            # allow CORS preflight requests
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+
+            types {
+                application/dash+xml mpd;
+                application/vnd.apple.mpegurl m3u8;
+                video/mp2t ts;
+            }
+
+            root /mnt/;
+        }
     }
 }
 
@@ -170,24 +180,29 @@ rtmp {
         server {
                 listen 1935;
                 chunk_size 4096;
-                log_format new '$remote_addr $msec  $command "$app" "$name" "$args" $bytes_received $bytes_sent "$pageurl" "$flashver" ($session_readable_time)';
-                access_log logs/rtmp_access.log new;
+                ping 15s;
+                ping_timeout 10s;
 
                 application live {
                         live on;
                         publish_notify on;
                         record off;
+                        drop_idle_publisher 10s;
+
+                        # Turn on HLS
+                        hls on;
+                        hls_path /mnt/hls/;
+                        #hls_playlist_length 30s;
+                        hls_fragment 1s;
+                        hls_playlist_length 10s;
+                        hls_sync 100ms;
+                        # disable consuming the stream from nginx as rtmp
+                        #deny play all;
+
                 }
-                application hls {
-                       live on;
-                       hls on;
-                       #hls_playlist_length 8s;
-                       #hls_fragment 2s;
-                       hls_path /tmp/hls;
-               }
+
         }
 }
-
 ```
 
 
