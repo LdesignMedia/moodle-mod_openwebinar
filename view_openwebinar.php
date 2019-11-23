@@ -120,14 +120,7 @@ if (!$opts['is_broadcaster']) {
 }
 
 // VIDEO Player.
-$PAGE->requires->js('/mod/openwebinar/javascript/video-js/video.js', true);
-
-if ($opts['hls']) {
-    // Only needed for fully support HLS.
-    $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs-media-sources.js', true);
-    $PAGE->requires->js('/mod/openwebinar/javascript/video-js/videojs.hls.min.js', true);
-}
-// Base videoJS to accept the rtmp stream.
+$PAGE->requires->js('/mod/openwebinar/javascript/video-js/video.min.js', true);
 $PAGE->requires->css('/mod/openwebinar/javascript/video-js/video-js.min.css');
 
 // Emoticons.

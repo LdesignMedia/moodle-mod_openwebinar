@@ -607,10 +607,14 @@ M.mod_openwebinar.room = {
 
     /**
      * Init the room.
+     * 
      * @param {Object} options
      */
     init: function (options) {
         "use strict";
+
+        this.log('Webinar version - 23-11-2019');
+
         var that = this;
         // Make sure videojs is loaded.
         if (!videojs) {
@@ -1281,43 +1285,44 @@ M.mod_openwebinar.room = {
     add_video: function () {
         "use strict";
         this.log('add_video');
-        var source = {}, techOrder = ['html5', 'flash'], that = this;
+        var source = {}, that = this;
 
-        videojs.options.flash.swf = M.cfg.wwwroot + "/mod/openwebinar/javascript/video-js/video-js.swf";
+        //videojs.options.flash.swf = M.cfg.wwwroot + "/mod/openwebinar/javascript/video-js/video-js.swf";
 
-        var attributes = {
-            'id'      : 'room_stream',
-            'width'   : '1',
-            'height'  : '1',
-            'controls': ' ',
-            'preload' : 'auto'
-        };
+        var video = Y.Node.create('<video\n' +
+            '    id="room_stream"\n' +
+            '    class="video-js"\n' +
+            '    controls\n' +
+            '    preload="auto"\n' +
+            '    poster="//vjs.zencdn.net/v/oceans.png"\n' +
+            '    data-setup=\'{}\'>\n' +
+            '  <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>\n' +
+            '  <source src="//vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>\n' +
+            '  <source src="//vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>\n' +
+            '  <p class="vjs-no-js">\n' +
+            '    To view this video please enable JavaScript, and consider upgrading to a\n' +
+            '    web browser that\n' +
+            '    <a href="https://videojs.com/html5-video-support/" target="_blank">\n' +
+            '      supports HTML5 video\n' +
+            '    </a>\n' +
+            '  </p>\n' +
+            '</video>');
 
-        var video = Y.Node.create('<video class="video-js vjs-default-skin"></video>').setAttrs(attributes);
         video.appendTo('#openwebinar-stream-holder');
 
         // Note: HLS has about a 30 second delay.
         if (!this.options.is_ended) {
-            if (this.options.hls) {
-                techOrder = ['hls', 'html5', 'flash'];
                 source = {
                     type: "application/x-mpegURL",
                     src : "http://" + this.options.streaming_server + '/' + this.options.broadcastkey + '.m3u8'
                 };
-            } else {
-                // Default rtmp only work on flash based players :(.
-                source = {
-                    type: "rtmp/mp4",
-                    src : "rtmp://" + this.options.streaming_server + '/' + this.options.broadcastkey
-                };
-            }
+
         } else {
             this.log('Add offline video if there is one');
         }
 
         // Set player settings.
         this.player = videojs('room_stream', {
-            'techOrder': techOrder,
             autoplay   : true,
             preload    : 'auto',
             sources    : [source]
@@ -3045,4 +3050,4 @@ M.mod_openwebinar.room = {
     }
 };
 
-}, '@VERSION@');
+}, '@VERSION@', {"requires": ["base", "node", "io", "anim", "panel", "json-stringify", "json-parse"]});

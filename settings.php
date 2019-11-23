@@ -34,7 +34,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('openwebinar/streaming_server',
             get_string('setting:streaming_server', 'openwebinar'),
             get_string('setting:streaming_server_desc', 'openwebinar'),
-            'your_domain.com/live/', PARAM_URL));
+            'your_domain.com', PARAM_URL));
 
     // Socket.io server.
     $settings->add(new admin_setting_configtext('openwebinar/chat_server',
